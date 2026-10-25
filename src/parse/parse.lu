@@ -1,0 +1,81 @@
+use expr
+use lex
+
+/// A parsed mnemonic and unexpanded operand spellings.
+pub struct Instruction {
+    mnemonic: str,
+    operands: List[str],
+}
+
+/// A 64-bit base/index address with an encoded scale and signed displacement.
+pub struct Memory {
+    base: int,
+    index: int,
+    scale: int,
+    displacement: int,
+}
+
+/// Return the x86 encoding number of a 64-bit GPR; bad_register refuses other names.
+pub fn register(s: str) -> int ! {bad_register} {
+    let names = [
+        "%rax",
+        "%rcx",
+        "%rdx",
+        "%rbx",
+        "%rsp",
+        "%rbp",
+        "%rsi",
+        "%rdi",
+        "%r8",
+        "%r9",
+        "%r10",
+        "%r11",
+        "%r12",
+        "%r13",
+        "%r14",
+        "%r15",
+    ]
+    for i in 0..names.len {
+        if names[i] == s { return i }
+    }
+    bad_register
+}
+
+/// Parse proof syntax and q-suffix aliases; bad_operands rejects missing or unbalanced operands.
+pub fn instruction(s: str) -> Instruction ! {bad_operands} {
+    let words = s.words()
+    if words.len == 0 { return bad_operands }
+    var mnemonic = words[0]
+    if mnemonic == "movq" { mnemonic = "mov" }
+    if mnemonic == "pushq" { mnemonic = "push" }
+    if mnemonic == "popq" { mnemonic = "pop" }
+    if mnemonic == "leaq" { mnemonic = "lea" }
+    if mnemonic == "cmpq" { mnemonic = "cmp" }
+    Instruction { mnemonic: mnemonic, operands: lex.split_operands(s[words[0].len..].trim())? }
+}
+
+/// Parse disp(base[,index,scale]); bad_memory refuses unsupported addressing or displacement overflow.
+pub fn memory(s: str) -> Memory ! {bad_memory} {
+    let open = s.find("(") else { return bad_memory }
+    if !s.ends_with(")") { return bad_memory }
+    let disp = if open == 0 then 0 else (expr.integer(s[0..open]) else { return bad_memory })
+    if disp < -2147483648 || disp > 2147483647 { return bad_memory }
+    let parts = s[open + 1..s.len - 1].split(",")
+    if parts.len != 1 && parts.len != 3 { return bad_memory }
+    let base = register(parts[0].trim()) else { return bad_memory }
+    var index = -1
+    var scale = 0
+    if parts.len == 3 {
+        index = register(parts[1].trim()) else { return bad_memory }
+        if index == 4 { return bad_memory }
+        let v = expr.integer(parts[2]) else { return bad_memory }
+        scale = match v {
+            1 => 0,
+            2 => 1,
+            4 => 2,
+            8 => 3,
+            _ => { return bad_memory },
+        }
+    }
+    Memory { base: base, index: index, scale: scale, displacement: disp }
+}

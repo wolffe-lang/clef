@@ -1,0 +1,38 @@
+//! member: false
+
+use elf
+use encode
+use expr
+use front
+use lex
+use parse
+use table
+
+fn main() -> int ! {invalid_table, unknown_form, bad_operands} {
+    assert(table.source().len == 10)
+    for row in table.source() {
+        let form = table.load(row)?
+        assert(form.citation.len > 0)
+        assert(form.page.len > 0)
+    }
+    var refused = false
+    let _ = table.load("bad") else |_| { refused = true; table.lookup("ret")? }
+    assert(refused)
+    assert((expr.integer("0x1000") else 0) == 4096)
+    assert((expr.integer("9223372036854775808") else -1) == -1)
+    assert((expr.integer("0x8000000000000000") else -1) == -1)
+    assert((expr.relative(".", 2) else 0) == -2)
+    assert(lex.split_operands("8(%rsi,%rdi,8), %rdx")?.len == 2)
+    let mov = encode.instruction(parse.instruction("movq $4096, %rsp")?)?
+    assert(mov.len == 7 && mov[0] == 72 as byte && mov[1] == 199 as byte && mov[2] == 196 as byte)
+    let push = encode.instruction(parse.instruction("push %r12")?)?
+    assert(push.len == 2 && push[0] == 65 as byte && push[1] == 84 as byte)
+    let lea = encode.instruction(parse.instruction("lea 8(%rsi,%rdi,8), %rdx")?)?
+    assert(lea.len == 5 && lea[3] == 254 as byte && lea[4] == 8 as byte)
+    let empty = elf.object([])
+    assert(empty.len == 416 && empty[18] == 62 as byte && empty[60] == 5 as byte)
+    let opts = front.parse(["--64", "-c", "in.S", "-o", "out.o"]) else { return bad_operands }
+    assert(opts.input == "in.S" && opts.output == "out.o")
+    print("table, integer refusal, lexer, ModRM/SIB/REX, ELF, argv: pass")
+    0
+}

@@ -1,0 +1,5 @@
+// The oracle executes only in the Python test harness, never in clef itself.
+/// Name the differential contract; the production program never invokes the oracle.
+pub fn posture() -> str {
+    "GNU as: section bytes and relocations exact; symbols structural, order free"
+}

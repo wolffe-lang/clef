@@ -1,0 +1,42 @@
+// A0 has integers and current-location branch probes, not the .set engine.
+// A1's expression grammar and relocation algebra are in docs/FORMATS.md.
+/// Parse a signed decimal or nonnegative hex int; bad_expression covers malformed and out-of-range input.
+pub fn integer(raw: str) -> int ! {bad_expression} {
+    let s = raw.trim()
+    if s.starts_with("0x") {
+        var n: int = 0
+        if s.len == 2 { return bad_expression }
+        for b in s[2..].bytes() {
+            let c = b as int
+            let digit = if c >= 48 && c <= 57 {
+                c - 48
+            } else if c >= 97 && c <= 102 {
+                c - 87
+            } else if c >= 65 && c <= 70 {
+                c - 55
+            } else {
+                -1
+            }
+            if digit < 0 || n > (9223372036854775807 - digit) / 16 { return bad_expression }
+            n = n * 16 + digit
+        }
+        return n
+    }
+    s.to_int() else { return bad_expression }
+}
+
+/// Resolve the current-location probe expression; bad_expression refuses all symbols and unsupported arithmetic.
+pub fn relative(s: str, length: int) -> int ! {bad_expression} {
+    if s == "." { return -length }
+    if s.starts_with(".+") {
+        let v = integer(s[2..])?
+        if v < 0 || v > 2147483647 { return bad_expression }
+        return v - length
+    }
+    if s.starts_with(".-") {
+        let v = integer(s[2..])?
+        if v < 0 || v > 2147483647 { return bad_expression }
+        return -v - length
+    }
+    bad_expression
+}

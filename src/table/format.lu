@@ -1,0 +1,93 @@
+// Intel SDM 325383-086US, December 2024. The strings below are hand-authored
+// from the cited opcode tables, not extracted from another implementation.
+/// One encoding descriptor with explicit SDM provenance, sizes, opcode and ModRM extension.
+pub struct Form {
+    mnemonic: str,
+    operands: str,
+    opcode: int,
+    second: int,
+    opcode_len: int,
+    rex_w: int,
+    extension: int,
+    immediate: int,
+    volume: str,
+    section: str,
+    page: str,
+    citation: str,
+}
+
+/// Load one pipe-separated descriptor; invalid_table rejects missing provenance and out-of-range fields.
+pub fn load(line: str) -> Form ! {invalid_table} {
+    let f = line.split("|")
+    if f.len != 12 { return invalid_table }
+    let op = f[2].to_int() else { return invalid_table }
+    let second = f[3].to_int() else { return invalid_table }
+    let count = f[4].to_int() else { return invalid_table }
+    let rex = f[5].to_int() else { return invalid_table }
+    let ext = f[6].to_int() else { return invalid_table }
+    let immediate = f[7].to_int() else { return invalid_table }
+    if op < 0 ||
+        op > 255 ||
+        second < 0 ||
+        second > 255 ||
+        count < 1 ||
+        count > 2 ||
+        rex < 0 ||
+        rex > 1 ||
+        ext < 0 ||
+        ext > 7 ||
+        immediate < 0 ||
+        immediate > 8 {
+        return invalid_table
+    }
+    if f[0].len == 0 ||
+        f[1].len == 0 ||
+        f[8].len == 0 ||
+        f[9].len == 0 ||
+        f[10].len == 0 ||
+        f[11].len == 0 {
+        return invalid_table
+    }
+    Form {
+        mnemonic: f[0],
+        operands: f[1],
+        opcode: op,
+        second: second,
+        opcode_len: count,
+        rex_w: rex,
+        extension: ext,
+        immediate: immediate,
+        volume: f[8],
+        section: f[9],
+        page: f[10],
+        citation: f[11],
+    }
+}
+
+/// The ten independently transcribed worked rows, one per census mnemonic.
+pub fn source() -> List[str] {
+    [
+        "mov|imm32,r64|199|0|1|1|0|4|2B|4.3 MOV|4-35|opcode table C7 /0 id",
+        "push|r64|80|0|1|0|0|0|2B|4.3 PUSH|4-520|opcode table 50+rd",
+        "pop|r64|88|0|1|0|0|0|2B|4.3 POP|4-396|opcode table 58+rd",
+        "call|rel32|232|0|1|0|0|4|2A|3.3 CALL|3-139|opcode table E8 cd",
+        "ret|none|195|0|1|0|0|0|2B|4.3 RET|4-566|opcode table C3",
+        "jmp|rel8|235|0|1|0|0|1|2A|3.3 JMP|3-563|opcode table EB cb",
+        "lea|mem64,r64|141|0|1|1|0|0|2A|3.3 LEA|3-605|opcode table REX.W 8D /r; table 2-2 ModRM",
+        "syscall|none|15|5|2|0|0|0|2B|4.3 SYSCALL|4-695|opcode table 0F 05",
+        "hlt|none|244|0|1|0|0|0|2A|3.3 HLT|3-499|opcode table F4",
+        "cmp|imm8,r64|131|0|1|1|7|1|2A|3.3 CMP|3-179|opcode table REX.W 83 /7 ib",
+    ]
+}
+
+/// Errors from table selection.
+pub error TableErrors = {unknown_form, invalid_table}
+
+/// Select a proof row; unknown_form names missing rows and invalid_table reports malformed data.
+pub fn lookup(mnemonic: str) -> Form ! TableErrors {
+    for row in source() {
+        let f = load(row)?
+        if f.mnemonic == mnemonic { return f }
+    }
+    unknown_form
+}

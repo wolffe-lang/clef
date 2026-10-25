@@ -1,0 +1,27 @@
+/// The single source and destination paths for the assembler-shaped command line.
+pub struct Options {
+    input: str,
+    output: str,
+}
+
+/// Accept -c, --64, -o and one source; usage refuses unknown options and missing or duplicate operands.
+pub fn parse(args: List[str]) -> Options ! {usage} {
+    var input = ""
+    var output = "a.out"
+    var i = 0
+    while i < args.len {
+        let a = args[i]
+        if a == "-o" {
+            i += 1
+            if i >= args.len || args[i].len == 0 { return usage }
+            output = args[i]
+        } else if a == "--64" || a == "-c" {} else if a.starts_with("-") || input.len != 0 {
+            return usage
+        } else {
+            input = a
+        }
+        i += 1
+    }
+    if input.len == 0 || input == output { return usage }
+    Options { input: input, output: output }
+}

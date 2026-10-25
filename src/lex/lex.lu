@@ -1,0 +1,25 @@
+/// Split commas outside one parenthesis level; bad_operands rejects unbalanced or nested parentheses.
+pub fn split_operands(s: str) -> List[str] ! {bad_operands} {
+    var out = List[str]()
+    var depth = 0
+    var start = 0
+    for i in 0..s.len {
+        let b = s.bytes()[i] as int
+        if b == 40 { depth += 1 }
+        if b == 41 { depth -= 1 }
+        if depth < 0 || depth > 1 { return bad_operands }
+        if b == 44 && depth == 0 {
+            (mut out).push(s[start..i].trim())
+            start = i + 1
+        }
+    }
+    if depth != 0 { return bad_operands }
+    if s.trim().len > 0 { (mut out).push(s[start..].trim()) }
+    out
+}
+
+/// Remove a hash comment and surrounding whitespace in the restricted proof dialect.
+pub fn clean(line: str) -> str {
+    let end = line.find("#") else line.len
+    line[0..end].trim()
+}

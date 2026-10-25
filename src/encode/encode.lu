@@ -1,0 +1,80 @@
+use expr
+use parse
+use table
+
+fn little(mut bytes: List[byte], value: int, count: int) {
+    var n = value
+    for _ in 0..count {
+        (mut bytes).push((n & 255) as byte)
+        n >>= 8
+    }
+}
+
+fn rex(mut out: List[byte], w: int, r: int, x: int, b: int) {
+    let value = 64 + w * 8 + r * 4 + x * 2 + b
+    if value != 64 { (mut out).push(value as byte) }
+}
+
+/// Errors of the public proof encoder.
+pub error EncodeErrors = {unknown_form, invalid_table, bad_operands}
+
+/// Encode one supported table form; unknown_form is an absent row, invalid_table a bad descriptor, bad_operands an unsupported operand.
+pub fn instruction(inst: parse.Instruction) -> List[byte] ! EncodeErrors {
+    let form = table.lookup(inst.mnemonic)?
+    let ops = copy inst.operands
+    var out = List[byte]()
+    if form.operands == "none" {
+        if ops.len != 0 { return bad_operands }
+        (mut out).push(form.opcode as byte)
+        if form.opcode_len == 2 { (mut out).push(form.second as byte) }
+        return out
+    }
+    if form.operands == "r64" {
+        if ops.len != 1 { return bad_operands }
+        let reg = parse.register(ops[0]) else { return bad_operands }
+        rex(mut out, 0, 0, 0, reg / 8)
+        (mut out).push((form.opcode + reg % 8) as byte)
+        return out
+    }
+    if form.operands == "rel32" || form.operands == "rel8" {
+        if ops.len != 1 { return bad_operands }
+        let delta = expr.relative(ops[0], 1 + form.immediate) else { return bad_operands }
+        if form.immediate == 1 && (delta < -128 || delta > 127) { return bad_operands }
+        if delta < -2147483648 || delta > 2147483647 { return bad_operands }
+        (mut out).push(form.opcode as byte)
+        little(mut out, delta, form.immediate)
+        return out
+    }
+    if ops.len != 2 { return bad_operands }
+    let reg = parse.register(ops[1]) else { return bad_operands }
+    if form.operands == "mem64,r64" {
+        let mem = parse.memory(ops[0]) else { return bad_operands }
+        let sib = mem.index >= 0 || mem.base % 8 == 4
+        let modbits = if mem.displacement == 0 && mem.base % 8 != 5 {
+            0
+        } else if mem.displacement >= -128 && mem.displacement <= 127 {
+            1
+        } else {
+            2
+        }
+        rex(mut out, form.rex_w, reg / 8, if mem.index >= 8 then 1 else 0, mem.base / 8)
+        (mut out).push(form.opcode as byte)
+        (mut out).push((modbits * 64 + reg % 8 * 8 + (if sib then 4 else mem.base % 8)) as byte)
+        if sib {
+            let ix = if mem.index < 0 then 4 else mem.index % 8
+            (mut out).push((mem.scale * 64 + ix * 8 + mem.base % 8) as byte)
+        }
+        if modbits == 1 { little(mut out, mem.displacement, 1) }
+        if modbits == 2 { little(mut out, mem.displacement, 4) }
+        return out
+    }
+    if !ops[0].starts_with("$") { return bad_operands }
+    let value = expr.integer(ops[0][1..]) else { return bad_operands }
+    if form.immediate == 1 && (value < -128 || value > 127) { return bad_operands }
+    if value < -2147483648 || value > 2147483647 { return bad_operands }
+    rex(mut out, form.rex_w, 0, 0, reg / 8)
+    (mut out).push(form.opcode as byte)
+    (mut out).push((192 + form.extension * 8 + reg % 8) as byte)
+    little(mut out, value, form.immediate)
+    out
+}
