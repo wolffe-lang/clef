@@ -1,0 +1,106 @@
+#!/usr/bin/env python3
+"""Measure unedited objdump instruction text, not a disassembler implementation.
+Remove address/byte columns and headings only. Do not rewrite symbolic operands,
+comments, immediates, prefixes, or branch targets. Count assembler diagnostic
+source lines separately from whole-body success and actual byte identity.
+"""
+import argparse,collections,hashlib,json,pathlib,re,subprocess,tempfile
+from elf import ELF
+
+LINE=re.compile(r'^\s*([0-9a-f]+):\s+(\S.*)$')
+ERROR=re.compile(r':([0-9]+): (?:Error|Fatal error): (.*)')
+
+def measure(path,out):
+    out.mkdir(parents=True,exist_ok=True)
+    dump=out/'objdump.txt'
+    with dump.open('wb') as f:
+        p=subprocess.run(['objdump','-d','--no-show-raw-insn','--wide',str(path)],stdout=f,stderr=subprocess.PIPE,timeout=120)
+    if p.returncode: raise RuntimeError('objdump failed: '+p.stderr.decode())
+    count=0; errors=0; unlocated_errors=0; warnings=0; diagnostic_lines=0; reasons=collections.Counter(); examples={}; chunks=0
+    source=out/'body.S';err=out/'as.stderr';obj=out/'body.o'
+    def assemble(lines,start):
+        nonlocal errors,unlocated_errors,warnings,diagnostic_lines,chunks
+        chunks+=1
+        source.write_text('.text\n'+'\n'.join(lines)+'\n')
+        with err.open('wb') as f:
+            result=subprocess.run(['as','--64',str(source),'-o',str(obj)],stdout=subprocess.PIPE,stderr=f,timeout=90)
+        bad=set();warn=set();unmapped=[]
+        for diagnostic in err.read_text(errors='replace').splitlines():
+            m=re.search(r':([0-9]+): (Error|Fatal error|Warning): (.*)',diagnostic)
+            if m:
+                line=int(m[1]); message=m[3]
+                assert 2<=line<=len(lines)+1,'diagnostic outside instruction body'
+                if m[2]=='Warning':warn.add(line)
+                else:bad.add(line)
+                category=m[2]+': '+re.sub(r"`[^']*'",'<operand>',message)
+                category=re.sub(r'\b[0-9]+\b','N',category)
+                reasons[category]+=1
+                if category not in examples:examples[category]={'line':start+line-1,'instruction':lines[line-2],'diagnostic':message}
+            elif 'Error:' in diagnostic or 'Fatal error:' in diagnostic:unmapped.append(diagnostic)
+        unlocated_errors+=len(unmapped)
+        for diagnostic in unmapped:
+            category='Error without source line: '+re.sub(r"`[^']*'",'<operand>',diagnostic.split(': Error:',1)[-1].strip())
+            reasons[category]+=1
+            if category not in examples:examples[category]={'diagnostic':diagnostic.split(': Error:',1)[-1].strip()}
+        assert result.returncode in (0,1) and (result.returncode==0 or bad or unmapped),'unexplained assembly failure'
+        errors+=len(bad);warnings+=len(warn);diagnostic_lines+=len(bad|warn)
+        if obj.exists():obj.unlink()
+    lines=[]
+    with dump.open() as d:
+        for line in d:
+            m=LINE.match(line)
+            if not m:continue
+            lines.append(m[2]);count+=1
+            if len(lines)==100000:
+                assemble(lines,count-len(lines));lines=[]
+    if lines:assemble(lines,count-len(lines))
+    assembled=None;equal=None
+    # A whole-body run is meaningful only after syntax passed; keep actual
+    # success distinct from the chunk-local diagnostic measurement.
+    if errors==0 and unlocated_errors==0 and count:
+        with source.open('w') as f,dump.open() as d:
+            f.write('.text\n')
+            for line in d:
+                m=LINE.match(line)
+                if m:f.write(m[2]+'\n')
+        with err.open('wb') as f:
+            result=subprocess.run(['as','--64',str(source),'-o',str(obj)],stdout=subprocess.PIPE,stderr=f,timeout=180)
+        assembled=result.returncode==0
+        if assembled:
+            original=ELF(path)
+            expected=b''.join(original.contents(section) for name,section in original.sections if section[2]&4 and section[1]!=8)
+            actual=ELF(obj)
+            content=next(actual.contents(section) for name,section in actual.sections if name=='.text')
+            equal=content==expected and not actual.relocations
+    result={'path':str(path),'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),
+            'instruction_lines':count,'chunks':chunks,'diagnostic_rejected_lines':errors,
+            'unlocated_errors':unlocated_errors,'diagnostic_warned_lines':warnings,'lines_without_diagnostic':count-diagnostic_lines,
+            'lines_without_error_diagnostic':count-errors,'all_chunks_assembled':errors==0 and unlocated_errors==0,
+            'whole_body_assembled':assembled,'whole_body_bytes_equal':equal,
+            'error_categories':dict(reasons),'examples':examples}
+    for file in (dump,source,err,obj):
+        if file.exists():file.unlink()
+    return result
+
+def main():
+    p=argparse.ArgumentParser();p.add_argument('paths',nargs='+',type=pathlib.Path);p.add_argument('--out',type=pathlib.Path,default=pathlib.Path('target/roundtrip'));a=p.parse_args()
+    binaries=[];exclusions=[]
+    for root in a.paths:
+        candidates=sorted(root.rglob('*')) if root.is_dir() else [root]
+        for f in candidates:
+            if f.is_symlink():exclusions.append({'path':str(f),'reason':'symlink alias'});continue
+            if not f.is_file():continue
+            with f.open('rb') as stream:header=stream.read(20)
+            if len(header)>=20 and header[:7]==b'\x7fELF\x02\x01\x01' and header[18:20]==b'\x3e\x00':binaries.append(f)
+            else:exclusions.append({'path':str(f),'reason':'not an ELF64 little-endian x86-64 file'})
+    rows=[]
+    for i,f in enumerate(binaries):
+        print(f'roundtrip {i+1}/{len(binaries)} {f}',flush=True)
+        r=measure(f,a.out/str(i));rows.append(r)
+        print(f'  lines={r["instruction_lines"]} rejected={r["diagnostic_rejected_lines"]} whole={r["whole_body_assembled"]} bytes={r["whole_body_bytes_equal"]}',flush=True)
+    result={'method':'Unmodified instruction text from objdump -d --no-show-raw-insn --wide, metadata columns removed; GNU as --64 in 100000-line chunks (no source rewriting). A whole-body run follows only if all chunks parse. A line without an error diagnostic is NOT a byte-identity claim.',
+            'rows':rows,'exclusions':exclusions,'totals':{key:sum(r[key] for r in rows) for key in ['instruction_lines','diagnostic_rejected_lines','unlocated_errors','diagnostic_warned_lines','lines_without_diagnostic','lines_without_error_diagnostic','all_chunks_assembled']}}
+    result['totals']['binaries']=len(rows);result['totals']['whole_body_assembled']=sum(r['whole_body_assembled'] is True for r in rows);result['totals']['whole_body_bytes_equal']=sum(r['whole_body_bytes_equal'] is True for r in rows)
+    a.out.mkdir(parents=True,exist_ok=True);(a.out/'summary.json').write_text(json.dumps(result,indent=2,sort_keys=True)+'\n')
+    print(json.dumps(result['totals']),flush=True)
+if __name__=='__main__':main()

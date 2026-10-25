@@ -6,13 +6,13 @@ subprocess.run(['tools/fetch-toolchain'],check=True)
 W=ROOT/'.wolf-bin/wolf/wolf-0.2.35-x86_64-unknown-linux-gnu/wolf'
 L=ROOT/'.wolf-bin/lupin/lupin-0.1.56-x86_64-unknown-linux-gnu/lupin'
 out=ROOT/'target/evidence';out.mkdir(parents=True,exist_ok=True)
-commands=[('planner',['python3','ci/tiers-test.py']),('format',[str(W),'fmt','--check','src']),
+commands=[('planner',['python3','ci/tiers-test.py']),('format',[str(W),'fmt','--check','src','tests']),
  ('build',[str(W),'build','--deny-warnings','src/clef.lu','-o','target/clef']),
  ('unit',[str(W),'test','--deny-warnings','src']),
  ('checked',[str(W),'conform-run','src/proof_test.lu','--checked','--json']),
  ('lupin',[str(L),'run','src/proof_test.lu']),
  ('census',['tools/census','--check']),('scanner',['tools/scanner-test']),
- ('differ',['tools/differ-test']),('proof',['tools/proof-test']),('corpus',['tools/corpus','--check'])]
+ ('differ',['tools/differ-test']),('proof',['tools/proof-test']),('roundtrip',['tools/roundtrip-test']),('corpus',['tools/corpus','--check'])]
 results=[]
 for name,argv in commands:
     print('GATE '+name,flush=True)

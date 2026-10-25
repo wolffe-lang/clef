@@ -1,0 +1,16 @@
+#!/usr/bin/env python3
+import pathlib,runpy,subprocess
+ROOT=pathlib.Path(__file__).resolve().parents[1]
+measure=runpy.run_path(str(ROOT/'tools/roundtrip'))['measure']
+out=ROOT/'target/evidence/roundtrip-test';out.mkdir(parents=True,exist_ok=True)
+rows=[]
+for name,source in [('clean','hlt\nret\n'),('data','.byte 0x06\n'),('symbol','call missing\n'),('two-chunks','.rept 100001\nret\n.endr\n')]:
+    src=out/(name+'.S');obj=out/(name+'.o');src.write_text(source)
+    subprocess.run(['as','--64',str(src),'-o',str(obj)],check=True)
+    r=measure(obj,out/name);rows.append(r)
+assert rows[0]['whole_body_bytes_equal'] is True
+assert rows[0]['lines_without_diagnostic']==2
+assert rows[1]['diagnostic_rejected_lines']>0 and rows[1]['whole_body_bytes_equal'] is not True
+assert rows[2]['whole_body_bytes_equal'] is not True
+assert rows[3]['chunks']==2 and rows[3]['instruction_lines']==100001 and rows[3]['whole_body_bytes_equal'] is True
+print('roundtrip: clean equality, invalid data and symbolic gaps, two-chunk full coverage pass')

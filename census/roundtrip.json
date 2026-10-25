@@ -1,0 +1,3044 @@
+{
+  "exclusions": [
+    {
+      "path": "/lane/initramfs/usr/bin/libwolf_rt.a",
+      "reason": "not an ELF64 little-endian x86-64 file"
+    },
+    {
+      "path": "/lane/initramfs/bin/egrep",
+      "reason": "not an ELF64 little-endian x86-64 file"
+    },
+    {
+      "path": "/lane/initramfs/bin/fgrep",
+      "reason": "not an ELF64 little-endian x86-64 file"
+    },
+    {
+      "path": "/lane/initramfs/bin/grep",
+      "reason": "symlink alias"
+    }
+  ],
+  "failed_attempts": [
+    {
+      "binary": "/usr/bin/ld.lld",
+      "counted_as_success": false,
+      "limit_seconds": 180,
+      "mode": "one unmodified instruction body",
+      "status": "timeout"
+    },
+    {
+      "binary": "/usr/bin/ld.lld",
+      "counted_as_success": false,
+      "mode": "100000-line batches",
+      "status": "instrument rejected unlocated errors"
+    }
+  ],
+  "groups": {
+    "external-toolchain-tail": {
+      "binaries": 2,
+      "diagnostic_rejected_lines": 1962502,
+      "diagnostic_warned_lines": 346188,
+      "instruction_lines": 9863901,
+      "lines_without_diagnostic": 7901399,
+      "unlocated_errors": 11890
+    },
+    "org-programs": {
+      "binaries": 77,
+      "diagnostic_rejected_lines": 210324,
+      "diagnostic_warned_lines": 53391,
+      "instruction_lines": 22860438,
+      "lines_without_diagnostic": 22650042,
+      "unlocated_errors": 1366
+    }
+  },
+  "input_iso": {
+    "extracted": "xorriso -osirrox on, then cpio -id --no-absolute-filenames inside lane container",
+    "sha256": "02f979bedf5520661f8a5e5623f1f9a7f5cb18b2b1d8c936b3d51f8c0336d4d9",
+    "source": "read-only copy of pax-dev.iso"
+  },
+  "method": "Unmodified instruction text from objdump -d --no-show-raw-insn --wide, metadata columns removed; GNU as --64 in 100000-line chunks (no source rewriting). A whole-body run follows only if all chunks parse. A line without an error diagnostic is NOT a byte-identity claim.",
+  "rows": [
+    {
+      "all_chunks_assembled": false,
+      "chunks": 1,
+      "diagnostic_rejected_lines": 204,
+      "diagnostic_warned_lines": 0,
+      "error_categories": {
+        "Error: same type of prefix used twice": 204
+      },
+      "examples": {
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 data16 data16 data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 129
+        }
+      },
+      "instruction_lines": 94886,
+      "lines_without_diagnostic": 94682,
+      "lines_without_error_diagnostic": 94682,
+      "path": "/lane/initramfs/usr/bin/cc",
+      "sha256": "3161aea27abb8beeb669cc6499fa9dc162014b69eecc6fb0d169eed5def25b11",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 98,
+      "diagnostic_rejected_lines": 1962298,
+      "diagnostic_warned_lines": 346188,
+      "error_categories": {
+        "Error without source line: local label <operand> is not defined": 11890,
+        "Error: backward ref to unknown label \"N:\"": 273555,
+        "Error: invalid operands (*ABS* and *UND* sections) for <operand>": 125322,
+        "Error: invalid operands (*UND* and *UND* sections) for <operand>": 217377,
+        "Error: junk <operand> after expression": 1573565,
+        "Error: same type of prefix used twice": 46034,
+        "Warning: missing operand; zero assumed": 342699,
+        "Warning: skipping prefixes on <operand>": 3898
+      },
+      "examples": {
+        "Error without source line: local label <operand> is not defined": {
+          "diagnostic": "local label `\"32\" (instance number 1 of a fb label)' is not defined"
+        },
+        "Error: backward ref to unknown label \"N:\"": {
+          "diagnostic": "backward ref to unknown label \"329:\"",
+          "instruction": "call   329b5e0 <_ZNSt3__122__libcpp_verbose_abortEPKcz>",
+          "line": 632
+        },
+        "Error: invalid operands (*ABS* and *UND* sections) for <operand>": {
+          "diagnostic": "invalid operands (*ABS* and *UND* sections) for `<'",
+          "instruction": "call   3312354 <memchr>",
+          "line": 2686
+        },
+        "Error: invalid operands (*UND* and *UND* sections) for <operand>": {
+          "diagnostic": "invalid operands (*UND* and *UND* sections) for `<'",
+          "instruction": "call   d441d6 <_start_c>",
+          "line": 5
+        },
+        "Error: junk <operand> after expression": {
+          "diagnostic": "junk `f981<__libc_start_main>' after expression",
+          "instruction": "jmp    32ff981 <__libc_start_main>",
+          "line": 12
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 1215
+        },
+        "Warning: missing operand; zero assumed": {
+          "diagnostic": "missing operand; zero assumed",
+          "instruction": "call   d441d6 <_start_c>",
+          "line": 5
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 32ffea9 <__cxa_finalize>",
+          "line": 32
+        }
+      },
+      "instruction_lines": 9769015,
+      "lines_without_diagnostic": 7806717,
+      "lines_without_error_diagnostic": 7806717,
+      "path": "/lane/initramfs/usr/bin/ld.lld",
+      "sha256": "1217ca75f9df70439294844b2aba14895adc557e2514c6cdc76c4c6676a3757b",
+      "unlocated_errors": 11890,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 30,
+      "diagnostic_rejected_lines": 9237,
+      "diagnostic_warned_lines": 0,
+      "error_categories": {
+        "Error: same type of prefix used twice": 9237
+      },
+      "examples": {
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 data16 data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 197
+        }
+      },
+      "instruction_lines": 2959945,
+      "lines_without_diagnostic": 2950708,
+      "lines_without_error_diagnostic": 2950708,
+      "path": "/lane/initramfs/usr/bin/wolf",
+      "sha256": "ef5dd0c20872af1014fc65f399d49aa8fce319b5b762a92157cf6f6b6a7ce9ca",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 2,
+      "diagnostic_rejected_lines": 332,
+      "diagnostic_warned_lines": 0,
+      "error_categories": {
+        "Error: same type of prefix used twice": 332
+      },
+      "examples": {
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 data16 data16 data16 data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 369
+        }
+      },
+      "instruction_lines": 121446,
+      "lines_without_diagnostic": 121114,
+      "lines_without_error_diagnostic": 121114,
+      "path": "/lane/initramfs/usr/bin/wolf-cimport-worker",
+      "sha256": "2e658a17954ad8e77a29133d9d97ac8f4d55798f436d323fd485b725fb96cb3c",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 2,
+      "diagnostic_rejected_lines": 24154,
+      "diagnostic_warned_lines": 5371,
+      "error_categories": {
+        "Error without source line: local label <operand> is not defined": 376,
+        "Error: backward ref to unknown label \"N:\"": 3223,
+        "Error: invalid operands (*ABS* and *UND* sections) for <operand>": 5197,
+        "Error: invalid operands (*UND* and *UND* sections) for <operand>": 173,
+        "Error: junk <operand> after expression": 18332,
+        "Error: same type of prefix used twice": 452,
+        "Warning: missing operand; zero assumed": 5370,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error without source line: local label <operand> is not defined": {
+          "diagnostic": "local label `\"403\" (instance number 1 of a fb label)' is not defined"
+        },
+        "Error: backward ref to unknown label \"N:\"": {
+          "diagnostic": "backward ref to unknown label \"4012:\"",
+          "instruction": "jmp    4012b0 <abort+0x11e>",
+          "line": 139
+        },
+        "Error: invalid operands (*ABS* and *UND* sections) for <operand>": {
+          "diagnostic": "invalid operands (*ABS* and *UND* sections) for `<'",
+          "instruction": "call   401192 <abort>",
+          "line": 75
+        },
+        "Error: invalid operands (*UND* and *UND* sections) for <operand>": {
+          "diagnostic": "invalid operands (*UND* and *UND* sections) for `<'",
+          "instruction": "jne    40157f <__pthread_once_slow.cold+0x33>",
+          "line": 343
+        },
+        "Error: junk <operand> after expression": {
+          "diagnostic": "junk `ea<abort+0x58>' after expression",
+          "instruction": "je     4011ea <abort+0x58>",
+          "line": 92
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 428
+        },
+        "Warning: missing operand; zero assumed": {
+          "diagnostic": "missing operand; zero assumed",
+          "instruction": "je     401016 <_init+0x16>",
+          "line": 5
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 403fd0 <__libc_start_main>",
+          "line": 478
+        }
+      },
+      "instruction_lines": 124005,
+      "lines_without_diagnostic": 99851,
+      "lines_without_error_diagnostic": 99851,
+      "path": "/lane/initramfs/bin/as",
+      "sha256": "fb82459177a298f33df33285da523c677495022e6b37eafd27ab287a06e53270",
+      "unlocated_errors": 376,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 4,
+      "diagnostic_rejected_lines": 1232,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 1230,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x33d6c4",
+          "line": 236445
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x30d4e0",
+          "line": 12
+        }
+      },
+      "instruction_lines": 376279,
+      "lines_without_diagnostic": 375046,
+      "lines_without_error_diagnostic": 375047,
+      "path": "/lane/initramfs/bin/aspen",
+      "sha256": "8d2307671a0c9ee782bb21b84a47311efa9d9260ca315d6a785111d8c6ed9a2a",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 812,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 810,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2ccfa4",
+          "line": 146880
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x29cf90",
+          "line": 12
+        }
+      },
+      "instruction_lines": 244450,
+      "lines_without_diagnostic": 243637,
+      "lines_without_error_diagnostic": 243638,
+      "path": "/lane/initramfs/bin/base32",
+      "sha256": "3b12edbd5f700277945784373ee7375b1fc600b28dc968f8eb6462a8bb56f399",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 812,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 810,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2ccfa4",
+          "line": 146880
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x29cf90",
+          "line": 12
+        }
+      },
+      "instruction_lines": 244450,
+      "lines_without_diagnostic": 243637,
+      "lines_without_error_diagnostic": 243638,
+      "path": "/lane/initramfs/bin/base64",
+      "sha256": "50d0319bd6e702878cc79a2189d2a09b3be64b0ce5d027eedfa8601bd1437d83",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 784,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 782,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2c7744",
+          "line": 141788
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x297730",
+          "line": 12
+        }
+      },
+      "instruction_lines": 239390,
+      "lines_without_diagnostic": 238605,
+      "lines_without_error_diagnostic": 238606,
+      "path": "/lane/initramfs/bin/basename",
+      "sha256": "631c974ea32ccc0d9bb6c08f023502d6b105eae8ec5e150ddca97ce68699c3c9",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 822,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 820,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2d0b54",
+          "line": 149727
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x2a0b40",
+          "line": 12
+        }
+      },
+      "instruction_lines": 247510,
+      "lines_without_diagnostic": 246687,
+      "lines_without_error_diagnostic": 246688,
+      "path": "/lane/initramfs/bin/cat",
+      "sha256": "425cb2a1c5809b5eebdc94e99094b1880b1ba81a7d48c4565947f0d3fcd28c09",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 807,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 805,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2d1c54",
+          "line": 150613
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x2a1c40",
+          "line": 12
+        }
+      },
+      "instruction_lines": 248231,
+      "lines_without_diagnostic": 247423,
+      "lines_without_error_diagnostic": 247424,
+      "path": "/lane/initramfs/bin/chgrp",
+      "sha256": "a9145890e7a6b16fc199d755f81e99c7c877309cbfeb7c184ed20f9b11193335",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 805,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 803,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2d10d4",
+          "line": 149773
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x2a10c0",
+          "line": 12
+        }
+      },
+      "instruction_lines": 247397,
+      "lines_without_diagnostic": 246591,
+      "lines_without_error_diagnostic": 246592,
+      "path": "/lane/initramfs/bin/chmod",
+      "sha256": "f24397da2b158e45b1420d7c1681177f4f704a9cf6509ad484eace405e7ccbc1",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 808,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 806,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2d1c44",
+          "line": 150588
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x2a1c30",
+          "line": 12
+        }
+      },
+      "instruction_lines": 248222,
+      "lines_without_diagnostic": 247413,
+      "lines_without_error_diagnostic": 247414,
+      "path": "/lane/initramfs/bin/chown",
+      "sha256": "5571755452ca06edbdd51f6f4246df273d6492fe6647abf7250a37e61805e35c",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 802,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 800,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2cd194",
+          "line": 146748
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x29d180",
+          "line": 12
+        }
+      },
+      "instruction_lines": 244334,
+      "lines_without_diagnostic": 243531,
+      "lines_without_error_diagnostic": 243532,
+      "path": "/lane/initramfs/bin/comm",
+      "sha256": "bccd27159620c4a7cd3991e07dab9bd2ee7abab26fe936ac2fe2225914137d55",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 841,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 839,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2db2b4",
+          "line": 158087
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x2ab2a0",
+          "line": 12
+        }
+      },
+      "instruction_lines": 255974,
+      "lines_without_diagnostic": 255132,
+      "lines_without_error_diagnostic": 255133,
+      "path": "/lane/initramfs/bin/cp",
+      "sha256": "6f405e3e1605d4bc6b795f905b96c185894c3b6a538af3be97db946d75c4fe8c",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 822,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 820,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2d2114",
+          "line": 150160
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x2a2100",
+          "line": 12
+        }
+      },
+      "instruction_lines": 247746,
+      "lines_without_diagnostic": 246923,
+      "lines_without_error_diagnostic": 246924,
+      "path": "/lane/initramfs/bin/cut",
+      "sha256": "f57a184de15987fe6f2534603bb866be5b3486340a66c54ca4205c77b281845d",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 786,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 784,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2c6ea4",
+          "line": 141331
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x296e90",
+          "line": 12
+        }
+      },
+      "instruction_lines": 238901,
+      "lines_without_diagnostic": 238114,
+      "lines_without_error_diagnostic": 238115,
+      "path": "/lane/initramfs/bin/dirname",
+      "sha256": "ccb168ae89c48159c8a8c056841ab45b573930ca14c3888b5f59216fe2eb5cb3",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 780,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 778,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2c6274",
+          "line": 140623
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x296260",
+          "line": 12
+        }
+      },
+      "instruction_lines": 238177,
+      "lines_without_diagnostic": 237396,
+      "lines_without_error_diagnostic": 237397,
+      "path": "/lane/initramfs/bin/echo",
+      "sha256": "da78da8fd157d995e52f2c40e0a01517f795332fe33f42410e3acd5100724991",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 821,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 819,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2d2004",
+          "line": 151331
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x2a1f30",
+          "line": 12
+        }
+      },
+      "instruction_lines": 249063,
+      "lines_without_diagnostic": 248241,
+      "lines_without_error_diagnostic": 248242,
+      "path": "/lane/initramfs/bin/env",
+      "sha256": "ded692ae261211ae3159a376f7b9cc454d9d1be960e2e9302b7004b8b57e0f68",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 813,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 811,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2d01a4",
+          "line": 148450
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x2a0190",
+          "line": 12
+        }
+      },
+      "instruction_lines": 246020,
+      "lines_without_diagnostic": 245206,
+      "lines_without_error_diagnostic": 245207,
+      "path": "/lane/initramfs/bin/expand",
+      "sha256": "0250090abf7e6a2aa89fb9a7f7024981dbc3fce4803a662e970790a595a2b43e",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 768,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 766,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2c41b4",
+          "line": 138704
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x2941a0",
+          "line": 12
+        }
+      },
+      "instruction_lines": 236258,
+      "lines_without_diagnostic": 235489,
+      "lines_without_error_diagnostic": 235490,
+      "path": "/lane/initramfs/bin/false",
+      "sha256": "3e852d51b2dc9cda08108b3e635ddeb342b7f7880db137c13828fcfea5346030",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 817,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 815,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2d0454",
+          "line": 148581
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x2a0440",
+          "line": 12
+        }
+      },
+      "instruction_lines": 246167,
+      "lines_without_diagnostic": 245349,
+      "lines_without_error_diagnostic": 245350,
+      "path": "/lane/initramfs/bin/fold",
+      "sha256": "a1349c6464b456ee5fd578a85b4e4556d3dcd0ee0eb169a7fefe34e5d201a06e",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 797,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 795,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2ca134",
+          "line": 144387
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x29a120",
+          "line": 12
+        }
+      },
+      "instruction_lines": 241941,
+      "lines_without_diagnostic": 241143,
+      "lines_without_error_diagnostic": 241144,
+      "path": "/lane/initramfs/bin/groups",
+      "sha256": "23d5ea9b363522a2b8069dc8924a102cf7418648d0a4a10d32f6a8afab0ce413",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 830,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 828,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2d08d4",
+          "line": 150032
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x2a08c0",
+          "line": 12
+        }
+      },
+      "instruction_lines": 247665,
+      "lines_without_diagnostic": 246834,
+      "lines_without_error_diagnostic": 246835,
+      "path": "/lane/initramfs/bin/head",
+      "sha256": "9ee21ca65aacb5149c4a5209b7adb1367118a8b96472a6378ed7c7f4b0167d77",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 800,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 798,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2cbfa4",
+          "line": 146015
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x29bf90",
+          "line": 12
+        }
+      },
+      "instruction_lines": 243585,
+      "lines_without_diagnostic": 242784,
+      "lines_without_error_diagnostic": 242785,
+      "path": "/lane/initramfs/bin/id",
+      "sha256": "f0825d740a0daf3e10ab9d54e69c27629c1948243eaff17f39b29d463a9b0860",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 820,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 818,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2d03c4",
+          "line": 149727
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x2a03b0",
+          "line": 12
+        }
+      },
+      "instruction_lines": 247329,
+      "lines_without_diagnostic": 246508,
+      "lines_without_error_diagnostic": 246509,
+      "path": "/lane/initramfs/bin/join",
+      "sha256": "f57b3693abf0e53f24c3886ba65c51b1cb905840c57fc4af060baf5f18a37065",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 798,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 796,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2cd554",
+          "line": 146522
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x29c200",
+          "line": 12
+        }
+      },
+      "instruction_lines": 244187,
+      "lines_without_diagnostic": 243388,
+      "lines_without_error_diagnostic": 243389,
+      "path": "/lane/initramfs/bin/kill",
+      "sha256": "d2d85fde2e5a574e920ecc6e980f44e045a89fd4340842f315a3859152e450e6",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 786,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 784,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2c9c24",
+          "line": 143814
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x299c10",
+          "line": 12
+        }
+      },
+      "instruction_lines": 241426,
+      "lines_without_diagnostic": 240639,
+      "lines_without_error_diagnostic": 240640,
+      "path": "/lane/initramfs/bin/link",
+      "sha256": "0b0f16f37db15950a6c104d6b8703ea2a126a85990929fa83979c069fdfca526",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 816,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 814,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2d1c84",
+          "line": 150635
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x2a1c40",
+          "line": 12
+        }
+      },
+      "instruction_lines": 248293,
+      "lines_without_diagnostic": 247476,
+      "lines_without_error_diagnostic": 247477,
+      "path": "/lane/initramfs/bin/ln",
+      "sha256": "8dc77fcf69d1e63f79459dfcdfabd65498869767639b2673b327d665249ab3bb",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 796,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 794,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2c9f44",
+          "line": 144262
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x299f30",
+          "line": 12
+        }
+      },
+      "instruction_lines": 241864,
+      "lines_without_diagnostic": 241067,
+      "lines_without_error_diagnostic": 241068,
+      "path": "/lane/initramfs/bin/logname",
+      "sha256": "d2ea9f2cc9315ed139e2c44c1ba047c470c45cfa04821692644edb01337efe42",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 4,
+      "diagnostic_rejected_lines": 1093,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 1091,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x30afc4",
+          "line": 193783
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x2dae50",
+          "line": 12
+        }
+      },
+      "instruction_lines": 333720,
+      "lines_without_diagnostic": 332626,
+      "lines_without_error_diagnostic": 332627,
+      "path": "/lane/initramfs/bin/lope",
+      "sha256": "c38480ffb36f559d9f9e7dafb4e6057e801366834cc9552922d1b4e8bc69354f",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 895,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 893,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2e6944",
+          "line": 168517
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x2b6930",
+          "line": 12
+        }
+      },
+      "instruction_lines": 266131,
+      "lines_without_diagnostic": 265235,
+      "lines_without_error_diagnostic": 265236,
+      "path": "/lane/initramfs/bin/ls",
+      "sha256": "7d382553ea60b70598e36f837705055b11fcb6e754f27085719030cca094ef3b",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 12,
+      "diagnostic_rejected_lines": 4423,
+      "diagnostic_warned_lines": 0,
+      "error_categories": {
+        "Error: same type of prefix used twice": 4423
+      },
+      "examples": {
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 data16 data16 data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 2224
+        }
+      },
+      "instruction_lines": 1117848,
+      "lines_without_diagnostic": 1113425,
+      "lines_without_error_diagnostic": 1113425,
+      "path": "/lane/initramfs/bin/lupin",
+      "sha256": "d102dbf25917da222eb5a6c6fdb2cfb5c3912e8c4224e2ee7769befe3db6142b",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 797,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 795,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2cbfa4",
+          "line": 145553
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x29bf90",
+          "line": 12
+        }
+      },
+      "instruction_lines": 243167,
+      "lines_without_diagnostic": 242369,
+      "lines_without_error_diagnostic": 242370,
+      "path": "/lane/initramfs/bin/mkdir",
+      "sha256": "ce612d7f86ff1c1aa1663312d25e0c5772ec88ec5d717266756b99b6a69f74fd",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 793,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 791,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2c9374",
+          "line": 143298
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x299360",
+          "line": 12
+        }
+      },
+      "instruction_lines": 240919,
+      "lines_without_diagnostic": 240125,
+      "lines_without_error_diagnostic": 240126,
+      "path": "/lane/initramfs/bin/mkfifo",
+      "sha256": "d178621fc67635e2865d3876396327c2dfcc2c942530a3ebee99531e38d7c158",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 797,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 795,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2cbb74",
+          "line": 145322
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x29bac0",
+          "line": 12
+        }
+      },
+      "instruction_lines": 242894,
+      "lines_without_diagnostic": 242096,
+      "lines_without_error_diagnostic": 242097,
+      "path": "/lane/initramfs/bin/mktemp",
+      "sha256": "c96bb72a323fa072d7217ef42bc8c4115d2195f90b82a7b59ce90afd4f8a4346",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 802,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 800,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2ce7f4",
+          "line": 147666
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x29e7b0",
+          "line": 12
+        }
+      },
+      "instruction_lines": 245220,
+      "lines_without_diagnostic": 244417,
+      "lines_without_error_diagnostic": 244418,
+      "path": "/lane/initramfs/bin/mv",
+      "sha256": "5c504c58b7f5a7f11280111c5828197cd1eff896da4b47b73084644185f8c218",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 831,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 829,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2d1d84",
+          "line": 150586
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x2a1d70",
+          "line": 12
+        }
+      },
+      "instruction_lines": 248188,
+      "lines_without_diagnostic": 247356,
+      "lines_without_error_diagnostic": 247357,
+      "path": "/lane/initramfs/bin/nl",
+      "sha256": "b54abd8b8bb4d298be552494d4167b955a7aaf90a3051e33d5ce049fff8b63f0",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 806,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 804,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2cefd4",
+          "line": 148628
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x29efc0",
+          "line": 12
+        }
+      },
+      "instruction_lines": 246260,
+      "lines_without_diagnostic": 245453,
+      "lines_without_error_diagnostic": 245454,
+      "path": "/lane/initramfs/bin/nproc",
+      "sha256": "ba8af58e3badd319048fa044bfc92401d0e73362455b4c9be9eaf9199e9384cf",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 812,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 810,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2cd504",
+          "line": 146876
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x29d4f0",
+          "line": 12
+        }
+      },
+      "instruction_lines": 244478,
+      "lines_without_diagnostic": 243665,
+      "lines_without_error_diagnostic": 243666,
+      "path": "/lane/initramfs/bin/paste",
+      "sha256": "83ab7bfb3ece7403103c9563c63dffddd0f4b1d30e6e28c91b462c481ec41922",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 5,
+      "diagnostic_rejected_lines": 1565,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 1563,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x3a2724",
+          "line": 314980
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x3723b0",
+          "line": 12
+        }
+      },
+      "instruction_lines": 455110,
+      "lines_without_diagnostic": 453544,
+      "lines_without_error_diagnostic": 453545,
+      "path": "/lane/initramfs/bin/pelt",
+      "sha256": "a06af2c39ba435d3a7c7172916e1a724d0dcd0521bda81c384363d858f0e6752",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 876,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 874,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2e2794",
+          "line": 164349
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x2b2780",
+          "line": 12
+        }
+      },
+      "instruction_lines": 261947,
+      "lines_without_diagnostic": 261070,
+      "lines_without_error_diagnostic": 261071,
+      "path": "/lane/initramfs/bin/play",
+      "sha256": "f2622c08cd6e9e8d0550556f46654544c4c3629f0a4b959f66fce50bed160c4a",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 796,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 794,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2c9c84",
+          "line": 144125
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x299c70",
+          "line": 12
+        }
+      },
+      "instruction_lines": 241727,
+      "lines_without_diagnostic": 240930,
+      "lines_without_error_diagnostic": 240931,
+      "path": "/lane/initramfs/bin/printenv",
+      "sha256": "57185e9d015edc84790fe794a6abf2305605051e677246b5d22dfa2b1f6e218b",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 858,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 856,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2d63e4",
+          "line": 154740
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x2a63d0",
+          "line": 12
+        }
+      },
+      "instruction_lines": 252310,
+      "lines_without_diagnostic": 251451,
+      "lines_without_error_diagnostic": 251452,
+      "path": "/lane/initramfs/bin/printf",
+      "sha256": "8b4c1745a00bde3fcf10db9c240f0825145176b3c57edc4979b33dbc24fa8bbb",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 799,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 797,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2cb9d4",
+          "line": 145501
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x29b9c0",
+          "line": 12
+        }
+      },
+      "instruction_lines": 243099,
+      "lines_without_diagnostic": 242299,
+      "lines_without_error_diagnostic": 242300,
+      "path": "/lane/initramfs/bin/pwd",
+      "sha256": "1b52ec2cb9e986adf7261ed3ad3540b9eaf17930d7e9a48515e7962638cce937",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 790,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 788,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2ca974",
+          "line": 144175
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x29a960",
+          "line": 12
+        }
+      },
+      "instruction_lines": 241729,
+      "lines_without_diagnostic": 240938,
+      "lines_without_error_diagnostic": 240939,
+      "path": "/lane/initramfs/bin/readlink",
+      "sha256": "f2ee1e423269a50b1c4ac2da3c763eaa4eacfed510b5e44d97f1e4febcc94185",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 805,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 803,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2cc5f4",
+          "line": 146115
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x29c5e0",
+          "line": 12
+        }
+      },
+      "instruction_lines": 243669,
+      "lines_without_diagnostic": 242863,
+      "lines_without_error_diagnostic": 242864,
+      "path": "/lane/initramfs/bin/realpath",
+      "sha256": "f6a1025047f7e61379aa933b703bb67fa80352344e71e2ad47e1ddb620c914e9",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 812,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 810,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2d2b44",
+          "line": 151574
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x2a2b30",
+          "line": 12
+        }
+      },
+      "instruction_lines": 249246,
+      "lines_without_diagnostic": 248433,
+      "lines_without_error_diagnostic": 248434,
+      "path": "/lane/initramfs/bin/rm",
+      "sha256": "bbb394eef2d960eb2109e238c3531b7bc814e6ef3b3dc4270eadb44e7dd5d357",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 789,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 787,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2cae24",
+          "line": 144578
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x29ae10",
+          "line": 12
+        }
+      },
+      "instruction_lines": 242218,
+      "lines_without_diagnostic": 241428,
+      "lines_without_error_diagnostic": 241429,
+      "path": "/lane/initramfs/bin/rmdir",
+      "sha256": "96895c518c289fd67fd98abd384bba7fd2a664a996f8536dfb44c0a2bea9bf0a",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 45734,
+      "diagnostic_warned_lines": 5418,
+      "error_categories": {
+        "Error without source line: local label <operand> is not defined": 425,
+        "Error: backward ref to unknown label \"N:\"": 7175,
+        "Error: invalid operands (*ABS* and *UND* sections) for <operand>": 5141,
+        "Error: invalid operands (*UND* and *UND* sections) for <operand>": 276,
+        "Error: junk <operand> after expression": 39453,
+        "Error: same type of prefix used twice": 864,
+        "Warning: missing operand; zero assumed": 5417,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error without source line: local label <operand> is not defined": {
+          "diagnostic": "local label `\"24\" (instance number 1 of a fb label)' is not defined"
+        },
+        "Error: backward ref to unknown label \"N:\"": {
+          "diagnostic": "backward ref to unknown label \"2413:\"",
+          "instruction": "jmp    2413b0 <register_tm_clones>",
+          "line": 83
+        },
+        "Error: invalid operands (*ABS* and *UND* sections) for <operand>": {
+          "diagnostic": "invalid operands (*ABS* and *UND* sections) for `<'",
+          "instruction": "call   241380 <deregister_tm_clones>",
+          "line": 61
+        },
+        "Error: invalid operands (*UND* and *UND* sections) for <operand>": {
+          "diagnostic": "invalid operands (*UND* and *UND* sections) for `<'",
+          "instruction": "call   29147f <_RINvNtCs4NRVxsYgnAr_4core3ptr9drop_glueNtNtCscdodAO9FK5_5alloc6string6StringECsdB6qrhj7hiN_9addr2line>",
+          "line": 82075
+        },
+        "Error: junk <operand> after expression": {
+          "diagnostic": "junk `af100<__libc_start_main>' after expression",
+          "instruction": "addr32 call 2af100 <__libc_start_main>",
+          "line": 12
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: missing operand; zero assumed": {
+          "diagnostic": "missing operand; zero assumed",
+          "instruction": "jne    241428 <__do_global_dtors_aux+0x38>",
+          "line": 58
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 2af100 <__libc_start_main>",
+          "line": 12
+        }
+      },
+      "instruction_lines": 259666,
+      "lines_without_diagnostic": 213932,
+      "lines_without_error_diagnostic": 213932,
+      "path": "/lane/initramfs/bin/scent",
+      "sha256": "bd860457f2ff97591b7525da5f46c186feee4b8266d3f51b121866b001135d89",
+      "unlocated_errors": 425,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 821,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 819,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2cdee4",
+          "line": 147829
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x29ded0",
+          "line": 12
+        }
+      },
+      "instruction_lines": 245399,
+      "lines_without_diagnostic": 244577,
+      "lines_without_error_diagnostic": 244578,
+      "path": "/lane/initramfs/bin/seq",
+      "sha256": "2d67a3822dad9bfbc9bb5c1cbac595e3a628dafd1da0bdc013d12ad1decd2f2c",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 5,
+      "diagnostic_rejected_lines": 1565,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 1563,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x3a2724",
+          "line": 314980
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x3723b0",
+          "line": 12
+        }
+      },
+      "instruction_lines": 455110,
+      "lines_without_diagnostic": 453544,
+      "lines_without_error_diagnostic": 453545,
+      "path": "/lane/initramfs/bin/sh",
+      "sha256": "a06af2c39ba435d3a7c7172916e1a724d0dcd0521bda81c384363d858f0e6752",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 819,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 817,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2cf064",
+          "line": 148712
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x29efb0",
+          "line": 12
+        }
+      },
+      "instruction_lines": 246304,
+      "lines_without_diagnostic": 245484,
+      "lines_without_error_diagnostic": 245485,
+      "path": "/lane/initramfs/bin/shuf",
+      "sha256": "c8ceb193fefb42931b2047f7f5552955c32b2df21f3953603a11936c04ee8e49",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 877,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 875,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2db544",
+          "line": 157670
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x2ab530",
+          "line": 12
+        }
+      },
+      "instruction_lines": 273721,
+      "lines_without_diagnostic": 272843,
+      "lines_without_error_diagnostic": 272844,
+      "path": "/lane/initramfs/bin/sleep",
+      "sha256": "37962244c47611ce4e80a01bba278533436bfa1b161548d4c0f0e991accfe1ae",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 862,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 860,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2da784",
+          "line": 158099
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x2aa6d0",
+          "line": 12
+        }
+      },
+      "instruction_lines": 255719,
+      "lines_without_diagnostic": 254856,
+      "lines_without_error_diagnostic": 254857,
+      "path": "/lane/initramfs/bin/sort",
+      "sha256": "988e48ee7c9cdbe2efd59a41a88ba9b879cedb8ae56284e26811f15ae86361fc",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 826,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 824,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2d43f4",
+          "line": 153141
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x2a43e0",
+          "line": 12
+        }
+      },
+      "instruction_lines": 250695,
+      "lines_without_diagnostic": 249868,
+      "lines_without_error_diagnostic": 249869,
+      "path": "/lane/initramfs/bin/stat",
+      "sha256": "53bd681fa606a8d360b9efc82550ae47afdaeacca5b449744a5b9a1c688e7345",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 815,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 813,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2d1204",
+          "line": 151021
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x2a1130",
+          "line": 12
+        }
+      },
+      "instruction_lines": 249372,
+      "lines_without_diagnostic": 248556,
+      "lines_without_error_diagnostic": 248557,
+      "path": "/lane/initramfs/bin/su",
+      "sha256": "374e8981cb75ee6360fcaf540a7806dd2bb8d644c2684dac363aeac6d3072d6c",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 882,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 880,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2dd1a4",
+          "line": 159041
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x2ad190",
+          "line": 12
+        }
+      },
+      "instruction_lines": 274977,
+      "lines_without_diagnostic": 274094,
+      "lines_without_error_diagnostic": 274095,
+      "path": "/lane/initramfs/bin/sync",
+      "sha256": "5f45a893084129774973973a131d7ac3199360add3b9ea73aeb7dd2519dbd712",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 812,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 810,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2cced4",
+          "line": 146739
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x29cec0",
+          "line": 12
+        }
+      },
+      "instruction_lines": 244325,
+      "lines_without_diagnostic": 243512,
+      "lines_without_error_diagnostic": 243513,
+      "path": "/lane/initramfs/bin/tac",
+      "sha256": "1d4ae8eabc59215073b9409eb9b941062883df0c9759197c511c52660e8f0c59",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 930,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 928,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2e59e4",
+          "line": 166768
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x2b59d0",
+          "line": 12
+        }
+      },
+      "instruction_lines": 282866,
+      "lines_without_diagnostic": 281935,
+      "lines_without_error_diagnostic": 281936,
+      "path": "/lane/initramfs/bin/tail",
+      "sha256": "cb466742928bc3504c76786480314468c1ad6af8e0240798f79c8d6bed8c3aa1",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 806,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 804,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2cc964",
+          "line": 146258
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x29c950",
+          "line": 12
+        }
+      },
+      "instruction_lines": 243828,
+      "lines_without_diagnostic": 243021,
+      "lines_without_error_diagnostic": 243022,
+      "path": "/lane/initramfs/bin/tee",
+      "sha256": "5d9795597787d34ff859f2d9dbbaf3aeaf19ad5128079d4f5756b55657a373c4",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 4,
+      "diagnostic_rejected_lines": 982,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 980,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2f86e4",
+          "line": 180231
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x2c7220",
+          "line": 12
+        }
+      },
+      "instruction_lines": 320324,
+      "lines_without_diagnostic": 319341,
+      "lines_without_error_diagnostic": 319342,
+      "path": "/lane/initramfs/bin/timeout",
+      "sha256": "b227d4674c398fd792c0599619da36ba12116aef82c17efb261dad7a282f46c6",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 818,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 816,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2d60b4",
+          "line": 153518
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x2a60a0",
+          "line": 12
+        }
+      },
+      "instruction_lines": 251116,
+      "lines_without_diagnostic": 250297,
+      "lines_without_error_diagnostic": 250298,
+      "path": "/lane/initramfs/bin/touch",
+      "sha256": "ed8e62cb4978d946966435b4d0ddb63063a0d14973a2d94435952ee3af3de9e2",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 817,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 815,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2cf314",
+          "line": 148436
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x29f300",
+          "line": 12
+        }
+      },
+      "instruction_lines": 246022,
+      "lines_without_diagnostic": 245204,
+      "lines_without_error_diagnostic": 245205,
+      "path": "/lane/initramfs/bin/tr",
+      "sha256": "5a9636b493a11fd3a3d1ef633f3c85bf59d94d44f131371bb299cad9670b34e9",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 768,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 766,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2c41b4",
+          "line": 138705
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x2941a0",
+          "line": 12
+        }
+      },
+      "instruction_lines": 236259,
+      "lines_without_diagnostic": 235490,
+      "lines_without_error_diagnostic": 235491,
+      "path": "/lane/initramfs/bin/true",
+      "sha256": "1edfe81504ef205c2c6698eecc04f9cc1b974fbf9d3cdfc0d182733468e06bfe",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 799,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 797,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2cbf34",
+          "line": 145641
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x29bf20",
+          "line": 12
+        }
+      },
+      "instruction_lines": 243213,
+      "lines_without_diagnostic": 242413,
+      "lines_without_error_diagnostic": 242414,
+      "path": "/lane/initramfs/bin/truncate",
+      "sha256": "0b7e14e3a17b0b2b7a320472841ed9b602ed6e399d8f53767deeaaf4a6d0bb10",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 812,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 810,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2cd2e4",
+          "line": 147154
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x29d2d0",
+          "line": 12
+        }
+      },
+      "instruction_lines": 244724,
+      "lines_without_diagnostic": 243911,
+      "lines_without_error_diagnostic": 243912,
+      "path": "/lane/initramfs/bin/tsort",
+      "sha256": "d84eac105096f01a636f9f8d7e7a694be84b64379aa753aae72a1dd96e2563f6",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 786,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 784,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2c8324",
+          "line": 142438
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x298310",
+          "line": 12
+        }
+      },
+      "instruction_lines": 240008,
+      "lines_without_diagnostic": 239221,
+      "lines_without_error_diagnostic": 239222,
+      "path": "/lane/initramfs/bin/tty",
+      "sha256": "58d51babb0da07e59b127b6b8d917552a38ce0e890f83e92729468c80a2b2044",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 814,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 812,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2d0a94",
+          "line": 148938
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x2a0a80",
+          "line": 12
+        }
+      },
+      "instruction_lines": 246524,
+      "lines_without_diagnostic": 245709,
+      "lines_without_error_diagnostic": 245710,
+      "path": "/lane/initramfs/bin/unexpand",
+      "sha256": "e9418fb5b4a0655ab3a443c67d96c1259131281c69e8f8dc5b6a533e39ec6662",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 809,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 807,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2cf9e4",
+          "line": 148740
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x29f9d0",
+          "line": 12
+        }
+      },
+      "instruction_lines": 246310,
+      "lines_without_diagnostic": 245500,
+      "lines_without_error_diagnostic": 245501,
+      "path": "/lane/initramfs/bin/uniq",
+      "sha256": "66550eccc46576453de941879bee5dba857218eeed7ef924948f907b2f6e1cbb",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 784,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 782,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2c89c4",
+          "line": 142736
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x2989b0",
+          "line": 12
+        }
+      },
+      "instruction_lines": 240356,
+      "lines_without_diagnostic": 239571,
+      "lines_without_error_diagnostic": 239572,
+      "path": "/lane/initramfs/bin/unlink",
+      "sha256": "d632ecfce32c060431bfe034f5148cfccbf94e1dad1951ce9ee3603a9d6d009f",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 834,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 832,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2d5034",
+          "line": 152685
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x2a5020",
+          "line": 12
+        }
+      },
+      "instruction_lines": 250286,
+      "lines_without_diagnostic": 249451,
+      "lines_without_error_diagnostic": 249452,
+      "path": "/lane/initramfs/bin/wc",
+      "sha256": "9c53636eeec0f36085ef1f5196a6301022be937b8d92128ca3348376e846c5e9",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 792,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 790,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2c8f34",
+          "line": 143320
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x298f20",
+          "line": 12
+        }
+      },
+      "instruction_lines": 240874,
+      "lines_without_diagnostic": 240081,
+      "lines_without_error_diagnostic": 240082,
+      "path": "/lane/initramfs/bin/whoami",
+      "sha256": "e98c7394dcff942a56b0b6212525d8c92f93c388277252e3768410d1ee06734c",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 783,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 781,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x2c6d24",
+          "line": 141275
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x296d10",
+          "line": 12
+        }
+      },
+      "instruction_lines": 238845,
+      "lines_without_diagnostic": 238061,
+      "lines_without_error_diagnostic": 238062,
+      "path": "/lane/initramfs/bin/yes",
+      "sha256": "ec1cc26a2e6eeea38a2acdc454b1ce26b48cb6a033af2594ab0274c31b32f621",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 6,
+      "diagnostic_rejected_lines": 1643,
+      "diagnostic_warned_lines": 1,
+      "error_categories": {
+        "Error: operand size mismatch for <operand>": 2,
+        "Error: same type of prefix used twice": 1641,
+        "Warning: skipping prefixes on <operand>": 1
+      },
+      "examples": {
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `jrcxz'",
+          "instruction": "jrcxz  0x45a5a4",
+          "line": 390614
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 38
+        },
+        "Warning: skipping prefixes on <operand>": {
+          "diagnostic": "skipping prefixes on `call'",
+          "instruction": "addr32 call 0x42a2b0",
+          "line": 12
+        }
+      },
+      "instruction_lines": 530800,
+      "lines_without_diagnostic": 529156,
+      "lines_without_error_diagnostic": 529157,
+      "path": "/lane/initramfs/bin/yew",
+      "sha256": "0f9625bc48bb7f5120c809210d58599a0e4146ab622b46bf6f6920642c3279c9",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 3,
+      "diagnostic_rejected_lines": 35501,
+      "diagnostic_warned_lines": 34382,
+      "error_categories": {
+        "Error: invalid character '(' in mnemonic": 8,
+        "Error: invalid operands (*UND* and *UND* sections) for <operand>": 34378,
+        "Error: junk at end of line, first unrecognized character is <operand>": 943,
+        "Error: operand size mismatch for <operand>": 1,
+        "Error: same type of prefix used twice": 171,
+        "Warning: missing operand; zero assumed": 34378,
+        "Warning: no instruction mnemonic suffix given and no register operands; using default for <operand>": 4
+      },
+      "examples": {
+        "Error: invalid character '(' in mnemonic": {
+          "diagnostic": "invalid character '(' in mnemonic",
+          "instruction": "ds (bad)",
+          "line": 72118
+        },
+        "Error: invalid operands (*UND* and *UND* sections) for <operand>": {
+          "diagnostic": "invalid operands (*UND* and *UND* sections) for `<'",
+          "instruction": "call   ffffffff80091488 <kmain>",
+          "line": 5
+        },
+        "Error: junk at end of line, first unrecognized character is <operand>": {
+          "diagnostic": "junk at end of line, first unrecognized character is `('",
+          "instruction": "(bad)",
+          "line": 531
+        },
+        "Error: operand size mismatch for <operand>": {
+          "diagnostic": "operand size mismatch for `movmskps'",
+          "instruction": "movmskps (bad),%eax",
+          "line": 161607
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "rex.WB and %dl,0x41(%r8)",
+          "line": 8321
+        },
+        "Warning: missing operand; zero assumed": {
+          "diagnostic": "missing operand; zero assumed",
+          "instruction": "jne    ffffffff8000001a <bad_revision>",
+          "line": 3
+        },
+        "Warning: no instruction mnemonic suffix given and no register operands; using default for <operand>": {
+          "diagnostic": "no instruction mnemonic suffix given and no register operands; using default for `lret'",
+          "instruction": "lret   $0x3b9a",
+          "line": 33376
+        }
+      },
+      "instruction_lines": 268778,
+      "lines_without_diagnostic": 233273,
+      "lines_without_error_diagnostic": 233277,
+      "path": "/lane/iso/boot/pax",
+      "sha256": "0fb3628137b99e6fb14f9a2a4f2a39add86677bb5588bdfcd6522b0fd2006105",
+      "unlocated_errors": 0,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 1,
+      "diagnostic_rejected_lines": 9295,
+      "diagnostic_warned_lines": 2535,
+      "error_categories": {
+        "Error without source line: local label <operand> is not defined": 151,
+        "Error: backward ref to unknown label \"N:\"": 988,
+        "Error: invalid operands (*ABS* and *UND* sections) for <operand>": 1720,
+        "Error: invalid operands (*UND* and *UND* sections) for <operand>": 815,
+        "Error: junk <operand> after expression": 6585,
+        "Error: same type of prefix used twice": 175,
+        "Warning: missing operand; zero assumed": 2535
+      },
+      "examples": {
+        "Error without source line: local label <operand> is not defined": {
+          "diagnostic": "local label `\"50\" (instance number 1 of a fb label)' is not defined"
+        },
+        "Error: backward ref to unknown label \"N:\"": {
+          "diagnostic": "backward ref to unknown label \"568:\"",
+          "instruction": "jae    568b <_RINvMNtNtCs4NRVxsYgnAr_4core4cell4onceINtB3_8OnceCellINtNtB7_6result6ResultINtNtCsdB6qrhj7hiN_9addr2line8function8FunctionINtNtNtCsjd0ZH04R2Z3_5gimli4read12endian_slice11EndianSliceNtNtB23_9endianity12LittleEndianEENtB21_5ErrorEE8try_initNCINvB2_11get_or_initNCNvMs_B1e_INtB1e_12LazyFunctionB1W_E6borrow0E0zECs2AWtUsOyxgP_3std+0x3eb>",
+          "line": 306
+        },
+        "Error: invalid operands (*ABS* and *UND* sections) for <operand>": {
+          "diagnostic": "invalid operands (*ABS* and *UND* sections) for `<'",
+          "instruction": "call   12990 <_RINvNtNtCsjd0ZH04R2Z3_5gimli4read4unit15parse_attributeINtNtB4_12endian_slice11EndianSliceNtNtB6_9endianity12LittleEndianEECs2AWtUsOyxgP_3std>",
+          "line": 340
+        },
+        "Error: invalid operands (*UND* and *UND* sections) for <operand>": {
+          "diagnostic": "invalid operands (*UND* and *UND* sections) for `<'",
+          "instruction": "call   ff70 <_RINvNtCs4NRVxsYgnAr_4core3ptr9drop_glueINtNtB4_6result6ResultRIBC_INtNtB4_6option6OptionINtNtCscdodAO9FK5_5alloc5boxed3BoxINtNtCsdB6qrhj7hiN_9addr2line4unit7DwoUnitINtNtNtCsjd0ZH04R2Z3_5gimli4read12endian_slice11EndianSliceNtNtB2J_9endianity12LittleEndianEEEENtB2H_5ErrorETBX_BY_EEECs2AWtUsOyxgP_3std>",
+          "line": 153
+        },
+        "Error: junk <operand> after expression": {
+          "diagnostic": "junk `0<_RNvMs4_NtCscdodAO9FK5_5alloc7raw_vecNtB5_11RawVecInner11finish_growCsf27LzyE2WNY_7wolf_rt.llvm.4354046120670520129>' after expression",
+          "instruction": "call   50f0 <_RNvMs4_NtCscdodAO9FK5_5alloc7raw_vecNtB5_11RawVecInner11finish_growCsf27LzyE2WNY_7wolf_rt.llvm.4354046120670520129>",
+          "line": 48
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 data16 data16 data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 243
+        },
+        "Warning: missing operand; zero assumed": {
+          "diagnostic": "missing operand; zero assumed",
+          "instruction": "je     5016 <_init+0x16>",
+          "line": 5
+        }
+      },
+      "instruction_lines": 60339,
+      "lines_without_diagnostic": 51044,
+      "lines_without_error_diagnostic": 51044,
+      "path": "target/corpus-hello",
+      "sha256": "dbcf4e5f9b4e520b054fe3e68d511507a9ae447d66b69c46fc37a96a43b7dd8f",
+      "unlocated_errors": 151,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 1,
+      "diagnostic_rejected_lines": 10051,
+      "diagnostic_warned_lines": 2626,
+      "error_categories": {
+        "Error without source line: local label <operand> is not defined": 180,
+        "Error: backward ref to unknown label \"N:\"": 1358,
+        "Error: invalid operands (*ABS* and *UND* sections) for <operand>": 1862,
+        "Error: invalid operands (*UND* and *UND* sections) for <operand>": 764,
+        "Error: junk <operand> after expression": 7233,
+        "Error: same type of prefix used twice": 192,
+        "Warning: missing operand; zero assumed": 2626
+      },
+      "examples": {
+        "Error without source line: local label <operand> is not defined": {
+          "diagnostic": "local label `\"50\" (instance number 1 of a fb label)' is not defined"
+        },
+        "Error: backward ref to unknown label \"N:\"": {
+          "diagnostic": "backward ref to unknown label \"52:\"",
+          "instruction": "jne    52b5 <_RINvMNtNtCs4NRVxsYgnAr_4core4cell4onceINtB3_8OnceCellINtNtB7_6result6ResultINtNtB7_6option6OptionINtNtCscdodAO9FK5_5alloc5boxed3BoxINtNtCsdB6qrhj7hiN_9addr2line4unit7DwoUnitINtNtNtCsjd0ZH04R2Z3_5gimli4read12endian_slice11EndianSliceNtNtB2S_9endianity12LittleEndianEEEENtB2Q_5ErrorEE8try_initNCINvB2_11get_or_initNCNvMB28_INtB28_7ResUnitB2L_E14dwarf_and_units2_0E0zECs2AWtUsOyxgP_3std+0x25>",
+          "line": 186
+        },
+        "Error: invalid operands (*ABS* and *UND* sections) for <operand>": {
+          "diagnostic": "invalid operands (*ABS* and *UND* sections) for `<'",
+          "instruction": "call   16560 <_RINvNtNtCsjd0ZH04R2Z3_5gimli4read4unit15parse_attributeINtNtB4_12endian_slice11EndianSliceNtNtB6_9endianity12LittleEndianEECs2AWtUsOyxgP_3std>",
+          "line": 363
+        },
+        "Error: invalid operands (*UND* and *UND* sections) for <operand>": {
+          "diagnostic": "invalid operands (*UND* and *UND* sections) for `<'",
+          "instruction": "call   a540 <deregister_tm_clones>",
+          "line": 5205
+        },
+        "Error: junk <operand> after expression": {
+          "diagnostic": "junk `0<_RNvMs4_NtCscdodAO9FK5_5alloc7raw_vecNtB5_11RawVecInner11finish_growCsf27LzyE2WNY_7wolf_rt.llvm.4354046120670520129>' after expression",
+          "instruction": "call   50f0 <_RNvMs4_NtCscdodAO9FK5_5alloc7raw_vecNtB5_11RawVecInner11finish_growCsf27LzyE2WNY_7wolf_rt.llvm.4354046120670520129>",
+          "line": 48
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 data16 data16 data16 cs nopw 0x0(%rax,%rax,1)",
+          "line": 266
+        },
+        "Warning: missing operand; zero assumed": {
+          "diagnostic": "missing operand; zero assumed",
+          "instruction": "je     5016 <_init+0x16>",
+          "line": 5
+        }
+      },
+      "instruction_lines": 66394,
+      "lines_without_diagnostic": 56343,
+      "lines_without_error_diagnostic": 56343,
+      "path": "target/corpus-arithmetic",
+      "sha256": "0c3cf1eaaa9bf3a660e197bcc97780cc1659428b0725c06b4bcba947cb47ee1a",
+      "unlocated_errors": 180,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    },
+    {
+      "all_chunks_assembled": false,
+      "chunks": 1,
+      "diagnostic_rejected_lines": 13050,
+      "diagnostic_warned_lines": 2991,
+      "error_categories": {
+        "Error without source line: local label <operand> is not defined": 234,
+        "Error: backward ref to unknown label \"N:\"": 1769,
+        "Error: invalid operands (*ABS* and *UND* sections) for <operand>": 2176,
+        "Error: invalid operands (*UND* and *UND* sections) for <operand>": 815,
+        "Error: junk <operand> after expression": 9786,
+        "Error: same type of prefix used twice": 273,
+        "Warning: missing operand; zero assumed": 2991
+      },
+      "examples": {
+        "Error without source line: local label <operand> is not defined": {
+          "diagnostic": "local label `\"448\" (instance number 1 of a fb label)' is not defined"
+        },
+        "Error: backward ref to unknown label \"N:\"": {
+          "diagnostic": "backward ref to unknown label \"66:\"",
+          "instruction": "je     66b1 <_RNvNtCsf27LzyE2WNY_7wolf_rt3str14ambient_refill.llvm.4354046120670520129+0x4a1>",
+          "line": 203
+        },
+        "Error: invalid operands (*ABS* and *UND* sections) for <operand>": {
+          "diagnostic": "invalid operands (*ABS* and *UND* sections) for `<'",
+          "instruction": "call   6160 <_RNvMs4_NtCscdodAO9FK5_5alloc7raw_vecNtB5_11RawVecInner11finish_growCsf27LzyE2WNY_7wolf_rt.llvm.4354046120670520129>",
+          "line": 48
+        },
+        "Error: invalid operands (*UND* and *UND* sections) for <operand>": {
+          "diagnostic": "invalid operands (*UND* and *UND* sections) for `<'",
+          "instruction": "call   a800 <_RNCNvNtCs2AWtUsOyxgP_3std5alloc8rust_oom0B5_>",
+          "line": 3885
+        },
+        "Error: junk <operand> after expression": {
+          "diagnostic": "junk `de<_RINvNvMs2_NtCscdodAO9FK5_5alloc7raw_vecINtB8_11RawVecInnerpE7reserve21do_reserve_and_handleNtNtBa_5alloc6GlobalECsf27LzyE2WNY_7wolf_rt+0x7e>' after expression",
+          "instruction": "je     60de <_RINvNvMs2_NtCscdodAO9FK5_5alloc7raw_vecINtB8_11RawVecInnerpE7reserve21do_reserve_and_handleNtNtBa_5alloc6GlobalECsf27LzyE2WNY_7wolf_rt+0x7e>",
+          "line": 50
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 data16 data16 mov %fs:0x0,%rax",
+          "line": 263
+        },
+        "Warning: missing operand; zero assumed": {
+          "diagnostic": "missing operand; zero assumed",
+          "instruction": "je     6016 <_init+0x16>",
+          "line": 5
+        }
+      },
+      "instruction_lines": 87149,
+      "lines_without_diagnostic": 74099,
+      "lines_without_error_diagnostic": 74099,
+      "path": "target/clef",
+      "sha256": "dc7e57a31162f71ea6e75dd2ce6eaa7407c0e12d98bba4ea1adb1bc5265c389e",
+      "unlocated_errors": 234,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    }
+  ],
+  "sampling": "none: all instruction lines in all 79 binaries measured",
+  "totals": {
+    "all_chunks_assembled": 0,
+    "binaries": 79,
+    "diagnostic_rejected_lines": 2172826,
+    "diagnostic_warned_lines": 399579,
+    "instruction_lines": 32724339,
+    "lines_without_diagnostic": 30551441,
+    "lines_without_error_diagnostic": 30551513,
+    "unlocated_errors": 13256,
+    "whole_body_assembled": 0,
+    "whole_body_bytes_equal": 0
+  }
+}
