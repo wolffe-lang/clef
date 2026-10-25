@@ -276,7 +276,7 @@ pub fn source() -> List[str] {
         "2A|3.3 CLD|3-159|FC|cld|fixed|0|32,64|252|-1|0|0|0|-1|-1|-1|-1|none|unique-role|base|none|none|none",
         "2A|3.3 CLI|3-166|FA|cli|fixed|0|32,64|250|-1|0|0|0|-1|-1|-1|-1|none|unique-role|base|none|none|none",
         "2A|3.3 CPUID|3-222|0F A2|cpuid|fixed|0|32,64|15,162|-1|0|0|0|-1|-1|-1|-1|none|unique-role|CPUID|none|none|none",
-        "2A|3.3 HLT|3-499|F4|hlt|fixed|0|32,64|244|-1|0|0|0|-1|-1|-1|-1|none|unique-role|base|none|none|none",
+        "2A|3.3 HLT|3-499|F4|hlt|fixed|0|32,64|245|-1|0|0|0|-1|-1|-1|-1|none|unique-role|base|none|none|none",
         "2A|3.3 INT n/INTO/INT3/INT1|3-527|CC INT3|int3|fixed|0|32,64|204|-1|0|0|0|-1|-1|-1|-1|none|unique-role|base|none|none|none",
         "2A|3.3 IRET/IRETD/IRETQ|3-549..3-550|REX.W + CF|iretq|fixed|0|64|207|-1|0|1|0|-1|-1|-1|-1|none|unique-role|base|none|none|none",
         "2B|4.3 RET|4-566|CB far return; far default32; REX.W for64 (vol2A 2.2.1)|lretq|fixed|0|64|203|-1|0|1|0|-1|-1|-1|-1|none|unique-role|base|none|none|none",
