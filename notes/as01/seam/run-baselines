@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Durable >20-minute stock/gas baseline preparation and four-leg gas boot gate.
+set -euo pipefail
+lane=$HOME/lanes/as01
+printf '%s\n' "$$" > "$lane/baseline.pid"
+trap 'rc=$?; printf "%s\n" "$rc" > "$lane/baseline.exit"' EXIT
+exec 9> "$HOME/lanes/hasu-A.lock"
+flock 9
+export PATH=$HOME/lanes/hasu-env/bin:$HOME/lanes/hasu-env/profile/bin:$PATH
+export PIP_CACHE_DIR=$lane/cache/pip CUDA_CACHE_PATH=$lane/cache/cuda
+image=localhost/clef-integration:6b2823772c1ca697
+printf 'AS01 BASELINE START %s pid=%s image=%s\n' "$(date -u +%FT%TZ)" "$$" "$image"
+podman run --rm --name as01-baseline-build --memory 12g --ulimit core=0:0 -v "$lane:/lane" -w /lane "$image" taskset -c 0-5 bash /lane/clef/notes/as01/seam/build-baselines
+printf 'AS01 LINUX REFERENCES %s\n' "$(date -u +%FT%TZ)"
+export PAX_TREE_IMAGE=$image
+export PAX_ENGINE=$lane/clef/notes/as01/seam/linux-engine
+export PAX_BUILD=$lane/integration/gas
+# This host-side script only launches the disposable Linux containers and copies transcripts.
+"$lane/inputs/pax/tests/mpx5-wolf" --only linux --images "$lane/integration/gas/mpx5-wolf"
+printf 'AS01 GAS BOOT MATRIX %s\n' "$(date -u +%FT%TZ)"
+podman run --rm --name as01-baseline-boot --memory 12g --ulimit core=0:0 -v "$lane:/lane" -w /lane/inputs/pax -e PAX_BUILD=/lane/integration/gas -e PAX_REQUIRE_UEFI=1 -e PAX_TASKSET_CPUS=0-5 "$image" taskset -c 0-5 bash tests/mpx5-wolf --images /lane/integration/gas/mpx5-wolf --tier both --firmware both
+printf 'AS01 BASELINE COMPLETE %s\n' "$(date -u +%FT%TZ)"

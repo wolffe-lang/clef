@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# PAX's host-side launcher only; all session programs stay in its rootless container.
+set -euo pipefail
+[ "${1:-}" = run ] || exit 2
+shift
+args=(run --memory 12g)
+found=0
+for arg in "$@"; do
+    args+=("$arg")
+    if [ "$arg" = "${PAX_TREE_IMAGE:?}" ]; then
+        args+=(taskset -c 0-5)
+        found=1
+    fi
+done
+[ "$found" = 1 ] || exit 2
+exec "$HOME/lanes/hasu-env/bin/podman" "${args[@]}"

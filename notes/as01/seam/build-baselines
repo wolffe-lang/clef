@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+set -euo pipefail
+export PAX_WOLF=/lane/clef/.wolf-bin/wolf/wolf-0.2.35-x86_64-unknown-linux-gnu/wolf
+export PAX_CACHE=/lane/integration/cache
+export PAX_DEV_BASE=/lane/integration/dev-base
+export PAX_DEV_WOLF_DIR=/lane/inputs/initramfs/usr/bin
+export PAX_DEV_STD_DIR=/lane/inputs/initramfs/usr/share/wolf/std
+export TMPDIR=/lane/integration/tmp
+mkdir -p "$TMPDIR" /lane/integration/linker /lane/integration/gas-bin "$PAX_DEV_BASE"/{pelt,bore,bin}
+cp /lane/inputs/initramfs/bin/sh "$PAX_DEV_BASE/pelt/pelt"
+cp /lane/inputs/initramfs/bin/{cat,env} "$PAX_DEV_BASE/bore/"
+cp /lane/inputs/initramfs/bin/as "$PAX_DEV_BASE/bin/as"
+ln -sf /lane/inputs/initramfs/usr/bin/ld.lld /lane/integration/linker/ld.lld
+for driver in cc clang; do
+    ln -sf /lane/clef/notes/as01/seam/gas-driver "/lane/integration/gas-bin/$driver"
+done
+export PATH=/lane/integration/linker:$PATH
+cd /lane/inputs/pax
+[ "$(git rev-parse HEAD)" = 105d0d1fe74bce11107a363a73751e35c9ac0987 ]
+[ -z "$(git status --porcelain)" ]
+for readback in 1 2; do
+    tests/mpx5-wolf.d/verify-bins "$PAX_DEV_WOLF_DIR"
+    printf '1217ca75f9df70439294844b2aba14895adc557e2514c6cdc76c4c6676a3757b  /lane/inputs/initramfs/usr/bin/ld.lld\n' | sha256sum -c -
+done
+for baseline in stock-clang gas; do
+    echo "AS01 BUILD $baseline $(date -u +%FT%TZ)"
+    export PAX_BUILD=/lane/integration/$baseline
+    if [ "$baseline" = gas ]; then
+        export PATH=/lane/integration/gas-bin:$PATH
+        export WOLF_CLANG=/lane/integration/gas-bin/clang
+        export AS01_SEAM_LOG=/lane/integration/gas/seam.tsv
+        mkdir -p "$PAX_BUILD"
+        : > "$AS01_SEAM_LOG"
+    fi
+    tests/mpx5-wolf --only build --tier both
+    for tier in native release; do
+        sha256sum "$PAX_BUILD/mpx5-wolf/$tier/kmain_console.elf"
+    done
+done
+python3 -I - <<'PY'
+import hashlib,json,pathlib
+root=pathlib.Path('/lane/integration')
+rows=[]
+for tier in ('native','release'):
+    a=(root/'stock-clang/mpx5-wolf'/tier/'kmain_console.elf').read_bytes()
+    b=(root/'gas/mpx5-wolf'/tier/'kmain_console.elf').read_bytes()
+    row={'tier':tier,'literal_stock_clang_sha256':hashlib.sha256(a).hexdigest(),'gas_baseline_sha256':hashlib.sha256(b).hexdigest(),'stock_size':len(a),'gas_size':len(b),'byte_identical':a==b,'first_differing_byte':next((i for i,(x,y) in enumerate(zip(a,b)) if x!=y),min(len(a),len(b)) if len(a)!=len(b) else None),'unequal_bytes':sum(x!=y for x,y in zip(a,b))+abs(len(a)-len(b))}
+    rows.append(row)
+(root/'kernel-baselines.json').write_text(json.dumps(rows,indent=2)+'\n')
+print(json.dumps(rows,indent=2))
+PY

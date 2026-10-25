@@ -1,0 +1,34 @@
+#!/usr/bin/env python3
+"""Build the QEMU extension using only digest-checked binary packages, offline."""
+import hashlib
+import json
+import os
+import pathlib
+import subprocess
+import sys
+
+root = pathlib.Path(__file__).resolve().parents[1]
+lock_bytes = (root / 'ci/integration-lock.json').read_bytes()
+lock = json.loads(lock_bytes)
+assert hashlib.sha256((root / 'ci/oracle-lock.json').read_bytes()).hexdigest() == lock['oracle_lock_sha256']
+engine = os.environ.get('CLEF_ENGINE', 'podman')
+cores = os.environ.get('CLEF_CPUS', '0-5')
+stage = pathlib.Path(os.environ.get('CLEF_INTEGRATION_PACKAGES', str(root / 'target/integration-packages')))
+stage.mkdir(parents=True, exist_ok=True)
+extra = {p.name for p in stage.glob('*.deb')} - {p['filename'] for p in lock['packages']}
+assert not extra, ('unlisted packages', extra)
+sums = []
+for row in lock['packages']:
+    path = stage / row['filename']
+    if not path.exists():
+        subprocess.run(['curl', '-fsSL', '--retry', '3', row['url'], '-o', str(path)], check=True)
+    for _ in range(2):
+        assert hashlib.sha256(path.read_bytes()).hexdigest() == row['sha256'], row['filename']
+    sums.append(row['sha256'] + '  ' + row['filename'])
+(stage / 'sums').write_text('\n'.join(sums) + '\n')
+recipe = root / 'target/Integration.Containerfile'
+recipe.parent.mkdir(parents=True, exist_ok=True)
+recipe.write_text('FROM ' + lock['base'] + '\nCOPY . /packages\nARG CLEF_CPUS\nRUN taskset -c "$CLEF_CPUS" sh -ec \'cd /packages; sha256sum -c sums; DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends /packages/*.deb; rm -rf /packages\'\n')
+image = 'localhost/clef-integration:' + hashlib.sha256(lock_bytes).hexdigest()[:16]
+subprocess.run([engine, 'build', '--network', 'none', '--memory', '12g', '--build-arg', 'CLEF_CPUS=' + cores, '-t', image, '-f', str(recipe), str(stage)], check=True)
+print(image)
