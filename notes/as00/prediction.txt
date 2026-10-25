@@ -1,0 +1,16 @@
+Prediction, before implementation
+
+Expect 95 distinct mnemonic spellings and 280 mnemonic/operand-form pairs;
+12 files using .macro or .irp. Expect the kernel to include rdtsc and
+fxsave/fxrstor (state management), but no ordinary SIMD arithmetic.
+Expect GNU as versus clang differences in zero-length section handling,
+.note.GNU-stack, symbol order, and branch/operand-size encoding choices.
+Expect under 5% of complete objdump instruction bodies to reassemble
+without fixing symbolic operands, but over 80% of individual lines to parse.
+Expect the first ten-instruction proof mismatch at mov immediate-to-r64:
+C7 sign-extended imm32 versus B8 imm64. Recommend exact GNU as choice,
+.code32 in ELF64 support, and GNU as as the baseline for every difference.
+
+Implementation order: pinned harness and repo shape; full census; oracle
+comparison and planted corruption; round-trip measurement; ten-instruction
+table proof; empty ELF writer; README and next-lane contract in the PR.
