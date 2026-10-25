@@ -100379,18 +100379,10 @@
               "segment": null
             },
             {
-              "expression": {
-                "location_counter": false,
-                "macro_parameter": true,
-                "operators": [],
-                "symbols": [
-                  "n",
-                  "xmm"
-                ],
-                "text": "%xmm\\n"
-              },
               "indirect": false,
-              "kind": "expression"
+              "kind": "xmm128",
+              "macro_parameter": true,
+              "register": "%xmm\\n"
             }
           ],
           "prefixes": []
@@ -100836,18 +100828,10 @@
           "name": "movdqu",
           "operands": [
             {
-              "expression": {
-                "location_counter": false,
-                "macro_parameter": true,
-                "operators": [],
-                "symbols": [
-                  "n",
-                  "xmm"
-                ],
-                "text": "%xmm\\n"
-              },
               "indirect": false,
-              "kind": "expression"
+              "kind": "xmm128",
+              "macro_parameter": true,
+              "register": "%xmm\\n"
             },
             {
               "base": "%rsp",
@@ -116840,7 +116824,6 @@
     {
       "architecture": "aarch64",
       "comment_styles": [
-        "#",
         "/* */"
       ],
       "macros": [],
@@ -131045,22 +131028,22 @@
         "text": "movb    (%rcx), %al"
       }
     ],
-    "movdqu expression,mem[,gpr64,,1,disp]": [
-      {
-        "file": "pax/user/elf/hello.S",
-        "line": 382,
-        "mode": 64,
-        "prefixes": [],
-        "text": "movdqu  %xmm\\n, (%rsp)"
-      }
-    ],
-    "movdqu mem[,gpr64,,1,disp],expression": [
+    "movdqu mem[,gpr64,,1,disp],xmm128": [
       {
         "file": "pax/user/elf/hello.S",
         "line": 367,
         "mode": 64,
         "prefixes": [],
         "text": "movdqu  (%rsp), %xmm\\n"
+      }
+    ],
+    "movdqu xmm128,mem[,gpr64,,1,disp]": [
+      {
+        "file": "pax/user/elf/hello.S",
+        "line": 382,
+        "mode": 64,
+        "prefixes": [],
+        "text": "movdqu  %xmm\\n, (%rsp)"
       }
     ],
     "movl cr64,gpr32": [

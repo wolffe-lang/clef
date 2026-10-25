@@ -33,7 +33,7 @@ for argv in [[],['--bad'],['-o'],['a.S','b.S'],['-o','a.S','a.S']]:
     assert subprocess.run([str(clef)]+argv,capture_output=True).returncode==2
 # Tie observations are oracle-only: clef does not pretend these extra forms are implemented.
 ties={}
-for name,line in {'mov-zero':'movq $0,%rax','movabs-zero':'movabsq $0,%rax','cmp-imm8':'cmpq $1,%rax','cmp-wide':'cmpq $128,%rax','mov-reg':'movq %rcx,%rax','lea-zero-base5':'lea (%rbp),%rax'}.items():
+for name,line in {'mov-zero':'movq $0,%rax','movabs-zero':'movabsq $0,%rax','cmp-imm8':'cmpq $1,%rax','cmp-wide':'cmpq $128,%rax','mov-reg':'movq %rcx,%rax','lea-zero-base5':'lea (%rbp),%rax','cmp-forward-expression':'cmpq $(.Lend-.Lbegin),%rax\n.Lbegin: .zero 23\n.Lend:','cmp-known-expression':'.Lbegin: .zero 23\n.Lend:\ncmpq $(.Lend-.Lbegin),%rax'}.items():
     src=out/(name+'.S');src.write_text(line+'\n');obj=out/(name+'.o');subprocess.run(['as','--64',str(src),'-o',str(obj)],check=True)
     ties[name]={'source':line,'text':next(s[-1] for s in ELF(obj).normalized()['sections'] if s[0]=='.text')}
 result={'proof_rows':rows,'oracle_ties':ties,'refusals':9,'usage_refusals':5}

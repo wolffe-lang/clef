@@ -78,6 +78,7 @@ def operand(s):
     indirect = s.startswith('*'); s = s[1:] if indirect else s
     if s.startswith('$'): data={'kind':'immediate','expression':expression(s[1:])}
     elif re.fullmatch(r'%\w+',s): data={'kind':register(s),'register':s}
+    elif re.fullmatch(r'%[xyz]mm\\[A-Za-z_]+',s): data={'kind':{'x':'xmm128','y':'ymm256','z':'zmm512'}[s[1]],'register':s,'macro_parameter':True}
     elif '(' in s:
         m=re.fullmatch(r'(?:(%\w+):)?(.*?)\((.*?)\)',s)
         if not m: data={'kind':'expression','expression':expression(s)}
@@ -124,7 +125,7 @@ def inventory(root):
             if kind=='directive': directives[name].append(site)
         files.append({'path':str(path.relative_to(root)),'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),
                       'architecture':arch,
-                      'comment_styles':[x for x,pat in [('#',r'#'),('/* */',r'/\*'),('//',r'//')] if re.search(pat,text)],
+                      'comment_styles':[x for x,pat in [('#',r'#'),('/* */',r'/\*'),('//',r'//')] if re.search(pat,text) and not (x=='#' and arch=='aarch64')],
                       'macros':sorted(macro_names),'statements':records})
     return {'schema':1,'definition':'Unique tracked assembly paths at the repository heads in repositories.json; source-level forms, macro calls separately classified.',
             'files':files,'forms':dict(sorted(forms.items())),'directives':dict(sorted(directives.items())),

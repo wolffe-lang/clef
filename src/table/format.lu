@@ -14,12 +14,19 @@ pub struct Form {
     section: str,
     page: str,
     citation: str,
+    legacy_prefixes: str,
+    operand_bits: int,
+    address_bits: int,
+    modrm_rule: str,
+    sib_rule: str,
+    displacement_rule: str,
+    preference: str,
 }
 
 /// Load one pipe-separated descriptor; invalid_table rejects missing provenance and out-of-range fields.
 pub fn load(line: str) -> Form ! {invalid_table} {
     let f = line.split("|")
-    if f.len != 12 { return invalid_table }
+    if f.len != 19 { return invalid_table }
     let op = f[2].to_int() else { return invalid_table }
     let second = f[3].to_int() else { return invalid_table }
     let count = f[4].to_int() else { return invalid_table }
@@ -48,6 +55,12 @@ pub fn load(line: str) -> Form ! {invalid_table} {
         f[11].len == 0 {
         return invalid_table
     }
+    let operand_bits = f[13].to_int() else { return invalid_table }
+    let address_bits = f[14].to_int() else { return invalid_table }
+    if f[12] != "none" || operand_bits != 0 && operand_bits != 64 || address_bits != 64 {
+        return invalid_table
+    }
+    if f[15].len == 0 || f[16].len == 0 || f[17].len == 0 || f[18].len == 0 { return invalid_table }
     Form {
         mnemonic: f[0],
         operands: f[1],
@@ -61,22 +74,29 @@ pub fn load(line: str) -> Form ! {invalid_table} {
         section: f[9],
         page: f[10],
         citation: f[11],
+        legacy_prefixes: f[12],
+        operand_bits: operand_bits,
+        address_bits: address_bits,
+        modrm_rule: f[15],
+        sib_rule: f[16],
+        displacement_rule: f[17],
+        preference: f[18],
     }
 }
 
 /// The ten independently transcribed worked rows, one per census mnemonic.
 pub fn source() -> List[str] {
     [
-        "mov|imm32,r64|199|0|1|1|0|4|2B|4.3 MOV|4-35|opcode table C7 /0 id",
-        "push|r64|80|0|1|0|0|0|2B|4.3 PUSH|4-520|opcode table 50+rd",
-        "pop|r64|88|0|1|0|0|0|2B|4.3 POP|4-396|opcode table 58+rd",
-        "call|rel32|232|0|1|0|0|4|2A|3.3 CALL|3-139|opcode table E8 cd",
-        "ret|none|195|0|1|0|0|0|2B|4.3 RET|4-566|opcode table C3",
-        "jmp|rel8|235|0|1|0|0|1|2A|3.3 JMP|3-563|opcode table EB cb",
-        "lea|mem64,r64|141|0|1|1|0|0|2A|3.3 LEA|3-605|opcode table REX.W 8D /r; table 2-2 ModRM",
-        "syscall|none|15|5|2|0|0|0|2B|4.3 SYSCALL|4-695|opcode table 0F 05",
-        "hlt|none|244|0|1|0|0|0|2A|3.3 HLT|3-499|opcode table F4",
-        "cmp|imm8,r64|131|0|1|1|7|1|2A|3.3 CMP|3-179|opcode table REX.W 83 /7 ib",
+        "mov|imm32,r64|199|0|1|1|0|4|2B|4.3 MOV|4-35|opcode table C7 /0 id|none|64|64|digit/rm|none|none|C7 sign-extended imm32; never replace with xor",
+        "push|r64|80|0|1|0|0|0|2B|4.3 PUSH|4-520|opcode table 50+rd|none|64|64|opcode+rd|none|none|50+rd shorter than FF/6",
+        "pop|r64|88|0|1|0|0|0|2B|4.3 POP|4-396|opcode table 58+rd|none|64|64|opcode+rd|none|none|58+rd shorter than 8F/0",
+        "call|rel32|232|0|1|0|0|4|2A|3.3 CALL|3-139|opcode table E8 cd|none|64|64|none|none|rel32|E8 near relative",
+        "ret|none|195|0|1|0|0|0|2B|4.3 RET|4-566|opcode table C3|none|64|64|none|none|none|C3 near no adjustment",
+        "jmp|rel8|235|0|1|0|0|1|2A|3.3 JMP|3-563|opcode table EB cb|none|64|64|none|none|rel8|short when resolved and in signed-byte range",
+        "lea|mem64,r64|141|0|1|1|0|0|2A|3.3 LEA|3-605|opcode table REX.W 8D /r; table 2-2 ModRM|none|64|64|reg/rm|base-index-scale|auto0/1/4|zero displacement unless base low bits 5; signed-byte before disp32",
+        "syscall|none|15|5|2|0|0|0|2B|4.3 SYSCALL|4-695|opcode table 0F 05|none|0|64|none|none|none|0F05 fixed",
+        "hlt|none|244|0|1|0|0|0|2A|3.3 HLT|3-499|opcode table F4|none|0|64|none|none|none|F4 fixed",
+        "cmp|imm8,r64|131|0|1|1|7|1|2A|3.3 CMP|3-179|opcode table REX.W 83 /7 ib|none|64|64|digit/rm|none|none|83 signed imm8 only when known; forward expressions retain imm32",
     ]
 }
 
