@@ -1,0 +1,90 @@
+as01 — the kernel's dialect
+
+Goal
+Implement GNU-as AT&T x86-64 assembly for the complete pinned source census,
+then assemble every PAX boot source and muzzle crt0/sys source byte-identically
+in contents and relocation tuples. Link through the existing lld seam and boot
+PAX's complete mpx suite in the separately assigned PAX lane/host. Do not change
+the read-only source repositories from the clef lane.
+
+Input specification
+census/repositories.json pins pax 105d0d1fe74bce11107a363a73751e35c9ac0987,
+muzzle eff9eb5ba1ff37cc2e69cc5e68550408ba464533, and wolf-lang
+fc9064082cbda51b2faf3af8e2f21e376ba3a1e3. There are 44 unique tracked paths,
+43 x86-64 and one Apple AArch64 fixture explicitly deferred to A4. Read all
+statements of census/org-asm.json, not only its first examples: 112 mnemonic
+spellings, 189 operand patterns, with mode/prefix/symbol/constant variants.
+The full per-file expected section order, flags, sizes, alignments, symbols
+and relocation tuples are in census/oracle-results.json. tools/corpus --check
+regenerates those from the pinned binaries. docs/MAP.md is the human inventory.
+
+Required parser and expansion
+Implement the 23 observed directives: .ascii .asciz .balign .bss .byte .code32
+.code64 .data .endm .endr .globl .irp .long .macro .p2align .quad .section .set
+.size .text .type .word .zero. Hash/block comments,
+quoted strings and character literals, numeric local labels, forward/backward
+references, AT&T immediates and indirect operands, RIP-relative memory and
+base/index/scale/displacement must preserve source origins.
+
+Implement the expression forms actually observed, and test each operator and
+precedence promised by the documented grammar. Constants, symbol plus/minus
+addend, current location, same-section differences, parentheses, shifts and
+bitwise operators must remain distinguishable from unresolved expressions.
+Refuse unsupported cross-section algebra, cycles, overflow and division by zero.
+The observed ISR macros have one positional v parameter; substitute into labels,
+immediates, .type and .size. .irp expands explicit integer lists using v or n;
+%xmm\n is a register family, not a symbol. Preserve expansion order and line
+origins; bound recursion/expansion; do not silently accept unmeasured macro modes.
+
+Encoding and object requirements
+The ten existing worked rows are mov imm32/r64, push r64, pop r64, call current-
+location rel32, ret, jmp current-location rel8, lea base/index memory to r64,
+syscall, hlt, cmp known imm8/r64. They have 24 object witnesses including the
+empty writer. They are not whole mnemonic-family coverage: expand the table
+entry-by-entry from the SDM, each entry with provenance and a gas differential.
+Support all remaining census forms, including system/state instructions and the
+user XMM save/restore test. A1 must not synthesize encodings from an opcode
+library or another assembler's source.
+
+Exact gas choice is the rule. An expression with a not-yet-known symbol keeps
+its imm32 form even when its eventual value fits imm8; programs.S's forward
+symbol difference is the witness, not a hard-coded special case. Recompute
+branch layout to convergence using gas's same-section/global-symbol policy.
+Support .code32 inside ELF64: the current user is wolf-lang's interrupt boot
+fixture. Preserve gas's 32 vs clang's 32S indexed-memory relocations and PC32
+vs clang's PLT32 cross-section jump there. No clang exception is implemented.
+
+Extend the independent writer to named sections, NOBITS, explicit stack notes,
+SHT_NOTE, symbol/string tables, alignment and RELA. Observed gas relocation
+numbers are 1, 2, 4, 10; counts 70, 176, 15, 11 respectively. Preserve relocation
+symbol choice and addends, including displacement fields followed by immediates.
+Empty default .text/.data/.bss remain. .type covers function/object labels,
+including macro labels; .size uses constants or current-location differences.
+
+Integration seam
+wolf_driver/src/asm.rs currently invokes CC/cc -c SOURCE -o OBJECT for hosted
+builds, and WOLF_CLANG/clang --target=x86_64-unknown-none-elf -c SOURCE -o OBJECT
+for freestanding builds. Its later --assembler/WOLF_AS change is a wolf-lang
+lane, not an implicit change here. PAX tools/build-kernel assembles boot/start.S
+with cc -c when cc is present, otherwise as --64; manifest assembly is produced
+by wolf build. Both seams must be explicit when testing substitution. Linking
+remains ld.lld -nostdlib -static -z max-page-size=0x1000 -T boot/kernel.ld, with
+start.o, asm objects, wolf objects, and runtime archive in existing order.
+
+Validation and done-when
+Prediction committed before changes. Per-item commits and tests. Strict refusals;
+never treat wolf build exit 2 as a skip. Same-source deterministic output, native
+and checked/lupin logic tests, independent ELF differ tests, per-form generated
+differentials, every copied source against gas. For every pax/boot/*.S and each
+muzzle file: section bytes and relocation (section,offset,type,symbol,addend)
+multisets equal; symbols structurally equal, order free. The PAX integration
+lane supplies link/boot evidence before the milestone is claimed.
+
+A3 hand-off
+census/roundtrip.json is the starting instrument, with 79 binary identities,
+all decoded lines measured and no samples. Zero passed every unmodified batch.
+Preserve byte escapes for data/invalid opcodes, duplicated/redundant prefixes,
+and noncanonical encodings. Do not emit objdump's angle-bracket operands or
+bare hexadecimal targets. Parsing without a diagnostic is not byte identity.
+The object writer and future disassembler must share table data, not policy
+that discards original encodings.

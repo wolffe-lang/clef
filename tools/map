@@ -1,0 +1,118 @@
+#!/usr/bin/env python3
+"""Render the human source map from measured census data; no source inspection."""
+import collections,json,pathlib
+ROOT=pathlib.Path(__file__).resolve().parents[1]
+c=json.loads((ROOT/'census/org-asm.json').read_text());r=json.loads((ROOT/'census/repositories.json').read_text());o=json.loads((ROOT/'census/oracle-results.json').read_text())
+lines=['# Assembly source map','',
+'The census contains **44 unique tracked files**: 26 from PAX, five from muzzle,',
+'and 13 from wolf-lang. It excludes duplicate worktrees and generated copies.',
+'One file is AArch64 Mach-O; the x86-64 specification is the other **43** files.',
+f'The x86 sources have **{c["counts"]["mnemonics"]} mnemonic spellings** and **{c["counts"]["forms"]} source-level operand forms**.',
+'Suffixes remain distinct. Mode, prefix, actual operands and each source location',
+'are retained in `org-asm.json`; pattern counts are not claims of encoder coverage.',
+'','## Input revisions','','| Repository | Commit | Assembly files |','|---|---|---|']
+for repo in r:
+ if repo['files']:lines.append(f'| {repo["repository"]} | `{repo["head"]}` | {len(repo["files"])} |')
+lines+=['','`census/sources/` holds the exact inputs, `repositories.json` the inventory,',
+'and `org-asm.json` every parsed statement with file/line, labels, operand shape,',
+'prefixes, code mode, expression text/operators, macros and comment styles.',
+'This is a source census, not macro-expanded instruction coverage. Macro calls',
+'are classified separately, and `%xmm\\n` is an XMM-register parameter, not an',
+'ordinary symbol. The source snapshots and binary inputs can be regenerated',
+'without reading any third-party assembler implementation.',
+'','## Language observations','',
+'* Three files use `.macro` or `.irp`: PAX boot ISR, PAX user hello, and the wolf-lang interrupt ISR fixture.',
+'* Only the wolf-lang interrupt boot fixture switches `.code32` to `.code64`.',
+'  The PAX boot stub currently stays in 64-bit mode.',
+'* Kernel state instructions include FXSAVE64/FXRSTOR64, XSAVE64/XRSTOR64,',
+'  XGETBV/XSETBV, RDTSC and RDRAND. The XMM MOVDQU family occurs in user hello,',
+'  not PAX boot. No AVX arithmetic appears in the census.',
+'* Symbol visibility uses `.globl`; there are no `.weak`, `.hidden`, `.protected`',
+'  or `.local` directives. `.type` names functions and objects, including',
+'  macro-generated ISR labels. `.size` is a constant or a current-location',
+'  difference from a symbol. Numeric forward/backward labels are significant.',
+'* AT&T syntax uses `$` immediates, `%` registers, `*` indirect branches,',
+'  base/index/scale/displacement memory and RIP-relative addresses. The snapshot',
+'  retains literal spelling and signed/unsigned ranges rather than reducing all',
+'  immediates to a single exemplar. Explicit segment operands are not used.',
+'* Comments use block comments and hash comments. The AArch64 `#7` is an immediate,',
+'  not a comment. No C-preprocessor feature is needed by the input set.',
+'', '## Files and assembler dispositions','','| Source | Architecture | Macro definitions | Code modes |','|---|---|---|---|']
+for f in c['files']:
+ modes=sorted({s['mode'] for s in f['statements'] if 'mode' in s})
+ lines.append('| `'+f['path']+'` | '+f['architecture']+' | '+(', '.join(f['macros']) or 'none')+' | '+', '.join(map(str,modes))+' |')
+lines+=['','## Mnemonics and operand forms','',
+'Forms encode register classes and widths, indirect operands and memory base/index',
+'classes. `disp` can be zero, a literal, a symbol or an expression; each occurrence',
+'in the JSON retains the actual expression. Memory scale and RIP-relative bases',
+'are explicit. The example column is illustrative; as01 must read every site.',
+'','| Form | Source occurrences | First example |','|---|---:|---|']
+for form,sites in c['forms'].items():
+ text=sites[0]['text'].replace('|','\\|').replace('`','\\`')
+ lines.append(f'| `{form}` | {len(sites)} | `{text}` |')
+lines+=['','## Directives and arguments','','| Directive | Occurrences | Distinct argument texts | Example |','|---|---:|---:|---|']
+for name,sites in c['directives'].items():
+ args={s['text'].split(None,1)[1] if len(s['text'].split(None,1))>1 else '' for s in sites}
+ example=sites[0]['text'].replace('|','\\|')
+ lines.append(f'| `{name}` | {len(sites)} | {len(args)} | `{example}` |')
+lines+=['','### Expression operators','',
+'The following are token observations, not an evaluator. Unary versus binary',
+'operators and symbol arithmetic must be parsed using the GNU as grammar.',
+'','| Operator | Expression-bearing operands containing it |','|---|---:|']
+counts=collections.Counter()
+for f in c['files']:
+ for statement in f['statements']:
+  for operand in statement.get('operands',[]):
+   for key in ('expression','displacement'):
+    if key in operand:counts.update(operand[key]['operators'])
+for op in ['+','-','*','/','<<','>>','&','|','^','~']:
+ lines.append(f'| `{op.replace(chr(124),chr(92)+chr(124))}` | {counts[op]} |')
+lines+=['','## GNU as and clang','',
+'All 43 x86 sources assemble with both pinned binaries. Every source differs',
+'structurally: clang gives `.text` alignment 4 versus GNU as alignment 1, and',
+'clang may omit empty default `.data`/`.bss` sections. That is not an encoding',
+'mismatch. The full section/symbol/relocation data is in `oracle-results.json`.',
+'`.note.GNU-stack` is preserved where explicitly requested; no special stack-note',
+'exception is needed. Symbol ordering is recorded separately and is free.',
+'','| Source | Content differences | Other differences |','|---|---|---|']
+for row in o['rows']:
+ if 'gas_status' not in row:continue
+ content=[x['name'] for x in row['section_differences'] if x['gas_size'] is not None and x['clang_size'] is not None and not x['contents_equal']]
+ other=[k for k in row['differences'] if k!='sections']
+ if content or other:
+  lines.append(f'| `{row["source"]}` | '+(', '.join(content) or 'none')+' | '+(', '.join(other) or 'none')+' |')
+lines+=['',
+'* `pax/boot/io.S`, `sched.S`, `isr.S`, `pax/user/play/kd.S`, and the wolf-lang',
+'  interrupt ISR fixture: GNU as resolves/relaxes same-section global branches;',
+'  clang retains near branches with PLT32 relocations. Subsequent symbol values,',
+'  function sizes and relocation offsets/addends move with the instruction sizes.',
+'* `pax/user/programs.S`: gas keeps the imm32 accumulator CMP for a forward-label',
+'  difference; clang selects imm8. The first user blob is 159 versus 157 bytes;',
+'  later alignment makes both complete `.rodata.pax_user` sections 707 bytes.',
+'* The mixed-mode interrupt boot fixture has matching section bytes but gas',
+'  chooses PC32 versus clang PLT32 for a cross-section jump, and 32 versus clang',
+'  32S for two `.code32` indexed-memory relocations.',
+'',
+'The GNU as choices remain the baseline in all cases. `FORMATS.md` states the',
+'forward-expression selection rule and the relocation policy; no clang exception',
+'is hidden in the comparator.',
+'','## Emitted sections','',
+'The table below lists every section kind/flag/alignment combination seen from gas.',
+'Per-file order, symbol values/sizes and relocation tuples are in the JSON.',
+'','| Name | ELF type | Flags (numeric) | Alignment |','|---|---:|---:|---:|']
+sections=sorted({(s['name'],s['type'],s['flags'],s['alignment']) for row in o['rows'] for s in row.get('gas_sections',[])})
+for name,kind,flags,align in sections:lines.append(f'| `{name or "NULL"}` | {kind} | {flags} | {align} |')
+relocs=collections.Counter(t[2] for row in o['rows'] for t in row.get('gas_object',{}).get('relocations',[]))
+lines+=['','| Relocation | Count |','|---|---:|']
+for num,count in sorted(relocs.items()):lines.append(f'| R_X86_64_{ {1:"64",2:"PC32",4:"PLT32",10:"32"}[num]} | {count} |')
+lines+=['','## Coverage boundary','',
+'Clef currently encodes ten selected forms from ten mnemonic families. It does',
+'not yet assemble any whole PAX or muzzle source. The oracle census is the',
+'specification for that next step, not evidence that it is implemented.',
+'`tools/proof-test` produces 24 exact object comparisons including the empty',
+'writer, plus explicit refusals and determinism checks. `tools/differ-test`',
+'proves that changes to text, BSS size, relocation offset/type/addend and symbol',
+'value/size are observable, while symbol ordering is not.',
+'','The binary round-trip measurement and its exclusions are recorded separately',
+'in `census/roundtrip.json`; it measures objdump, not a clef disassembler.']
+(ROOT/'docs/MAP.md').write_text('\n'.join(lines)+'\n')
