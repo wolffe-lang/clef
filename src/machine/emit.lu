@@ -1,0 +1,288 @@
+use dialect
+use eval
+use x86table
+
+/// Instruction emission refusals; the caller adds source origin and the table citation.
+pub error Errors = {bad_operands, encoding_range, unknown_form, invalid_table}
+
+/// A field awaiting section layout and symbol-binding policy. Bias is set after emission.
+pub struct Fixup {
+    offset: int,
+    width: int,
+    pcrel: bool,
+    branch: bool,
+    signed32: bool,
+    value: eval.Value,
+    bias: int,
+}
+
+/// Bytes and typed fields; no output object is opened during encoding.
+pub struct Encoded {
+    data: List[byte],
+    fixups: List[Fixup],
+}
+
+/// Whether a signed value is representable at the selected instruction width.
+pub fn signed_fits(n: eval.Number, width: int) -> bool {
+    if width < 1 || width > 8 { return false }
+    let limit: u64 = 1 << (width * 8 - 1) as u64
+    if n.negative { return n.magnitude <= limit }
+    if n.magnitude >= 9223372036854775808 { return !n.magnitude + 1 <= limit }
+    n.magnitude < limit
+}
+
+/// Data/immediate fields accept signed negative values or an unsigned bit pattern.
+pub fn field_fits(n: eval.Number, width: int) -> bool {
+    if width < 1 || width > 8 { return false }
+    if width == 8 { return true }
+    if n.negative { return signed_fits(n, width) }
+    n.magnitude < 1 as u64 << (width * 8) as u64 || signed_fits(n, width)
+}
+
+fn little(mut out: List[byte], n: eval.Number, width: int) {
+    var bits = eval.bits(n)
+    for _ in 0..width {
+        (mut out).push((bits & 255) as int as byte)
+        bits >>= 8
+    }
+}
+
+fn field(
+    mut out: Encoded,
+    value: eval.Value,
+    width: int,
+    pcrel: bool,
+    branch: bool,
+    signed32: bool,
+) -> () ! Errors {
+    if width < 1 || width > 8 { return invalid_table }
+    if value.section == "ABS" && !pcrel {
+        if !field_fits(value.number, width) { return encoding_range }
+        little(mut out.data, value.number, width)
+    } else {
+        (mut out.fixups).push(Fixup {
+            offset: out.data.len,
+            width: width,
+            pcrel: pcrel,
+            branch: branch,
+            signed32: signed32,
+            value: copy value,
+            bias: 0,
+        })
+        for _ in 0..width { (mut out.data).push(0 as byte) }
+    }
+}
+
+struct Address {
+    data: List[byte],
+    displacement: int,
+    pcrel: bool,
+    rex_b: int,
+    rex_x: int,
+    address32: bool,
+}
+
+fn address(
+    op: dialect.Operand,
+    value: eval.Value,
+    known: bool,
+    reg: int,
+    mode: int,
+) -> Address ! Errors {
+    var out = Address {
+        data: [],
+        displacement: 0,
+        pcrel: false,
+        rex_b: 0,
+        rex_x: 0,
+        address32: false,
+    }
+    if op.kind == "register" {
+        if op.reg.family != "gpr" && op.reg.family != "xmm" { return bad_operands }
+        if mode == 32 && (op.reg.code >= 8 || op.reg.rex8) { return bad_operands }
+        (mut out.data).push((192 + reg % 8 * 8 + op.reg.code % 8) as byte)
+        out.rex_b = op.reg.code / 8
+        return out
+    }
+    if op.kind != "memory" && op.kind != "expression" { return bad_operands }
+    let has_base = op.kind == "memory" && op.base.family != "none"
+    let has_index = op.kind == "memory" && op.index.family != "none"
+    if has_base && op.base.family == "ip" {
+        if mode != 64 || has_index { return bad_operands }
+        (mut out.data).push((reg % 8 * 8 + 5) as byte)
+        out.displacement = 4
+        out.pcrel = true
+        return out
+    }
+    if has_base {
+        if op.base.family != "gpr" || mode == 32 && (op.base.bits != 32 || op.base.code >= 8) {
+            return bad_operands
+        }
+        out.rex_b = op.base.code / 8
+        out.address32 = mode == 64 && op.base.bits == 32
+    }
+    if has_index {
+        if op.index.family != "gpr" ||
+            op.index.code == 4 ||
+            mode == 32 && (op.index.bits != 32 || op.index.code >= 8) {
+            return bad_operands
+        }
+        out.rex_x = op.index.code / 8
+        out.address32 = out.address32 || mode == 64 && op.index.bits == 32
+    }
+    let sib = has_index || has_base && op.base.code % 8 == 4 || !has_base && mode == 64
+    var modbits = 0
+    if !has_base {
+        out.displacement = 4
+    } else if value.section == "ABS" &&
+        known &&
+        value.number.magnitude == 0 &&
+        op.base.code % 8 != 5 {} else if value.section == "ABS" &&
+        known &&
+        signed_fits(value.number, 1) {
+        modbits = 1
+        out.displacement = 1
+    } else {
+        modbits = 2
+        out.displacement = 4
+    }
+    let rm = if sib then 4 else if has_base then op.base.code % 8 else 5
+    (mut out.data).push((modbits * 64 + reg % 8 * 8 + rm) as byte)
+    if sib {
+        let scale = match op.scale {
+            1 => 0,
+            2 => 1,
+            4 => 2,
+            8 => 3,
+            _ => { return bad_operands },
+        }
+        let index = if has_index then op.index.code % 8 else 4
+        let base = if has_base then op.base.code % 8 else 5
+        (mut out.data).push((scale * 64 + index * 8 + base) as byte)
+    }
+    out
+}
+
+/// Emit one SDM table row. Legacy prefix, opcode roles, REX.W and immediate width come from data.
+pub fn emit(
+    form: x86table.Form,
+    node: dialect.Node,
+    mode: int,
+    values: List[eval.Value],
+    known: List[bool],
+) -> Encoded ! Errors {
+    let ops = copy node.operands
+    if values.len != ops.len || known.len != ops.len { return bad_operands }
+    var out = Encoded { data: [], fixups: [] }
+    var reg = form.extension
+    if form.reg_operand >= 0 {
+        if form.reg_operand >= ops.len || ops[form.reg_operand].kind != "register" {
+            return bad_operands
+        }
+        reg = ops[form.reg_operand].reg.code
+    }
+    var mem = Address {
+        data: [],
+        displacement: 0,
+        pcrel: false,
+        rex_b: 0,
+        rex_x: 0,
+        address32: false,
+    }
+    if form.rm_operand >= 0 {
+        if form.rm_operand >= ops.len || reg < 0 { return invalid_table }
+        mem = address(
+            ops[form.rm_operand],
+            values[form.rm_operand],
+            known[form.rm_operand],
+            reg,
+            mode,
+        )?
+    }
+    var opcode_register = 0
+    if form.opcode_operand >= 0 {
+        if form.opcode_operand >= ops.len || ops[form.opcode_operand].kind != "register" {
+            return bad_operands
+        }
+        opcode_register = ops[form.opcode_operand].reg.code
+        mem.rex_b = opcode_register / 8
+    }
+    var rex = (if form.rex_w then 8 else 0) + mem.rex_b + mem.rex_x * 2
+    if form.reg_operand >= 0 && reg >= 8 { rex += 4 }
+    var force_rex = false
+    var high8 = false
+    for op in ops {
+        if op.kind == "register" {
+            force_rex = force_rex || op.reg.rex8
+            high8 = high8 || op.reg.high8
+            if mode == 32 && (op.reg.code >= 8 || op.reg.rex8) { return bad_operands }
+        }
+    }
+    if mode == 32 && (rex != 0 || force_rex) { return bad_operands }
+    if high8 && (rex != 0 || force_rex) { return bad_operands }
+    if node.prefixes.len > 0 {
+        if node.prefixes.len != 1 || node.prefixes[0] != "rep" { return bad_operands }
+        if form.family != "movsb" &&
+            form.family != "movsq" &&
+            form.family != "stosb" &&
+            form.family != "stosq" {
+            return bad_operands
+        }
+        (mut out.data).push(243 as byte)
+    }
+    if mem.address32 { (mut out.data).push(103 as byte) }
+    if form.prefix != 0 { (mut out.data).push(form.prefix as byte) }
+    if rex != 0 || force_rex { (mut out.data).push((64 + rex) as byte) }
+    for i in 0..form.opcode.len {
+        var b = form.opcode[i]
+        if i == form.opcode.len - 1 && form.opcode_operand >= 0 { b += opcode_register % 8 }
+        (mut out.data).push(b as byte)
+    }
+    for b in mem.data { (mut out.data).push(b) }
+    if mem.displacement > 0 {
+        field(
+            mut out,
+            values[form.rm_operand],
+            mem.displacement,
+            mem.pcrel,
+            false,
+            mode == 64 && !mem.address32,
+        )?
+    }
+    if form.family == "ljmp" {
+        if ops.len != 2 || ops[0].kind != "immediate" || ops[1].kind != "immediate" {
+            return bad_operands
+        }
+        field(mut out, values[1], 4, false, false, false)?
+        field(mut out, values[0], 2, false, false, false)?
+    } else if form.immediate > 0 {
+        if form.immediate_operand < 0 || form.immediate_operand >= ops.len { return invalid_table }
+        let i = form.immediate_operand
+        let relative = form.role == "relative8" || form.role == "relative32"
+        var value = copy values[i]
+        if value.section == "ABS" && form.immediate_kind == "sign-extend" && form.immediate < 8 {
+            let mask = (1 as u64 << (form.immediate * 8) as u64) - 1
+            let low = eval.bits(value.number) & mask
+            let sign = 1 as u64 << (form.immediate * 8 - 1) as u64
+            value.number = if low & sign != 0 {
+                eval.Number { magnitude: (!low & mask) + 1, negative: true }
+            } else {
+                eval.Number { magnitude: low, negative: false }
+            }
+        }
+        field(
+            mut out,
+            value,
+            form.immediate,
+            relative,
+            relative,
+            form.bits == 64 && form.immediate == 4,
+        )?
+    }
+    let length = out.data.len
+    if length > 15 { return encoding_range }
+    for i in 0..out.fixups.len {
+        if out.fixups[i].pcrel { out.fixups[i].bias = length - out.fixups[i].offset }
+    }
+    out
+}

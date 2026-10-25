@@ -1,0 +1,32 @@
+/// One architecturally documented NOP sequence; gas's alignment policy is separate.
+pub struct Padding {
+    volume: str,
+    section: str,
+    page: str,
+    citation: str,
+    bytes: List[int],
+}
+
+/// SDM Table 4-12 gives lengths 2..9; the opcode table gives single-byte 90.
+/// Never extrapolate repeated prefixes to arbitrary lengths from these rows.
+pub fn padding(size: int) -> Padding ! {unknown_form} {
+    let bytes = match size {
+        1 => [144],
+        2 => [102, 144],
+        3 => [15, 31, 0],
+        4 => [15, 31, 64, 0],
+        5 => [15, 31, 68, 0, 0],
+        6 => [102, 15, 31, 68, 0, 0],
+        7 => [15, 31, 128, 0, 0, 0, 0],
+        8 => [15, 31, 132, 0, 0, 0, 0, 0],
+        9 => [102, 15, 31, 132, 0, 0, 0, 0, 0],
+        _ => return unknown_form,
+    }
+    Padding {
+        volume: "2B",
+        section: "4.3 NOP",
+        page: "4-167",
+        citation: "NP 90; NP 0F 1F /0; Table 4-12 recommended multi-byte sequences in modes32/64",
+        bytes: bytes,
+    }
+}

@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+"""Generate a source witness for every encoding row and each admitted mode."""
+import json,pathlib,re,subprocess
+from elf import ELF
+ROOT=pathlib.Path(__file__).resolve().parents[1]
+out=ROOT/'target/evidence/table';out.mkdir(parents=True,exist_ok=True)
+rows=re.findall(r'"([^"\n]+\|[^"\n]+)"',(ROOT/'src/x86table/rows.lu').read_text())
+assert rows
+suffix={8:'b',16:'w',32:'l',64:'q'}
+results=[]
+for index,row in enumerate(rows):
+    f=row.split('|');family,role,bits=f[4],f[5],int(f[6]);pattern=f[20];immediate_kind=f[21]
+    for mode in map(int,f[7].split(',')):
+        base='%rax' if mode==64 else '%eax'
+        register={8:'%cl',16:'%cx',32:'%ecx',64:'%rcx',128:'%xmm1'}
+        acc={8:'%al',16:'%ax',32:'%eax',64:'%rax'}
+        mnemonic=family
+        if family in {'add','and','or','sub','xor','cmp','test','mov','lea','inc','dec','neg','div','imul','shl','shr','bt','push','pop','in','out','nop'} and bits:
+            mnemonic+=suffix[bits]
+        if family=='movabs':mnemonic='movabsq'
+        if family=='movzx':mnemonic='movzbl' if role=='rm8_reg' else 'movzwl'
+        if family=='movsxd':mnemonic='movslq'
+        if family=='setb':mnemonic='setb'
+        operands=[]
+        for p in ([] if pattern=='none' else pattern.split(',')):
+            if p=='imm':
+                value=3
+                if role in {'imm8','imm8_rm','imm8_rm_reg','shift1'}:value=1
+                elif role in {'imm_rm','imm_acc','imm_rm_reg','imm'} and bits>8:value=256
+                if family in {'mov','movabs'} and bits==64 and role=='imm_reg':value=0x123456789abcdef
+                if family=='bt':value=3
+                operands.append('$'+str(value))
+            elif p=='relative':operands.append('.+2' if role=='relative8' else '.+4096')
+            elif p=='cl':operands.append('%cl')
+            elif p=='dx':operands.append('%dx')
+            elif p=='control':operands.append('%cr3')
+            elif p=='segment':operands.append('%ds')
+            elif p in ('port8','selector16','offset32'):operands.append('$'+str({'port8':97,'selector16':8,'offset32':0x12345678}[p]))
+            elif p=='moffs32':operands.append('4096')
+            elif p=='xmm128':operands.append('%xmm1')
+            elif p=='xmmrm128':operands.append('('+base+')')
+            elif p.startswith('acc'):operands.append(acc[int(p[3:])])
+            elif p.startswith('indirect-rm'):operands.append('*('+base+')')
+            elif p=='mem' or p.startswith('rm'):operands.append('('+base+')')
+            elif p.startswith('r'):operands.append(register[int(p[1:])])
+            else:raise AssertionError(p)
+        # RDRAND's /6 is register-only; its table pattern is already rN.
+        text=mnemonic+(' '+','.join(operands) if operands else '')
+        src=out/f'{index}-{mode}.S';obj=src.with_suffix('.o');src.write_text(f'.code{mode}\n{text}\n')
+        gas=subprocess.run(['as','--64',str(src),'-o',str(obj)],capture_output=True,text=True)
+        ours=subprocess.run([str(ROOT/'target/table-cli'),str(index),str(mode),text],capture_output=True,text=True)
+        expected=next(s[-1] for s in ELF(obj).normalized()['sections'] if s[0]=='.text') if gas.returncode==0 else None
+        ok=gas.returncode==0 and ours.returncode==0 and ours.stdout.strip()==expected
+        result={'row':index,'family':family,'role':role,'bits':bits,'mode':mode,'source':text,'gas_status':gas.returncode,'clef_status':ours.returncode,'gas_bytes':expected,'clef_bytes':ours.stdout.strip(),'equal':ok,'diagnostic':gas.stderr+ours.stderr,'provenance':f[:4]}
+        results.append(result)
+        if not ok:print('FAIL',json.dumps(result),flush=True)
+(out/'rows.json').write_text(json.dumps(results,indent=2)+'\n')
+covered={r['row'] for r in results if r['equal']};passed=sum(r['equal'] for r in results)
+print(f'table: {passed}/{len(results)} row×mode byte differentials; {len(covered)}/{len(rows)} rows witnessed',flush=True)
+raise SystemExit(0 if all(r['equal'] for r in results) else 1)

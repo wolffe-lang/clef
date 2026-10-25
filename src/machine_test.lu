@@ -1,0 +1,105 @@
+//! member: false
+
+use dialect
+use eval
+use lex
+use machine
+use x86table
+
+fn encode(text: str, mode: int) -> machine.Encoded ! {
+    Syntax(lex.Failure),
+    bad_operands,
+    encoding_range,
+    unknown_form,
+    invalid_table,
+    bad_expression,
+    expression_overflow,
+    division_by_zero,
+    unresolved_expression,
+    cross_section_algebra,
+    expression_depth,
+    cyclic_set,
+} {
+    let rows = lex.source(text, "instruction.S")?
+    let node = dialect.statement(rows[0])?
+    var values = List[eval.Value]()
+    var known = List[bool]()
+    for op in node.operands {
+        let value = if op.kind == "register" {
+            eval.absolute(0)
+        } else {
+            eval.evaluate(op.displacement, Map[str, eval.Value](), eval.absolute(0))?
+        }
+        (mut known).push(value.known)
+        (mut values).push(value)
+    }
+    let forms = x86table.load_all()?
+    let form = machine.choose(forms, node, mode, values, known, false)?
+    machine.emit(form, node, mode, values, known)?
+}
+
+fn main() -> int ! {
+    Syntax(lex.Failure),
+    bad_operands,
+    encoding_range,
+    unknown_form,
+    invalid_table,
+    bad_expression,
+    expression_overflow,
+    division_by_zero,
+    unresolved_expression,
+    cross_section_algebra,
+    expression_depth,
+    cyclic_set,
+} {
+    let mov = encode("movq $4096,%rsp", 64)?
+    assert(
+        mov.data.len == 7 &&
+            mov.data[0] == 72 as byte &&
+            mov.data[1] == 199 as byte &&
+            mov.data[2] == 196 as byte,
+    )
+    let lea = encode("leaq 8(%rsi,%rdi,8),%rdx", 64)?
+    assert(lea.data.len == 5 && lea.data[3] == 254 as byte && lea.data[4] == 8 as byte)
+    let low8 = encode("movb %dil,(%rax)", 64)?
+    assert(low8.data.len == 3 && low8.data[0] == 64 as byte)
+    let control = encode("movq %cr0,%rax", 64)?
+    assert(control.data.len == 3 && control.data[0] == 15 as byte && control.data[1] == 32 as byte)
+    let abs32 = encode("movl %eax,label", 32)?
+    assert(
+        abs32.data.len == 5 &&
+            abs32.data[0] == 163 as byte &&
+            abs32.fixups.len == 1 &&
+            abs32.fixups[0].offset == 1,
+    )
+    let inc32 = encode("incl %ecx", 32)?
+    assert(inc32.data.len == 1 && inc32.data[0] == 65 as byte)
+    let near = encode("call external", 64)?
+    assert(near.data.len == 5 && near.fixups[0].bias == 4 && near.fixups[0].branch)
+    let rip = encode("cmpb $1,data(%rip)", 64)?
+    assert(rip.data.len == 7 && rip.fixups[0].bias == 5 && rip.fixups[0].offset == 2)
+    let cmp32 = encode("cmpl $0xffffffff,%eax", 64)?
+    assert(cmp32.data.len == 3 && cmp32.data[0] == 131 as byte && cmp32.data[2] == 255 as byte)
+    let mov64 = encode("movq $0xffffffffffffffff,%rax", 64)?
+    assert(mov64.data.len == 7 && mov64.data[1] == 199 as byte)
+    let xmm = encode("movdqu %xmm15,(%r12)", 64)?
+    assert(xmm.data.len == 6 && xmm.data[0] == 243 as byte && xmm.data[1] == 69 as byte)
+    for text in [
+        "movq %eax,%rax",
+        "movq %xmm0,%rax",
+        "movb %ah,%r8b",
+        "outb %bl,%dx",
+        "inb %cx,%al",
+        "shrq %dl,%rax",
+        "rep ret",
+        "movw %ax,%cs",
+    ] {
+        var refused = false
+        let _ = encode(text, 64) else { refused = true; machine.Encoded { data: [], fixups: [] } }
+        assert(refused)
+    }
+    print(
+        "machine: SDM rows, typed widths, ModRM/SIB/REX, code32, immediates and relocation-field biases pass",
+    )
+    0
+}

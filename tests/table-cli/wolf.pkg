@@ -1,0 +1,6 @@
+pkg {
+    name: "table_cli",
+    edition: "1",
+    capabilities: [env],
+    deps: {lex: {path: "../../src/lex"}, dialect: {path: "../../src/dialect"}, eval: {path: "../../src/eval"}, machine: {path: "../../src/machine"}, x86table: {path: "../../src/x86table"}},
+}

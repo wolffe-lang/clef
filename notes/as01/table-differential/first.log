@@ -1,0 +1,4 @@
+wolf build: note: ld.lld not found on PATH — linking with the system linker (lld ships with the toolchain; packaging is c13)
+FAIL {"row": 141, "family": "mov", "role": "segment_reg", "bits": 64, "mode": 64, "source": "movq %ds,%rcx", "gas_status": 0, "clef_status": 0, "gas_bytes": "8cd9", "clef_bytes": "488cd9", "equal": false, "diagnostic": "", "provenance": ["2B", "4.3 MOV", "4-35..4-36", "8C /r; MOV r16/r32/m16,Sreg; REX.W + 8C for r64/m16"]}
+FAIL {"row": 142, "family": "mov", "role": "reg_segment", "bits": 64, "mode": 64, "source": "movq %rcx,%ds", "gas_status": 0, "clef_status": 0, "gas_bytes": "8ed9", "clef_bytes": "488ed9", "equal": false, "diagnostic": "", "provenance": ["2B", "4.3 MOV", "4-35..4-36", "8E /r MOV Sreg,r/m16; REX.W + 8E /r lower16 of r/m64; CS destination forbidden"]}
+table: 528/530 row×mode byte differentials; 310/312 rows witnessed

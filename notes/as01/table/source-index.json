@@ -1,0 +1,28 @@
+{
+  "instruction_source": {
+    "title": "Intel 64 and IA-32 Architectures Software Developer's Manual, combined Volume 2",
+    "edition": "325383-086US, December 2024",
+    "official_pdf": "https://cdrdv2-public.intel.com/843829/325383-sdm-vol-2abcd-dec-24.pdf",
+    "pdf_sha256_from_docs_sources": "55b64951731ef661f8a7922b665e649715e3b3a7db06e4ff15158b875ccd1dce",
+    "method": "Read individual entry opcode tables, operand-encoding columns and descriptions; transcribe encoding rows with printed volume/section/page and opcode row. Excerpts are retained locally, not redistributed.",
+    "chapter_note": "Volume 2D instruction entries are section 6.1, not 6.2. The chapter heading was checked in the source text."
+  },
+  "dialect_sources": [
+    {
+      "url": "https://sourceware.org/binutils/docs/as/i386_002dMnemonics.html",
+      "section": "9.16.4.1 Instruction Naming",
+      "use": "Explicit suffix and extending-move spelling normalization; not opcode bytes."
+    },
+    {
+      "url": "https://sourceware.org/binutils/docs/as/i386_002dVariations.html",
+      "section": "9.16.3.1 AT&T Syntax versus Intel Syntax",
+      "use": "Operand order, indirect star, movabs, ljmp and lret spelling; not opcode bytes."
+    }
+  ],
+  "policy_source": "docs/FORMATS.md and tools/table-test: 530 row-by-mode binary comparisons, including omission of redundant REX.W on 64-bit segment-register aliases.",
+  "coverage_source": "census/org-asm.json; source-level statements from own-org assembly inputs",
+  "not_claimed": [
+    "decoder completeness",
+    "CPU execution support"
+  ]
+}

@@ -1,0 +1,5 @@
+pkg {
+    name: "machine",
+    edition: "1",
+    deps: {dialect: {path: "../dialect"}, eval: {path: "../eval"}, x86table: {path: "../x86table"}},
+}

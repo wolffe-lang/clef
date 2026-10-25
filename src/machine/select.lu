@@ -1,0 +1,271 @@
+use dialect
+use eval
+use x86table
+
+fn memory(op: dialect.Operand) -> bool {
+    op.kind == "memory" || op.kind == "expression"
+}
+
+fn reg(op: dialect.Operand, family: str, bits: int) -> bool {
+    op.kind == "register" && op.reg.family == family && op.reg.bits == bits
+}
+
+/// Whether a short sign-extended immediate preserves the logical operand bit pattern.
+pub fn sign_extended_fits(n: eval.Number, width: int, bits: int) -> bool {
+    if bits < 8 || bits > 64 || width * 8 > bits || !field_fits(n, bits / 8) { return false }
+    let raw = eval.bits(n)
+    let full: u64 = if bits == 64 then 18446744073709551615 else (1 as u64 << bits as u64) - 1
+    let mask: u64 = if width == 8 {
+        18446744073709551615
+    } else {
+        (1 as u64 << (width * 8) as u64) - 1
+    }
+    let low = raw & mask
+    let sign = 1 as u64 << (width * 8 - 1) as u64
+    let extended = if low & sign != 0 then (low | !mask) & full else low
+    extended == raw & full
+}
+
+fn short_imm(values: List[eval.Value], known: List[bool], index: int, bits: int) -> bool {
+    index < values.len &&
+        index < known.len &&
+        known[index] &&
+        values[index].section == "ABS" &&
+        sign_extended_fits(values[index].number, 1, bits)
+}
+
+fn operand_matches(pattern: str, op: dialect.Operand) -> bool {
+    if pattern.starts_with("indirect-") {
+        if !op.indirect { return false }
+        let width = pattern[11..].to_int() else { return false }
+        return reg(op, "gpr", width) || memory(op)
+    }
+    if op.indirect { return false }
+    if pattern == "imm" || pattern == "port8" || pattern == "selector16" || pattern == "offset32" {
+        return op.kind == "immediate"
+    }
+    if pattern == "relative" { return op.kind == "expression" }
+    if pattern == "mem" { return memory(op) }
+    if pattern == "moffs32" { return op.kind == "expression" }
+    if pattern == "control" { return op.kind == "register" && op.reg.family == "control" }
+    if pattern == "segment" { return op.kind == "register" && op.reg.family == "segment" }
+    if pattern == "cl" { return op.kind == "register" && op.reg.name == "%cl" }
+    if pattern == "dx" { return op.kind == "register" && op.reg.name == "%dx" }
+    if pattern == "xmm128" { return reg(op, "xmm", 128) }
+    if pattern == "xmmrm128" { return reg(op, "xmm", 128) || memory(op) }
+    if pattern.starts_with("acc") {
+        let width = pattern[3..].to_int() else { return false }
+        return reg(op, "gpr", width) && op.reg.code == 0
+    }
+    if pattern.starts_with("rm") {
+        let width = pattern[2..].to_int() else { return false }
+        return reg(op, "gpr", width) || memory(op)
+    }
+    if pattern.starts_with("r") {
+        let width = pattern[1..].to_int() else { return false }
+        return reg(op, "gpr", width)
+    }
+    false
+}
+
+fn validate(
+    form: x86table.Form,
+    node: dialect.Node,
+    values: List[eval.Value],
+    known: List[bool],
+) -> () ! Errors {
+    let pattern = if form.operands == "none" then List[str]() else form.operands.split(",")
+    if node.operands.len != pattern.len || values.len != pattern.len || known.len != pattern.len {
+        return bad_operands
+    }
+    for i in 0..pattern.len {
+        if !operand_matches(pattern[i], node.operands[i]) { return bad_operands }
+    }
+    if form.role == "reg_segment" && node.operands[1].reg.name == "%cs" { return bad_operands }
+    if form.immediate_operand >= 0 &&
+        form.immediate_kind != "relative" &&
+        form.immediate_kind != "far-pointer" {
+        let i = form.immediate_operand
+        if values[i].section == "ABS" {
+            let n = copy values[i].number
+            if form.immediate_kind == "sign-extend" &&
+                !sign_extended_fits(n, form.immediate, form.bits) {
+                return encoding_range
+            }
+            if form.immediate_kind == "unsigned" && (n.negative || !field_fits(n, form.immediate)) {
+                return encoding_range
+            }
+        }
+    }
+    if form.guard.contains("known-signed8") &&
+        !short_imm(values, known, form.immediate_operand, form.bits) {
+        return bad_operands
+    }
+    if form.guard.contains("known-exact1") &&
+        (
+            !known[0] ||
+                values[0].section != "ABS" ||
+                values[0].number.negative ||
+                values[0].number.magnitude != 1
+        ) {
+        return bad_operands
+    }
+}
+
+/// Select gas's canonical row without confusing final values with first-pass availability.
+pub fn choose(
+    forms: List[x86table.Form],
+    node: dialect.Node,
+    mode: int,
+    values: List[eval.Value],
+    known: List[bool],
+    short_branch: bool,
+) -> x86table.Form ! Errors {
+    let alias = x86table.alias(node.name)?
+    let family = alias.family
+    var bits = alias.bits
+    var role = alias.role
+    let ops = copy node.operands
+    if values.len != ops.len || known.len != ops.len { return bad_operands }
+    if role == "select" {
+        if family == "call" || family == "jmp" || family.starts_with("j") && family != "ljmp" {
+            if ops.len != 1 { return bad_operands }
+            if ops[0].indirect {
+                if family != "call" && family != "jmp" { return bad_operands }
+                role = "indirect"
+                bits = mode
+            } else {
+                role = if short_branch && family != "call" then "relative8" else "relative32"
+                bits = 0
+            }
+        } else {
+            if bits == 0 {
+                for op in ops {
+                    if op.kind == "register" && op.reg.family == "gpr" { bits = op.reg.bits }
+                }
+                if bits == 0 && (family == "push" || family == "pop") { bits = mode }
+            }
+            if family == "push" || family == "pop" {
+                if ops.len != 1 { return bad_operands }
+                if ops[0].kind == "register" {
+                    role = "reg"
+                } else if ops[0].kind == "immediate" && family == "push" {
+                    role = if short_imm(values, known, 0, bits) then "imm8" else "imm"
+                } else {
+                    role = "rm"
+                }
+            } else if family == "inc" ||
+                family == "dec" ||
+                family == "div" ||
+                family == "neg" ||
+                family == "rdrand" ||
+                family == "ltr" ||
+                family == "setb" {
+                if ops.len != 1 { return bad_operands }
+                role = if mode == 32 &&
+                    bits == 32 &&
+                    ops[0].kind == "register" &&
+                    (family == "inc" || family == "dec") {
+                    "reg"
+                } else {
+                    "rm"
+                }
+            } else if family == "imul" {
+                if ops.len != 3 { return bad_operands }
+                role = if short_imm(values, known, 0, bits) then "imm8_rm_reg" else "imm_rm_reg"
+            } else if family == "shl" || family == "shr" {
+                if ops.len != 2 { return bad_operands }
+                if ops[0].kind == "register" {
+                    role = "shift_cl"
+                } else if known[0] &&
+                    values[0].section == "ABS" &&
+                    !values[0].number.negative &&
+                    values[0].number.magnitude == 1 {
+                    role = "shift1"
+                } else {
+                    role = "shift_imm"
+                }
+            } else if family == "in" || family == "out" {
+                if ops.len != 2 { return bad_operands }
+                if family == "in" {
+                    role = if ops[0].kind == "register" then "dx_acc" else "imm_acc"
+                } else {
+                    role = if ops[1].kind == "register" then "acc_dx" else "acc_imm"
+                }
+            } else {
+                if ops.len != 2 { return bad_operands }
+                if family == "mov" && ops[0].kind == "register" && ops[0].reg.family == "control" {
+                    role = "control_reg"
+                } else if family == "mov" &&
+                    ops[1].kind == "register" &&
+                    ops[1].reg.family == "control" {
+                    role = "reg_control"
+                } else if family == "mov" &&
+                    ops[0].kind == "register" &&
+                    ops[0].reg.family == "segment" {
+                    role = "segment_reg"
+                } else if family == "mov" &&
+                    ops[1].kind == "register" &&
+                    ops[1].reg.family == "segment" {
+                    role = "reg_segment"
+                } else if family == "mov" &&
+                    mode == 32 &&
+                    bits == 32 &&
+                    ops[0].kind == "expression" &&
+                    reg(ops[1], "gpr", 32) &&
+                    ops[1].reg.code == 0 {
+                    role = "moffs_acc"
+                } else if family == "mov" &&
+                    mode == 32 &&
+                    bits == 32 &&
+                    ops[1].kind == "expression" &&
+                    reg(ops[0], "gpr", 32) &&
+                    ops[0].reg.code == 0 {
+                    role = "acc_moffs"
+                } else if family == "lea" {
+                    role = "rm_reg"
+                } else if ops[0].kind == "immediate" {
+                    if family == "mov" {
+                        if ops[1].kind == "register" && bits != 64 {
+                            role = "imm_reg"
+                        } else if ops[1].kind == "register" &&
+                            values[0].section == "ABS" &&
+                            !sign_extended_fits(values[0].number, 4, 64) {
+                            role = "imm_reg"
+                        } else {
+                            role = "imm_rm"
+                        }
+                    } else if family != "test" &&
+                        family != "bt" &&
+                        bits > 8 &&
+                        short_imm(values, known, 0, bits) {
+                        role = "imm8_rm"
+                    } else if family != "bt" && ops[1].kind == "register" && ops[1].reg.code == 0 {
+                        role = "imm_acc"
+                    } else {
+                        role = "imm_rm"
+                    }
+                } else if ops[0].kind == "register" {
+                    role = "reg_rm"
+                } else {
+                    role = "rm_reg"
+                }
+            }
+        }
+    }
+    let form = x86table.lookup_in(forms, family, role, bits, mode)?
+    validate(form, node, values, known)?
+    form
+}
+
+/// Validate and emit an explicit table row for generated two-direction table witnesses.
+pub fn encode_row(
+    form: x86table.Form,
+    node: dialect.Node,
+    mode: int,
+    values: List[eval.Value],
+    known: List[bool],
+) -> Encoded ! Errors {
+    validate(form, node, values, known)?
+    emit(form, node, mode, values, known)?
+}

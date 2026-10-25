@@ -1,0 +1,2 @@
+wolf build: note: ld.lld not found on PATH — linking with the system linker (lld ships with the toolchain; packaging is c13)
+table: 530/530 row×mode byte differentials; 312/312 rows witnessed

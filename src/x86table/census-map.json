@@ -1,0 +1,6974 @@
+{
+  "schema": 1,
+  "status": "declarative coverage map; NOT a differential-test result",
+  "sdm_edition": "325383-086US December 2024",
+  "counts": {
+    "census_spellings": 112,
+    "census_forms": 189,
+    "encoding_rows": 312,
+    "forms_with_candidates": 189
+  },
+  "forms": [
+    {
+      "observed_form": "add gpr64,gpr64",
+      "spelling": "add",
+      "family": "add",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "add",
+          "role": "reg_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 ADD",
+            "page": "3-32",
+            "opcode_row": "REX.W + 01 /r ADD r/m64, r64"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "add     %rcx, %rax"
+      ]
+    },
+    {
+      "observed_form": "add immediate,gpr32",
+      "spelling": "add",
+      "family": "add",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "add",
+          "role": "imm_rm",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 ADD",
+            "page": "3-32",
+            "opcode_row": "81 /0 id ADD r/m32, imm32"
+          }
+        },
+        {
+          "family": "add",
+          "role": "imm_acc",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 ADD",
+            "page": "3-32",
+            "opcode_row": "05 id ADD accumulator, imm32"
+          }
+        },
+        {
+          "family": "add",
+          "role": "imm8_rm",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 ADD",
+            "page": "3-32",
+            "opcode_row": "83 /0 ib ADD r/m32, imm8"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "add     $48, %edi"
+      ]
+    },
+    {
+      "observed_form": "add immediate,gpr64",
+      "spelling": "add",
+      "family": "add",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "add",
+          "role": "imm_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 ADD",
+            "page": "3-32",
+            "opcode_row": "REX.W + 81 /0 id ADD r/m64, imm32"
+          }
+        },
+        {
+          "family": "add",
+          "role": "imm_acc",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 ADD",
+            "page": "3-32",
+            "opcode_row": "REX.W + 05 id ADD accumulator, imm32"
+          }
+        },
+        {
+          "family": "add",
+          "role": "imm8_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 ADD",
+            "page": "3-32",
+            "opcode_row": "REX.W + 83 /0 ib ADD r/m64, imm8"
+          }
+        }
+      ],
+      "site_count": 3,
+      "statements": [
+        "add     $1, %rcx",
+        "add     $8, %rsp"
+      ]
+    },
+    {
+      "observed_form": "addb immediate,gpr8",
+      "spelling": "addb",
+      "family": "add",
+      "bits": 8,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "add",
+          "role": "imm_rm",
+          "bits": 8,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 ADD",
+            "page": "3-32",
+            "opcode_row": "80 /0 ib ADD r/m8, imm8"
+          }
+        },
+        {
+          "family": "add",
+          "role": "imm_acc",
+          "bits": 8,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 ADD",
+            "page": "3-32",
+            "opcode_row": "04 ib ADD accumulator, imm8"
+          }
+        }
+      ],
+      "site_count": 5,
+      "statements": [
+        "addb    $'0', %al",
+        "addb    $'0', %dl",
+        "addb    $0x30, %dl"
+      ]
+    },
+    {
+      "observed_form": "addl immediate,gpr32",
+      "spelling": "addl",
+      "family": "add",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "add",
+          "role": "imm_rm",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 ADD",
+            "page": "3-32",
+            "opcode_row": "81 /0 id ADD r/m32, imm32"
+          }
+        },
+        {
+          "family": "add",
+          "role": "imm_acc",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 ADD",
+            "page": "3-32",
+            "opcode_row": "05 id ADD accumulator, imm32"
+          }
+        },
+        {
+          "family": "add",
+          "role": "imm8_rm",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 ADD",
+            "page": "3-32",
+            "opcode_row": "83 /0 ib ADD r/m32, imm8"
+          }
+        }
+      ],
+      "site_count": 3,
+      "statements": [
+        "addl    $'0', %edi",
+        "addl    $('a' - 10 - '0'), %edi",
+        "addl    $0x30, %eax"
+      ]
+    },
+    {
+      "observed_form": "addq gpr64,gpr64",
+      "spelling": "addq",
+      "family": "add",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "add",
+          "role": "reg_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 ADD",
+            "page": "3-32",
+            "opcode_row": "REX.W + 01 /r ADD r/m64, r64"
+          }
+        }
+      ],
+      "site_count": 4,
+      "statements": [
+        "addq    %rax, %rbx",
+        "addq    %rbx, %rsi",
+        "addq    %rcx, %rax",
+        "addq    %rcx, %rbx"
+      ]
+    },
+    {
+      "observed_form": "addq immediate,gpr64",
+      "spelling": "addq",
+      "family": "add",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "add",
+          "role": "imm_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 ADD",
+            "page": "3-32",
+            "opcode_row": "REX.W + 81 /0 id ADD r/m64, imm32"
+          }
+        },
+        {
+          "family": "add",
+          "role": "imm_acc",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 ADD",
+            "page": "3-32",
+            "opcode_row": "REX.W + 05 id ADD accumulator, imm32"
+          }
+        },
+        {
+          "family": "add",
+          "role": "imm8_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 ADD",
+            "page": "3-32",
+            "opcode_row": "REX.W + 83 /0 ib ADD r/m64, imm8"
+          }
+        }
+      ],
+      "site_count": 13,
+      "statements": [
+        "addq    $16, %rbx",
+        "addq    $16, %rsp",
+        "addq    $2, %rax",
+        "addq    $24, %rsp",
+        "addq    $40, %rsp",
+        "addq    $8, %rcx",
+        "addq    $8, %rsp"
+      ]
+    },
+    {
+      "observed_form": "and immediate,gpr64",
+      "spelling": "and",
+      "family": "and",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "and",
+          "role": "imm_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 AND",
+            "page": "3-78",
+            "opcode_row": "REX.W + 81 /4 id AND r/m64, imm32"
+          }
+        },
+        {
+          "family": "and",
+          "role": "imm_acc",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 AND",
+            "page": "3-78",
+            "opcode_row": "REX.W + 25 id AND accumulator, imm32"
+          }
+        },
+        {
+          "family": "and",
+          "role": "imm8_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 AND",
+            "page": "3-78",
+            "opcode_row": "REX.W + 83 /4 ib AND r/m64, imm8"
+          }
+        }
+      ],
+      "site_count": 3,
+      "statements": [
+        "and\t$-16, %rsp",
+        "and     $-16, %rsp"
+      ]
+    },
+    {
+      "observed_form": "andb immediate,gpr8",
+      "spelling": "andb",
+      "family": "and",
+      "bits": 8,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "and",
+          "role": "imm_rm",
+          "bits": 8,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 AND",
+            "page": "3-78",
+            "opcode_row": "80 /4 ib AND r/m8, imm8"
+          }
+        },
+        {
+          "family": "and",
+          "role": "imm_acc",
+          "bits": 8,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 AND",
+            "page": "3-78",
+            "opcode_row": "24 ib AND accumulator, imm8"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "andb    $0x0c, %al"
+      ]
+    },
+    {
+      "observed_form": "andl immediate,gpr32",
+      "spelling": "andl",
+      "family": "and",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "and",
+          "role": "imm_rm",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 AND",
+            "page": "3-78",
+            "opcode_row": "81 /4 id AND r/m32, imm32"
+          }
+        },
+        {
+          "family": "and",
+          "role": "imm_acc",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 AND",
+            "page": "3-78",
+            "opcode_row": "25 id AND accumulator, imm32"
+          }
+        },
+        {
+          "family": "and",
+          "role": "imm8_rm",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 AND",
+            "page": "3-78",
+            "opcode_row": "83 /4 ib AND r/m32, imm8"
+          }
+        }
+      ],
+      "site_count": 5,
+      "statements": [
+        "andl    $15, %eax",
+        "andl    $15, %edi",
+        "andl    $3, %eax"
+      ]
+    },
+    {
+      "observed_form": "andl immediate,mem[,rip64,,1,disp]",
+      "spelling": "andl",
+      "family": "and",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "and",
+          "role": "imm_rm",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 AND",
+            "page": "3-78",
+            "opcode_row": "81 /4 id AND r/m32, imm32"
+          }
+        },
+        {
+          "family": "and",
+          "role": "imm8_rm",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 AND",
+            "page": "3-78",
+            "opcode_row": "83 /4 ib AND r/m32, imm8"
+          }
+        }
+      ],
+      "site_count": 2,
+      "statements": [
+        "andl    $~(ICANON | ECHO), work+12(%rip)",
+        "andl    $~ECHO, work+12(%rip)"
+      ]
+    },
+    {
+      "observed_form": "andq immediate,gpr64",
+      "spelling": "andq",
+      "family": "and",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "and",
+          "role": "imm_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 AND",
+            "page": "3-78",
+            "opcode_row": "REX.W + 81 /4 id AND r/m64, imm32"
+          }
+        },
+        {
+          "family": "and",
+          "role": "imm_acc",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 AND",
+            "page": "3-78",
+            "opcode_row": "REX.W + 25 id AND accumulator, imm32"
+          }
+        },
+        {
+          "family": "and",
+          "role": "imm8_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 AND",
+            "page": "3-78",
+            "opcode_row": "REX.W + 83 /4 ib AND r/m64, imm8"
+          }
+        }
+      ],
+      "site_count": 8,
+      "statements": [
+        "andq    $-16, %rsp",
+        "andq    $7, %rcx"
+      ]
+    },
+    {
+      "observed_form": "btl immediate,gpr32",
+      "spelling": "btl",
+      "family": "bt",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "bt",
+          "role": "imm_rm",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 BT",
+            "page": "3-130",
+            "opcode_row": "0F BA /4 ib"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "btl     $20, %edx"
+      ]
+    },
+    {
+      "observed_form": "call expression",
+      "spelling": "call",
+      "family": "call",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "call",
+          "role": "relative32",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CALL",
+            "page": "3-139",
+            "opcode_row": "E8 cd CALL rel32"
+          }
+        }
+      ],
+      "site_count": 170,
+      "statements": [
+        "call\texit",
+        "call\tmain",
+        "call    cat",
+        "call    ch",
+        "call    check_xmm",
+        "call    copy",
+        "call    dec",
+        "call    fill_xmm",
+        "call    flush",
+        "call    hex",
+        "call    hex2",
+        "call    kmain",
+        "call    kw_interrupt",
+        "call    kw_thread_main",
+        "call    nib",
+        "call    nl",
+        "call    ok_or_bad",
+        "call    pax_interrupt",
+        "call    play_dsp_flush",
+        "call    put",
+        "call    put_byte",
+        "call    put_dec",
+        "call    put_hex4",
+        "call    put_str",
+        "call    puts",
+        "call    reset",
+        "call    s214_bump",
+        "call    say",
+        "call    sdec",
+        "call    set_work",
+        "call    streq",
+        "call    tty"
+      ]
+    },
+    {
+      "observed_form": "callq *gpr64",
+      "spelling": "callq",
+      "family": "call",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "call",
+          "role": "indirect",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CALL",
+            "page": "3-139",
+            "opcode_row": "FF /2 CALL r/m64; near64 forced-size without W"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "callq   *%r12"
+      ]
+    },
+    {
+      "observed_form": "callq expression",
+      "spelling": "callq",
+      "family": "call",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "call",
+          "role": "relative32",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CALL",
+            "page": "3-139",
+            "opcode_row": "E8 cd CALL rel32"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "callq   pax_thread_exit"
+      ]
+    },
+    {
+      "observed_form": "clac ",
+      "spelling": "clac",
+      "family": "clac",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "clac",
+          "role": "fixed",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CLAC",
+            "page": "3-157",
+            "opcode_row": "NP 0F 01 CA"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "clac"
+      ]
+    },
+    {
+      "observed_form": "cld ",
+      "spelling": "cld",
+      "family": "cld",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "cld",
+          "role": "fixed",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CLD",
+            "page": "3-159",
+            "opcode_row": "FC"
+          }
+        }
+      ],
+      "site_count": 2,
+      "statements": [
+        "cld"
+      ]
+    },
+    {
+      "observed_form": "cli ",
+      "spelling": "cli",
+      "family": "cli",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        32,
+        64
+      ],
+      "candidates": [
+        {
+          "family": "cli",
+          "role": "fixed",
+          "bits": 0,
+          "mode": 32,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CLI",
+            "page": "3-166",
+            "opcode_row": "FA"
+          }
+        },
+        {
+          "family": "cli",
+          "role": "fixed",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CLI",
+            "page": "3-166",
+            "opcode_row": "FA"
+          }
+        }
+      ],
+      "site_count": 14,
+      "statements": [
+        "cli"
+      ]
+    },
+    {
+      "observed_form": "cmpb immediate,mem[,gpr64,,1,disp]",
+      "spelling": "cmpb",
+      "family": "cmp",
+      "bits": 8,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "cmp",
+          "role": "imm_rm",
+          "bits": 8,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CMP",
+            "page": "3-179",
+            "opcode_row": "80 /7 ib CMP r/m8, imm8"
+          }
+        }
+      ],
+      "site_count": 5,
+      "statements": [
+        "cmpb    $'t', 0(%rsi)",
+        "cmpb    $'t', 1(%rsi)",
+        "cmpb    $'y', 2(%rsi)",
+        "cmpb    $0, 1(%rsi)",
+        "cmpb    $0, 3(%rsi)"
+      ]
+    },
+    {
+      "observed_form": "cmpb immediate,mem[,gpr64,gpr64,1,disp]",
+      "spelling": "cmpb",
+      "family": "cmp",
+      "bits": 8,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "cmp",
+          "role": "imm_rm",
+          "bits": 8,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CMP",
+            "page": "3-179",
+            "opcode_row": "80 /7 ib CMP r/m8, imm8"
+          }
+        }
+      ],
+      "site_count": 2,
+      "statements": [
+        "cmpb    $10, -1(%rax,%r12)",
+        "cmpb    $10, -1(%rax,%rbx)"
+      ]
+    },
+    {
+      "observed_form": "cmpb immediate,mem[,rip64,,1,disp]",
+      "spelling": "cmpb",
+      "family": "cmp",
+      "bits": 8,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "cmp",
+          "role": "imm_rm",
+          "bits": 8,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CMP",
+            "page": "3-179",
+            "opcode_row": "80 /7 ib CMP r/m8, imm8"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "cmpb    $'q', inbuf(%rip)"
+      ]
+    },
+    {
+      "observed_form": "cmpb mem[,gpr64,,1,disp],gpr8",
+      "spelling": "cmpb",
+      "family": "cmp",
+      "bits": 8,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "cmp",
+          "role": "rm_reg",
+          "bits": 8,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CMP",
+            "page": "3-179",
+            "opcode_row": "3A /r CMP r8, r/m8"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "cmpb    (%rsi), %al"
+      ]
+    },
+    {
+      "observed_form": "cmpl immediate,gpr32",
+      "spelling": "cmpl",
+      "family": "cmp",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        32,
+        64
+      ],
+      "candidates": [
+        {
+          "family": "cmp",
+          "role": "imm_rm",
+          "bits": 32,
+          "mode": 32,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CMP",
+            "page": "3-179",
+            "opcode_row": "81 /7 id CMP r/m32, imm32"
+          }
+        },
+        {
+          "family": "cmp",
+          "role": "imm_acc",
+          "bits": 32,
+          "mode": 32,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CMP",
+            "page": "3-179",
+            "opcode_row": "3D id CMP accumulator, imm32"
+          }
+        },
+        {
+          "family": "cmp",
+          "role": "imm8_rm",
+          "bits": 32,
+          "mode": 32,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CMP",
+            "page": "3-179",
+            "opcode_row": "83 /7 ib CMP r/m32, imm8"
+          }
+        },
+        {
+          "family": "cmp",
+          "role": "imm_rm",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CMP",
+            "page": "3-179",
+            "opcode_row": "81 /7 id CMP r/m32, imm32"
+          }
+        },
+        {
+          "family": "cmp",
+          "role": "imm_acc",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CMP",
+            "page": "3-179",
+            "opcode_row": "3D id CMP accumulator, imm32"
+          }
+        },
+        {
+          "family": "cmp",
+          "role": "imm8_rm",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CMP",
+            "page": "3-179",
+            "opcode_row": "83 /7 ib CMP r/m32, imm8"
+          }
+        }
+      ],
+      "site_count": 8,
+      "statements": [
+        "cmpl    $0x80000001, %eax",
+        "cmpl    $10, %edi",
+        "cmpl    $19, %ebx",
+        "cmpl    $3, %r12d",
+        "cmpl    $32, %ebx",
+        "cmpl    $512, %ecx",
+        "cmpl    $7, %eax",
+        "cmpl    $9, %eax"
+      ]
+    },
+    {
+      "observed_form": "cmpl immediate,mem[,rip64,,1,disp]",
+      "spelling": "cmpl",
+      "family": "cmp",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "cmp",
+          "role": "imm_rm",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CMP",
+            "page": "3-179",
+            "opcode_row": "81 /7 id CMP r/m32, imm32"
+          }
+        },
+        {
+          "family": "cmp",
+          "role": "imm8_rm",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CMP",
+            "page": "3-179",
+            "opcode_row": "83 /7 ib CMP r/m32, imm8"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "cmpl    $0x1f80, mxcsr_at_entry(%rip)"
+      ]
+    },
+    {
+      "observed_form": "cmpq gpr64,gpr64",
+      "spelling": "cmpq",
+      "family": "cmp",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "cmp",
+          "role": "reg_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CMP",
+            "page": "3-179",
+            "opcode_row": "REX.W + 39 /r CMP r/m64, r64"
+          }
+        }
+      ],
+      "site_count": 5,
+      "statements": [
+        "cmpq    %r9, %rcx",
+        "cmpq    %rax, %r12",
+        "cmpq    %rbx, %r12",
+        "cmpq    %rcx, %rcx"
+      ]
+    },
+    {
+      "observed_form": "cmpq gpr64,mem[,gpr64,,1,disp]",
+      "spelling": "cmpq",
+      "family": "cmp",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "cmp",
+          "role": "reg_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CMP",
+            "page": "3-179",
+            "opcode_row": "REX.W + 39 /r CMP r/m64, r64"
+          }
+        }
+      ],
+      "site_count": 5,
+      "statements": [
+        "cmpq    %rax, (%rsp)",
+        "cmpq    %rcx, 136(%rsp)",
+        "cmpq    %rdx, (%rsp)",
+        "cmpq    %rdx, 8(%rsp)"
+      ]
+    },
+    {
+      "observed_form": "cmpq gpr64,mem[,rip64,,1,disp]",
+      "spelling": "cmpq",
+      "family": "cmp",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "cmp",
+          "role": "reg_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CMP",
+            "page": "3-179",
+            "opcode_row": "REX.W + 39 /r CMP r/m64, r64"
+          }
+        }
+      ],
+      "site_count": 6,
+      "statements": [
+        "cmpq    %rax, magic(%rip)",
+        "cmpq    %rax, s_known(%rip)",
+        "cmpq    %rbx, av_entry(%rip)",
+        "cmpq    %rbx, av_phdr(%rip)",
+        "cmpq    %rbx, av_phnum(%rip)"
+      ]
+    },
+    {
+      "observed_form": "cmpq immediate,gpr64",
+      "spelling": "cmpq",
+      "family": "cmp",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "cmp",
+          "role": "imm_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CMP",
+            "page": "3-179",
+            "opcode_row": "REX.W + 81 /7 id CMP r/m64, imm32"
+          }
+        },
+        {
+          "family": "cmp",
+          "role": "imm_acc",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CMP",
+            "page": "3-179",
+            "opcode_row": "REX.W + 3D id CMP accumulator, imm32"
+          }
+        },
+        {
+          "family": "cmp",
+          "role": "imm8_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CMP",
+            "page": "3-179",
+            "opcode_row": "REX.W + 83 /7 ib CMP r/m64, imm8"
+          }
+        }
+      ],
+      "site_count": 31,
+      "statements": [
+        "cmpq    $(.Lhello_msg_end - .Lhello_msg), %rax",
+        "cmpq    $(LINE_MAX - 2), %rcx",
+        "cmpq    $-14, %rax",
+        "cmpq    $-38, %rax",
+        "cmpq    $-4, %rax",
+        "cmpq    $0, %rax",
+        "cmpq    $1, %r8",
+        "cmpq    $1, %rax",
+        "cmpq    $1, %rcx",
+        "cmpq    $1, %rsi",
+        "cmpq    $1000, %rax",
+        "cmpq    $2, %r8",
+        "cmpq    $2, %rax",
+        "cmpq    $2, %rsi",
+        "cmpq    $3, %r8",
+        "cmpq    $4096, %rax",
+        "cmpq    $AT_ENTRY, %rax",
+        "cmpq    $AT_NULL, %rax",
+        "cmpq    $AT_PAGESZ, %rax",
+        "cmpq    $AT_PHDR, %rax",
+        "cmpq    $AT_PHENT, %rax",
+        "cmpq    $AT_PHNUM, %rax",
+        "cmpq    $AT_RANDOM, %rax"
+      ]
+    },
+    {
+      "observed_form": "cmpq immediate,mem[,gpr64,,1,disp]",
+      "spelling": "cmpq",
+      "family": "cmp",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "cmp",
+          "role": "imm_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CMP",
+            "page": "3-179",
+            "opcode_row": "REX.W + 81 /7 id CMP r/m64, imm32"
+          }
+        },
+        {
+          "family": "cmp",
+          "role": "imm8_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CMP",
+            "page": "3-179",
+            "opcode_row": "REX.W + 83 /7 ib CMP r/m64, imm8"
+          }
+        }
+      ],
+      "site_count": 6,
+      "statements": [
+        "cmpq    $0, -8(%rbx)",
+        "cmpq    $0x100, 120(%rsp)",
+        "cmpq    $0x23, 144(%rsp)",
+        "cmpq    $1, (%rsp)",
+        "cmpq    $2, (%r15)",
+        "cmpq    $3, (%r15)"
+      ]
+    },
+    {
+      "observed_form": "cmpq immediate,mem[,rip64,,1,disp]",
+      "spelling": "cmpq",
+      "family": "cmp",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "cmp",
+          "role": "imm_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CMP",
+            "page": "3-179",
+            "opcode_row": "REX.W + 81 /7 id CMP r/m64, imm32"
+          }
+        },
+        {
+          "family": "cmp",
+          "role": "imm8_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CMP",
+            "page": "3-179",
+            "opcode_row": "REX.W + 83 /7 ib CMP r/m64, imm8"
+          }
+        }
+      ],
+      "site_count": 5,
+      "statements": [
+        "cmpq    $0, base_revision+16(%rip)",
+        "cmpq    $2, play_dsp_chans(%rip)",
+        "cmpq    $4096, av_pagesz(%rip)",
+        "cmpq    $56, av_phent(%rip)"
+      ]
+    },
+    {
+      "observed_form": "cmpw immediate,mem[,rip64,,1,disp]",
+      "spelling": "cmpw",
+      "family": "cmp",
+      "bits": 16,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "cmp",
+          "role": "imm_rm",
+          "bits": 16,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CMP",
+            "page": "3-179",
+            "opcode_row": "81 /7 iw CMP r/m16, imm16"
+          }
+        },
+        {
+          "family": "cmp",
+          "role": "imm8_rm",
+          "bits": 16,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CMP",
+            "page": "3-179",
+            "opcode_row": "83 /7 ib CMP r/m16, imm8"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "cmpw    $0x037f, fcw_at_entry(%rip)"
+      ]
+    },
+    {
+      "observed_form": "cpuid ",
+      "spelling": "cpuid",
+      "family": "cpuid",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "cpuid",
+          "role": "fixed",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 CPUID",
+            "page": "3-222",
+            "opcode_row": "0F A2"
+          }
+        }
+      ],
+      "site_count": 5,
+      "statements": [
+        "cpuid"
+      ]
+    },
+    {
+      "observed_form": "decl gpr32",
+      "spelling": "decl",
+      "family": "dec",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "dec",
+          "role": "rm",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 DEC",
+            "page": "3-329",
+            "opcode_row": "FF /1 DEC r/m32"
+          }
+        }
+      ],
+      "site_count": 2,
+      "statements": [
+        "decl    %ecx",
+        "decl    %edx"
+      ]
+    },
+    {
+      "observed_form": "decq gpr64",
+      "spelling": "decq",
+      "family": "dec",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "dec",
+          "role": "rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 DEC",
+            "page": "3-329",
+            "opcode_row": "REX.W + FF /1 DEC r/m64"
+          }
+        }
+      ],
+      "site_count": 8,
+      "statements": [
+        "decq    %r8",
+        "decq    %rbx",
+        "decq    %rcx",
+        "decq    %rdi",
+        "decq    %rsi"
+      ]
+    },
+    {
+      "observed_form": "divl gpr32",
+      "spelling": "divl",
+      "family": "div",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "div",
+          "role": "rm",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 DIV",
+            "page": "3-331",
+            "opcode_row": "F7 /6 DIV r/m32"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "divl    %r9d"
+      ]
+    },
+    {
+      "observed_form": "divq gpr64",
+      "spelling": "divq",
+      "family": "div",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "div",
+          "role": "rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 DIV",
+            "page": "3-331",
+            "opcode_row": "REX.W + F7 /6 DIV r/m64"
+          }
+        }
+      ],
+      "site_count": 5,
+      "statements": [
+        "divq    %r8",
+        "divq    %rcx"
+      ]
+    },
+    {
+      "observed_form": "fnstcw mem[,rip64,,1,disp]",
+      "spelling": "fnstcw",
+      "family": "fnstcw",
+      "bits": 16,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "fnstcw",
+          "role": "mem",
+          "bits": 16,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 FSTCW/FNSTCW",
+            "page": "3-448",
+            "opcode_row": "D9 /7 FNSTCW m2byte; no FWAIT"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "fnstcw  fcw_at_entry(%rip)"
+      ]
+    },
+    {
+      "observed_form": "fxrstor64 mem[,gpr64,,1,disp]",
+      "spelling": "fxrstor64",
+      "family": "fxrstor64",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "fxrstor64",
+          "role": "mem",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 FXRSTOR",
+            "page": "3-469",
+            "opcode_row": "NP REX.W + 0F AE /1 FXRSTOR64 m512byte"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "fxrstor64 (%rdi)"
+      ]
+    },
+    {
+      "observed_form": "fxsave64 mem[,gpr64,,1,disp]",
+      "spelling": "fxsave64",
+      "family": "fxsave64",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "fxsave64",
+          "role": "mem",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 FXSAVE",
+            "page": "3-472",
+            "opcode_row": "NP REX.W + 0F AE /0 FXSAVE64 m512byte"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "fxsave64 (%rdi)"
+      ]
+    },
+    {
+      "observed_form": "hlt ",
+      "spelling": "hlt",
+      "family": "hlt",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "hlt",
+          "role": "fixed",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 HLT",
+            "page": "3-499",
+            "opcode_row": "F4"
+          }
+        }
+      ],
+      "site_count": 17,
+      "statements": [
+        "hlt"
+      ]
+    },
+    {
+      "observed_form": "imulq immediate,gpr64,gpr64",
+      "spelling": "imulq",
+      "family": "imul",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "imul",
+          "role": "imm8_rm_reg",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 IMUL",
+            "page": "3-511..3-512",
+            "opcode_row": "REX.W + 6B /r ib; IMUL r64,r/m64,imm8"
+          }
+        },
+        {
+          "family": "imul",
+          "role": "imm_rm_reg",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 IMUL",
+            "page": "3-511..3-512",
+            "opcode_row": "REX.W + 69 /r id; IMUL r64,r/m64,imm32"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "imulq   $1000000, %rdx, %rdx"
+      ]
+    },
+    {
+      "observed_form": "imulq immediate,mem[,gpr64,,1,disp],gpr64",
+      "spelling": "imulq",
+      "family": "imul",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "imul",
+          "role": "imm8_rm_reg",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 IMUL",
+            "page": "3-511..3-512",
+            "opcode_row": "REX.W + 6B /r ib; IMUL r64,r/m64,imm8"
+          }
+        },
+        {
+          "family": "imul",
+          "role": "imm_rm_reg",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 IMUL",
+            "page": "3-511..3-512",
+            "opcode_row": "REX.W + 69 /r id; IMUL r64,r/m64,imm32"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "imulq   $1000, (%rsp), %rcx"
+      ]
+    },
+    {
+      "observed_form": "inb gpr16,gpr8",
+      "spelling": "inb",
+      "family": "in",
+      "bits": 8,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "in",
+          "role": "dx_acc",
+          "bits": 8,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 IN",
+            "page": "3-515",
+            "opcode_row": "EC IN accumulator8,port"
+          }
+        }
+      ],
+      "site_count": 3,
+      "statements": [
+        "inb     %dx, %al"
+      ]
+    },
+    {
+      "observed_form": "inb immediate,gpr8",
+      "spelling": "inb",
+      "family": "in",
+      "bits": 8,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "in",
+          "role": "imm_acc",
+          "bits": 8,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 IN",
+            "page": "3-515",
+            "opcode_row": "E4 ib IN accumulator8,port"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "inb     $0x61, %al"
+      ]
+    },
+    {
+      "observed_form": "incl gpr32",
+      "spelling": "incl",
+      "family": "inc",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        32,
+        64
+      ],
+      "candidates": [
+        {
+          "family": "inc",
+          "role": "rm",
+          "bits": 32,
+          "mode": 32,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 INC",
+            "page": "3-517",
+            "opcode_row": "FF /0 INC r/m32"
+          }
+        },
+        {
+          "family": "inc",
+          "role": "reg",
+          "bits": 32,
+          "mode": 32,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 INC",
+            "page": "3-517",
+            "opcode_row": "40+r; unavailable in long mode"
+          }
+        },
+        {
+          "family": "inc",
+          "role": "rm",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 INC",
+            "page": "3-517",
+            "opcode_row": "FF /0 INC r/m32"
+          }
+        }
+      ],
+      "site_count": 14,
+      "statements": [
+        "incl    %ebx",
+        "incl    %ecx",
+        "incl    %r12d",
+        "incl    %r13d"
+      ]
+    },
+    {
+      "observed_form": "incq gpr64",
+      "spelling": "incq",
+      "family": "inc",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "inc",
+          "role": "rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 INC",
+            "page": "3-517",
+            "opcode_row": "REX.W + FF /0 INC r/m64"
+          }
+        }
+      ],
+      "site_count": 16,
+      "statements": [
+        "incq    %r12",
+        "incq    %r9",
+        "incq    %rax",
+        "incq    %rcx",
+        "incq    %rdi",
+        "incq    %rdx",
+        "incq    %rsi"
+      ]
+    },
+    {
+      "observed_form": "incq mem[,rip64,,1,disp]",
+      "spelling": "incq",
+      "family": "inc",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "inc",
+          "role": "rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 INC",
+            "page": "3-517",
+            "opcode_row": "REX.W + FF /0 INC r/m64"
+          }
+        }
+      ],
+      "site_count": 2,
+      "statements": [
+        "incq    line_len(%rip)",
+        "incq    magic(%rip)"
+      ]
+    },
+    {
+      "observed_form": "inl gpr16,gpr32",
+      "spelling": "inl",
+      "family": "in",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "in",
+          "role": "dx_acc",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 IN",
+            "page": "3-515",
+            "opcode_row": "ED IN accumulator32,port"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "inl     %dx, %eax"
+      ]
+    },
+    {
+      "observed_form": "int3 ",
+      "spelling": "int3",
+      "family": "int3",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "int3",
+          "role": "fixed",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 INT n/INTO/INT3/INT1",
+            "page": "3-527",
+            "opcode_row": "CC INT3"
+          }
+        }
+      ],
+      "site_count": 2,
+      "statements": [
+        "int3"
+      ]
+    },
+    {
+      "observed_form": "invlpg mem[,gpr64,,1,disp]",
+      "spelling": "invlpg",
+      "family": "invlpg",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "invlpg",
+          "role": "mem",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 INVLPG",
+            "page": "3-544",
+            "opcode_row": "0F 01 /7 m"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "invlpg  (%rdi)"
+      ]
+    },
+    {
+      "observed_form": "iretq ",
+      "spelling": "iretq",
+      "family": "iretq",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "iretq",
+          "role": "fixed",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 IRET/IRETD/IRETQ",
+            "page": "3-549..3-550",
+            "opcode_row": "REX.W + CF"
+          }
+        }
+      ],
+      "site_count": 3,
+      "statements": [
+        "iretq"
+      ]
+    },
+    {
+      "observed_form": "ja expression",
+      "spelling": "ja",
+      "family": "ja",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "ja",
+          "role": "relative8",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 Jcc",
+            "page": "3-558;3-561",
+            "opcode_row": "77 cb JA rel8"
+          }
+        },
+        {
+          "family": "ja",
+          "role": "relative32",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 Jcc",
+            "page": "3-558;3-561",
+            "opcode_row": "0F 87 cd JA rel32"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "ja      .Lchecks"
+      ]
+    },
+    {
+      "observed_form": "jae expression",
+      "spelling": "jae",
+      "family": "jae",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "jae",
+          "role": "relative8",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 Jcc",
+            "page": "3-558;3-561",
+            "opcode_row": "73 cb JAE rel8"
+          }
+        },
+        {
+          "family": "jae",
+          "role": "relative32",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 Jcc",
+            "page": "3-558;3-561",
+            "opcode_row": "0F 83 cd JAE rel32"
+          }
+        }
+      ],
+      "site_count": 5,
+      "statements": [
+        "jae     .Lpax_iret",
+        "jae     1f",
+        "jae     2f"
+      ]
+    },
+    {
+      "observed_form": "jb expression",
+      "spelling": "jb",
+      "family": "jb",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "jb",
+          "role": "relative8",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 Jcc",
+            "page": "3-558;3-561",
+            "opcode_row": "72 cb JB rel8"
+          }
+        },
+        {
+          "family": "jb",
+          "role": "relative32",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 Jcc",
+            "page": "3-559;3-561",
+            "opcode_row": "0F 82 cd JB rel32"
+          }
+        }
+      ],
+      "site_count": 6,
+      "statements": [
+        "jb      1f",
+        "jb      2b",
+        "jb      2f",
+        "jb      5b"
+      ]
+    },
+    {
+      "observed_form": "jc expression",
+      "spelling": "jc",
+      "family": "jb",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "jb",
+          "role": "relative8",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 Jcc",
+            "page": "3-558;3-561",
+            "opcode_row": "72 cb JB rel8"
+          }
+        },
+        {
+          "family": "jb",
+          "role": "relative32",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 Jcc",
+            "page": "3-559;3-561",
+            "opcode_row": "0F 82 cd JB rel32"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "jc      2f"
+      ]
+    },
+    {
+      "observed_form": "je expression",
+      "spelling": "je",
+      "family": "je",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "je",
+          "role": "relative8",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 Jcc",
+            "page": "3-558;3-561",
+            "opcode_row": "74 cb JE rel8"
+          }
+        },
+        {
+          "family": "je",
+          "role": "relative32",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 Jcc",
+            "page": "3-559;3-561",
+            "opcode_row": "0F 84 cd JE rel32"
+          }
+        }
+      ],
+      "site_count": 23,
+      "statements": [
+        "je      1b",
+        "je      1f",
+        "je      2f",
+        "je      3f",
+        "je      4f",
+        "je      6f",
+        "je      71f",
+        "je      72f",
+        "je      7f",
+        "je      85f",
+        "je      86f",
+        "je      pax_sysret"
+      ]
+    },
+    {
+      "observed_form": "jle expression",
+      "spelling": "jle",
+      "family": "jle",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "jle",
+          "role": "relative8",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 Jcc",
+            "page": "3-558;3-561",
+            "opcode_row": "7E cb JLE rel8"
+          }
+        },
+        {
+          "family": "jle",
+          "role": "relative32",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 Jcc",
+            "page": "3-559;3-561",
+            "opcode_row": "0F 8E cd JLE rel32"
+          }
+        }
+      ],
+      "site_count": 3,
+      "statements": [
+        "jle     1f",
+        "jle     3f"
+      ]
+    },
+    {
+      "observed_form": "jmp *gpr64",
+      "spelling": "jmp",
+      "family": "jmp",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "jmp",
+          "role": "indirect",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 JMP",
+            "page": "3-563",
+            "opcode_row": "FF /4 JMP r/m64; near64 forced-size without W"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "jmp     *%rdi"
+      ]
+    },
+    {
+      "observed_form": "jmp expression",
+      "spelling": "jmp",
+      "family": "jmp",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "jmp",
+          "role": "relative32",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 JMP",
+            "page": "3-563",
+            "opcode_row": "E9 cd JMP rel32"
+          }
+        },
+        {
+          "family": "jmp",
+          "role": "relative8",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 JMP",
+            "page": "3-563",
+            "opcode_row": "EB cb JMP rel8"
+          }
+        }
+      ],
+      "site_count": 43,
+      "statements": [
+        "jmp     .Lask",
+        "jmp     1b",
+        "jmp     3b",
+        "jmp     3f",
+        "jmp     4b",
+        "jmp     6b",
+        "jmp     74f",
+        "jmp     82f",
+        "jmp     84f",
+        "jmp     cat",
+        "jmp     ch",
+        "jmp     dec",
+        "jmp     halt",
+        "jmp     kw_halt",
+        "jmp     kw_isr_common",
+        "jmp     nib",
+        "jmp     pax_halt",
+        "jmp     pax_idle",
+        "jmp     pax_isr_common",
+        "jmp     play_dsp_flush",
+        "jmp     put_str",
+        "jmp     puts",
+        "jmp     quit",
+        "jmp     spin"
+      ]
+    },
+    {
+      "observed_form": "jne expression",
+      "spelling": "jne",
+      "family": "jne",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        32,
+        64
+      ],
+      "candidates": [
+        {
+          "family": "jne",
+          "role": "relative8",
+          "bits": 0,
+          "mode": 32,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 Jcc",
+            "page": "3-558;3-561",
+            "opcode_row": "75 cb JNE rel8"
+          }
+        },
+        {
+          "family": "jne",
+          "role": "relative32",
+          "bits": 0,
+          "mode": 32,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 Jcc",
+            "page": "3-560;3-561",
+            "opcode_row": "0F 85 cd JNE rel32"
+          }
+        },
+        {
+          "family": "jne",
+          "role": "relative8",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 Jcc",
+            "page": "3-558;3-561",
+            "opcode_row": "75 cb JNE rel8"
+          }
+        },
+        {
+          "family": "jne",
+          "role": "relative32",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 Jcc",
+            "page": "3-560;3-561",
+            "opcode_row": "0F 85 cd JNE rel32"
+          }
+        }
+      ],
+      "site_count": 36,
+      "statements": [
+        "jne     .Lask",
+        "jne     .Lchecks",
+        "jne     .Lhello_exit",
+        "jne     .Lpax_iret",
+        "jne     .Lxmm_bad\\n",
+        "jne     1b",
+        "jne     1f",
+        "jne     2f",
+        "jne     3f",
+        "jne     4f",
+        "jne     61f",
+        "jne     62f",
+        "jne     63f",
+        "jne     64f",
+        "jne     65f",
+        "jne     6b",
+        "jne     6f",
+        "jne     91f",
+        "jne     bad_revision"
+      ]
+    },
+    {
+      "observed_form": "jns expression",
+      "spelling": "jns",
+      "family": "jns",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "jns",
+          "role": "relative8",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 Jcc",
+            "page": "3-558;3-561",
+            "opcode_row": "79 cb JNS rel8"
+          }
+        },
+        {
+          "family": "jns",
+          "role": "relative32",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 Jcc",
+            "page": "3-560;3-561",
+            "opcode_row": "0F 89 cd JNS rel32"
+          }
+        }
+      ],
+      "site_count": 4,
+      "statements": [
+        "jns     1b",
+        "jns     1f",
+        "jns     dec"
+      ]
+    },
+    {
+      "observed_form": "jnz expression",
+      "spelling": "jnz",
+      "family": "jne",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "jne",
+          "role": "relative8",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 Jcc",
+            "page": "3-558;3-561",
+            "opcode_row": "75 cb JNE rel8"
+          }
+        },
+        {
+          "family": "jne",
+          "role": "relative32",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 Jcc",
+            "page": "3-560;3-561",
+            "opcode_row": "0F 85 cd JNE rel32"
+          }
+        }
+      ],
+      "site_count": 16,
+      "statements": [
+        "jnz     1b",
+        "jnz     2b",
+        "jnz     2f",
+        "jnz     3f",
+        "jnz     73f",
+        "jnz     81f",
+        "jnz     83f",
+        "jnz     92b"
+      ]
+    },
+    {
+      "observed_form": "js expression",
+      "spelling": "js",
+      "family": "js",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "js",
+          "role": "relative8",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 Jcc",
+            "page": "3-558;3-561",
+            "opcode_row": "78 cb JS rel8"
+          }
+        },
+        {
+          "family": "js",
+          "role": "relative32",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 Jcc",
+            "page": "3-560;3-561",
+            "opcode_row": "0F 88 cd JS rel32"
+          }
+        }
+      ],
+      "site_count": 6,
+      "statements": [
+        "js      .Lfail",
+        "js      1f",
+        "js      4f"
+      ]
+    },
+    {
+      "observed_form": "jz expression",
+      "spelling": "jz",
+      "family": "je",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "je",
+          "role": "relative8",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 Jcc",
+            "page": "3-558;3-561",
+            "opcode_row": "74 cb JE rel8"
+          }
+        },
+        {
+          "family": "je",
+          "role": "relative32",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 Jcc",
+            "page": "3-559;3-561",
+            "opcode_row": "0F 84 cd JE rel32"
+          }
+        }
+      ],
+      "site_count": 14,
+      "statements": [
+        "jz      .Lchecks",
+        "jz      .Leof",
+        "jz      1f",
+        "jz      2b",
+        "jz      2f",
+        "jz      3f",
+        "jz      4b",
+        "jz      5f"
+      ]
+    },
+    {
+      "observed_form": "lea mem[,gpr64,,1,disp],gpr64",
+      "spelling": "lea",
+      "family": "lea",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "lea",
+          "role": "rm_reg",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 LEA",
+            "page": "3-605",
+            "opcode_row": "REX.W + 8D /r; destination operand-size independent of address-size"
+          }
+        }
+      ],
+      "site_count": 2,
+      "statements": [
+        "lea\t8(%rsp), %rsi"
+      ]
+    },
+    {
+      "observed_form": "lea mem[,gpr64,gpr64,8,disp],gpr64",
+      "spelling": "lea",
+      "family": "lea",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "lea",
+          "role": "rm_reg",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 LEA",
+            "page": "3-605",
+            "opcode_row": "REX.W + 8D /r; destination operand-size independent of address-size"
+          }
+        }
+      ],
+      "site_count": 2,
+      "statements": [
+        "lea\t8(%rsi,%rdi,8), %rdx"
+      ]
+    },
+    {
+      "observed_form": "lea mem[,rip64,,1,disp],gpr64",
+      "spelling": "lea",
+      "family": "lea",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "lea",
+          "role": "rm_reg",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 LEA",
+            "page": "3-605",
+            "opcode_row": "REX.W + 8D /r; destination operand-size independent of address-size"
+          }
+        }
+      ],
+      "site_count": 2,
+      "statements": [
+        "lea     kw_stacks(%rip), %rax",
+        "lea     kw_thread_entry(%rip), %rcx"
+      ]
+    },
+    {
+      "observed_form": "leal mem[,gpr64,,1,disp],gpr32",
+      "spelling": "leal",
+      "family": "lea",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "lea",
+          "role": "rm_reg",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 LEA",
+            "page": "3-605",
+            "opcode_row": "8D /r; destination operand-size independent of address-size"
+          }
+        }
+      ],
+      "site_count": 2,
+      "statements": [
+        "leal    -1(%rbx), %eax",
+        "leal    0x30(%r12), %eax"
+      ]
+    },
+    {
+      "observed_form": "leaq mem[,gpr64,,1,disp],gpr64",
+      "spelling": "leaq",
+      "family": "lea",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "lea",
+          "role": "rm_reg",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 LEA",
+            "page": "3-605",
+            "opcode_row": "REX.W + 8D /r; destination operand-size independent of address-size"
+          }
+        }
+      ],
+      "site_count": 4,
+      "statements": [
+        "leaq    -8(%rsp), %rsi",
+        "leaq    31(%rsp), %rdi",
+        "leaq    32(%rsp), %rsi",
+        "leaq    8(%rsp), %rax"
+      ]
+    },
+    {
+      "observed_form": "leaq mem[,gpr64,gpr64,8,disp],gpr64",
+      "spelling": "leaq",
+      "family": "lea",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "lea",
+          "role": "rm_reg",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 LEA",
+            "page": "3-605",
+            "opcode_row": "REX.W + 8D /r; destination operand-size independent of address-size"
+          }
+        }
+      ],
+      "site_count": 2,
+      "statements": [
+        "leaq    16(%r15,%rbx,8), %rbx",
+        "leaq    8(%rbx,%r12,8), %rbx"
+      ]
+    },
+    {
+      "observed_form": "leaq mem[,rip64,,1,disp],gpr64",
+      "spelling": "leaq",
+      "family": "lea",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "lea",
+          "role": "rm_reg",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 LEA",
+            "page": "3-605",
+            "opcode_row": "REX.W + 8D /r; destination operand-size independent of address-size"
+          }
+        }
+      ],
+      "site_count": 108,
+      "statements": [
+        "leaq    .Lhello_msg(%rip), %rsi",
+        "leaq    .Lspin1_begin(%rip), %rsi",
+        "leaq    .Lspin1_end(%rip), %rsi",
+        "leaq    .Lspin2_begin(%rip), %rsi",
+        "leaq    .Lspin2_end(%rip), %rsi",
+        "leaq    __ehdr_start(%rip), %rcx",
+        "leaq    _start(%rip), %rbx",
+        "leaq    big(%rip), %rcx",
+        "leaq    digits+24(%rip), %r8",
+        "leaq    digits_end(%rip), %r9",
+        "leaq    digits_end(%rip), %rcx",
+        "leaq    hexdigits(%rip), %rdx",
+        "leaq    inbuf(%rip), %rax",
+        "leaq    inbuf(%rip), %rdi",
+        "leaq    inbuf(%rip), %rsi",
+        "leaq    kw_boot_stack_top(%rip), %rsp",
+        "leaq    line(%rip), %rdi",
+        "leaq    line(%rip), %rsi",
+        "leaq    msg(%rip), %rsi",
+        "leaq    msg_bad_rev(%rip), %rsi",
+        "leaq    msg_banner(%rip), %rsi",
+        "leaq    msg_bios(%rip), %rsi",
+        "leaq    msg_none(%rip), %rsi",
+        "leaq    msg_other(%rip), %rsi",
+        "leaq    msg_uefi(%rip), %rsi",
+        "leaq    num(%rip), %rdi",
+        "leaq    num(%rip), %rsi",
+        "leaq    outbuf(%rip), %rdx",
+        "leaq    outbuf(%rip), %rsi",
+        "leaq    pax_uprog_textwrite(%rip), %rbx",
+        "leaq    play_dsp_buf(%rip), %rcx",
+        "leaq    play_dsp_buf(%rip), %rsi",
+        "leaq    play_dsp_path(%rip), %rsi",
+        "leaq    s_argc(%rip), %rsi",
+        "leaq    s_argv(%rip), %rsi",
+        "leaq    s_argv_null(%rip), %rsi",
+        "leaq    s_bad_reg(%rip), %rsi",
+        "leaq    s_bogus(%rip), %rdi",
+        "leaq    s_bss(%rip), %rsi",
+        "leaq    s_bytes(%rip), %rdi",
+        "leaq    s_cc(%rip), %rdi",
+        "leaq    s_cflag(%rip), %rdi",
+        "leaq    s_close(%rip), %rsi",
+        "leaq    s_cols(%rip), %rdi",
+        "leaq    s_data(%rip), %rsi",
+        "leaq    s_entry(%rip), %rsi",
+        "leaq    s_envp(%rip), %rsi",
+        "leaq    s_eof(%rip), %rdi",
+        "leaq    s_failed(%rip), %rdi",
+        "leaq    s_fcw(%rip), %rsi",
+        "leaq    s_iflag(%rip), %rdi",
+        "leaq    s_lflag(%rip), %rdi",
+        "leaq    s_line(%rip), %rdi",
+        "leaq    s_mxcsr(%rip), %rsi",
+        "leaq    s_noecho(%rip), %rdi",
+        "leaq    s_oflag(%rip), %rdi",
+        "leaq    s_ok(%rip), %rsi",
+        "leaq    s_pagesz(%rip), %rsi",
+        "leaq    s_phdr(%rip), %rsi",
+        "leaq    s_phent(%rip), %rsi",
+        "leaq    s_phnum(%rip), %rsi",
+        "leaq    s_prompt(%rip), %rdi",
+        "leaq    s_random(%rip), %rsi",
+        "leaq    s_raw(%rip), %rdi",
+        "leaq    s_rawb(%rip), %rdi",
+        "leaq    s_rdx_bad(%rip), %rsi",
+        "leaq    s_rdx_ok(%rip), %rsi",
+        "leaq    s_read(%rip), %rdi",
+        "leaq    s_restored(%rip), %rdi",
+        "leaq    s_rodata(%rip), %rsi",
+        "leaq    s_rows(%rip), %rdi",
+        "leaq    s_rsp_bad(%rip), %rsi",
+        "leaq    s_rsp_ok(%rip), %rsi",
+        "leaq    s_secret(%rip), %rdi",
+        "leaq    s_sp_bad(%rip), %rsi",
+        "leaq    s_sp_ok(%rip), %rsi",
+        "leaq    s_spin(%rip), %rdi",
+        "leaq    s_spin_line(%rip), %rsi",
+        "leaq    s_spin_xmm(%rip), %rsi",
+        "leaq    s_tcgets(%rip), %rdi",
+        "leaq    s_winsz(%rip), %rdi",
+        "leaq    s_xmm(%rip), %rsi",
+        "leaq    saved(%rip), %rdx",
+        "leaq    saved(%rip), %rsi",
+        "leaq    saved+17(%rip), %rax",
+        "leaq    tail(%rip), %rsi",
+        "leaq    trap_newline(%rip), %rsi",
+        "leaq    trap_prefix(%rip), %rsi",
+        "leaq    tw_area(%rip), %rax",
+        "leaq    winsz(%rip), %rdx",
+        "leaq    work(%rip), %rdi",
+        "leaq    work(%rip), %rdx"
+      ]
+    },
+    {
+      "observed_form": "lgdt expression",
+      "spelling": "lgdt",
+      "family": "lgdt",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        32
+      ],
+      "candidates": [
+        {
+          "family": "lgdt",
+          "role": "mem",
+          "bits": 0,
+          "mode": 32,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 LGDT/LIDT",
+            "page": "3-611",
+            "opcode_row": "0F 01 /2; m16&32 non-long; m16&64 long; no W"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "lgdt    kw_gdt_ptr"
+      ]
+    },
+    {
+      "observed_form": "lgdt mem[,gpr64,,1,disp]",
+      "spelling": "lgdt",
+      "family": "lgdt",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "lgdt",
+          "role": "mem",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 LGDT/LIDT",
+            "page": "3-611",
+            "opcode_row": "0F 01 /2; m16&32 non-long; m16&64 long; no W"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "lgdt    (%rdi)"
+      ]
+    },
+    {
+      "observed_form": "lidt mem[,gpr64,,1,disp]",
+      "spelling": "lidt",
+      "family": "lidt",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "lidt",
+          "role": "mem",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 LGDT/LIDT",
+            "page": "3-611",
+            "opcode_row": "0F 01 /3; m16&32 non-long; m16&64 long; no W"
+          }
+        }
+      ],
+      "site_count": 2,
+      "statements": [
+        "lidt    (%rdi)"
+      ]
+    },
+    {
+      "observed_form": "ljmp immediate,immediate",
+      "spelling": "ljmp",
+      "family": "ljmp",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        32
+      ],
+      "candidates": [
+        {
+          "family": "ljmp",
+          "role": "far",
+          "bits": 32,
+          "mode": 32,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 JMP",
+            "page": "3-563..3-564",
+            "opcode_row": "EA cp JMP ptr16:32; immediate offset32 then selector16"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "ljmp    $0x08, $kw_long"
+      ]
+    },
+    {
+      "observed_form": "lretq ",
+      "spelling": "lretq",
+      "family": "lretq",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "lretq",
+          "role": "fixed",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 RET",
+            "page": "4-566",
+            "opcode_row": "CB far return; far default32; REX.W for64 (vol2A 2.2.1)"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "lretq"
+      ]
+    },
+    {
+      "observed_form": "ltr gpr16",
+      "spelling": "ltr",
+      "family": "ltr",
+      "bits": 16,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "ltr",
+          "role": "rm",
+          "bits": 16,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 LTR",
+            "page": "3-632",
+            "opcode_row": "0F 00 /3 LTR r/m16; operand-size attribute has no effect"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "ltr     %di"
+      ]
+    },
+    {
+      "observed_form": "mov gpr32,gpr32",
+      "spelling": "mov",
+      "family": "mov",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "reg_rm",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "89 /r; MOV reg_rm; operand encoding MR/RM p.4-36"
+          }
+        }
+      ],
+      "site_count": 4,
+      "statements": [
+        "mov\t%eax, %edi",
+        "mov     %eax, %edi",
+        "mov     %r14d, %edi"
+      ]
+    },
+    {
+      "observed_form": "mov gpr64,gpr64",
+      "spelling": "mov",
+      "family": "mov",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "reg_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "REX.W + 89 /r; MOV reg_rm; operand encoding MR/RM p.4-36"
+          }
+        }
+      ],
+      "site_count": 21,
+      "statements": [
+        "mov\t%r8, %r10",
+        "mov\t%r9, %r8",
+        "mov\t%rcx, %rdx",
+        "mov\t%rdi, %rax",
+        "mov\t%rdx, %rsi",
+        "mov\t%rsi, %rdi",
+        "mov     %r12, %rdi",
+        "mov     %r12, %rsi",
+        "mov     %r13, %rdx",
+        "mov     %rcx, %r14",
+        "mov     %rdi, %rcx",
+        "mov     %rdx, %r13",
+        "mov     %rsi, %r12",
+        "mov     %rsi, %rsp",
+        "mov     %rsp, %rsi"
+      ]
+    },
+    {
+      "observed_form": "mov gpr64,mem[,gpr64,,1,disp]",
+      "spelling": "mov",
+      "family": "mov",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "reg_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "REX.W + 89 /r; MOV reg_rm; operand encoding MR/RM p.4-36"
+          }
+        }
+      ],
+      "site_count": 3,
+      "statements": [
+        "mov     %rcx, -16(%rax)",
+        "mov     %rdi, -40(%rax)",
+        "mov     %rsp, (%rdi)"
+      ]
+    },
+    {
+      "observed_form": "mov gpr64,mem[,rip64,,1,disp]",
+      "spelling": "mov",
+      "family": "mov",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "reg_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "REX.W + 89 /r; MOV reg_rm; operand encoding MR/RM p.4-36"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "mov     %rdi, s214_cell(%rip)"
+      ]
+    },
+    {
+      "observed_form": "mov gpr8,mem[,gpr64,,1,disp]",
+      "spelling": "mov",
+      "family": "mov",
+      "bits": 8,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "reg_rm",
+          "bits": 8,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "88 /r; MOV reg_rm; operand encoding MR/RM p.4-36"
+          }
+        }
+      ],
+      "site_count": 2,
+      "statements": [
+        "mov     %dil, 5(%rsp)",
+        "mov     %sil, 0(%rsp)"
+      ]
+    },
+    {
+      "observed_form": "mov immediate,gpr32",
+      "spelling": "mov",
+      "family": "mov",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "imm_rm",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "C7 /0 id; MOV r/m32, imm32"
+          }
+        },
+        {
+          "family": "mov",
+          "role": "imm_reg",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "B8+r id; MOV r32, imm32"
+          }
+        }
+      ],
+      "site_count": 14,
+      "statements": [
+        "mov     $1, %eax",
+        "mov     $1, %edi",
+        "mov     $1, %edx",
+        "mov     $60, %eax",
+        "mov     $7, %eax",
+        "mov     $7, %edx"
+      ]
+    },
+    {
+      "observed_form": "mov mem[,gpr64,,1,disp],gpr64",
+      "spelling": "mov",
+      "family": "mov",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "rm_reg",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "REX.W + 8B /r; MOV rm_reg; operand encoding MR/RM p.4-36"
+          }
+        }
+      ],
+      "site_count": 3,
+      "statements": [
+        "mov\t(%rsp), %rdi",
+        "mov\t8(%rsp), %r9"
+      ]
+    },
+    {
+      "observed_form": "movabs immediate,gpr64",
+      "spelling": "movabs",
+      "family": "movabs",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "movabs",
+          "role": "imm_reg",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "REX.W + B8+rd io; MOV r64, imm64"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "movabs  $0x7fffffffffffffff, %rax"
+      ]
+    },
+    {
+      "observed_form": "movabsq immediate,gpr64",
+      "spelling": "movabsq",
+      "family": "movabs",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "movabs",
+          "role": "imm_reg",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "REX.W + B8+rd io; MOV r64, imm64"
+          }
+        }
+      ],
+      "site_count": 12,
+      "statements": [
+        "movabsq $0x00007ffffffff000, %rcx",
+        "movabsq $0x0074696c6976616d, %rax",
+        "movabsq $0x31314e495053, %r12",
+        "movabsq $0x31314e495053, %rax",
+        "movabsq $0x32324e495053, %r12",
+        "movabsq $0x32324e495053, %rax",
+        "movabsq $0x44414f4c5f584150, %rax",
+        "movabsq $0x7fffffffffffffff, %rax",
+        "movabsq $0xffffc04000001000, %rax",
+        "movabsq $0xffffffff80000000, %rbx",
+        "movabsq $0xffffffff80000000, %rsi"
+      ]
+    },
+    {
+      "observed_form": "movb gpr8,gpr8",
+      "spelling": "movb",
+      "family": "mov",
+      "bits": 8,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "reg_rm",
+          "bits": 8,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "88 /r; MOV reg_rm; operand encoding MR/RM p.4-36"
+          }
+        }
+      ],
+      "site_count": 3,
+      "statements": [
+        "movb    %cl, %al"
+      ]
+    },
+    {
+      "observed_form": "movb gpr8,mem[,gpr64,,1,disp]",
+      "spelling": "movb",
+      "family": "mov",
+      "bits": 8,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "reg_rm",
+          "bits": 8,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "88 /r; MOV reg_rm; operand encoding MR/RM p.4-36"
+          }
+        }
+      ],
+      "site_count": 6,
+      "statements": [
+        "movb    %al, (%rdi)",
+        "movb    %al, (%rsp)",
+        "movb    %dl, (%r8)",
+        "movb    %dl, (%rcx)",
+        "movb    %dl, (%rdi)",
+        "movb    %dl, (%rsi)"
+      ]
+    },
+    {
+      "observed_form": "movb gpr8,mem[,gpr64,gpr64,1,disp]",
+      "spelling": "movb",
+      "family": "mov",
+      "bits": 8,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "reg_rm",
+          "bits": 8,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "88 /r; MOV reg_rm; operand encoding MR/RM p.4-36"
+          }
+        }
+      ],
+      "site_count": 4,
+      "statements": [
+        "movb    %al, (%rdi,%rcx)",
+        "movb    %cl, (%rdx,%rax)",
+        "movb    %dil, (%rdx,%rax)",
+        "movb    %sil, (%rax,%rdi)"
+      ]
+    },
+    {
+      "observed_form": "movb immediate,gpr8",
+      "spelling": "movb",
+      "family": "mov",
+      "bits": 8,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "imm_rm",
+          "bits": 8,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "C6 /0 ib; MOV r/m8, imm8"
+          }
+        },
+        {
+          "family": "mov",
+          "role": "imm_reg",
+          "bits": 8,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "B0+r ib; MOV r8, imm8"
+          }
+        }
+      ],
+      "site_count": 14,
+      "statements": [
+        "movb    $' ', %al",
+        "movb    $'A', %al",
+        "movb    $'P', %al",
+        "movb    $'R', %al",
+        "movb    $'T', %al",
+        "movb    $0x30, %al",
+        "movb    $0x78, %al",
+        "movb    $0x7f, %al",
+        "movb    $10, %al",
+        "movb    $EXIT_BAD_REV, %al",
+        "movb    $EXIT_OK, %al",
+        "movb    $EXIT_RETURNED, %al",
+        "movb    $EXIT_TRAP, %al"
+      ]
+    },
+    {
+      "observed_form": "movb immediate,mem[,gpr64,,1,disp]",
+      "spelling": "movb",
+      "family": "mov",
+      "bits": 8,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "imm_rm",
+          "bits": 8,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "C6 /0 ib; MOV r/m8, imm8"
+          }
+        }
+      ],
+      "site_count": 11,
+      "statements": [
+        "movb    $' ', 4(%rsp)",
+        "movb    $' ', 6(%rsp)",
+        "movb    $'-', (%rdi)",
+        "movb    $'A', 2(%rsp)",
+        "movb    $'P', 3(%rsp)",
+        "movb    $'R', 1(%rsp)",
+        "movb    $'T', 0(%rsp)",
+        "movb    $0, (%rdi)",
+        "movb    $0, (%rsi)",
+        "movb    $10, 0(%rsp)",
+        "movb    $10, 1(%rsp)"
+      ]
+    },
+    {
+      "observed_form": "movb immediate,mem[,gpr64,gpr64,1,disp]",
+      "spelling": "movb",
+      "family": "mov",
+      "bits": 8,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "imm_rm",
+          "bits": 8,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "C6 /0 ib; MOV r/m8, imm8"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "movb    $10, (%rsi,%rdx)"
+      ]
+    },
+    {
+      "observed_form": "movb immediate,mem[,rip64,,1,disp]",
+      "spelling": "movb",
+      "family": "mov",
+      "bits": 8,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "imm_rm",
+          "bits": 8,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "C6 /0 ib; MOV r/m8, imm8"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "movb    $1, work+17+VMIN(%rip)"
+      ]
+    },
+    {
+      "observed_form": "movb mem[,gpr64,,1,disp],gpr8",
+      "spelling": "movb",
+      "family": "mov",
+      "bits": 8,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "rm_reg",
+          "bits": 8,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "8A /r; MOV rm_reg; operand encoding MR/RM p.4-36"
+          }
+        }
+      ],
+      "site_count": 2,
+      "statements": [
+        "movb    (%rcx), %al",
+        "movb    (%rdi), %cl"
+      ]
+    },
+    {
+      "observed_form": "movdqu mem[,gpr64,,1,disp],xmm128",
+      "spelling": "movdqu",
+      "family": "movdqu",
+      "bits": 128,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "movdqu",
+          "role": "rm_reg",
+          "bits": 128,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOVDQU",
+            "page": "4-72;4-74",
+            "opcode_row": "F3 0F 6F /r legacy SSE; operand encoding A/B"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "movdqu  (%rsp), %xmm\\n"
+      ]
+    },
+    {
+      "observed_form": "movdqu xmm128,mem[,gpr64,,1,disp]",
+      "spelling": "movdqu",
+      "family": "movdqu",
+      "bits": 128,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "movdqu",
+          "role": "reg_rm",
+          "bits": 128,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOVDQU",
+            "page": "4-72;4-74",
+            "opcode_row": "F3 0F 7F /r legacy SSE; operand encoding A/B"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "movdqu  %xmm\\n, (%rsp)"
+      ]
+    },
+    {
+      "observed_form": "movl cr64,gpr32",
+      "spelling": "movl",
+      "family": "mov",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        32
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "control_reg",
+          "bits": 32,
+          "mode": 32,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV control registers",
+            "page": "4-39",
+            "opcode_row": "0F 20 /r; MOV r32/r64, CR0-CR7; REX.R for CR8; W and 66 ignored"
+          }
+        }
+      ],
+      "site_count": 2,
+      "statements": [
+        "movl    %cr0, %eax",
+        "movl    %cr4, %eax"
+      ]
+    },
+    {
+      "observed_form": "movl gpr32,cr64",
+      "spelling": "movl",
+      "family": "mov",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        32
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "reg_control",
+          "bits": 32,
+          "mode": 32,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV control registers",
+            "page": "4-39",
+            "opcode_row": "0F 22 /r; MOV CR0-CR7, r32/r64; REX.R for CR8; W and 66 ignored"
+          }
+        }
+      ],
+      "site_count": 3,
+      "statements": [
+        "movl    %eax, %cr0",
+        "movl    %eax, %cr3",
+        "movl    %eax, %cr4"
+      ]
+    },
+    {
+      "observed_form": "movl gpr32,expression",
+      "spelling": "movl",
+      "family": "mov",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        32
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "reg_rm",
+          "bits": 32,
+          "mode": 32,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "89 /r; MOV reg_rm; operand encoding MR/RM p.4-36"
+          }
+        },
+        {
+          "family": "mov",
+          "role": "acc_moffs",
+          "bits": 32,
+          "mode": 32,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35..4-36",
+            "opcode_row": "A3; MOV EAX/moffs32; note 3 offset width is address-size"
+          }
+        }
+      ],
+      "site_count": 2,
+      "statements": [
+        "movl    %eax, kw_pdpt",
+        "movl    %eax, kw_pml4"
+      ]
+    },
+    {
+      "observed_form": "movl gpr32,gpr32",
+      "spelling": "movl",
+      "family": "mov",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        32,
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "reg_rm",
+          "bits": 32,
+          "mode": 32,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "89 /r; MOV reg_rm; operand encoding MR/RM p.4-36"
+          }
+        },
+        {
+          "family": "mov",
+          "role": "reg_rm",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "89 /r; MOV reg_rm; operand encoding MR/RM p.4-36"
+          }
+        }
+      ],
+      "site_count": 47,
+      "statements": [
+        "movl    %eax, %eax",
+        "movl    %eax, %ebx",
+        "movl    %eax, %edi",
+        "movl    %eax, %r12d",
+        "movl    %ebx, %eax",
+        "movl    %ebx, %r8d",
+        "movl    %ecx, %eax",
+        "movl    %edi, %eax",
+        "movl    %edi, %ebx",
+        "movl    %edi, %ecx",
+        "movl    %edi, %edx",
+        "movl    %edi, %r8d",
+        "movl    %edx, %eax",
+        "movl    %esi, %eax",
+        "movl    %esi, %ecx",
+        "movl    %r12d, %edi",
+        "movl    %r13d, %edi",
+        "movl    %r8d, %eax",
+        "movl    %r8d, %ecx",
+        "movl %edi, %edx",
+        "movl %esi, %eax"
+      ]
+    },
+    {
+      "observed_form": "movl gpr32,mem[,,gpr32,8,disp]",
+      "spelling": "movl",
+      "family": "mov",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        32
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "reg_rm",
+          "bits": 32,
+          "mode": 32,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "89 /r; MOV reg_rm; operand encoding MR/RM p.4-36"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "movl    %eax, kw_pd(,%ecx,8)"
+      ]
+    },
+    {
+      "observed_form": "movl gpr32,mem[,gpr64,,1,disp]",
+      "spelling": "movl",
+      "family": "mov",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "reg_rm",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "89 /r; MOV reg_rm; operand encoding MR/RM p.4-36"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "movl    %esi, (%rsp)"
+      ]
+    },
+    {
+      "observed_form": "movl gpr32,mem[,gpr64,gpr64,1,disp]",
+      "spelling": "movl",
+      "family": "mov",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "reg_rm",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "89 /r; MOV reg_rm; operand encoding MR/RM p.4-36"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "movl    %esi, (%rax,%rdi)"
+      ]
+    },
+    {
+      "observed_form": "movl gpr32,seg16",
+      "spelling": "movl",
+      "family": "mov",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "reg_segment",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35..4-36",
+            "opcode_row": "8E /r MOV Sreg,r/m16; REX.W + 8E /r lower16 of r/m64; CS destination forbidden"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "movl    %eax, %ds"
+      ]
+    },
+    {
+      "observed_form": "movl immediate,gpr32",
+      "spelling": "movl",
+      "family": "mov",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        32,
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "imm_rm",
+          "bits": 32,
+          "mode": 32,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "C7 /0 id; MOV r/m32, imm32"
+          }
+        },
+        {
+          "family": "mov",
+          "role": "imm_reg",
+          "bits": 32,
+          "mode": 32,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "B8+r id; MOV r32, imm32"
+          }
+        },
+        {
+          "family": "mov",
+          "role": "imm_rm",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "C7 /0 id; MOV r/m32, imm32"
+          }
+        },
+        {
+          "family": "mov",
+          "role": "imm_reg",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "B8+r id; MOV r32, imm32"
+          }
+        }
+      ],
+      "site_count": 173,
+      "statements": [
+        "movl    $' ', %edi",
+        "movl    $'-', %edi",
+        "movl    $'0', %edi",
+        "movl    $'x', %edi",
+        "movl    $(.Lhello_msg_end - .Lhello_msg), %edx",
+        "movl    $(.Lspin1_begin_end - .Lspin1_begin), %edx",
+        "movl    $(.Lspin1_end_end - .Lspin1_end), %edx",
+        "movl    $(.Lspin2_begin_end - .Lspin2_begin), %edx",
+        "movl    $(.Lspin2_end_end - .Lspin2_end), %edx",
+        "movl    $(BSS_BYTES / 8), %edx",
+        "movl    $(\\n + 1), %eax",
+        "movl    $-1, %eax",
+        "movl    $-1, %edx",
+        "movl    $0x01234567, %edx",
+        "movl    $0x10, %esi",
+        "movl    $0x1234, %eax",
+        "movl    $0x1b, %ecx",
+        "movl    $0x20000000, %ebx",
+        "movl    $0x58, %edi",
+        "movl    $0x80000000, %eax",
+        "movl    $0x80000001, %eax",
+        "movl    $0x80001, %edx",
+        "movl    $0xc0000080, %ecx",
+        "movl    $0xcdef0123, %edx",
+        "movl    $0xfee1dead, %edi",
+        "movl    $1, %eax",
+        "movl    $1, %edi",
+        "movl    $1, %edx",
+        "movl    $1, %esi",
+        "movl    $1, %r10d",
+        "movl    $10, %ecx",
+        "movl    $10, %edi",
+        "movl    $10, %r8d",
+        "movl    $10, %r9d",
+        "movl    $1000, %ecx",
+        "movl    $1000000, %ecx",
+        "movl    $12, %r8d",
+        "movl    $14, %edi",
+        "movl    $156, %eax",
+        "movl    $16, %eax",
+        "movl    $16, %ecx",
+        "movl    $16, %edx",
+        "movl    $162, %eax",
+        "movl    $169, %eax",
+        "movl    $2, %edi",
+        "movl    $2, %edx",
+        "movl    $228, %eax",
+        "movl    $230, %eax",
+        "movl    $231, %eax",
+        "movl    $256, %edx",
+        "movl    $257, %eax",
+        "movl    $28, %ecx",
+        "movl    $3, %eax",
+        "movl    $3, %edi",
+        "movl    $36, %ecx",
+        "movl    $4, %edi",
+        "movl    $500, %eax",
+        "movl    $60, %eax",
+        "movl    $672274793, %esi",
+        "movl    $7, %eax",
+        "movl    $7, %edi",
+        "movl    $99, %edi",
+        "movl    $BOGUS, %esi",
+        "movl    $COUNT, %edx",
+        "movl    $KIOCSOUND, %esi",
+        "movl    $SPINS, %ecx",
+        "movl    $SYS_EXIT_GROUP, %eax",
+        "movl    $SYS_IOCTL, %eax",
+        "movl    $SYS_READ, %eax",
+        "movl    $SYS_WRITE, %eax",
+        "movl    $TCGETS, %esi",
+        "movl    $TCSETS, %esi",
+        "movl    $TIOCGWINSZ, %esi",
+        "movl    $kw_boot_stack_top, %esp",
+        "movl    $kw_pd, %eax",
+        "movl    $kw_pdpt, %eax",
+        "movl    $kw_pml4, %eax",
+        "movl    $msg_len, %edx",
+        "movl    $s_bogus_len, %esi",
+        "movl    $s_bytes_len, %esi",
+        "movl    $s_cc_len, %esi",
+        "movl    $s_cflag_len, %esi",
+        "movl    $s_cols_len, %esi",
+        "movl    $s_eof_len, %esi",
+        "movl    $s_failed_len, %esi",
+        "movl    $s_iflag_len, %esi",
+        "movl    $s_lflag_len, %esi",
+        "movl    $s_line_len, %esi",
+        "movl    $s_noecho_len, %esi",
+        "movl    $s_oflag_len, %esi",
+        "movl    $s_prompt_len, %esi",
+        "movl    $s_raw_len, %esi",
+        "movl    $s_rawb_len, %esi",
+        "movl    $s_read_len, %esi",
+        "movl    $s_restored_len, %esi",
+        "movl    $s_rows_len, %esi",
+        "movl    $s_secret_len, %esi",
+        "movl    $s_tcgets_len, %esi",
+        "movl    $s_winsz_len, %esi",
+        "movl    $tail_len, %edx"
+      ]
+    },
+    {
+      "observed_form": "movl immediate,mem[,,gpr32,8,disp]",
+      "spelling": "movl",
+      "family": "mov",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        32
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "imm_rm",
+          "bits": 32,
+          "mode": 32,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "C7 /0 id; MOV r/m32, imm32"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "movl    $0, kw_pd+4(,%ecx,8)"
+      ]
+    },
+    {
+      "observed_form": "movl mem[,gpr64,gpr64,1,disp],gpr32",
+      "spelling": "movl",
+      "family": "mov",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "rm_reg",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "8B /r; MOV rm_reg; operand encoding MR/RM p.4-36"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "movl    (%rax,%rdi), %eax"
+      ]
+    },
+    {
+      "observed_form": "movl mem[,rip64,,1,disp],gpr32",
+      "spelling": "movl",
+      "family": "mov",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "rm_reg",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "8B /r; MOV rm_reg; operand encoding MR/RM p.4-36"
+          }
+        }
+      ],
+      "site_count": 5,
+      "statements": [
+        "movl    mxcsr_at_entry(%rip), %eax",
+        "movl    saved+0(%rip), %edi",
+        "movl    saved+12(%rip), %edi",
+        "movl    saved+4(%rip), %edi",
+        "movl    saved+8(%rip), %edi"
+      ]
+    },
+    {
+      "observed_form": "movq cr64,gpr64",
+      "spelling": "movq",
+      "family": "mov",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "control_reg",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV control registers",
+            "page": "4-39",
+            "opcode_row": "0F 20 /r; MOV r32/r64, CR0-CR7; REX.R for CR8; W and 66 ignored"
+          }
+        }
+      ],
+      "site_count": 4,
+      "statements": [
+        "movq    %cr0, %rax",
+        "movq    %cr2, %rax",
+        "movq    %cr3, %rax",
+        "movq    %cr4, %rax"
+      ]
+    },
+    {
+      "observed_form": "movq expression,gpr64",
+      "spelling": "movq",
+      "family": "mov",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "rm_reg",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "REX.W + 8B /r; MOV rm_reg; operand encoding MR/RM p.4-36"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "movq    0x0, %rax"
+      ]
+    },
+    {
+      "observed_form": "movq gpr64,cr64",
+      "spelling": "movq",
+      "family": "mov",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "reg_control",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV control registers",
+            "page": "4-39",
+            "opcode_row": "0F 22 /r; MOV CR0-CR7, r32/r64; REX.R for CR8; W and 66 ignored"
+          }
+        }
+      ],
+      "site_count": 3,
+      "statements": [
+        "movq    %rdi, %cr0",
+        "movq    %rdi, %cr3",
+        "movq    %rdi, %cr4"
+      ]
+    },
+    {
+      "observed_form": "movq gpr64,gpr64",
+      "spelling": "movq",
+      "family": "mov",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "reg_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "REX.W + 89 /r; MOV reg_rm; operand encoding MR/RM p.4-36"
+          }
+        }
+      ],
+      "site_count": 61,
+      "statements": [
+        "movq    %r12, %rax",
+        "movq    %r12, %rdi",
+        "movq    %r12, %rsi",
+        "movq    %r13, %rdi",
+        "movq    %r8, %rdi",
+        "movq    %r9, %rsi",
+        "movq    %rax, %r12",
+        "movq    %rax, %rbx",
+        "movq    %rax, %rdx",
+        "movq    %rax, %rsp",
+        "movq    %rbx, %rdi",
+        "movq    %rbx, %rsi",
+        "movq    %rbx, %rsp",
+        "movq    %rdi, %rax",
+        "movq    %rdi, %rdx",
+        "movq    %rdi, %rsi",
+        "movq    %rdx, %r14",
+        "movq    %rdx, %r8",
+        "movq    %rdx, %rcx",
+        "movq    %rsi, %rax",
+        "movq    %rsi, %rcx",
+        "movq    %rsi, %rdx",
+        "movq    %rsp, %r15",
+        "movq    %rsp, %rax",
+        "movq    %rsp, %rbx",
+        "movq    %rsp, %rdi",
+        "movq    %rsp, %rdx",
+        "movq    %rsp, %rsi"
+      ]
+    },
+    {
+      "observed_form": "movq gpr64,mem[,gpr64,,1,disp]",
+      "spelling": "movq",
+      "family": "mov",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "reg_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "REX.W + 89 /r; MOV reg_rm; operand encoding MR/RM p.4-36"
+          }
+        }
+      ],
+      "site_count": 6,
+      "statements": [
+        "movq    %rax, (%rsp)",
+        "movq    %rax, -16400(%rsp)",
+        "movq    %rdx, (%rcx)",
+        "movq    %rdx, (%rsp)",
+        "movq    %rdx, 8(%rsp)"
+      ]
+    },
+    {
+      "observed_form": "movq gpr64,mem[,rip64,,1,disp]",
+      "spelling": "movq",
+      "family": "mov",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "reg_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "REX.W + 89 /r; MOV reg_rm; operand encoding MR/RM p.4-36"
+          }
+        }
+      ],
+      "site_count": 18,
+      "statements": [
+        "movq    %rax, av_entry(%rip)",
+        "movq    %rax, av_pagesz(%rip)",
+        "movq    %rax, av_phdr(%rip)",
+        "movq    %rax, av_phent(%rip)",
+        "movq    %rax, av_phnum(%rip)",
+        "movq    %rax, av_random(%rip)",
+        "movq    %rax, outlen(%rip)",
+        "movq    %rax, play_dsp_fd(%rip)",
+        "movq    %rax, play_dsp_used(%rip)",
+        "movq    %rdi, play_dsp_chans(%rip)",
+        "movq    %rdx, av_entry(%rip)",
+        "movq    %rdx, av_pagesz(%rip)",
+        "movq    %rdx, av_phdr(%rip)",
+        "movq    %rdx, av_phent(%rip)",
+        "movq    %rdx, av_phnum(%rip)",
+        "movq    %rdx, av_random(%rip)",
+        "movq    %rsp, pax_syscall_state+8(%rip)"
+      ]
+    },
+    {
+      "observed_form": "movq immediate,gpr64",
+      "spelling": "movq",
+      "family": "mov",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "imm_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "REX.W + C7 /0 id; MOV r/m64, imm32"
+          }
+        },
+        {
+          "family": "mov",
+          "role": "imm_reg",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "REX.W + B8+r io; MOV r64, imm64"
+          }
+        }
+      ],
+      "site_count": 3,
+      "statements": [
+        "movq    $-100, %rdi",
+        "movq    $-5, %rax",
+        "movq    $0x1000, %rsp"
+      ]
+    },
+    {
+      "observed_form": "movq immediate,mem[,gpr64,,1,disp]",
+      "spelling": "movq",
+      "family": "mov",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "imm_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "REX.W + C7 /0 id; MOV r/m64, imm32"
+          }
+        }
+      ],
+      "site_count": 7,
+      "statements": [
+        "movq    $0, -24(%rax)",
+        "movq    $0, -32(%rax)",
+        "movq    $0, -48(%rax)",
+        "movq    $0, -56(%rax)",
+        "movq    $0, -64(%rax)",
+        "movq    $0, -8(%rax)",
+        "movq    $1, (%rbx)"
+      ]
+    },
+    {
+      "observed_form": "movq immediate,mem[,rip64,,1,disp]",
+      "spelling": "movq",
+      "family": "mov",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "imm_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "REX.W + C7 /0 id; MOV r/m64, imm32"
+          }
+        }
+      ],
+      "site_count": 5,
+      "statements": [
+        "movq    $0, line_len(%rip)",
+        "movq    $0, outlen(%rip)",
+        "movq    $0, play_dsp_used(%rip)"
+      ]
+    },
+    {
+      "observed_form": "movq mem[,gpr64,,1,disp],gpr64",
+      "spelling": "movq",
+      "family": "mov",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "rm_reg",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "REX.W + 8B /r; MOV rm_reg; operand encoding MR/RM p.4-36"
+          }
+        }
+      ],
+      "site_count": 15,
+      "statements": [
+        "movq    (%r15), %rax",
+        "movq    (%r15), %rbx",
+        "movq    (%rbx), %rax",
+        "movq    (%rcx), %rax",
+        "movq    16(%r15), %rsi",
+        "movq    16(%rsp), %rcx",
+        "movq    24(%r15), %rsi",
+        "movq    32(%rcx), %rbx",
+        "movq    32(%rsp), %r11",
+        "movq    40(%rsp), %rsp",
+        "movq    8(%rax), %rax",
+        "movq    8(%rbx), %rdx",
+        "movq    8(%rsp), %rax"
+      ]
+    },
+    {
+      "observed_form": "movq mem[,gpr64,gpr64,8,disp],gpr64",
+      "spelling": "movq",
+      "family": "mov",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "rm_reg",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "REX.W + 8B /r; MOV rm_reg; operand encoding MR/RM p.4-36"
+          }
+        }
+      ],
+      "site_count": 2,
+      "statements": [
+        "movq    (%rbx,%r12,8), %rsi",
+        "movq    8(%r15,%r12,8), %rsi"
+      ]
+    },
+    {
+      "observed_form": "movq mem[,rip64,,1,disp],gpr64",
+      "spelling": "movq",
+      "family": "mov",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "rm_reg",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "REX.W + 8B /r; MOV rm_reg; operand encoding MR/RM p.4-36"
+          }
+        }
+      ],
+      "site_count": 16,
+      "statements": [
+        "movq    av_pagesz(%rip), %rax",
+        "movq    av_phent(%rip), %rax",
+        "movq    av_phnum(%rip), %rax",
+        "movq    av_random(%rip), %rcx",
+        "movq    firmware_type_response(%rip), %rax",
+        "movq    line_len(%rip), %rcx",
+        "movq    line_len(%rip), %rdx",
+        "movq    outlen(%rip), %rax",
+        "movq    outlen(%rip), %rdx",
+        "movq    pax_syscall_state(%rip), %rsp",
+        "movq    play_dsp_fd(%rip), %rdi",
+        "movq    play_dsp_used(%rip), %rax",
+        "movq    play_dsp_used(%rip), %rdx"
+      ]
+    },
+    {
+      "observed_form": "movsb ",
+      "spelling": "movsb",
+      "family": "movsb",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "movsb",
+          "role": "fixed",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOVS/MOVSB/MOVSW/MOVSD/MOVSQ",
+            "page": "4-112..4-113",
+            "opcode_row": "A4 MOVSB"
+          }
+        }
+      ],
+      "site_count": 3,
+      "statements": [
+        "rep movsb"
+      ]
+    },
+    {
+      "observed_form": "movslq mem[,gpr64,,1,disp],gpr64",
+      "spelling": "movslq",
+      "family": "movsxd",
+      "bits": 64,
+      "source_bits": 32,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "movsxd",
+          "role": "rm_reg",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOVSX/MOVSXD",
+            "page": "4-128",
+            "opcode_row": "REX.W + 63 /r MOVSXD r64,r/m32"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "movslq  (%rsp), %rax"
+      ]
+    },
+    {
+      "observed_form": "movsq ",
+      "spelling": "movsq",
+      "family": "movsq",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "movsq",
+          "role": "fixed",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOVS/MOVSB/MOVSW/MOVSD/MOVSQ",
+            "page": "4-112..4-113",
+            "opcode_row": "REX.W + A5 MOVSQ"
+          }
+        }
+      ],
+      "site_count": 2,
+      "statements": [
+        "rep movsq"
+      ]
+    },
+    {
+      "observed_form": "movw gpr16,mem[,gpr64,gpr64,1,disp]",
+      "spelling": "movw",
+      "family": "mov",
+      "bits": 16,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "reg_rm",
+          "bits": 16,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "89 /r; MOV reg_rm; operand encoding MR/RM p.4-36"
+          }
+        }
+      ],
+      "site_count": 3,
+      "statements": [
+        "movw    %di, (%rcx,%rax)",
+        "movw    %si, (%rax,%rdi)",
+        "movw    %si, (%rcx,%rax)"
+      ]
+    },
+    {
+      "observed_form": "movw gpr16,seg16",
+      "spelling": "movw",
+      "family": "mov",
+      "bits": 16,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "reg_segment",
+          "bits": 16,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35..4-36",
+            "opcode_row": "8E /r MOV Sreg,r/m16; REX.W + 8E /r lower16 of r/m64; CS destination forbidden"
+          }
+        }
+      ],
+      "site_count": 10,
+      "statements": [
+        "movw    %ax, %ds",
+        "movw    %ax, %es",
+        "movw    %ax, %fs",
+        "movw    %ax, %gs",
+        "movw    %ax, %ss"
+      ]
+    },
+    {
+      "observed_form": "movw immediate,gpr16",
+      "spelling": "movw",
+      "family": "mov",
+      "bits": 16,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "imm_rm",
+          "bits": 16,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "C7 /0 iw; MOV r/m16, imm16"
+          }
+        },
+        {
+          "family": "mov",
+          "role": "imm_reg",
+          "bits": 16,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35",
+            "opcode_row": "B8+r iw; MOV r16, imm16"
+          }
+        }
+      ],
+      "site_count": 7,
+      "statements": [
+        "movw    $0x10, %ax",
+        "movw    $COM1, %dx",
+        "movw    $COM1_LSR, %dx"
+      ]
+    },
+    {
+      "observed_form": "movw seg16,gpr16",
+      "spelling": "movw",
+      "family": "mov",
+      "bits": 16,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "mov",
+          "role": "segment_reg",
+          "bits": 16,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOV",
+            "page": "4-35..4-36",
+            "opcode_row": "8C /r; MOV r16/r32/m16,Sreg; REX.W + 8C for r64/m16"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "movw    %cs, %ax"
+      ]
+    },
+    {
+      "observed_form": "movzbl mem[,gpr64,,1,disp],gpr32",
+      "spelling": "movzbl",
+      "family": "movzx",
+      "bits": 32,
+      "source_bits": 8,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "movzx",
+          "role": "rm8_reg",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOVZX",
+            "page": "4-138",
+            "opcode_row": "0F B6 /r MOVZX r32,r/m8"
+          }
+        }
+      ],
+      "site_count": 7,
+      "statements": [
+        "movzbl  (%rdi), %eax",
+        "movzbl  (%rsi), %eax",
+        "movzbl  (%rsi), %ecx"
+      ]
+    },
+    {
+      "observed_form": "movzbl mem[,gpr64,gpr64,1,disp],gpr32",
+      "spelling": "movzbl",
+      "family": "movzx",
+      "bits": 32,
+      "source_bits": 8,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "movzx",
+          "role": "rm8_reg",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOVZX",
+            "page": "4-138",
+            "opcode_row": "0F B6 /r MOVZX r32,r/m8"
+          }
+        }
+      ],
+      "site_count": 3,
+      "statements": [
+        "movzbl  (%rax,%rbx), %edi",
+        "movzbl  (%rax,%rdi), %eax",
+        "movzbl  (%rdx,%rax), %eax"
+      ]
+    },
+    {
+      "observed_form": "movzbl mem[,rip64,,1,disp],gpr32",
+      "spelling": "movzbl",
+      "family": "movzx",
+      "bits": 32,
+      "source_bits": 8,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "movzx",
+          "role": "rm8_reg",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOVZX",
+            "page": "4-138",
+            "opcode_row": "0F B6 /r MOVZX r32,r/m8"
+          }
+        }
+      ],
+      "site_count": 2,
+      "statements": [
+        "movzbl  inbuf(%rip), %edi",
+        "movzbl  saved+16(%rip), %edi"
+      ]
+    },
+    {
+      "observed_form": "movzwl mem[,gpr64,,1,disp],gpr32",
+      "spelling": "movzwl",
+      "family": "movzx",
+      "bits": 32,
+      "source_bits": 16,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "movzx",
+          "role": "rm16_reg",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOVZX",
+            "page": "4-138",
+            "opcode_row": "0F B7 /r MOVZX r32,r/m16"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "movzwl  56(%rcx), %ebx"
+      ]
+    },
+    {
+      "observed_form": "movzwl mem[,gpr64,gpr64,1,disp],gpr32",
+      "spelling": "movzwl",
+      "family": "movzx",
+      "bits": 32,
+      "source_bits": 16,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "movzx",
+          "role": "rm16_reg",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOVZX",
+            "page": "4-138",
+            "opcode_row": "0F B7 /r MOVZX r32,r/m16"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "movzwl  (%rax,%rdi), %eax"
+      ]
+    },
+    {
+      "observed_form": "movzwl mem[,rip64,,1,disp],gpr32",
+      "spelling": "movzwl",
+      "family": "movzx",
+      "bits": 32,
+      "source_bits": 16,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "movzx",
+          "role": "rm16_reg",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 MOVZX",
+            "page": "4-138",
+            "opcode_row": "0F B7 /r MOVZX r32,r/m16"
+          }
+        }
+      ],
+      "site_count": 3,
+      "statements": [
+        "movzwl  fcw_at_entry(%rip), %eax",
+        "movzwl  winsz+0(%rip), %edi",
+        "movzwl  winsz+2(%rip), %edi"
+      ]
+    },
+    {
+      "observed_form": "negq gpr64",
+      "spelling": "negq",
+      "family": "neg",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "neg",
+          "role": "rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 NEG",
+            "page": "4-165",
+            "opcode_row": "REX.W + F7 /3 NEG r/m64"
+          }
+        }
+      ],
+      "site_count": 2,
+      "statements": [
+        "negq    %rax",
+        "negq    %rdi"
+      ]
+    },
+    {
+      "observed_form": "nop ",
+      "spelling": "nop",
+      "family": "nop",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "nop",
+          "role": "fixed",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 NOP",
+            "page": "4-167",
+            "opcode_row": "NP 90"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "nop"
+      ]
+    },
+    {
+      "observed_form": "orl immediate,gpr32",
+      "spelling": "orl",
+      "family": "or",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        32
+      ],
+      "candidates": [
+        {
+          "family": "or",
+          "role": "imm_rm",
+          "bits": 32,
+          "mode": 32,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 OR",
+            "page": "4-170",
+            "opcode_row": "81 /1 id OR r/m32, imm32"
+          }
+        },
+        {
+          "family": "or",
+          "role": "imm_acc",
+          "bits": 32,
+          "mode": 32,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 OR",
+            "page": "4-170",
+            "opcode_row": "0D id OR accumulator, imm32"
+          }
+        },
+        {
+          "family": "or",
+          "role": "imm8_rm",
+          "bits": 32,
+          "mode": 32,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 OR",
+            "page": "4-170",
+            "opcode_row": "83 /1 ib OR r/m32, imm8"
+          }
+        }
+      ],
+      "site_count": 6,
+      "statements": [
+        "orl     $0x100, %eax",
+        "orl     $0x20, %eax",
+        "orl     $0x80000001, %eax",
+        "orl     $0x83, %eax",
+        "orl     $3, %eax"
+      ]
+    },
+    {
+      "observed_form": "orq gpr64,gpr64",
+      "spelling": "orq",
+      "family": "or",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "or",
+          "role": "reg_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 OR",
+            "page": "4-170",
+            "opcode_row": "REX.W + 09 /r OR r/m64, r64"
+          }
+        }
+      ],
+      "site_count": 5,
+      "statements": [
+        "orq     %rdx, %rax"
+      ]
+    },
+    {
+      "observed_form": "orq immediate,gpr64",
+      "spelling": "orq",
+      "family": "or",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "or",
+          "role": "imm_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 OR",
+            "page": "4-170",
+            "opcode_row": "REX.W + 81 /1 id OR r/m64, imm32"
+          }
+        },
+        {
+          "family": "or",
+          "role": "imm_acc",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 OR",
+            "page": "4-170",
+            "opcode_row": "REX.W + 0D id OR accumulator, imm32"
+          }
+        },
+        {
+          "family": "or",
+          "role": "imm8_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 OR",
+            "page": "4-170",
+            "opcode_row": "REX.W + 83 /1 ib OR r/m64, imm8"
+          }
+        }
+      ],
+      "site_count": 4,
+      "statements": [
+        "orq     $(\\n << 8), %rdx",
+        "orq     $0xa5, %rax"
+      ]
+    },
+    {
+      "observed_form": "orq mem[,gpr64,,1,disp],gpr64",
+      "spelling": "orq",
+      "family": "or",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "or",
+          "role": "rm_reg",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 OR",
+            "page": "4-170",
+            "opcode_row": "REX.W + 0B /r OR r64, r/m64"
+          }
+        }
+      ],
+      "site_count": 2,
+      "statements": [
+        "orq     (%rcx), %rax",
+        "orq     8(%rcx), %rax"
+      ]
+    },
+    {
+      "observed_form": "outb gpr8,gpr16",
+      "spelling": "outb",
+      "family": "out",
+      "bits": 8,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "out",
+          "role": "acc_dx",
+          "bits": 8,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 OUT",
+            "page": "4-178",
+            "opcode_row": "EE OUT accumulator8,port"
+          }
+        }
+      ],
+      "site_count": 13,
+      "statements": [
+        "outb    %al, %dx",
+        "outb %al, %dx"
+      ]
+    },
+    {
+      "observed_form": "outb gpr8,immediate",
+      "spelling": "outb",
+      "family": "out",
+      "bits": 8,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "out",
+          "role": "acc_imm",
+          "bits": 8,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 OUT",
+            "page": "4-178",
+            "opcode_row": "E6 ib OUT accumulator8,port"
+          }
+        }
+      ],
+      "site_count": 10,
+      "statements": [
+        "outb    %al, $0x61",
+        "outb    %al, $EXIT_PORT"
+      ]
+    },
+    {
+      "observed_form": "outl gpr32,gpr16",
+      "spelling": "outl",
+      "family": "out",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "out",
+          "role": "acc_dx",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 OUT",
+            "page": "4-178",
+            "opcode_row": "EF OUT accumulator32,port"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "outl    %eax, %dx"
+      ]
+    },
+    {
+      "observed_form": "pause ",
+      "spelling": "pause",
+      "family": "pause",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "pause",
+          "role": "fixed",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 PAUSE",
+            "page": "4-233",
+            "opcode_row": "F3 90"
+          }
+        }
+      ],
+      "site_count": 2,
+      "statements": [
+        "pause"
+      ]
+    },
+    {
+      "observed_form": "pop gpr64",
+      "spelling": "pop",
+      "family": "pop",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "pop",
+          "role": "reg",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 POP",
+            "page": "4-396",
+            "opcode_row": "58+r POP r64"
+          }
+        },
+        {
+          "family": "pop",
+          "role": "rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 POP",
+            "page": "4-396",
+            "opcode_row": "8F /0 POP r/m64"
+          }
+        }
+      ],
+      "site_count": 6,
+      "statements": [
+        "pop     %r12",
+        "pop     %r13",
+        "pop     %r14",
+        "pop     %r15",
+        "pop     %rbp",
+        "pop     %rbx"
+      ]
+    },
+    {
+      "observed_form": "popq gpr64",
+      "spelling": "popq",
+      "family": "pop",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "pop",
+          "role": "reg",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 POP",
+            "page": "4-396",
+            "opcode_row": "58+r POP r64"
+          }
+        },
+        {
+          "family": "pop",
+          "role": "rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 POP",
+            "page": "4-396",
+            "opcode_row": "8F /0 POP r/m64"
+          }
+        }
+      ],
+      "site_count": 66,
+      "statements": [
+        "popq    %r10",
+        "popq    %r11",
+        "popq    %r12",
+        "popq    %r13",
+        "popq    %r14",
+        "popq    %r15",
+        "popq    %r8",
+        "popq    %r9",
+        "popq    %rax",
+        "popq    %rbp",
+        "popq    %rbx",
+        "popq    %rcx",
+        "popq    %rdi",
+        "popq    %rdx",
+        "popq    %rsi"
+      ]
+    },
+    {
+      "observed_form": "push gpr64",
+      "spelling": "push",
+      "family": "push",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "push",
+          "role": "reg",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 PUSH",
+            "page": "4-520",
+            "opcode_row": "50+r PUSH r64"
+          }
+        },
+        {
+          "family": "push",
+          "role": "rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 PUSH",
+            "page": "4-520",
+            "opcode_row": "FF /6 PUSH r/m64"
+          }
+        }
+      ],
+      "site_count": 6,
+      "statements": [
+        "push    %r12",
+        "push    %r13",
+        "push    %r14",
+        "push    %r15",
+        "push    %rbp",
+        "push    %rbx"
+      ]
+    },
+    {
+      "observed_form": "pushfq ",
+      "spelling": "pushfq",
+      "family": "pushfq",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "pushfq",
+          "role": "fixed",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 PUSHF/PUSHFD/PUSHFQ",
+            "page": "4-526",
+            "opcode_row": "9C; long-mode default64 without W"
+          }
+        }
+      ],
+      "site_count": 2,
+      "statements": [
+        "pushfq"
+      ]
+    },
+    {
+      "observed_form": "pushq gpr64",
+      "spelling": "pushq",
+      "family": "push",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "push",
+          "role": "reg",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 PUSH",
+            "page": "4-520",
+            "opcode_row": "50+r PUSH r64"
+          }
+        },
+        {
+          "family": "push",
+          "role": "rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 PUSH",
+            "page": "4-520",
+            "opcode_row": "FF /6 PUSH r/m64"
+          }
+        }
+      ],
+      "site_count": 54,
+      "statements": [
+        "pushq   %r10",
+        "pushq   %r11",
+        "pushq   %r12",
+        "pushq   %r13",
+        "pushq   %r14",
+        "pushq   %r15",
+        "pushq   %r8",
+        "pushq   %r9",
+        "pushq   %rax",
+        "pushq   %rbp",
+        "pushq   %rbx",
+        "pushq   %rcx",
+        "pushq   %rdi",
+        "pushq   %rdx",
+        "pushq   %rsi"
+      ]
+    },
+    {
+      "observed_form": "pushq immediate",
+      "spelling": "pushq",
+      "family": "push",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "push",
+          "role": "imm8",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 PUSH",
+            "page": "4-520..4-521",
+            "opcode_row": "6A ib; immediate sign-extends to operand-size"
+          }
+        },
+        {
+          "family": "push",
+          "role": "imm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 PUSH",
+            "page": "4-520..4-521",
+            "opcode_row": "68 id; immediate sign-extends to operand-size"
+          }
+        }
+      ],
+      "site_count": 18,
+      "statements": [
+        "pushq   $0",
+        "pushq   $0x08",
+        "pushq   $0x10",
+        "pushq   $0x100",
+        "pushq   $0x1b",
+        "pushq   $0x202",
+        "pushq   $0x23",
+        "pushq   $0x81",
+        "pushq   $\\v"
+      ]
+    },
+    {
+      "observed_form": "pushq mem[,rip64,,1,disp]",
+      "spelling": "pushq",
+      "family": "push",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "push",
+          "role": "rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 PUSH",
+            "page": "4-520",
+            "opcode_row": "FF /6 PUSH r/m64"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "pushq   pax_syscall_state+8(%rip)"
+      ]
+    },
+    {
+      "observed_form": "rdmsr ",
+      "spelling": "rdmsr",
+      "family": "rdmsr",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        32,
+        64
+      ],
+      "candidates": [
+        {
+          "family": "rdmsr",
+          "role": "fixed",
+          "bits": 0,
+          "mode": 32,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 RDMSR",
+            "page": "4-542",
+            "opcode_row": "0F 32"
+          }
+        },
+        {
+          "family": "rdmsr",
+          "role": "fixed",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 RDMSR",
+            "page": "4-542",
+            "opcode_row": "0F 32"
+          }
+        }
+      ],
+      "site_count": 4,
+      "statements": [
+        "rdmsr"
+      ]
+    },
+    {
+      "observed_form": "rdrand gpr64",
+      "spelling": "rdrand",
+      "family": "rdrand",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "rdrand",
+          "role": "rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 RDRAND",
+            "page": "4-553",
+            "opcode_row": "REX.W + 0F C7 /6 RDRAND r64; NFx"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "rdrand  %rax"
+      ]
+    },
+    {
+      "observed_form": "rdtsc ",
+      "spelling": "rdtsc",
+      "family": "rdtsc",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "rdtsc",
+          "role": "fixed",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 RDTSC",
+            "page": "4-558",
+            "opcode_row": "0F 31"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "rdtsc"
+      ]
+    },
+    {
+      "observed_form": "ret ",
+      "spelling": "ret",
+      "family": "ret",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "ret",
+          "role": "fixed",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 RET",
+            "page": "4-566",
+            "opcode_row": "C3 near; long-mode default64"
+          }
+        }
+      ],
+      "site_count": 108,
+      "statements": [
+        "ret"
+      ]
+    },
+    {
+      "observed_form": "setc gpr8",
+      "spelling": "setc",
+      "family": "setb",
+      "bits": 8,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "setb",
+          "role": "rm",
+          "bits": 8,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 SETcc",
+            "page": "4-619..4-621",
+            "opcode_row": "0F 92 SETB/SETC r/m8; ModRM.reg ignored (choose zero)"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "setc    %r8b"
+      ]
+    },
+    {
+      "observed_form": "shl immediate,gpr64",
+      "spelling": "shl",
+      "family": "shl",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "shl",
+          "role": "shift1",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 SAL/SAR/SHL/SHR",
+            "page": "4-600..4-601",
+            "opcode_row": "REX.W + D1 /4 SHL r/m64,1"
+          }
+        },
+        {
+          "family": "shl",
+          "role": "shift_imm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 SAL/SAR/SHL/SHR",
+            "page": "4-600..4-601",
+            "opcode_row": "REX.W + C1 /4 ib SHL r/m64,imm8"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "shl     $16, %rcx"
+      ]
+    },
+    {
+      "observed_form": "shll immediate,gpr32",
+      "spelling": "shll",
+      "family": "shl",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        32
+      ],
+      "candidates": [
+        {
+          "family": "shl",
+          "role": "shift1",
+          "bits": 32,
+          "mode": 32,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 SAL/SAR/SHL/SHR",
+            "page": "4-600",
+            "opcode_row": "D1 /4 SHL r/m32,1"
+          }
+        },
+        {
+          "family": "shl",
+          "role": "shift_imm",
+          "bits": 32,
+          "mode": 32,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 SAL/SAR/SHL/SHR",
+            "page": "4-600..4-601",
+            "opcode_row": "C1 /4 ib SHL r/m32,imm8"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "shll    $21, %eax"
+      ]
+    },
+    {
+      "observed_form": "shlq immediate,gpr64",
+      "spelling": "shlq",
+      "family": "shl",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "shl",
+          "role": "shift1",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 SAL/SAR/SHL/SHR",
+            "page": "4-600..4-601",
+            "opcode_row": "REX.W + D1 /4 SHL r/m64,1"
+          }
+        },
+        {
+          "family": "shl",
+          "role": "shift_imm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 SAL/SAR/SHL/SHR",
+            "page": "4-600..4-601",
+            "opcode_row": "REX.W + C1 /4 ib SHL r/m64,imm8"
+          }
+        }
+      ],
+      "site_count": 7,
+      "statements": [
+        "shlq    $32, %rdx",
+        "shlq    $56, %rax"
+      ]
+    },
+    {
+      "observed_form": "shrl gpr8,gpr32",
+      "spelling": "shrl",
+      "family": "shr",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "shr",
+          "role": "shift_cl",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 SAL/SAR/SHL/SHR",
+            "page": "4-601",
+            "opcode_row": "D3 /5 SHR r/m32,CL"
+          }
+        }
+      ],
+      "site_count": 2,
+      "statements": [
+        "shrl    %cl, %eax"
+      ]
+    },
+    {
+      "observed_form": "shrl immediate,gpr32",
+      "spelling": "shrl",
+      "family": "shr",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "shr",
+          "role": "shift1",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 SAL/SAR/SHL/SHR",
+            "page": "4-601",
+            "opcode_row": "D1 /5 SHR r/m32,1"
+          }
+        },
+        {
+          "family": "shr",
+          "role": "shift_imm",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 SAL/SAR/SHL/SHR",
+            "page": "4-601",
+            "opcode_row": "C1 /5 ib SHR r/m32,imm8"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "shrl    $4, %edi"
+      ]
+    },
+    {
+      "observed_form": "shrq immediate,gpr64",
+      "spelling": "shrq",
+      "family": "shr",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "shr",
+          "role": "shift1",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 SAL/SAR/SHL/SHR",
+            "page": "4-601",
+            "opcode_row": "REX.W + D1 /5 SHR r/m64,1"
+          }
+        },
+        {
+          "family": "shr",
+          "role": "shift_imm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 SAL/SAR/SHL/SHR",
+            "page": "4-601",
+            "opcode_row": "REX.W + C1 /5 ib SHR r/m64,imm8"
+          }
+        }
+      ],
+      "site_count": 6,
+      "statements": [
+        "shrq    $3, %rcx",
+        "shrq    $32, %rdx"
+      ]
+    },
+    {
+      "observed_form": "stac ",
+      "spelling": "stac",
+      "family": "stac",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "stac",
+          "role": "fixed",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 STAC",
+            "page": "4-667",
+            "opcode_row": "NP 0F 01 CB"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "stac"
+      ]
+    },
+    {
+      "observed_form": "sti ",
+      "spelling": "sti",
+      "family": "sti",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "sti",
+          "role": "fixed",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 STI",
+            "page": "4-670",
+            "opcode_row": "FB"
+          }
+        }
+      ],
+      "site_count": 2,
+      "statements": [
+        "sti"
+      ]
+    },
+    {
+      "observed_form": "stmxcsr mem[,rip64,,1,disp]",
+      "spelling": "stmxcsr",
+      "family": "stmxcsr",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "stmxcsr",
+          "role": "mem",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 STMXCSR",
+            "page": "4-672",
+            "opcode_row": "NP 0F AE /3 m32"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "stmxcsr mxcsr_at_entry(%rip)"
+      ]
+    },
+    {
+      "observed_form": "stosb ",
+      "spelling": "stosb",
+      "family": "stosb",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "stosb",
+          "role": "fixed",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 STOS/STOSB/STOSW/STOSD/STOSQ",
+            "page": "4-673..4-674",
+            "opcode_row": "AA STOSB"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "rep stosb"
+      ]
+    },
+    {
+      "observed_form": "stosq ",
+      "spelling": "stosq",
+      "family": "stosq",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "stosq",
+          "role": "fixed",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 STOS/STOSB/STOSW/STOSD/STOSQ",
+            "page": "4-673..4-674",
+            "opcode_row": "REX.W + AB STOSQ"
+          }
+        }
+      ],
+      "site_count": 2,
+      "statements": [
+        "rep stosq"
+      ]
+    },
+    {
+      "observed_form": "sub immediate,gpr64",
+      "spelling": "sub",
+      "family": "sub",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "sub",
+          "role": "imm_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 SUB",
+            "page": "4-681",
+            "opcode_row": "REX.W + 81 /5 id SUB r/m64, imm32"
+          }
+        },
+        {
+          "family": "sub",
+          "role": "imm_acc",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 SUB",
+            "page": "4-681",
+            "opcode_row": "REX.W + 2D id SUB accumulator, imm32"
+          }
+        },
+        {
+          "family": "sub",
+          "role": "imm8_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 SUB",
+            "page": "4-681",
+            "opcode_row": "REX.W + 83 /5 ib SUB r/m64, imm8"
+          }
+        }
+      ],
+      "site_count": 5,
+      "statements": [
+        "sub     $16, %rsp",
+        "sub     $64, %rax",
+        "sub     $8, %rsp"
+      ]
+    },
+    {
+      "observed_form": "subl immediate,gpr32",
+      "spelling": "subl",
+      "family": "sub",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "sub",
+          "role": "imm_rm",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 SUB",
+            "page": "4-681",
+            "opcode_row": "81 /5 id SUB r/m32, imm32"
+          }
+        },
+        {
+          "family": "sub",
+          "role": "imm_acc",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 SUB",
+            "page": "4-681",
+            "opcode_row": "2D id SUB accumulator, imm32"
+          }
+        },
+        {
+          "family": "sub",
+          "role": "imm8_rm",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 SUB",
+            "page": "4-681",
+            "opcode_row": "83 /5 ib SUB r/m32, imm8"
+          }
+        }
+      ],
+      "site_count": 3,
+      "statements": [
+        "subl    $0x30, %eax",
+        "subl    $4, %ecx",
+        "subl    $4, %r8d"
+      ]
+    },
+    {
+      "observed_form": "subq gpr64,gpr64",
+      "spelling": "subq",
+      "family": "sub",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "sub",
+          "role": "reg_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 SUB",
+            "page": "4-681",
+            "opcode_row": "REX.W + 29 /r SUB r/m64, r64"
+          }
+        }
+      ],
+      "site_count": 2,
+      "statements": [
+        "subq    %rbx, %rdx",
+        "subq    %rsi, %rdx"
+      ]
+    },
+    {
+      "observed_form": "subq immediate,gpr64",
+      "spelling": "subq",
+      "family": "sub",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "sub",
+          "role": "imm_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 SUB",
+            "page": "4-681",
+            "opcode_row": "REX.W + 81 /5 id SUB r/m64, imm32"
+          }
+        },
+        {
+          "family": "sub",
+          "role": "imm_acc",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 SUB",
+            "page": "4-681",
+            "opcode_row": "REX.W + 2D id SUB accumulator, imm32"
+          }
+        },
+        {
+          "family": "sub",
+          "role": "imm8_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 SUB",
+            "page": "4-681",
+            "opcode_row": "REX.W + 83 /5 ib SUB r/m64, imm8"
+          }
+        }
+      ],
+      "site_count": 8,
+      "statements": [
+        "subq    $16, %rsp",
+        "subq    $24, %rsp",
+        "subq    $32, %rsp",
+        "subq    $40, %rsp",
+        "subq    $8, %rsp"
+      ]
+    },
+    {
+      "observed_form": "syscall ",
+      "spelling": "syscall",
+      "family": "syscall",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "syscall",
+          "role": "fixed",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 SYSCALL",
+            "page": "4-695",
+            "opcode_row": "0F 05"
+          }
+        }
+      ],
+      "site_count": 57,
+      "statements": [
+        "syscall"
+      ]
+    },
+    {
+      "observed_form": "sysretq ",
+      "spelling": "sysretq",
+      "family": "sysretq",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "sysretq",
+          "role": "fixed",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 SYSRET",
+            "page": "4-704",
+            "opcode_row": "REX.W + 0F 07"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "sysretq"
+      ]
+    },
+    {
+      "observed_form": "test gpr64,gpr64",
+      "spelling": "test",
+      "family": "test",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "test",
+          "role": "reg_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 TEST",
+            "page": "4-713",
+            "opcode_row": "REX.W + 85 /r TEST r/m64,r64"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "test    %r13, %r13"
+      ]
+    },
+    {
+      "observed_form": "testb gpr8,gpr8",
+      "spelling": "testb",
+      "family": "test",
+      "bits": 8,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "test",
+          "role": "reg_rm",
+          "bits": 8,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 TEST",
+            "page": "4-713",
+            "opcode_row": "84 /r TEST r/m8,r8"
+          }
+        }
+      ],
+      "site_count": 4,
+      "statements": [
+        "testb   %al, %al",
+        "testb   %cl, %cl"
+      ]
+    },
+    {
+      "observed_form": "testb immediate,gpr8",
+      "spelling": "testb",
+      "family": "test",
+      "bits": 8,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "test",
+          "role": "imm_rm",
+          "bits": 8,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 TEST",
+            "page": "4-713",
+            "opcode_row": "F6 /0 imm8"
+          }
+        },
+        {
+          "family": "test",
+          "role": "imm_acc",
+          "bits": 8,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 TEST",
+            "page": "4-713",
+            "opcode_row": "A8 imm8"
+          }
+        }
+      ],
+      "site_count": 2,
+      "statements": [
+        "testb   $LSR_THR_EMPTY, %al"
+      ]
+    },
+    {
+      "observed_form": "testl gpr32,gpr32",
+      "spelling": "testl",
+      "family": "test",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "test",
+          "role": "reg_rm",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 TEST",
+            "page": "4-713",
+            "opcode_row": "85 /r TEST r/m32,r32"
+          }
+        }
+      ],
+      "site_count": 7,
+      "statements": [
+        "testl   %eax, %eax",
+        "testl   %ebx, %ebx",
+        "testl   %ecx, %ecx",
+        "testl   %r10d, %r10d"
+      ]
+    },
+    {
+      "observed_form": "testl immediate,gpr32",
+      "spelling": "testl",
+      "family": "test",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "test",
+          "role": "imm_rm",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 TEST",
+            "page": "4-713",
+            "opcode_row": "F7 /0 imm32"
+          }
+        },
+        {
+          "family": "test",
+          "role": "imm_acc",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 TEST",
+            "page": "4-713",
+            "opcode_row": "A9 imm32"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "testl   $0x200, %edi"
+      ]
+    },
+    {
+      "observed_form": "testq gpr64,gpr64",
+      "spelling": "testq",
+      "family": "test",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "test",
+          "role": "reg_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 TEST",
+            "page": "4-713",
+            "opcode_row": "REX.W + 85 /r TEST r/m64,r64"
+          }
+        }
+      ],
+      "site_count": 19,
+      "statements": [
+        "testq   %r14, %r14",
+        "testq   %rax, %rax",
+        "testq   %rbx, %rbx",
+        "testq   %rcx, %rcx",
+        "testq   %rdi, %rdi",
+        "testq   %rsi, %rsi"
+      ]
+    },
+    {
+      "observed_form": "testq immediate,gpr64",
+      "spelling": "testq",
+      "family": "test",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "test",
+          "role": "imm_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 TEST",
+            "page": "4-713",
+            "opcode_row": "REX.W + F7 /0 imm32"
+          }
+        },
+        {
+          "family": "test",
+          "role": "imm_acc",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 TEST",
+            "page": "4-713",
+            "opcode_row": "REX.W + A9 imm32"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "testq   $15, %r15"
+      ]
+    },
+    {
+      "observed_form": "ud2 ",
+      "spelling": "ud2",
+      "family": "ud2",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "ud2",
+          "role": "fixed",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 UD",
+            "page": "4-729",
+            "opcode_row": "0F 0B UD2"
+          }
+        }
+      ],
+      "site_count": 15,
+      "statements": [
+        "ud2"
+      ]
+    },
+    {
+      "observed_form": "wrmsr ",
+      "spelling": "wrmsr",
+      "family": "wrmsr",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        32,
+        64
+      ],
+      "candidates": [
+        {
+          "family": "wrmsr",
+          "role": "fixed",
+          "bits": 0,
+          "mode": 32,
+          "sdm": {
+            "volume": "2D",
+            "section": "6.1 WRMSR",
+            "page": "6-9",
+            "opcode_row": "0F 30"
+          }
+        },
+        {
+          "family": "wrmsr",
+          "role": "fixed",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2D",
+            "section": "6.1 WRMSR",
+            "page": "6-9",
+            "opcode_row": "0F 30"
+          }
+        }
+      ],
+      "site_count": 3,
+      "statements": [
+        "wrmsr"
+      ]
+    },
+    {
+      "observed_form": "xgetbv ",
+      "spelling": "xgetbv",
+      "family": "xgetbv",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "xgetbv",
+          "role": "fixed",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2D",
+            "section": "6.1 XGETBV",
+            "page": "6-36",
+            "opcode_row": "NP 0F 01 D0"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "xgetbv"
+      ]
+    },
+    {
+      "observed_form": "xor gpr32,gpr32",
+      "spelling": "xor",
+      "family": "xor",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "xor",
+          "role": "reg_rm",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2D",
+            "section": "6.1 XOR",
+            "page": "6-40",
+            "opcode_row": "31 /r XOR r/m32, r32"
+          }
+        }
+      ],
+      "site_count": 2,
+      "statements": [
+        "xor\t%ebp, %ebp",
+        "xor     %ebp, %ebp"
+      ]
+    },
+    {
+      "observed_form": "xor gpr64,gpr64",
+      "spelling": "xor",
+      "family": "xor",
+      "bits": 64,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "xor",
+          "role": "reg_rm",
+          "bits": 64,
+          "mode": 64,
+          "sdm": {
+            "volume": "2D",
+            "section": "6.1 XOR",
+            "page": "6-40",
+            "opcode_row": "REX.W + 31 /r XOR r/m64, r64"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "xor\t%rbp, %rbp"
+      ]
+    },
+    {
+      "observed_form": "xorl gpr32,gpr32",
+      "spelling": "xorl",
+      "family": "xor",
+      "bits": 32,
+      "source_bits": 0,
+      "modes": [
+        32,
+        64
+      ],
+      "candidates": [
+        {
+          "family": "xor",
+          "role": "reg_rm",
+          "bits": 32,
+          "mode": 32,
+          "sdm": {
+            "volume": "2D",
+            "section": "6.1 XOR",
+            "page": "6-40",
+            "opcode_row": "31 /r XOR r/m32, r32"
+          }
+        },
+        {
+          "family": "xor",
+          "role": "reg_rm",
+          "bits": 32,
+          "mode": 64,
+          "sdm": {
+            "volume": "2D",
+            "section": "6.1 XOR",
+            "page": "6-40",
+            "opcode_row": "31 /r XOR r/m32, r32"
+          }
+        }
+      ],
+      "site_count": 67,
+      "statements": [
+        "xorl    %eax, %eax",
+        "xorl    %ebp, %ebp",
+        "xorl    %ebx, %ebx",
+        "xorl    %ecx, %ecx",
+        "xorl    %edi, %edi",
+        "xorl    %edx, %edx",
+        "xorl    %esi, %esi",
+        "xorl    %r10d, %r10d",
+        "xorl    %r11d, %r11d",
+        "xorl    %r12d, %r12d",
+        "xorl    %r13d, %r13d",
+        "xorl    %r14d, %r14d",
+        "xorl    %r15d, %r15d",
+        "xorl    %r8d, %r8d",
+        "xorl    %r9d, %r9d"
+      ]
+    },
+    {
+      "observed_form": "xrstor64 mem[,gpr64,,1,disp]",
+      "spelling": "xrstor64",
+      "family": "xrstor64",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "xrstor64",
+          "role": "mem",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2D",
+            "section": "6.1 XRSTOR",
+            "page": "6-49",
+            "opcode_row": "NP REX.W + 0F AE /5 XRSTOR64 mem"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "xrstor64 (%rdi)"
+      ]
+    },
+    {
+      "observed_form": "xsave64 mem[,gpr64,,1,disp]",
+      "spelling": "xsave64",
+      "family": "xsave64",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "xsave64",
+          "role": "mem",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2D",
+            "section": "6.1 XSAVE",
+            "page": "6-58",
+            "opcode_row": "NP REX.W + 0F AE /4 XSAVE64 mem"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "xsave64 (%rdi)"
+      ]
+    },
+    {
+      "observed_form": "xsetbv ",
+      "spelling": "xsetbv",
+      "family": "xsetbv",
+      "bits": 0,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "xsetbv",
+          "role": "fixed",
+          "bits": 0,
+          "mode": 64,
+          "sdm": {
+            "volume": "2D",
+            "section": "6.1 XSETBV",
+            "page": "6-70",
+            "opcode_row": "NP 0F 01 D1"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "xsetbv"
+      ]
+    }
+  ]
+}

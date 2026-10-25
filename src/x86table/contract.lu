@@ -1,0 +1,62 @@
+// Integration contract (not an encoder):
+//
+// 1. alias()/canonical() normalize only explicit census spellings. Alias.bits=0
+//    means infer from GPR operands for ordinary families. It means exactly zero
+//    for fixed forms, control-flow relative forms and untyped system memory.
+//    Alias.role supplies extending-move source width or a fixed role when needed.
+// 2. Select family/role/bits/mode, then check Form.operands and Form.guard.
+//    lookup() ONLY searches data, and cannot validate caller operands or values.
+//    Roles and operand indices follow AT&T order. reg_rm accepts register or
+//    memory destination but never two memory operands; rm_reg reverses roles.
+//    The rN pattern means GPR, rmN means GPR or memory, xmmrm128 means XMM or
+//    memory. An expression without '$' means absolute memory except a direct
+//    control-flow target. Register family is never inferred from its bit width.
+// 3. Add prefix exactly as stored, then address-size67 if needed, and REX last.
+//    Prefix byte ORDER among legacy groups is oracle policy, not constrained by
+//    SDM. REX must immediately precede opcode; no high8 with ANY REX. In mode32
+//    reject REX-only byte/extended registers and 64-bit address base/index.
+//    Table.bits does NOT independently request66 or REX.W. LTR16/FNSTCW16 have
+//    prefix0. Control-MOV64, PUSH64/POP64, relative branches have W=false.
+// 4. If extension>=0 place it in ModRM.reg, otherwise use reg_operand. ModRM.rm
+//    comes from rm_operand. opcode_operand adds its low3 to the LAST opcode byte.
+//    The relevant register code's bit3 selects REX.R/B; SIB index selects REX.X.
+//    Ordinary memory/address fields are governed by field_sources(), not by any
+//    individual opcode. Enforce the architectural 15-byte instruction limit.
+// 5. immediate is encoded byte count, not the logical operand width. Kinds:
+//    bits=width bit pattern; unsigned=nonnegative; sign-extend=must reproduce the
+//    logical operand after sign extension; relative=from instruction END;
+//    address=absolute moffs sized by address-size; far-pointer=offset32 first,
+//    selector16 second (AT&T operands1 then0). Never silently truncate a value.
+//    Short ALU/IMUL/PUSH guards require known-at-selection signed8, NOT a value
+//    discovered only after layout. The broad guard signed32 includes the legal
+//    corresponding negative64 bit patterns; symbolic32s is a relocation choice.
+// 6. Memory displacement fixups use instruction-END bias, including any trailing
+//    immediate. Keep field offset/type/addend in the encoder's relocation plan.
+//    ELF relocations and gas's symbol binding policy do not come from the SDM.
+// 7. allowed_prefixes=rep permits explicit F3 only for MOVS/STOS rows. A mandatory
+//    F3 (MOVDQU/PAUSE) is not permission to add another repeat prefix. lock-memory-
+//    destination requires a memory destination and the listed modifying family.
+//    This module does not promise syntax support for non-census prefix variants.
+// 8. feature is an architecture requirement label, not runtime CPUID gating:
+//    assembling privileged/system instructions never executes them. The encoder
+//    may refuse unsupported targets, but must not use the host CPU as the target.
+// 9. preference is policy metadata, not SDM authority. Existing measured choices
+//    in docs/FORMATS.md cover MOV/CMP/PUSH/POP and branch layout. Other alternative
+//    choices require the pinned gas differential before acceptance. No table
+//    coverage count is a differential-test pass. Extra legal rows expand choices,
+//    not an advertised assembler feature surface.
+// 10. A decoder may index opcode/prefix/mode/extension and operand shape, but must
+//     not treat all rows as distinct architectural encodings: movabs is an alias
+//     of MOV, many bits variants share bytes, SETcc's /reg bits are ignored, and
+//     fixed/system rows can overlap primary opcode groups.
+
+/// Provenance for spelling and selection policy, separate from instruction legality.
+pub fn dialect_sources() -> List[str] {
+    [
+        "GNU as manual 9.16.4.1 Instruction Naming: b/w/l/q suffixes and inferred destination width",
+        "GNU as manual 9.16.3.1 AT&T versus Intel Syntax: source,destination; indirect *; movabs; ljmp selector,offset; lret",
+        "docs/FORMATS.md Encoding choice is not simply shortest: pinned GNU as preference and known-at-selection expressions",
+        "census/org-asm.json: pinned own-org operand patterns, modes, prefixes and concrete input statements",
+        "notes/as01/table/source-index.json: official Intel 325383-086US December2024 source identity; excerpts retained locally",
+    ]
+}

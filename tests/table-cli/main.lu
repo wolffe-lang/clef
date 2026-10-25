@@ -1,0 +1,53 @@
+use dialect
+use eval
+use lex
+use machine
+use x86table
+
+fn main() -> int {
+    let args = env_args()
+    if args.len != 3 { return 2 }
+    let index = args[0].to_int() else { return 2 }
+    let mode = args[1].to_int() else { return 2 }
+    let forms = x86table.load_all() else { return 2 }
+    if index < 0 || index >= forms.len { return 2 }
+    let rows = lex.source(args[2], "<generated>") else { return 2 }
+    if rows.len != 1 { return 2 }
+    var node = dialect.head(rows[0]) else { return 2 }
+    var values = List[eval.Value]()
+    var known = List[bool]()
+    for argument in node.arguments {
+        let op = dialect.operand(argument) else { return 2 }
+        let value = if op.kind == "register" {
+            eval.absolute(0)
+        } else {
+            eval.evaluate(op.displacement, Map[str, eval.Value](), eval.absolute(0)) else {
+                return 2
+            }
+        }
+        (mut values).push(value)
+        (mut known).push(true)
+        (mut node.operands).push(op)
+    }
+    var encoded = machine.encode_row(forms[index], node, mode, values, known) else |e| {
+        eprint("{e}")
+        return 1
+    }
+    for fix in encoded.fixups {
+        if !fix.pcrel || fix.value.section != "ABS" { return 2 }
+        let target = eval.signed(fix.value.number) else { return 2 }
+        let delta = target - fix.offset - fix.bias
+        if !machine.signed_fits(eval.number(delta), fix.width) { return 2 }
+        var n = delta
+        for i in 0..fix.width { encoded.data[fix.offset + i] = (n & 255) as byte; n >>= 8 }
+    }
+    let digits = "0123456789abcdef"
+    var hex = ""
+    for b in encoded.data {
+        let n = b as int
+        hex += digits[n / 16..n / 16 + 1]
+        hex += digits[n % 16..n % 16 + 1]
+    }
+    print(hex)
+    0
+}
