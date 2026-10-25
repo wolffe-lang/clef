@@ -1,25 +1,151 @@
-/// Split commas outside one parenthesis level; bad_operands rejects unbalanced or nested parentheses.
+/// A physical source site plus the ordered macro/irp invocation chain.
+pub struct Origin {
+    file: str,
+    line: int,
+    chain: str,
+}
+
+/// One comment-free statement. Strings and character literals remain verbatim.
+pub struct Statement {
+    text: str,
+    origin: Origin,
+}
+
+/// A source-located refusal, including its specification clause.
+pub struct Failure {
+    origin: Origin,
+    reason: str,
+}
+
+fn failure(file: str, line: int, reason: str) -> Failure {
+    Failure { origin: Origin { file: file, line: line, chain: "" }, reason: reason }
+}
+
+/// Find a literal's end. GNU as §3.6.1: characters have an optional closing quote on x86.
+pub fn literal_end(s: str, start: int) -> int ! {bad_operands} {
+    if start >= s.len { return bad_operands }
+    let quote = s.bytes()[start] as int
+    if quote != 34 && quote != 39 { return bad_operands }
+    var i = start + 1
+    if quote == 39 {
+        if i >= s.len { return bad_operands }
+        if s.bytes()[i] == 92 as byte {
+            i += 1
+            if i >= s.len { return bad_operands }
+        }
+        i += 1
+        if i < s.len && s.bytes()[i] == 39 as byte { i += 1 }
+        return i
+    }
+    while i < s.len {
+        let b = s.bytes()[i] as int
+        if b == 34 { return i + 1 }
+        if b == 92 { i += 1 }
+        i += 1
+    }
+    bad_operands
+}
+
+/// Split comma lists outside balanced expressions and literals (GNU as §3.6 and §6).
 pub fn split_operands(s: str) -> List[str] ! {bad_operands} {
     var out = List[str]()
     var depth = 0
     var start = 0
-    for i in 0..s.len {
+    var i = 0
+    while i < s.len {
         let b = s.bytes()[i] as int
+        if b == 34 || b == 39 {
+            i = literal_end(s, i)?
+            continue
+        }
         if b == 40 { depth += 1 }
         if b == 41 { depth -= 1 }
-        if depth < 0 || depth > 1 { return bad_operands }
+        if depth < 0 || depth > 128 { return bad_operands }
         if b == 44 && depth == 0 {
             (mut out).push(s[start..i].trim())
             start = i + 1
         }
+        i += 1
     }
     if depth != 0 { return bad_operands }
     if s.trim().len > 0 { (mut out).push(s[start..].trim()) }
     out
 }
 
-/// Remove a hash comment and surrounding whitespace in the restricted proof dialect.
+fn flush(mut out: List[Statement], mut buf: List[byte], file: str, line: int) {
+    let text = (str_from_utf8(buf) else "").trim()
+    if text.len > 0 {
+        (mut out).push(Statement {
+            text: text,
+            origin: Origin { file: file, line: line, chain: "" },
+        })
+    }
+    buf = List[byte]()
+}
+
+/// GNU as §3.3/§3.5: block comments become a space; hash comments end at newline.
+/// Newlines inside comments advance the physical line, not the statement boundary.
+pub fn source(text: str, file: str) -> List[Statement] ! {Syntax(Failure)} {
+    var out = List[Statement]()
+    var buf = List[byte]()
+    var line = 1
+    var start_line = 1
+    var i = 0
+    while i < text.len {
+        let b = text.bytes()[i] as int
+        if b == 34 || b == 39 {
+            let end = literal_end(text, i) else {
+                return Syntax(failure(file, line, "unterminated_literal: GNU as §3.6.1"))
+            }
+            if buf.len == 0 { start_line = line }
+            for k in i..end {
+                (mut buf).push(text.bytes()[k])
+                if text.bytes()[k] == 10 as byte { line += 1 }
+            }
+            i = end
+            continue
+        }
+        if b == 47 && i + 1 < text.len && text.bytes()[i + 1] == 42 as byte {
+            let comment_line = line
+            i += 2
+            var closed = false
+            while i < text.len {
+                if text.bytes()[i] == 42 as byte &&
+                    i + 1 < text.len &&
+                    text.bytes()[i + 1] == 47 as byte {
+                    i += 2
+                    closed = true
+                    break
+                }
+                if text.bytes()[i] == 10 as byte { line += 1 }
+                i += 1
+            }
+            if !closed {
+                return Syntax(failure(file, comment_line, "unterminated_comment: GNU as §3.3"))
+            }
+            if buf.len > 0 { (mut buf).push(32 as byte) }
+            continue
+        }
+        if b == 35 {
+            while i < text.len && text.bytes()[i] != 10 as byte { i += 1 }
+            continue
+        }
+        if b == 10 || b == 59 {
+            flush(mut out, mut buf, file, start_line)
+            if b == 10 { line += 1 }
+        } else {
+            if buf.len == 0 { start_line = line }
+            if buf.len != 0 || b != 32 && b != 9 && b != 13 { (mut buf).push(b as byte) }
+        }
+        i += 1
+    }
+    flush(mut out, mut buf, file, start_line)
+    out
+}
+
+/// Compatibility helper for the original single-line proof.
 pub fn clean(line: str) -> str {
-    let end = line.find("#") else line.len
-    line[0..end].trim()
+    let rows = source(line, "<line>") else { return "" }
+    if rows.len == 0 { return "" }
+    rows[0].text
 }

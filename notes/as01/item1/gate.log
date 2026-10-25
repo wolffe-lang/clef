@@ -1,0 +1,163 @@
+wolf: 4cc4045bbbb605c07835bc4f32685953c784eeef4cd3139a48b457dfc90dad1a verified twice
+lupin: ad703550ac4787e8e4bb26989d591a731410274d7332f2b4e8b9a64c878822cc verified twice
+GATE planner
+tiers-test: PASS T1 push is full
+tiers-test: PASS T1 schedule is full
+tiers-test: PASS T1 workflow_dispatch is full
+tiers-test: PASS T1 the full-matrix label is full
+tiers-test: PASS T1 another label is a noop
+tiers-test: PASS T1 a dispatch naming linux is partial
+tiers-test: PASS T1 a dispatch naming no job of the workflow is refused
+tiers-test: PASS T2 code is pr
+tiers-test: PASS T2 prose alone is a noop
+tiers-test: PASS T2 prose beside code is pr
+tiers-test: PASS T2 object gate path src/object/store.lu
+tiers-test: PASS T2 object gate path src/oid/oid.lu
+tiers-test: PASS T2 object gate path src/index/index.lu
+tiers-test: PASS T2 object gate path src/repository/repository.lu
+tiers-test: PASS T2 object gate path tools/check-objects
+tiers-test: PASS T2 object gate path tools/objects-test.py
+tiers-test: PASS T2 object gate path probes/object-client/main.lu
+tiers-test: PASS T2 independent differ integration gate is mandatory
+tiers-test: PASS T2 proof integration gate is mandatory
+tiers-test: PASS T3 a path no rule names is full
+tiers-test: PASS T3 unreadable paths are full
+tiers-test: PASS T4 the jobs, in order: ['plan', 'plan-test', 'linux', 'corpus', 'tier', 'nightly-red']
+tiers-test: PASS T4 plan-test needs the plan and runs only when it is named
+tiers-test: PASS T4 linux needs the plan and runs only when it is named
+tiers-test: PASS T4 corpus needs the plan and runs only when it is named
+tiers-test: PASS T4 tier needs every job, runs unless cancelled, checks the verdict
+tiers-test: PASS T4 cancel-in-progress for pull requests only
+tiers-test: PASS T4 the trunk push, the nightly, the label and the dispatch input
+tiers-test: PASS T4 unrelated labels cannot cancel an active PR tier
+tiers-test: PASS T6 a green full
+tiers-test: PASS T6 a green pr
+tiers-test: PASS T6 a green noop
+tiers-test: PASS T6 a green partial
+tiers-test: PASS T6 a chosen job failed
+tiers-test: PASS T6 a chosen job skipped
+tiers-test: PASS T6 a job that ran unasked
+tiers-test: PASS T6 a full that chose less
+tiers-test: PASS T6 a failed plan
+tiers-test: PASS T6 a plan with no tier
+tiers-test: PASS T8 no open issue: one is opened, labelled nightly-red, titled 'nightly red: ci on trunk'
+tiers-test: PASS T8 an open issue: a comment on it, no new issue
+tiers-test: PASS T8 a label that already exists is no failure
+tiers-test: PASS T8 the script refuses to run without REPO, WORKFLOW and RUN_URL
+tiers-test: PASS T8 the workflow's name is ci, the title's
+tiers-test: PASS T8 nightly-red runs after the verdict, on a red schedule only, may write issues
+tiers-test: every check passes
+
+GATE planner: PASS
+GATE format
+
+GATE format: PASS
+GATE build
+wolf build: note: ld.lld not found on PATH — linking with the system linker (lld ships with the toolchain; packaging is c13)
+
+GATE build: PASS
+GATE dialect-build
+wolf build: note: ld.lld not found on PATH — linking with the system linker (lld ships with the toolchain; packaging is c13)
+
+GATE dialect-build: PASS
+GATE unit
+test src/dialect_test.lu::main ... ok
+test src/proof_test.lu::main ... ok
+wolf test: 2 passed; 0 failed; 0 rejected; 0 unsupported; 0 filtered out
+
+GATE unit: PASS
+GATE checked
+{"commit":"cf0c13d","diagnostics":[],"file":"src/proof_test.lu","impl":"wolfgang","impl_version":"0.2.35","phase_reached":"run","protocol":1,"seeded":false,"stdout_inline":"table, integer refusal, lexer, ModRM/SIB/REX, ELF, argv: pass\n","stdout_sha256":"5427bae17014b757830e832323b3ec0a28ddfe5657b5cf85bd57006185b16984","verdict":"exit(0)","warnings":[]}
+
+GATE checked: PASS
+GATE lupin
+table, integer refusal, lexer, ModRM/SIB/REX, ELF, argv: pass
+
+GATE lupin: PASS
+GATE checked-dialect
+{"commit":"cf0c13d","diagnostics":[],"file":"src/dialect_test.lu","impl":"wolfgang","impl_version":"0.2.35","phase_reached":"run","protocol":1,"seeded":false,"stdout_inline":"dialect: comments, strings, origins, labels, 24 directives, registers, operands and named refusals pass\n","stdout_sha256":"8b663d012ea80e35f9e33b283ac345bc935125251dc1615c7b8e9265b1f8babf","verdict":"exit(0)","warnings":[]}
+
+GATE checked-dialect: PASS
+GATE lupin-dialect
+dialect: comments, strings, origins, labels, 24 directives, registers, operands and named refusals pass
+
+GATE lupin-dialect: PASS
+GATE dialect
+dialect: 43 x86-64 files, 3204 statements, 2472 operand sites, 473 distinct operand spellings; AArch64 deferred by name
+
+GATE dialect: PASS
+GATE census
+{"files": 44, "forms": 189, "macro_or_irp_files": 3, "mnemonics": 112}
+
+GATE census: PASS
+GATE scanner
+scanner: quotes, comments, A64 immediates, SIB, register widths, expressions pass
+
+GATE scanner: PASS
+GATE differ
+differ: planted section-byte -> red status=1
+differ: planted relocation-addend -> red status=1
+differ: planted relocation-offset -> red status=1
+differ: planted relocation-type -> red status=1
+differ: planted symbol-value -> red status=1
+differ: planted symbol-size -> red status=1
+differ: planted bss-size -> red status=1
+differ: equality, order freedom, seven planted semantic mutations and invalid-input refusals pass
+
+GATE differ: PASS
+GATE proof
+proof: 24 exact objects, ten mnemonics, determinism, empty structure, 14 refusal rows pass
+
+GATE proof: PASS
+GATE roundtrip
+roundtrip: clean equality, invalid data and symbolic gaps, two-chunk full coverage pass
+
+GATE roundtrip: PASS
+GATE corpus
+corpus muzzle/notes/lc01-probes/q2/crt0.S: gas=0 clang=0 delta=['sections']
+corpus muzzle/notes/lc01-probes/q2/sys.S: gas=0 clang=0 delta=['sections']
+corpus muzzle/notes/lc01-probes/q9/cell.S: gas=0 clang=0 delta=['sections']
+corpus muzzle/src/crt0.S: gas=0 clang=0 delta=['sections']
+corpus muzzle/src/sys.S: gas=0 clang=0 delta=['sections']
+corpus pax/boot/console.S: gas=0 clang=0 delta=['sections']
+corpus pax/boot/cpu.S: gas=0 clang=0 delta=['sections']
+corpus pax/boot/event.S: gas=0 clang=0 delta=['sections']
+corpus pax/boot/font.S: gas=0 clang=0 delta=['sections']
+corpus pax/boot/fpu.S: gas=0 clang=0 delta=['sections']
+corpus pax/boot/io.S: gas=0 clang=0 delta=['sections', 'relocations', 'symbols']
+corpus pax/boot/isr.S: gas=0 clang=0 delta=['sections', 'relocations', 'symbols']
+corpus pax/boot/net.S: gas=0 clang=0 delta=['sections']
+corpus pax/boot/sched.S: gas=0 clang=0 delta=['sections', 'relocations', 'symbols']
+corpus pax/boot/screen.S: gas=0 clang=0 delta=['sections']
+corpus pax/boot/sound.S: gas=0 clang=0 delta=['sections']
+corpus pax/boot/speaker.S: gas=0 clang=0 delta=['sections']
+corpus pax/boot/start.S: gas=0 clang=0 delta=['sections']
+corpus pax/boot/stub/pax-stub.s: gas=0 clang=0 delta=['sections']
+corpus pax/boot/tree.S: gas=0 clang=0 delta=['sections']
+corpus pax/boot/unix.S: gas=0 clang=0 delta=['sections']
+corpus pax/boot/user.S: gas=0 clang=0 delta=['sections']
+corpus pax/tests/mkw.d/boot/io.S: gas=0 clang=0 delta=['sections']
+corpus pax/user/elf/ask.S: gas=0 clang=0 delta=['sections']
+corpus pax/user/elf/hello.S: gas=0 clang=0 delta=['sections']
+corpus pax/user/elf/hold.S: gas=0 clang=0 delta=['sections']
+corpus pax/user/elf/reboot.S: gas=0 clang=0 delta=['sections']
+corpus pax/user/elf/seven.S: gas=0 clang=0 delta=['sections']
+corpus pax/user/play/kd.S: gas=0 clang=0 delta=['sections', 'relocations', 'symbols']
+corpus pax/user/programs.S: gas=0 clang=0 delta=['sections', 'relocations', 'symbols']
+corpus pax/user/termwolf/tio.S: gas=0 clang=0 delta=['sections']
+EXCLUDED architecture wolf-lang/crates/wolf_driver/tests/fixtures/asm/seven_aarch64_macos.S
+corpus wolf-lang/crates/wolf_driver/tests/fixtures/asm/seven_x86_64.S: gas=0 clang=0 delta=['sections']
+corpus wolf-lang/crates/wolf_driver/tests/fixtures/freestanding/rt_stub.S: gas=0 clang=0 delta=['sections']
+corpus wolf-lang/crates/wolf_driver/tests/fixtures/freestanding/start.S: gas=0 clang=0 delta=['sections']
+corpus wolf-lang/crates/wolf_driver/tests/fixtures/freestanding_alloc/heap.S: gas=0 clang=0 delta=['sections']
+corpus wolf-lang/crates/wolf_driver/tests/fixtures/freestanding_device/dev_window.S: gas=0 clang=0 delta=['sections']
+corpus wolf-lang/crates/wolf_driver/tests/fixtures/freestanding_interrupt/boot.S: gas=0 clang=0 delta=['sections', 'relocations']
+corpus wolf-lang/crates/wolf_driver/tests/fixtures/freestanding_interrupt/isr.S: gas=0 clang=0 delta=['sections', 'relocations', 'symbols']
+corpus wolf-lang/crates/wolf_driver/tests/fixtures/freestanding_static/table.S: gas=0 clang=0 delta=['sections']
+corpus wolf-lang/crates/wolf_driver/tests/fixtures/freestanding_threads/threads.S: gas=0 clang=0 delta=['sections']
+corpus wolf-lang/crates/wolf_driver/tests/fixtures/pkg/ffi/kernel/kern/io.S: gas=0 clang=0 delta=['sections']
+corpus wolf-lang/crates/wolf_driver/tests/fixtures/shr_range/rd.S: gas=0 clang=0 delta=['sections']
+corpus wolf-lang/crates/wolf_driver/tests/fixtures/stale_global/kernel/stale.S: gas=0 clang=0 delta=['sections']
+corpus: matched 44 named source dispositions; excluded architectures counted
+
+GATE corpus: PASS

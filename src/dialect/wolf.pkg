@@ -1,0 +1,5 @@
+pkg {
+    name: "dialect",
+    edition: "1",
+    deps: {lex: {path: "../lex"}},
+}

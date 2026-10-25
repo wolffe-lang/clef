@@ -1,0 +1,87 @@
+//! member: false
+
+use dialect
+use lex
+
+fn main() -> int ! {Syntax(lex.Failure), bad_operands, bad_register} {
+    let rows = lex.source(
+        "# comment\n.text; 1: movb $'#', %al /* two\n lines */; .ascii \"#;/*,*/\"\n",
+        "case.S",
+    )?
+    assert(rows.len == 3)
+    assert(rows[0].origin.line == 2 && rows[1].origin.line == 2 && rows[2].origin.line == 3)
+    assert(rows[1].text == "1: movb $'#', %al")
+    assert(rows[2].text == ".ascii \"#;/*,*/\"")
+    assert(lex.split_operands("$(1+(2*3)), (%rax,%r12,8), \"a,b\"")?.len == 3)
+    let n = dialect.statement(rows[1])?
+    assert(n.labels.len == 1 && n.labels[0] == "1" && n.name == "movb" && n.operands.len == 2)
+    assert(n.operands[0].kind == "immediate" && n.operands[1].reg.bits == 8)
+    let mem = dialect.operand("*sym+4(%rax,%r12,8)")?
+    assert(mem.indirect && mem.base.code == 0 && mem.index.code == 12 && mem.scale == 8)
+    assert(mem.displacement == "sym+4")
+    assert(dialect.operand("kw_pd(,%ecx,8)")?.index.bits == 32)
+    assert(dialect.operand("label(%rip)")?.base.family == "ip")
+    assert(dialect.operand("(label+4)")?.kind == "expression")
+    assert(dialect.register("%ah")?.high8)
+    assert(dialect.register("%sil")?.rex8)
+    assert(dialect.register("%r15d")?.code == 15)
+    assert(dialect.register("%cr8")?.family == "control")
+    assert(dialect.register("%xmm15")?.bits == 128)
+    assert(dialect.register("%cs")?.family == "segment")
+    for text in [
+        "(%rax,%rsp)",
+        "(%rax,%ecx)",
+        "(%rip,%rax)",
+        "(%eax,%ecx,3)",
+        "%notareg",
+        "*",
+        "$",
+        "%rip",
+        "(%xmm0)",
+        "(,,4)",
+    ] {
+        var refused = false
+        let _ = dialect.operand(text) else { refused = true; dialect.operand("$0")? }
+        assert(refused)
+    }
+    for text in ["/* open", ".ascii \"open"] {
+        var refused = false
+        let _ = lex.source(text, "bad.S") else { refused = true; [] }
+        assert(refused)
+    }
+    for text in [
+        ".unknown",
+        "bogus %rax",
+        ".text 1",
+        ".globl",
+        ".set x",
+        ".ascii 4",
+        ".zero 1,2,3",
+        "rep",
+    ] {
+        let input = lex.source(text, "bad.S")?
+        var refused = false
+        let _ = dialect.statement(input[0]) else { refused = true; dialect.statement(rows[0])? }
+        assert(refused)
+    }
+    let directives = lex.source(
+        ".ascii \"a,b\"\n.asciz \"x\"\n.balign 8\n.bss\n.byte 1,2\n.code32\n.code64\n.data\n.endm\n.endr\n.globl foo\n.irp n,0,1\n.long 3\n.macro ISR v\n.p2align 4\n.quad foo\n.section .note.GNU-stack,\"\",@progbits\n.set x,4\n.size foo,.-foo\n.text\n.type foo,@function\n.word 2\n.zero 16\n.space 8\n",
+        "directives.S",
+    )?
+    assert(directives.len == 24)
+    for row in directives { assert(dialect.statement(row)?.kind == "directive") }
+    let assigned = lex.source("X = (2+3)\n", "set.S")?
+    let a = dialect.statement(assigned[0])?
+    assert(
+        a.name == ".set" &&
+            a.arguments.len == 2 &&
+            a.arguments[0] == "X" &&
+            a.arguments[1] == "(2+3)",
+    )
+    let chars = lex.source(".byte '#; .byte ';\n", "chars.S")?
+    assert(chars.len == 2 && chars[0].text == ".byte '#" && chars[1].text == ".byte ';")
+    print(
+        "dialect: comments, strings, origins, labels, 24 directives, registers, operands and named refusals pass",
+    )
+    0
+}

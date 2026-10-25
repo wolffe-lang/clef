@@ -25,10 +25,13 @@ fn main() -> int {
         return 1
     }
     var output = List[byte]()
-    var line = 0
-    for raw in text.lines() {
-        line += 1
-        let s = lex.clean(raw)
+    let statements = lex.source(text, opts.input) else |e| {
+        eprint("clef: {e}")
+        return 1
+    }
+    for row in statements {
+        let line = row.origin.line
+        let s = row.text
         if s.len == 0 || s == ".text" { continue }
         if s.starts_with(".") {
             eprint("clef: {opts.input}:{line}: unsupported directive (GNU as manual §7)")

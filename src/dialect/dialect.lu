@@ -1,0 +1,363 @@
+use lex
+
+/// Register spelling and its architectural class; code is the SDM register number.
+pub struct Register {
+    name: str,
+    family: str,
+    bits: int,
+    code: int,
+    high8: bool,
+    rex8: bool,
+}
+
+/// Parsed AT&T operand; expression text is kept until symbol/layout evaluation.
+pub struct Operand {
+    kind: str,
+    text: str,
+    indirect: bool,
+    reg: Register,
+    base: Register,
+    index: Register,
+    scale: int,
+    displacement: str,
+}
+
+/// A statement with labels, unmodified mnemonic/suffix, prefixes and origin.
+pub struct Node {
+    origin: lex.Origin,
+    labels: List[str],
+    kind: str,
+    name: str,
+    arguments: List[str],
+    operands: List[Operand],
+    prefixes: List[str],
+}
+
+fn absent() -> Register {
+    Register { name: "", family: "none", bits: 0, code: 0, high8: false, rex8: false }
+}
+
+/// Register fields from Intel SDM vol.2A §2.1.5, Tables 2-2/2-4; not an opcode map.
+pub fn register(name: str) -> Register ! {bad_register} {
+    let groups = [
+        "al cl dl bl spl bpl sil dil",
+        "ax cx dx bx sp bp si di",
+        "eax ecx edx ebx esp ebp esi edi",
+        "rax rcx rdx rbx rsp rbp rsi rdi",
+    ]
+    let widths = [8, 16, 32, 64]
+    for g in 0..groups.len {
+        let names = groups[g].words()
+        for n in 0..names.len {
+            if name == "%{names[n]}" {
+                return Register {
+                    name: name,
+                    family: "gpr",
+                    bits: widths[g],
+                    code: n,
+                    high8: false,
+                    rex8: g == 0 && n >= 4,
+                }
+            }
+        }
+    }
+    let high = ["%ah", "%ch", "%dh", "%bh"]
+    for n in 0..high.len {
+        if name == high[n] {
+            return Register {
+                name: name,
+                family: "gpr",
+                bits: 8,
+                code: n + 4,
+                high8: true,
+                rex8: false,
+            }
+        }
+    }
+    for n in 8..16 {
+        let suffixes = ["b", "w", "d", ""]
+        for g in 0..suffixes.len {
+            if name == "%r{n}{suffixes[g]}" {
+                return Register {
+                    name: name,
+                    family: "gpr",
+                    bits: widths[g],
+                    code: n,
+                    high8: false,
+                    rex8: g == 0,
+                }
+            }
+        }
+    }
+    for n in 0..16 {
+        if name == "%xmm{n}" {
+            return Register {
+                name: name,
+                family: "xmm",
+                bits: 128,
+                code: n,
+                high8: false,
+                rex8: false,
+            }
+        }
+    }
+    for n in [0, 2, 3, 4, 8] {
+        if name == "%cr{n}" {
+            return Register {
+                name: name,
+                family: "control",
+                bits: 64,
+                code: n,
+                high8: false,
+                rex8: false,
+            }
+        }
+    }
+    let segments = ["%es", "%cs", "%ss", "%ds", "%fs", "%gs"]
+    for n in 0..segments.len {
+        if name == segments[n] {
+            return Register {
+                name: name,
+                family: "segment",
+                bits: 16,
+                code: n,
+                high8: false,
+                rex8: false,
+            }
+        }
+    }
+    if name == "%rip" {
+        return Register { name: name, family: "ip", bits: 64, code: 5, high8: false, rex8: false }
+    }
+    bad_register
+}
+
+/// GNU as i386 Memory References: displacement(base,index,scale), no segment overrides yet.
+pub fn operand(raw: str) -> Operand ! {bad_operands} {
+    var s = raw.trim()
+    var indirect = false
+    if s.starts_with("*") { indirect = true; s = s[1..].trim() }
+    if s.len == 0 { return bad_operands }
+    var out = Operand {
+        kind: "expression",
+        text: s,
+        indirect: indirect,
+        reg: absent(),
+        base: absent(),
+        index: absent(),
+        scale: 1,
+        displacement: s,
+    }
+    if s.starts_with("$") {
+        if indirect || s.len == 1 { return bad_operands }
+        out.kind = "immediate"
+        out.displacement = s[1..].trim()
+        if out.displacement.len == 0 { return bad_operands }
+        return out
+    }
+    if s.starts_with("%") {
+        out.reg = register(s) else { return bad_operands }
+        if out.reg.family == "ip" { return bad_operands }
+        out.kind = "register"
+        return out
+    }
+    // A final parenthesized register tuple is memory; parenthesized arithmetic is not.
+    let open = s.rfind("(") else { return out }
+    if !s[open..].contains("%") {
+        if s[open..].contains(",") { return bad_operands }
+        return out
+    }
+    if !s.ends_with(")") { return bad_operands }
+    let parts = lex.split_operands(s[open + 1..s.len - 1])?
+    if parts.len < 1 || parts.len > 3 { return bad_operands }
+    if parts[0].len > 0 {
+        out.base = register(parts[0]) else { return bad_operands }
+        if out.base.family != "gpr" && out.base.family != "ip" { return bad_operands }
+        if out.base.bits != 32 && out.base.bits != 64 { return bad_operands }
+    }
+    if parts.len >= 2 && parts[1].len > 0 {
+        out.index = register(parts[1]) else { return bad_operands }
+        if out.index.family != "gpr" ||
+            out.index.bits != 32 && out.index.bits != 64 ||
+            out.index.code == 4 {
+            return bad_operands
+        }
+    }
+    if parts.len == 3 {
+        out.scale = parts[2].to_int() else { return bad_operands }
+        if out.scale != 1 && out.scale != 2 && out.scale != 4 && out.scale != 8 {
+            return bad_operands
+        }
+        if out.index.family == "none" { return bad_operands }
+    }
+    if out.base.family == "none" && out.index.family == "none" { return bad_operands }
+    if out.base.family == "ip" && parts.len != 1 { return bad_operands }
+    if out.base.family != "none" && out.index.family != "none" && out.base.bits != out.index.bits {
+        return bad_operands
+    }
+    out.kind = "memory"
+    out.displacement = s[0..open].trim()
+    if out.displacement.len == 0 { out.displacement = "0" }
+    out
+}
+
+/// Symbol spelling, including GNU as numeric locals; macro parameters are expanded first.
+pub fn symbol(s: str) -> bool {
+    if s.len == 0 { return false }
+    var digits = true
+    for b in s.bytes() { if b < 48 as byte || b > 57 as byte { digits = false } }
+    if digits { return true }
+    for i in 0..s.len {
+        let c = s.bytes()[i] as int
+        if c >= 65 && c <= 90 || c >= 97 && c <= 122 || c == 95 || c == 46 || c == 36 { continue }
+        if i > 0 && c >= 48 && c <= 57 { continue }
+        return false
+    }
+    true
+}
+
+fn named(names: List[str], s: str) -> bool {
+    for name in names { if name == s { return true } }
+    false
+}
+
+/// Accepted census spellings; the encoder separately validates mnemonic × operand forms.
+pub fn mnemonics() -> List[str] {
+    "add addb addl addq and andb andl andq btl call callq clac cld cli cmpb cmpl cmpq cmpw cpuid decl decq divl divq fnstcw fxrstor64 fxsave64 hlt imulq inb incl incq inl int3 invlpg iretq ja jae jb jc je jle jmp jne jns jnz js jz lea leal leaq lgdt lidt ljmp lretq ltr mov movabs movabsq movb movdqu movl movq movsb movslq movsq movw movzbl movzwl negq nop orl orq outb outl pause pop popq push pushfq pushq rdmsr rdrand rdtsc ret setc shl shll shlq shrl shrq stac sti stmxcsr stosb stosq sub subl subq syscall sysretq test testb testl testq ud2 wrmsr xgetbv xor xorl xrstor64 xsave64 xsetbv cmp".
+        words()
+}
+
+/// The 23 census directives, plus .space (GNU as's .zero counterpart).
+pub fn directives() -> List[str] {
+    ".ascii .asciz .balign .bss .byte .code32 .code64 .data .endm .endr .globl .irp .long .macro .p2align .quad .section .set .size .text .type .word .zero .space".
+        words()
+}
+
+fn fail(origin: lex.Origin, reason: str) -> lex.Failure {
+    lex.Failure { origin: copy origin, reason: reason }
+}
+
+/// Parse labels and the statement head, before expanding macro bodies.
+pub fn head(row: lex.Statement) -> Node ! {Syntax(lex.Failure)} {
+    var s = row.text.trim()
+    var labels = List[str]()
+    loop {
+        var end = 0
+        while end < s.len {
+            let c = s.bytes()[end] as int
+            if c == 58 || c == 32 || c == 9 { break }
+            end += 1
+        }
+        if end >= s.len || s.bytes()[end] != 58 as byte { break }
+        let label = s[0..end]
+        if !symbol(label) && !label.contains("\\") {
+            return Syntax(fail(row.origin, "bad_label: GNU as §5.1"))
+        }
+        (mut labels).push(label)
+        s = s[end + 1..].trim()
+    }
+    var node = Node {
+        origin: copy row.origin,
+        labels: labels,
+        kind: "label",
+        name: "",
+        arguments: [],
+        operands: [],
+        prefixes: [],
+    }
+    if s.len == 0 { return node }
+    // Assignment syntax is normalized to .set without evaluating the expression.
+    let eq = s.find("=") else s.len
+    if eq < s.len && symbol(s[0..eq].trim()) {
+        node.kind = "directive"
+        node.name = ".set"
+        node.arguments = [s[0..eq].trim(), s[eq + 1..].trim()]
+        if node.arguments[1].len == 0 {
+            return Syntax(fail(row.origin, "empty_assignment: GNU as §5.2"))
+        }
+        return node
+    }
+    let words = s.words()
+    node.name = words[0]
+    s = s[node.name.len..].trim()
+    while node.name == "rep" || node.name == "repe" || node.name == "repne" || node.name == "lock" {
+        (mut node.prefixes).push(node.name)
+        let next = s.words()
+        if next.len == 0 { return Syntax(fail(row.origin, "missing_instruction: SDM vol.2A §2.1")) }
+        node.name = next[0]
+        s = s[node.name.len..].trim()
+    }
+    node.arguments = lex.split_operands(s) else {
+        return Syntax(fail(row.origin, "bad_operands: GNU as §6; i386 Memory References"))
+    }
+    node.kind = if node.name.starts_with(".") then "directive" else "instruction"
+    node
+}
+
+/// Validate directive syntax or expanded instruction operands; no encoding is guessed.
+pub fn statement(row: lex.Statement) -> Node ! {Syntax(lex.Failure)} {
+    var node = head(row)?
+    if node.kind == "label" { return node }
+    if node.kind == "directive" {
+        if !named(directives(), node.name) {
+            return Syntax(fail(row.origin, "unknown_directive {node.name}: GNU as §7"))
+        }
+        if node.prefixes.len > 0 {
+            return Syntax(fail(row.origin, "prefix_on_directive: GNU as §3.5"))
+        }
+        let n = node.arguments.len
+        if named([".text", ".data", ".bss", ".code32", ".code64", ".endm", ".endr"], node.name) {
+            if n != 0 {
+                return Syntax(fail(row.origin, "directive_arguments {node.name}: GNU as §7"))
+            }
+        } else {
+            if n == 0 {
+                return Syntax(
+                    fail(row.origin, "missing_directive_arguments {node.name}: GNU as §7"),
+                )
+            }
+            if named([".set", ".size", ".type"], node.name) &&
+                (n != 2 || !symbol(node.arguments[0])) {
+                return Syntax(fail(row.origin, "directive_arguments {node.name}: GNU as §7"))
+            }
+            if node.name == ".section" && n > 3 {
+                return Syntax(fail(row.origin, "section_arguments: GNU as §7 Section"))
+            }
+            if named([".p2align", ".balign"], node.name) && n > 3 {
+                return Syntax(fail(row.origin, "align_arguments: GNU as §7"))
+            }
+            if named([".zero", ".space"], node.name) && n > 2 {
+                return Syntax(fail(row.origin, "space_arguments: GNU as §7"))
+            }
+            for arg in node.arguments {
+                if arg.len == 0 && !named([".p2align", ".balign"], node.name) {
+                    return Syntax(fail(row.origin, "empty_argument: GNU as §7"))
+                }
+                if node.name == ".globl" && !symbol(arg) {
+                    return Syntax(fail(row.origin, "bad_symbol: GNU as §5"))
+                }
+                if node.name == ".ascii" || node.name == ".asciz" {
+                    if !arg.starts_with("\"") || (lex.literal_end(arg, 0) else 0) != arg.len {
+                        return Syntax(fail(row.origin, "bad_string: GNU as §3.6.1"))
+                    }
+                }
+            }
+        }
+        return node
+    }
+    if !named(mnemonics(), node.name) {
+        return Syntax(fail(row.origin, "unknown_mnemonic {node.name}: SDM vol.2 instruction set"))
+    }
+    for arg in node.arguments {
+        let value = operand(arg) else {
+            return Syntax(
+                fail(
+                    row.origin,
+                    "bad_operand {arg}: SDM vol.2A §2.1; GNU as i386 Memory References",
+                ),
+            )
+        }
+        (mut node.operands).push(value)
+    }
+    node
+}

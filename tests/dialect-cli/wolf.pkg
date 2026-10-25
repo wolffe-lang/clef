@@ -1,0 +1,6 @@
+pkg {
+    name: "dialect_cli",
+    edition: "1",
+    capabilities: [env, fs],
+    deps: {lex: {path: "../../src/lex"}, dialect: {path: "../../src/dialect"}},
+}
