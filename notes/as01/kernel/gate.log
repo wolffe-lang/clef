@@ -1,0 +1,45 @@
+AS01 CLEF KERNEL START 2026-10-25T06:23:04Z pid=1500410 head=da8afadaed0c8017475e22acca852df128356a63 image=localhost/clef-integration:52846d3b65aeafca
+mkdev: checked dev variant: no native linker
+verify-bins: PASS W0: compiler, worker and runtime match the recorded bytes
+fetch-limine: limine 12.9.1 already staged (/lane/integration/cache/limine-12.9.1)
+/lane/integration/clef-full/mpx5-wolf/native/wolf.iso
+/lane/integration/clef-full/mpx5-wolf/release/wolf.iso
+mpx5-wolf: PASS W0 build: pinned compiler, static programs, std and images
+AS01 KERNEL native byte-identical 54656851650d2da54f31b5304907ab1943998039ccc019a1c08bd4b943145962 assembly_objects 17
+AS01 KERNEL release byte-identical efb815659784e0759dbc1e114d4bfdf863dd72a02add4adff00900ad5909836a assembly_objects 17
+AS01 SHIM COUNTS {'assembly': 34, 'other': 1}
+/lane/integration/clef-full/muzzle/native.iso
+/lane/integration/clef-full/muzzle/release.iso
+aed5c41c707569c9a7eda4e3e779b5ae9dc13854053ab20596faba5cb97df656  /lane/integration/clef-full/muzzle/witness.elf
+AS01 MUZZLE LINUX PASS: exact stdout and exit 7
+AS01 CLEF LINUX REFERENCES 2026-10-25T06:28:54Z
+linux-tree: ip_unprivileged_port_start 1024 in the container, now 1024; host fs.protected_hardlinks 1 symlinks 1 regular 1 fifos 1
+linux-tree: ip_unprivileged_port_start 1024 in the container, now 1024; host fs.protected_hardlinks 1 symlinks 1 regular 1 fifos 1
+mpx5-wolf: PASS W0 Linux: both live sessions ran
+AS01 CLEF BOOTS 2026-10-25T06:31:19Z
+mpx5-wolf: PASS W1 native bios root: byte-identical 57cf42de238bd78110b067f719313df7a3adba975b67efccee62f73e48a0e670
+PASS W2 root: command statuses, observation identities and independent witnesses
+mpx5-wolf: PASS W1 native bios pax: byte-identical 36f1903a21ea657417a959c3ee8b2736657528e824560c719a5245151a491f81
+PASS W2 pax: command statuses, observation identities and independent witnesses
+mpx5-wolf: W3 native bios: halt=0 unserved=273 334 mremap: 8 wolf processes, 12 calls served
+mpx5-wolf: PASS W1 release bios root: byte-identical 57cf42de238bd78110b067f719313df7a3adba975b67efccee62f73e48a0e670
+PASS W2 root: command statuses, observation identities and independent witnesses
+mpx5-wolf: PASS W1 release bios pax: byte-identical 36f1903a21ea657417a959c3ee8b2736657528e824560c719a5245151a491f81
+PASS W2 pax: command statuses, observation identities and independent witnesses
+mpx5-wolf: W3 release bios: halt=0 unserved=273 334 mremap: 8 wolf processes, 12 calls served
+mpx5-wolf: PASS W1 native uefi root: byte-identical 57cf42de238bd78110b067f719313df7a3adba975b67efccee62f73e48a0e670
+PASS W2 root: command statuses, observation identities and independent witnesses
+mpx5-wolf: PASS W1 native uefi pax: byte-identical 36f1903a21ea657417a959c3ee8b2736657528e824560c719a5245151a491f81
+PASS W2 pax: command statuses, observation identities and independent witnesses
+mpx5-wolf: W3 native uefi: halt=0 unserved=273 334 mremap: 8 wolf processes, 12 calls served
+mpx5-wolf: PASS W1 release uefi root: byte-identical 57cf42de238bd78110b067f719313df7a3adba975b67efccee62f73e48a0e670
+PASS W2 root: command statuses, observation identities and independent witnesses
+mpx5-wolf: PASS W1 release uefi pax: byte-identical 36f1903a21ea657417a959c3ee8b2736657528e824560c719a5245151a491f81
+PASS W2 pax: command statuses, observation identities and independent witnesses
+mpx5-wolf: W3 release uefi: halt=0 unserved=273 334 mremap: 8 wolf processes, 12 calls served
+mpx5-wolf: mpx5-wolf: PASS
+AS01 MUZZLE PAX PASS native bios: stdout and exit 7, halted
+AS01 MUZZLE PAX PASS native uefi: stdout and exit 7, halted
+AS01 MUZZLE PAX PASS release bios: stdout and exit 7, halted
+AS01 MUZZLE PAX PASS release uefi: stdout and exit 7, halted
+AS01 CLEF KERNEL COMPLETE 2026-10-25T06:44:38Z

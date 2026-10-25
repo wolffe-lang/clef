@@ -24,5 +24,21 @@
   "not_claimed": [
     "decoder completeness",
     "CPU execution support"
-  ]
+  ],
+  "system_source": {
+    "title": "Intel 64 and IA-32 SDM Volume 3 (3A\u20133D), System Programming Guide",
+    "edition": "325384-093US, September 2026",
+    "official_url": "https://cdrdv2.intel.com/v1/dl/getContent/671447",
+    "sha256": "77919be320f35da2782771ef2cb65a868cf68e62c8f8279f2ca61199cb70d1f8",
+    "clauses_read": [
+      "3A 2.3: EFLAGS IF/IOPL",
+      "3A 2.4.1\u20132.4.4: GDTR/LDTR/IDTR/TR",
+      "3A 2.5: control-register widths and operand-size prefixes",
+      "3A 2.6: XCR0 and OSXSAVE",
+      "3A 2.8.1\u20132.8.11: system instructions",
+      "3A 6.8.8: SYSCALL/SYSRET",
+      "3A 7.14.2\u20137.14.3: stack frames and IRETQ"
+    ],
+    "role": "Supplemental system semantics; encoding bytes remain pinned to Volume 2 edition 086. No new instruction families imported from edition 093."
+  }
 }
