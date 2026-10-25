@@ -163,16 +163,16 @@ fn walk(
             labels(mut out, node)?
             let body = rows[i + 1..end]
             for n in 1..node.arguments.len {
-                if node.arguments[n].len == 0 {
+                if node.arguments[node.arguments.len - n].len == 0 {
                     return Syntax(failure(row.origin, "empty_irp_value"))
                 }
                 var bindings = Map[str, str]()
-                bindings[node.arguments[0]] = node.arguments[n]
+                bindings[node.arguments[0]] = node.arguments[node.arguments.len - n]
                 let expanded = instantiated(
                     body,
                     bindings,
                     row.origin,
-                    "irp {node.arguments[0]}={node.arguments[n]}",
+                    "irp {node.arguments[0]}={node.arguments[node.arguments.len - n]}",
                 )
                 walk(expanded, mut macros, mut out, depth + 1)?
             }
