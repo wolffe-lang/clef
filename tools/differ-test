@@ -1,0 +1,41 @@
+#!/usr/bin/env python3
+import json,pathlib,struct,subprocess,sys
+from elf import ELF,differences
+ROOT=pathlib.Path(__file__).resolve().parents[1];out=ROOT/'target/evidence/differ';out.mkdir(parents=True,exist_ok=True)
+src=out/'witness.S';src.write_text('.text\n.globl witness\n.type witness,@function\nwitness:\n.byte 0x90\ncall missing\n.size witness,.-witness\n.bss\n.zero 16\n')
+a=out/'a.o';subprocess.run(['as','--64',str(src),'-o',str(a)],check=True)
+base=ELF(a)
+assert differences(base,ELF(a))=={}
+
+def mutate(name,offset,data):
+    raw=bytearray(a.read_bytes());raw[offset:offset+len(data)]=data;p=out/(name+'.o');p.write_bytes(raw)
+    process=subprocess.run([str(ROOT/'tools/differ'),str(a),str(p)],capture_output=True,text=True)
+    (out/(name+'.json')).write_text(process.stdout)
+    assert process.returncode==1, (name,process.returncode,process.stdout,process.stderr)
+    print('differ: planted '+name+' -> red status=1')
+text=next(s for n,s in base.sections if n=='.text')
+mutate('section-byte',text[4],b'\x91')
+rela=next(s for n,s in base.sections if n=='.rela.text')
+mutate('relocation-addend',rela[4]+16,struct.pack('<q',-3))
+mutate('relocation-offset',rela[4],struct.pack('<Q',0))
+mutate('relocation-type',rela[4]+8,struct.pack('<I',2))
+syms=next(s for n,s in base.sections if n=='.symtab')
+mutate('symbol-value',syms[4]+24+8,struct.pack('<Q',1))
+mutate('symbol-size',syms[4]+24+16,struct.pack('<Q',1))
+bssindex=next(i for i,(n,s) in enumerate(base.sections) if n=='.bss')
+mutate('bss-size',base.header[6]+64*bssindex+32,struct.pack('<Q',17))
+# Renumber symbols and fix the relocation index. Equality must survive ordering.
+raw=bytearray(a.read_bytes()); count=syms[5]//24
+assert count==3
+first=bytes(raw[syms[4]+24:syms[4]+48]);second=bytes(raw[syms[4]+48:syms[4]+72])
+raw[syms[4]+24:syms[4]+48]=second;raw[syms[4]+48:syms[4]+72]=first
+info=struct.unpack_from('<Q',raw,rela[4]+8)[0]
+struct.pack_into('<Q',raw,rela[4]+8,((3-(info>>32))<<32)|(info&0xffffffff))
+reordered=out/'reordered.o';reordered.write_bytes(raw)
+assert not differences(base,ELF(reordered)), 'symbol order is not semantic'
+# Relocation order is free, but duplicates must not silently disappear.
+for label,data in [('truncated',b'\x7fELF'),('wrong-machine',a.read_bytes()[:18]+b'\xb7\x00'+a.read_bytes()[20:])]:
+    p=out/(label+'.o');p.write_bytes(data)
+    q=subprocess.run([str(ROOT/'tools/differ'),str(a),str(p)],capture_output=True)
+    assert q.returncode==2
+print('differ: equality, order freedom, seven planted semantic mutations and invalid-input refusals pass')

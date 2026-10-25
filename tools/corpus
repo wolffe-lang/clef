@@ -1,0 +1,38 @@
+#!/usr/bin/env python3
+import hashlib,json,pathlib,runpy,sys
+from elf import ELF
+ROOT=pathlib.Path(__file__).resolve().parents[1]
+oracle=runpy.run_path(str(ROOT/'tools/oracle'))['oracle']
+
+def main():
+    census=json.loads((ROOT/'census/org-asm.json').read_text()); rows=[]
+    for f in census['files']:
+        if f['architecture']!='x86_64':
+            rows.append({'source':f['path'],'status':'excluded-aarch64-macos','reason':'A4; neither x86-64 oracle is applicable'})
+            print('EXCLUDED architecture '+f['path'],flush=True);continue
+        out=ROOT/'target/corpus'/f['path'];r=oracle(ROOT/'census/sources'/f['path'],out,f['path'].startswith('pax/') or 'freestanding' in f['path'])
+        row={'source':f['path'],'gas_status':r['runs']['gas']['status'],'clang_status':r['runs']['clang']['status']}
+        for name in ('gas','clang'):
+            if name not in r:
+                row[name+'_diagnostic']=(out/(name+'.stderr')).read_text().replace(str(ROOT/'census/sources')+'/', '')
+                continue
+            row[name+'_object']=r[name]
+            row[name+'_sections']=[{'name':name,'type':s[1],'flags':s[2],'size':s[5],'alignment':s[8],'link':s[6],'info':s[7],'entry_size':s[9]} for name,s in ELF(out/(name+'.o')).sections]
+        row['differences']=list(r.get('differences',{}))
+        row['symbol_order_equal']=r.get('symbol_order_equal')
+        if 'gas' in r and 'clang' in r:
+            row['section_differences']=[]
+            a={s[0]:s for s in r['gas']['sections']};b={s[0]:s for s in r['clang']['sections']}
+            for name in sorted(a.keys()|b.keys()):
+                if a.get(name)!=b.get(name):
+                    aa=a.get(name);bb=b.get(name)
+                    row['section_differences'].append({'name':name,'gas_size':aa[3] if aa else None,'clang_size':bb[3] if bb else None,'contents_equal':bool(aa and bb and aa[-1]==bb[-1]),'gas_alignment':aa[4] if aa else None,'clang_alignment':bb[4] if bb else None})
+        rows.append(row);print(f'corpus {f["path"]}: gas={row["gas_status"]} clang={row["clang_status"]} delta={row["differences"]}',flush=True)
+    data={'schema':1,'rows':rows}
+    text=json.dumps(data,indent=2,sort_keys=True)+'\n';target=ROOT/'census/oracle-results.json'
+    if '--check' in sys.argv:
+        if target.read_text()!=text: raise SystemExit('corpus drift: pinned oracle results changed')
+    else: target.write_text(text)
+    assert all(r.get('gas_status',0)==0 for r in rows),'GNU as refused a census source'
+    print('corpus: matched '+str(len(rows))+' named source dispositions; excluded architectures counted')
+if __name__=='__main__':main()

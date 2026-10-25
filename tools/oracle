@@ -1,0 +1,36 @@
+#!/usr/bin/env python3
+"""Run only pinned black-box binaries; retain diagnostics even on refusal."""
+import argparse,hashlib,json,pathlib,subprocess,sys
+from elf import ELF,differences
+
+def run(argv,dest):
+    p=subprocess.run(argv,capture_output=True)
+    dest.with_suffix(dest.suffix+'.stdout').write_bytes(p.stdout)
+    dest.with_suffix(dest.suffix+'.stderr').write_bytes(p.stderr)
+    return {'argv':argv,'status':p.returncode}
+
+def oracle(src,out,freestanding=False):
+    out.mkdir(parents=True,exist_ok=True)
+    result={'source':str(src),'sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'runs':{}}
+    for name,argv in [('gas',['as','--64']),('clang',['clang']+(['--target=x86_64-unknown-none-elf'] if freestanding else [])+['-c'])]:
+        obj=out/(name+'.o')
+        if obj.exists(): obj.unlink()
+        r=run(argv+['-o',str(obj),str(src)],out/name); result['runs'][name]=r
+        if r['status']==0:
+            for tool,args in [('readelf',['readelf','-SrsW']),('disassembly',['objdump','-d','-r','--no-show-raw-insn']),('contents',['objdump','-s'])]:
+                r[tool]=run(args+[str(obj)],out/(name+'.'+tool))
+                if r[tool]['status']: raise RuntimeError('oracle inspection failed')
+            result[name]=ELF(obj).normalized()
+    if all(r['status']==0 for r in result['runs'].values()):
+        delta=differences(ELF(out/'gas.o'),ELF(out/'clang.o'))
+        result['differences']=delta
+        result['symbol_order_equal']=list(ELF(out/'gas.o').symbol_tables.values())==list(ELF(out/'clang.o').symbol_tables.values())
+    (out/'result.json').write_text(json.dumps(result,indent=2,sort_keys=True)+'\n')
+    return result
+
+def main():
+    p=argparse.ArgumentParser();p.add_argument('source',type=pathlib.Path);p.add_argument('--out',type=pathlib.Path,default=pathlib.Path('target/oracle'));p.add_argument('--freestanding',action='store_true'); a=p.parse_args()
+    r=oracle(a.source,a.out,a.freestanding)
+    print(json.dumps({k:r[k] for k in ('source','runs')}))
+    return int(any(x['status']!=0 for x in r['runs'].values()))
+if __name__=='__main__':sys.exit(main())
