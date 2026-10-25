@@ -1,88 +1,109 @@
 # clef
 
-An assembler written in [wolf](https://github.com/wolffe-lang/wolf-lang).
-Its target is GNU-as AT&T x86-64 source and ELF relocatable objects whose
-section contents and relocations match GNU as byte for byte. With
-[ligature](https://github.com/wolffe-lang/ligature), it is intended to remove
-the C toolchain from PAX's assembly and linking paths.
+An assembler written in [wolf](https://github.com/wolffe-lang/wolf-lang),
+for GNU-as AT&T x86-64 source and ELF relocatable objects.
 
-**Current state: a measured source map and a ten-form encoding proof, not a
-general-purpose assembler.** The proof emits real ELF objects independently
-of GNU as. It does not yet assemble PAX's boot stubs or muzzle. There is no
-disassembler, macro expander, general expression engine or symbolic-relocation
-writer yet. Unsupported input is refused rather than guessed.
+| Machine | Verified scope |
+|---|---|
+| Linux x86-64 | Native assembler, complete source corpus and pinned GNU as differential |
+| Wolf checked machine and lupin | Parser, expressions, macros, encoder, layout and ELF logic tests |
+| PAX under QEMU, BIOS and UEFI | Native/release kernels built with clef's assembly objects; muzzle CRT program |
+| Other hosts and AArch64 | Not qualified by this implementation |
+
+All **43 x86-64 sources** in the pinned PAX, muzzle and wolf-lang census match
+GNU as in section contents, relocation tuples and structural symbols. This
+covers **112 mnemonic spellings and 189 observed operand forms**, including
+mixed `.code32`/`.code64` input, macros, numeric local labels and symbolic
+expressions. Unsupported syntax or encodings are refused rather than guessed.
+
+The native and release PAX kernel images built through clef are byte-identical
+to the GNU-as baseline and pass the four BIOS/UEFI test legs. The original
+clang-assembled kernels are measured separately; clang and GNU as make different
+encoding and relocation choices. Kernel links use pinned lld 18.1.3.
 
 ## Build and test
 
-The supported development environment is Linux x86-64 with Python 3.11+, curl,
-and Docker or rootless Podman. All compiler/oracle downloads are SHA256-pinned;
-no external assembler implementation is built or read.
+Development requires Linux x86-64, Python 3.11+, curl, and Docker or rootless
+Podman. Compiler archives and oracle binary packages are SHA256-pinned. Nothing
+is installed globally, and no external assembler implementation is built or read.
 
 ```sh
 CLEF_ENGINE=docker tools/in-container tools/gate
-# For rootless Podman, use CLEF_ENGINE=podman (the default).
+# CLEF_ENGINE=podman is the default.
 ```
 
-The gate fetches wolf 0.2.35 and lupin 0.1.56, checks formatting, builds with
-warnings denied, runs native/checked/lupin tests, verifies the source census,
-checks the object comparator's planted corruptions, compares the encoding
-proof against GNU as, tests the round-trip instrument, and checks both
-oracles over all 43 x86 source files. It writes evidence under `target/evidence/`
-and produces `target/clef`. Nothing is installed globally.
-
-A small accepted example, after the gate has built the binary:
+The **33 gates** check formatting, warning-denied builds, six compiled native
+logic programs, checked/lupin execution, all source statements, expression and
+macro differentials, the ELF writer, instruction-table rows, layout/refusals,
+and the complete assembler corpus. Results are written to `target/evidence/`;
+the executable is `target/clef`.
 
 ```sh
 printf 'movq $4096, %%rsp\nret\n' > example.S
-CLEF_ENGINE=docker tools/in-container target/clef --64 -c example.S -o example.o
+CLEF_ENGINE=docker tools/in-container target/clef --64 example.S -o example.o
+CLEF_ENGINE=docker tools/in-container target/clef --expand example.S
 ```
 
-`clef --version` identifies the proof. The front end accepts `--64`, `-c`,
-`-o FILE` and one source path. It supports `.text`, hash comments and the ten
-selected forms described in [FORMATS](docs/FORMATS.md). An unsupported source
-exits 1 without replacing the output; malformed arguments exit 2.
+## Commands
 
-## What is measured
+```text
+clef [--64] [-o OUTPUT] SOURCE.S
+clef -c SOURCE.S -o OUTPUT [--target=x86_64-unknown-none-elf]
+clef --expand SOURCE.S
+clef --provenance SOURCE.S -o OUTPUT
+clef --version
+```
 
-* **44 unique assembly files**, pinned to three repository commits; one is an
-  AArch64 Mach-O fixture outside this first x86 implementation.
-* **112 x86 mnemonic spellings and 189 source-level operand forms**. This is
-  the next implementation's specification, not a claim of current support.
-* **24 exact object comparisons** for ten worked forms and the empty ELF
-  writer, with deterministic reruns and 14 source/argv refusals.
-* **79 binary inputs** for the objdump round-trip baseline. All decoded lines
-  were measured in bounded batches, without sampling. No input passed every
-  batch unchanged. See [ROUNDTRIP](docs/ROUNDTRIP.md) for the error/warning
-  counts and the distinction between parsing and byte identity.
+Inputs must end in `.S` or `.s`; uppercase does not invoke a C preprocessor.
+The default output is `a.out`. C sources, foreign targets and unknown options
+are refused, never passed through to another tool. Source errors exit 1 without
+replacing the destination; usage errors exit 2. `--expand` writes annotated,
+expanded source to stdout and cannot be combined with `-o` or `--provenance`.
+The optional `.note.clef.src` provenance note is **off by default**.
 
-The primary oracle is GNU as from pinned Ubuntu binutils 2.42. clang 18.1.3 is
-a second opinion, not an interchangeable baseline. `tools/differ A.o B.o`
-compares ordinary section contents and metadata, relocation tuples, and symbol
-values/bindings/types/sizes/visibility; symbol/string-table order is free.
-Every observed gas/clang disagreement is named in the [source map](docs/MAP.md).
+See [EXPAND](docs/EXPAND.md) for the expansion contract and
+[FORMATS](docs/FORMATS.md) for encoding, expression, ELF and note formats.
 
-## Repository
+## Measurements and boundaries
+
+* 530 generated row-by-mode byte comparisons cover all 312 SDM-provenanced
+  encoding descriptors. Some descriptors describe alternatives or widths beyond
+  the accepted census spellings; they are not a promise of full ISA support.
+* All 43 original and expanded sources match pinned GNU as. Every source is
+  assembled twice to check determinism. No x86 census source is waived.
+* 191 layout/boundary controls, ten named source refusals, five additional CLI
+  refusals, and complete byte-range coverage for the ISR provenance witness.
+* Symbol/string tables need structural equality, not identical serialization.
+  [MAP](docs/MAP.md) records the measured raw-table distances.
+* The retained objdump round-trip instrument measured 79 binaries and
+  32,725,357 decoded lines. It is not a clef disassembler: none of those complete
+  inputs reassembled unchanged. [ROUNDTRIP](docs/ROUNDTRIP.md) explains the result.
+
+There is no disassembler, Intel-syntax dialect, C preprocessor, sealed-dialect
+policy, AArch64 encoder or compiler inline-assembly protocol yet. The ELF writer
+rejects unsupported section/relocation features such as COMDAT and TLS.
+
+## Source layout
 
 | Path | Purpose |
 |---|---|
-| `src/clef.lu`, `src/front/` | command-line entry and refusal-first arguments |
-| `src/lex/`, `src/parse/`, `src/expr/` | restricted proof syntax; full dialect design in FORMATS |
-| `src/table/`, `src/encode/` | SDM-provenanced rows and proof encoder |
-| `src/elf/` | deterministic minimal ELF64 relocatable writer |
-| `src/oracle/` | comparison posture; no oracle invocation in clef |
-| `census/` | source snapshots, repository revisions, syntax and binary measurements |
-| `tools/oracle`, `tools/corpus`, `tools/differ` | black-box measurements and semantic comparison |
-| `tools/roundtrip` | objdump-text reassembly instrument, not a disassembler |
-| `tests/`, `src/proof_test.lu` | binary corpus sources and Wolf unit tests |
-| `docs/` | [SOURCES](docs/SOURCES.md), [MAP](docs/MAP.md), [FORMATS](docs/FORMATS.md), [ROUNDTRIP](docs/ROUNDTRIP.md) |
+| `src/front/`, `src/clef.lu` | CLI and output-file boundary |
+| `src/lex/`, `src/dialect/` | Source origins and typed AT&T syntax |
+| `src/eval/`, `src/expand/` | Checked expressions and bounded macro expansion |
+| `src/x86table/`, `src/machine/` | Provenanced data and generic encoder/fixups |
+| `src/assembly/`, `src/object/` | Layout, symbol policy, provenance and ELF serialization |
+| `src/parse/`, `src/expr/`, `src/table/`, `src/encode/`, `src/elf/` | Retained small proof and its independent regression witnesses |
+| `census/` | Exact source snapshots, repository pins and oracle records |
+| `tools/`, `tests/` | Differential, native, interpreter and refusal gates |
+| `notes/as01/` | Measured evidence and lane-local kernel integration controls |
 
-CI uses `tier pr` for code pull requests and `tier full` for trunk, nightly,
-dispatches and pull requests carrying `full-matrix`. The full tier adds an
-independent exhaustive oracle-corpus run. The planner tests its own selection
-and rejects a missing or skipped required gate. Red nightly runs open an issue.
+CI runs every assembler gate in `tier pr`. `tier full` adds the independent
+exhaustive oracle-corpus job and runs on trunk, nightly, dispatches and explicitly
+labelled full-matrix pull requests. Kernel/QEMU evidence is retained separately
+under `notes/as01/kernel/`; it is not silently claimed as a GitHub CI job.
 
 ## Licence
 
 GPL-3.0-only with the wolf Training Data Permission; see `LICENSE` and
-`LICENSE-TRAINING-DATA`. Copied census inputs retain their original licences
-under `census/licenses/`.
+`LICENSE-TRAINING-DATA`. Census inputs retain their original licences under
+`census/licenses/`. [SOURCES](docs/SOURCES.md) identifies specifications and pins.
