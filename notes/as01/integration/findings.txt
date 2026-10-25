@@ -17,3 +17,13 @@ clang --target=x86_64-unknown-none-elf -x ir FILE -c -O2 -fPIC
 -Wno-override-module -o OBJECT. No mcmodel or fno-pic flag is injected.
 The link remains -nostdlib -static -z max-page-size=0x1000 -T boot/kernel.ld,
 followed by start, assembly, wolf objects and the runtime archive in that order.
+
+The four gas-baseline mpx5-wolf legs passed (native/release × BIOS/UEFI),
+including all eight root/pax transcript comparisons and clean halt on each leg.
+Native stock-clang versus gas: 2,863,656 bytes each, first difference at byte 96,
+1,236,684 unequal file positions. Release: 2,262,344 bytes each, first difference
+at byte 96, 1,138,042 unequal positions. These raw file distances include layout
+shifts, not that many independently incorrect instructions. All corresponding
+nonassembly objects and runtime archives were byte-identical. kernels.json
+records their hashes. This validates the baseline; clef has not built it yet.
+The related compiler-side finding is wolf-lang#938.

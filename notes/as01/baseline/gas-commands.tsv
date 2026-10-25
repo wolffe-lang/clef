@@ -1,0 +1,74 @@
+original	ld.lld	--version 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../boot/io.S -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-io.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-io.o ../boot/io.S 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../boot/cpu.S -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-cpu.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-cpu.o ../boot/cpu.S 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../boot/isr.S -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-isr.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-isr.o ../boot/isr.S 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../boot/sched.S -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-sched.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-sched.o ../boot/sched.S 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../boot/user.S -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-user.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-user.o ../boot/user.S 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../boot/fpu.S -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-fpu.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-fpu.o ../boot/fpu.S 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../boot/console.S -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-console.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-console.o ../boot/console.S 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../boot/screen.S -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-screen.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-screen.o ../boot/screen.S 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../boot/font.S -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-font.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-font.o ../boot/font.S 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../boot/speaker.S -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-speaker.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-speaker.o ../boot/speaker.S 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../boot/net.S -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-net.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-net.o ../boot/net.S 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../boot/tree.S -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-tree.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-tree.o ../boot/tree.S 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../boot/event.S -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-event.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-event.o ../boot/event.S 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../boot/sound.S -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-sound.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-sound.o ../boot/sound.S 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../boot/unix.S -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-unix.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-unix.o ../boot/unix.S 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../user/programs.S -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-programs.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-programs.o ../user/programs.S 
+gas-driver	cc	-c /lane/inputs/pax/boot/start.S -o /lane/integration/gas/mpx5-wolf/native/start.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/native/start.o /lane/inputs/pax/boot/start.S 
+original	ld.lld	-nostdlib -static -z max-page-size=0x1000 -T /lane/inputs/pax/boot/kernel.ld -o /lane/integration/gas/mpx5-wolf/native/kmain_console.elf /lane/integration/gas/mpx5-wolf/native/start.o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-console.o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-cpu.o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-event.o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-font.o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-fpu.o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-io.o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-isr.o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-net.o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-programs.o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-sched.o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-screen.o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-sound.o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-speaker.o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-tree.o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-unix.o /lane/integration/gas/mpx5-wolf/native/kmain_console.asm-user.o /lane/integration/gas/mpx5-wolf/native/kmain_console.apic.o /lane/integration/gas/mpx5-wolf/native/kmain_console.arp.o /lane/integration/gas/mpx5-wolf/native/kmain_console.block.o /lane/integration/gas/mpx5-wolf/native/kmain_console.boot_info.o /lane/integration/gas/mpx5-wolf/native/kmain_console.console.o /lane/integration/gas/mpx5-wolf/native/kmain_console.cred.o /lane/integration/gas/mpx5-wolf/native/kmain_console.elf.o /lane/integration/gas/mpx5-wolf/native/kmain_console.event.o /lane/integration/gas/mpx5-wolf/native/kmain_console.ext2.o /lane/integration/gas/mpx5-wolf/native/kmain_console.fb.o /lane/integration/gas/mpx5-wolf/native/kmain_console.files.o /lane/integration/gas/mpx5-wolf/native/kmain_console.fpu.o /lane/integration/gas/mpx5-wolf/native/kmain_console.frames.o /lane/integration/gas/mpx5-wolf/native/kmain_console.fstab.o /lane/integration/gas/mpx5-wolf/native/kmain_console.futex.o /lane/integration/gas/mpx5-wolf/native/kmain_console.gdt.o /lane/integration/gas/mpx5-wolf/native/kmain_console.heap.o /lane/integration/gas/mpx5-wolf/native/kmain_console.icmp.o /lane/integration/gas/mpx5-wolf/native/kmain_console.idt.o /lane/integration/gas/mpx5-wolf/native/kmain_console.initramfs.o /lane/integration/gas/mpx5-wolf/native/kmain_console.interrupts.o /lane/integration/gas/mpx5-wolf/native/kmain_console.ip.o /lane/integration/gas/mpx5-wolf/native/kmain_console.journal.o /lane/integration/gas/mpx5-wolf/native/kmain_console.log.o /lane/integration/gas/mpx5-wolf/native/kmain_console.net.o /lane/integration/gas/mpx5-wolf/native/kmain_console.netd.o /lane/integration/gas/mpx5-wolf/native/kmain_console.paging.o /lane/integration/gas/mpx5-wolf/native/kmain_console.panic.o /lane/integration/gas/mpx5-wolf/native/kmain_console.pci.o /lane/integration/gas/mpx5-wolf/native/kmain_console.process.o /lane/integration/gas/mpx5-wolf/native/kmain_console.procfs.o /lane/integration/gas/mpx5-wolf/native/kmain_console.ready.o /lane/integration/gas/mpx5-wolf/native/kmain_console.root.o /lane/integration/gas/mpx5-wolf/native/kmain_console.rtc.o /lane/integration/gas/mpx5-wolf/native/kmain_console.sched.o /lane/integration/gas/mpx5-wolf/native/kmain_console.screen.o /lane/integration/gas/mpx5-wolf/native/kmain_console.serial.o /lane/integration/gas/mpx5-wolf/native/kmain_console.signal.o /lane/integration/gas/mpx5-wolf/native/kmain_console.socket.o /lane/integration/gas/mpx5-wolf/native/kmain_console.sound.o /lane/integration/gas/mpx5-wolf/native/kmain_console.speaker.o /lane/integration/gas/mpx5-wolf/native/kmain_console.sync.o /lane/integration/gas/mpx5-wolf/native/kmain_console.tcp.o /lane/integration/gas/mpx5-wolf/native/kmain_console.timer.o /lane/integration/gas/mpx5-wolf/native/kmain_console.tree.o /lane/integration/gas/mpx5-wolf/native/kmain_console.uaccess.o /lane/integration/gas/mpx5-wolf/native/kmain_console.udp.o /lane/integration/gas/mpx5-wolf/native/kmain_console.unix.o /lane/integration/gas/mpx5-wolf/native/kmain_console.user.o /lane/integration/gas/mpx5-wolf/native/kmain_console.vblk.o /lane/integration/gas/mpx5-wolf/native/kmain_console.virtio.o /lane/integration/gas/mpx5-wolf/native/kmain_console.vm.o /lane/integration/gas/mpx5-wolf/native/kmain_console.rt-none.a 
+original	ld.lld	--version 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../boot/io.S -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-io.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-io.o ../boot/io.S 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../boot/cpu.S -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-cpu.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-cpu.o ../boot/cpu.S 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../boot/isr.S -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-isr.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-isr.o ../boot/isr.S 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../boot/sched.S -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-sched.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-sched.o ../boot/sched.S 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../boot/user.S -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-user.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-user.o ../boot/user.S 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../boot/fpu.S -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-fpu.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-fpu.o ../boot/fpu.S 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../boot/console.S -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-console.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-console.o ../boot/console.S 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../boot/screen.S -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-screen.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-screen.o ../boot/screen.S 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../boot/font.S -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-font.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-font.o ../boot/font.S 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../boot/speaker.S -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-speaker.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-speaker.o ../boot/speaker.S 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../boot/net.S -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-net.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-net.o ../boot/net.S 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../boot/tree.S -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-tree.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-tree.o ../boot/tree.S 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../boot/event.S -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-event.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-event.o ../boot/event.S 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../boot/sound.S -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-sound.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-sound.o ../boot/sound.S 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../boot/unix.S -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-unix.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-unix.o ../boot/unix.S 
+gas-driver	clang	--target=x86_64-unknown-none-elf -c ../user/programs.S -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-programs.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-programs.o ../user/programs.S 
+gas-driver	cc	-c /lane/inputs/pax/boot/start.S -o /lane/integration/gas/mpx5-wolf/release/start.o 
+gas-as	as	--64 -o /lane/integration/gas/mpx5-wolf/release/start.o /lane/inputs/pax/boot/start.S 
+original	ld.lld	--version 
+gas-driver	clang	--version 
+original	ld.lld	-nostdlib -static -z max-page-size=0x1000 -T /lane/inputs/pax/boot/kernel.ld -o /lane/integration/gas/mpx5-wolf/release/kmain_console.elf /lane/integration/gas/mpx5-wolf/release/start.o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-console.o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-cpu.o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-event.o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-font.o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-fpu.o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-io.o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-isr.o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-net.o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-programs.o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-sched.o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-screen.o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-sound.o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-speaker.o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-tree.o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-unix.o /lane/integration/gas/mpx5-wolf/release/kmain_console.asm-user.o /lane/integration/gas/mpx5-wolf/release/kmain_console.c00.o /lane/integration/gas/mpx5-wolf/release/kmain_console.c01.o /lane/integration/gas/mpx5-wolf/release/kmain_console.c02.o /lane/integration/gas/mpx5-wolf/release/kmain_console.c03.o /lane/integration/gas/mpx5-wolf/release/kmain_console.c04.o /lane/integration/gas/mpx5-wolf/release/kmain_console.c05.o /lane/integration/gas/mpx5-wolf/release/kmain_console.c06.o /lane/integration/gas/mpx5-wolf/release/kmain_console.c07.o /lane/integration/gas/mpx5-wolf/release/kmain_console.rt-none.a 

@@ -1,0 +1,324 @@
+AS01 BASELINE START 2026-10-25T04:41:26Z pid=3085629 image=localhost/clef-integration:52846d3b65aeafca
+verify-bins: PASS W0: compiler, worker and runtime match the recorded bytes
+/lane/inputs/initramfs/usr/bin/ld.lld: OK
+verify-bins: PASS W0: compiler, worker and runtime match the recorded bytes
+/lane/inputs/initramfs/usr/bin/ld.lld: OK
+AS01 BUILD stock-clang 2026-10-25T04:41:26Z
+mkdev: checked dev variant: no native linker
+verify-bins: PASS W0: compiler, worker and runtime match the recorded bytes
+fetch-limine: limine 12.9.1 already staged (/lane/integration/cache/limine-12.9.1)
+/lane/integration/stock-clang/mpx5-wolf/native/wolf.iso
+/lane/integration/stock-clang/mpx5-wolf/release/wolf.iso
+mpx5-wolf: PASS W0 build: pinned compiler, static programs, std and images
+52dbe82a8699ce5e792e9d0a4992262041f51e85fe2184894985f621ba9a833e  /lane/integration/stock-clang/mpx5-wolf/native/kmain_console.elf
+cd5302abbb813ab82721427cb924c7c59372ccc654ed0e3aca29648884fc0ab9  /lane/integration/stock-clang/mpx5-wolf/release/kmain_console.elf
+AS01 BUILD gas 2026-10-25T04:47:13Z
+mkdev: checked dev variant: no native linker
+verify-bins: PASS W0: compiler, worker and runtime match the recorded bytes
+fetch-limine: limine 12.9.1 already staged (/lane/integration/cache/limine-12.9.1)
+/lane/integration/gas/mpx5-wolf/native/wolf.iso
+/lane/integration/gas/mpx5-wolf/release/wolf.iso
+mpx5-wolf: PASS W0 build: pinned compiler, static programs, std and images
+54656851650d2da54f31b5304907ab1943998039ccc019a1c08bd4b943145962  /lane/integration/gas/mpx5-wolf/native/kmain_console.elf
+efb815659784e0759dbc1e114d4bfdf863dd72a02add4adff00900ad5909836a  /lane/integration/gas/mpx5-wolf/release/kmain_console.elf
+[
+  {
+    "tier": "native",
+    "literal_stock_clang_sha256": "52dbe82a8699ce5e792e9d0a4992262041f51e85fe2184894985f621ba9a833e",
+    "gas_baseline_sha256": "54656851650d2da54f31b5304907ab1943998039ccc019a1c08bd4b943145962",
+    "stock_size": 2863656,
+    "gas_size": 2863656,
+    "byte_identical": false,
+    "first_differing_byte": 96,
+    "unequal_bytes": 1236684,
+    "identical_nonassembly_inputs": [
+      {
+        "name": "kmain_console.apic.o",
+        "sha256": "77d0ddbc3e8e35dbeadd1a077ec8511c9095d851a51ced17ca73f3c6b62b306b"
+      },
+      {
+        "name": "kmain_console.arp.o",
+        "sha256": "dfe3be080a6607fde02d7a935c5b4ffbf1527c33e71a7dc4fa3f4889c009b59b"
+      },
+      {
+        "name": "kmain_console.block.o",
+        "sha256": "938b14aac05b5cd792f6ecd2a693485607a761dd64955757850a5d2fd7b58bd0"
+      },
+      {
+        "name": "kmain_console.boot_info.o",
+        "sha256": "700ce588bc8d8208b65714c7125ffa1ef9783c1c7f40c54125de1a45ec8b0eb4"
+      },
+      {
+        "name": "kmain_console.console.o",
+        "sha256": "407a2ecb5d7c155f79b5494d81aa187e7c13cf1e5a17b45b182f2faf5ab0ba6a"
+      },
+      {
+        "name": "kmain_console.cred.o",
+        "sha256": "3ee9ca2c7f9fa2f9120551a3f823cb14cc79e77b7ed3755d17f42751ac1ca1e4"
+      },
+      {
+        "name": "kmain_console.elf.o",
+        "sha256": "76de0bd33ce05530bad799bd6a569b39fa1ceead17c917f87525f7de50d3c4c8"
+      },
+      {
+        "name": "kmain_console.event.o",
+        "sha256": "4e71fdd3aa7c66794eab2139472fb058bbf99c53d9ea95531886493f0c0bf1fa"
+      },
+      {
+        "name": "kmain_console.ext2.o",
+        "sha256": "a09c2497185b60b056ab347433e801811c1bc5382d4bea882a0ac82c622c6b2a"
+      },
+      {
+        "name": "kmain_console.fb.o",
+        "sha256": "3c1f3ad2bf8149b6798456b101121be5f43905182137d03d596fe4d46ea7a71d"
+      },
+      {
+        "name": "kmain_console.files.o",
+        "sha256": "477dc6b73e5f4b28df16df321060862e6dcb48d1ded4ea48f032fd97d51a9fc4"
+      },
+      {
+        "name": "kmain_console.fpu.o",
+        "sha256": "2fc399c6ad58f40a58c5b812fb276b14eb918d6629d7777521a26c9a89c98191"
+      },
+      {
+        "name": "kmain_console.frames.o",
+        "sha256": "bff278bd7341adebbe45b962abadbb2b57e8738d4922b85f82d8ca19cb007bac"
+      },
+      {
+        "name": "kmain_console.fstab.o",
+        "sha256": "c7ba299fd9218ef830ec78c0905a77f8d4dfb223968a04041903c6860ede42c5"
+      },
+      {
+        "name": "kmain_console.futex.o",
+        "sha256": "7a0f127f77a2582e02c3fb1206dcd3e205ffdd8fe6f7d82b34769800100c0b59"
+      },
+      {
+        "name": "kmain_console.gdt.o",
+        "sha256": "7b402a2208856691dfbd42c127a9289d7b7e3bb4d6bf197f5dfbf1f832e0def7"
+      },
+      {
+        "name": "kmain_console.heap.o",
+        "sha256": "60d0ef1d24b7408df3a66320585ad1853ca3c51bc998c8f65c98b05e7f1ce39b"
+      },
+      {
+        "name": "kmain_console.icmp.o",
+        "sha256": "5b538eac1f6b359a03174491643e7631e5bc856e82d57a57393666ca206e91b0"
+      },
+      {
+        "name": "kmain_console.idt.o",
+        "sha256": "5e4dd3fbe59e12171d41e1c148bc817e873da2f56705bead835c7b90b2c83e08"
+      },
+      {
+        "name": "kmain_console.initramfs.o",
+        "sha256": "5471dce931eb341a5c74b5d6f1baec5efff502bc68ff9432c4523784db5b5cca"
+      },
+      {
+        "name": "kmain_console.interrupts.o",
+        "sha256": "8816c8cac4bc125fe8737fc47adb57e89def07e7f52c02c8d65d0bc2d430a6b4"
+      },
+      {
+        "name": "kmain_console.ip.o",
+        "sha256": "d0726b09d864ed37b594ac49c41daebb1bb355471997e1095cf494562191b5a7"
+      },
+      {
+        "name": "kmain_console.journal.o",
+        "sha256": "92606bd18e64a4c5dee8d5e2d96b01c22afeb01b3f6c965c95b14ccdee65ef93"
+      },
+      {
+        "name": "kmain_console.log.o",
+        "sha256": "ba57ec3cfbc3748a62d3dd9f725eb9d010465a5556c8cbff07e4e875258adb6a"
+      },
+      {
+        "name": "kmain_console.net.o",
+        "sha256": "ef331de0381899f47315b4a14553c3cf5e92f16a340a0753e4af081644cfcc36"
+      },
+      {
+        "name": "kmain_console.netd.o",
+        "sha256": "6a70d271b29cfab1a18ceba49d229fcb4e19f71a9b37347e996c881ef7a0ca69"
+      },
+      {
+        "name": "kmain_console.paging.o",
+        "sha256": "271525fabd23b8539a29686bec403b0721c98be2e637b2942b8a6c6ee9eb7831"
+      },
+      {
+        "name": "kmain_console.panic.o",
+        "sha256": "102b050145c8c0d1d4f5dd9e2631418b83ed64f601aca6601edb4224e210dc76"
+      },
+      {
+        "name": "kmain_console.pci.o",
+        "sha256": "dbc02e6948d685773ffdc880df1ad5e2875e83743e968d22669430ddc83d228e"
+      },
+      {
+        "name": "kmain_console.process.o",
+        "sha256": "1897249d5d5e76d75bdaa88b228fd2550a06f348745ce88a19ac4afc841fd218"
+      },
+      {
+        "name": "kmain_console.procfs.o",
+        "sha256": "23944be85274fac872cc3cf492ce2504ecd6538dd095a47aa1e71b43da4e2a4a"
+      },
+      {
+        "name": "kmain_console.ready.o",
+        "sha256": "5a11e555aaf93e4f35f46e279ff7572b1b44c3eb58dac51d0369b3abac9527b2"
+      },
+      {
+        "name": "kmain_console.root.o",
+        "sha256": "a2b0a720aca201ba1ce4dbb59eab592bb465db5bf9299ab24c430dc4dd11c284"
+      },
+      {
+        "name": "kmain_console.rt-none.a",
+        "sha256": "6b9c4852077eee62c059a01c723686f057f0c010239d137fb90c1791203961b6"
+      },
+      {
+        "name": "kmain_console.rtc.o",
+        "sha256": "e93c45026b1d17d32f30516a143e06d6618a4ebc1485f2c0261f17c3e5069a9e"
+      },
+      {
+        "name": "kmain_console.sched.o",
+        "sha256": "2d3c252f5de3de728c17996ec76471ec706493119e14a5a8407c9f0a307ec649"
+      },
+      {
+        "name": "kmain_console.screen.o",
+        "sha256": "6771095e291a7d86355c99d262cd15f321536bdd36c86c70582069d0217c7a0c"
+      },
+      {
+        "name": "kmain_console.serial.o",
+        "sha256": "3d02fec53ee28edfbb3128f5458471cc2ba00eed008d633db29232d7bfb78276"
+      },
+      {
+        "name": "kmain_console.signal.o",
+        "sha256": "de32c81bf0be6f5bbaa63ff1d41a63ac293fe3486c7af70df5a4e3b61f3b58d7"
+      },
+      {
+        "name": "kmain_console.socket.o",
+        "sha256": "6e63a39288d232fd616735962fdb8cb41a2f13d4b684ebdc0c2bb3acafad7662"
+      },
+      {
+        "name": "kmain_console.sound.o",
+        "sha256": "fdb9e2bf506c92754ef0a886e9be01966dd22fd2ccf556730ac7de37cff06109"
+      },
+      {
+        "name": "kmain_console.speaker.o",
+        "sha256": "fbd74b2f8d047d0cbfed7136e27264951afd0986bd3bb3e6158cfb1d392d3c0e"
+      },
+      {
+        "name": "kmain_console.sync.o",
+        "sha256": "d4f6e865857bea22ebba8f7c10788f4f9c62f6d8146a06a6d7fc9803d76269c5"
+      },
+      {
+        "name": "kmain_console.tcp.o",
+        "sha256": "8fdb513ad54b1253913dfbc95fa392c0082e643a88633b291fdb9212925597f1"
+      },
+      {
+        "name": "kmain_console.timer.o",
+        "sha256": "11624cc19b151ffb8ae377ef59b5e63d95be8aebb00c845db3ff2b2cf23da62e"
+      },
+      {
+        "name": "kmain_console.tree.o",
+        "sha256": "f8092c6011e8f3d31cc08f0bdb9246261f3ee7d41d16c27c532f1d1450b3ebca"
+      },
+      {
+        "name": "kmain_console.uaccess.o",
+        "sha256": "26add45f78cb971356fe282091e6e32936ce2a651ec0e6a8d8e11ac00e449718"
+      },
+      {
+        "name": "kmain_console.udp.o",
+        "sha256": "3bd76a099d02b1774375d49b7a924631fddf5fe9b4dca17ed559105b4af6843c"
+      },
+      {
+        "name": "kmain_console.unix.o",
+        "sha256": "a24129b1b77147dc9a516883da23e229e4887f2ceb882f62e83aa0ab0bf2dadc"
+      },
+      {
+        "name": "kmain_console.user.o",
+        "sha256": "8c8fbf33848300380b03d88aea42ee98458c19ac604c44920e5aa405419204af"
+      },
+      {
+        "name": "kmain_console.vblk.o",
+        "sha256": "bc073c1c1be0a39fa368c9b2ba52a36aa6c49a2a7a8cbffb716cd01e2377f90a"
+      },
+      {
+        "name": "kmain_console.virtio.o",
+        "sha256": "469ad48c34d7b015a6f37d6eb668798da43b15fd0bb45f5f97569007de54a9f0"
+      },
+      {
+        "name": "kmain_console.vm.o",
+        "sha256": "b5b0c06a58ac736a558fef7074d6856ab4018f0ada9daedc61909c02ca69c5c5"
+      }
+    ]
+  },
+  {
+    "tier": "release",
+    "literal_stock_clang_sha256": "cd5302abbb813ab82721427cb924c7c59372ccc654ed0e3aca29648884fc0ab9",
+    "gas_baseline_sha256": "efb815659784e0759dbc1e114d4bfdf863dd72a02add4adff00900ad5909836a",
+    "stock_size": 2262344,
+    "gas_size": 2262344,
+    "byte_identical": false,
+    "first_differing_byte": 96,
+    "unequal_bytes": 1138042,
+    "identical_nonassembly_inputs": [
+      {
+        "name": "kmain_console.c00.o",
+        "sha256": "df9657d95b99848305ad6e50afd55eaf22ed6988a0398ad7c3f47f93d536321d"
+      },
+      {
+        "name": "kmain_console.c01.o",
+        "sha256": "9b727eeed66dac34997bad1b590182f161ce3d357a271e235b1c89d9372b537d"
+      },
+      {
+        "name": "kmain_console.c02.o",
+        "sha256": "7b5c1eb4b6403d9b04b8a7747acee165a8a096a1675c23c8aa97de60016ba65c"
+      },
+      {
+        "name": "kmain_console.c03.o",
+        "sha256": "58d19e4ad39dda4a727daa2c7b3c0f7029118688625276dbdbd50bbf9e3f438c"
+      },
+      {
+        "name": "kmain_console.c04.o",
+        "sha256": "443374aa1166d6aa78919ef4f6f81ed716fd2e8aa834e38dc766274c92975f2b"
+      },
+      {
+        "name": "kmain_console.c05.o",
+        "sha256": "99533c51afa7089f40e6e02f3829a34a40b7f7bbb108b32cdbbe89ab78df21dd"
+      },
+      {
+        "name": "kmain_console.c06.o",
+        "sha256": "335cdeae269cb9f32c35ecfc134303f3733ab5c367ada889b6046a1b500ba6e7"
+      },
+      {
+        "name": "kmain_console.c07.o",
+        "sha256": "0d2e69d82a8a328f959be17a682bc6ff54202b399fd86d653e7311a3f1311858"
+      },
+      {
+        "name": "kmain_console.rt-none.a",
+        "sha256": "6b9c4852077eee62c059a01c723686f057f0c010239d137fb90c1791203961b6"
+      }
+    ]
+  }
+]
+AS01 LINUX REFERENCES 2026-10-25T04:53:00Z
+linux-tree: ip_unprivileged_port_start 1024 in the container, now 1024; host fs.protected_hardlinks 1 symlinks 1 regular 1 fifos 1
+linux-tree: ip_unprivileged_port_start 1024 in the container, now 1024; host fs.protected_hardlinks 1 symlinks 1 regular 1 fifos 1
+mpx5-wolf: PASS W0 Linux: both live sessions ran
+AS01 GAS BOOT MATRIX 2026-10-25T04:55:26Z
+mpx5-wolf: PASS W1 native bios root: byte-identical 57cf42de238bd78110b067f719313df7a3adba975b67efccee62f73e48a0e670
+PASS W2 root: command statuses, observation identities and independent witnesses
+mpx5-wolf: PASS W1 native bios pax: byte-identical 36f1903a21ea657417a959c3ee8b2736657528e824560c719a5245151a491f81
+PASS W2 pax: command statuses, observation identities and independent witnesses
+mpx5-wolf: W3 native bios: halt=0 unserved=273 334 mremap: 8 wolf processes, 12 calls served
+mpx5-wolf: PASS W1 release bios root: byte-identical 57cf42de238bd78110b067f719313df7a3adba975b67efccee62f73e48a0e670
+PASS W2 root: command statuses, observation identities and independent witnesses
+mpx5-wolf: PASS W1 release bios pax: byte-identical 36f1903a21ea657417a959c3ee8b2736657528e824560c719a5245151a491f81
+PASS W2 pax: command statuses, observation identities and independent witnesses
+mpx5-wolf: W3 release bios: halt=0 unserved=273 334 mremap: 8 wolf processes, 12 calls served
+mpx5-wolf: PASS W1 native uefi root: byte-identical 57cf42de238bd78110b067f719313df7a3adba975b67efccee62f73e48a0e670
+PASS W2 root: command statuses, observation identities and independent witnesses
+mpx5-wolf: PASS W1 native uefi pax: byte-identical 36f1903a21ea657417a959c3ee8b2736657528e824560c719a5245151a491f81
+PASS W2 pax: command statuses, observation identities and independent witnesses
+mpx5-wolf: W3 native uefi: halt=0 unserved=273 334 mremap: 8 wolf processes, 12 calls served
+mpx5-wolf: PASS W1 release uefi root: byte-identical 57cf42de238bd78110b067f719313df7a3adba975b67efccee62f73e48a0e670
+PASS W2 root: command statuses, observation identities and independent witnesses
+mpx5-wolf: PASS W1 release uefi pax: byte-identical 36f1903a21ea657417a959c3ee8b2736657528e824560c719a5245151a491f81
+PASS W2 pax: command statuses, observation identities and independent witnesses
+mpx5-wolf: W3 release uefi: halt=0 unserved=273 334 mremap: 8 wolf processes, 12 calls served
+mpx5-wolf: mpx5-wolf: PASS
+AS01 BASELINE COMPLETE 2026-10-25T05:08:37Z
