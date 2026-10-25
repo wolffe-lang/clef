@@ -26,6 +26,7 @@ tiers-test: PASS T4 corpus needs the plan and runs only when it is named
 tiers-test: PASS T4 tier needs every job, runs unless cancelled, checks the verdict
 tiers-test: PASS T4 cancel-in-progress for pull requests only
 tiers-test: PASS T4 the trunk push, the nightly, the label and the dispatch input
+tiers-test: PASS T4 unrelated labels cannot cancel an active PR tier
 tiers-test: PASS T6 a green full
 tiers-test: PASS T6 a green pr
 tiers-test: PASS T6 a green noop
