@@ -6,15 +6,18 @@ export PAX_DEV_BASE=/lane/integration/dev-base
 export PAX_DEV_WOLF_DIR=/lane/inputs/initramfs/usr/bin
 export PAX_DEV_STD_DIR=/lane/inputs/initramfs/usr/share/wolf/std
 export TMPDIR=/lane/integration/tmp
-mkdir -p "$TMPDIR" /lane/integration/linker /lane/integration/gas-bin "$PAX_DEV_BASE"/{pelt,bore,bin}
+mkdir -p "$TMPDIR" /lane/integration/trace-bin /lane/integration/gas-bin "$PAX_DEV_BASE"/{pelt,bore,bin}
 cp /lane/inputs/initramfs/bin/sh "$PAX_DEV_BASE/pelt/pelt"
 cp /lane/inputs/initramfs/bin/{cat,env} "$PAX_DEV_BASE/bore/"
 cp /lane/inputs/initramfs/bin/as "$PAX_DEV_BASE/bin/as"
-ln -sf /lane/inputs/initramfs/usr/bin/ld.lld /lane/integration/linker/ld.lld
+for driver in cc clang ld.lld; do
+    ln -sf /lane/clef/notes/as01/seam/trace-driver "/lane/integration/trace-bin/$driver"
+done
 for driver in cc clang; do
     ln -sf /lane/clef/notes/as01/seam/gas-driver "/lane/integration/gas-bin/$driver"
 done
-export PATH=/lane/integration/linker:$PATH
+export PATH=/lane/integration/trace-bin:$PATH
+export WOLF_CLANG=/lane/integration/trace-bin/clang
 cd /lane/inputs/pax
 [ "$(git rev-parse HEAD)" = 105d0d1fe74bce11107a363a73751e35c9ac0987 ]
 [ -z "$(git status --porcelain)" ]
@@ -25,6 +28,9 @@ done
 for baseline in stock-clang gas; do
     echo "AS01 BUILD $baseline $(date -u +%FT%TZ)"
     export PAX_BUILD=/lane/integration/$baseline
+    mkdir -p "$PAX_BUILD"
+    export AS01_TRACE_LOG=$PAX_BUILD/commands.tsv
+    : > "$AS01_TRACE_LOG"
     if [ "$baseline" = gas ]; then
         export PATH=/lane/integration/gas-bin:$PATH
         export WOLF_CLANG=/lane/integration/gas-bin/clang
@@ -42,9 +48,19 @@ import hashlib,json,pathlib
 root=pathlib.Path('/lane/integration')
 rows=[]
 for tier in ('native','release'):
+    stock=root/'stock-clang/mpx5-wolf'/tier
+    gas=root/'gas/mpx5-wolf'/tier
+    shared=[]
+    for p in sorted(stock.glob('kmain_console.*')):
+        if p.name.endswith(('.o','.a')) and '.asm-' not in p.name:
+            q=gas/p.name
+            assert p.read_bytes()==q.read_bytes(), ('non-assembly object differs',p,q)
+            shared.append({'name':p.name,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()})
+    assert shared, ('no wolf objects',tier)
     a=(root/'stock-clang/mpx5-wolf'/tier/'kmain_console.elf').read_bytes()
     b=(root/'gas/mpx5-wolf'/tier/'kmain_console.elf').read_bytes()
     row={'tier':tier,'literal_stock_clang_sha256':hashlib.sha256(a).hexdigest(),'gas_baseline_sha256':hashlib.sha256(b).hexdigest(),'stock_size':len(a),'gas_size':len(b),'byte_identical':a==b,'first_differing_byte':next((i for i,(x,y) in enumerate(zip(a,b)) if x!=y),min(len(a),len(b)) if len(a)!=len(b) else None),'unequal_bytes':sum(x!=y for x,y in zip(a,b))+abs(len(a)-len(b))}
+    row['identical_nonassembly_inputs']=shared
     rows.append(row)
 (root/'kernel-baselines.json').write_text(json.dumps(rows,indent=2)+'\n')
 print(json.dumps(rows,indent=2))

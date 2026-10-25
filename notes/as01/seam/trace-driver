@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Record the original argv without adding or removing flags.
+set -euo pipefail
+name=${0##*/}
+record=$(printf '%q ' "$@")
+printf 'original\t%s\t%s\n' "$name" "$record" >> "${AS01_TRACE_LOG:?}"
+case $name in
+    cc) exec /usr/bin/cc "$@" ;;
+    clang) exec /usr/bin/clang "$@" ;;
+    ld.lld) exec /usr/bin/ld.lld "$@" ;;
+    *) exit 2 ;;
+esac

@@ -1,0 +1,19 @@
+Findings
+
+pax#172: https://github.com/wolffe-lang/pax/issues/172
+ligature#4: https://github.com/wolffe-lang/ligature/issues/4
+
+The ISO's static lld 17.0.6 fails to link the stock release kernel at an
+R_X86_64_REX_GOTPCRELX displacement of -2147483652. The same object/archive
+bytes and the same link arguments succeed with Ubuntu lld 18.1.3. A diagnostic
+control with lld17 --no-relax also succeeds; that flag is not used in either
+baseline. linker-control.json records every input hash and all three invocations.
+PAX CI and notes/px65/Containerfile install the distro lld. Both kernel baselines
+therefore use digest-pinned lld18, while the ISO's lld17 retains its user-toolchain
+role. PAX source is unchanged.
+
+The compiler invocation remains wolf 0.2.35's release path:
+clang --target=x86_64-unknown-none-elf -x ir FILE -c -O2 -fPIC
+-Wno-override-module -o OBJECT. No mcmodel or fno-pic flag is injected.
+The link remains -nostdlib -static -z max-page-size=0x1000 -T boot/kernel.ld,
+followed by start, assembly, wolf objects and the runtime archive in that order.

@@ -4,6 +4,8 @@ set -euo pipefail
 name=${0##*/}
 source= output= compile=0
 args=("$@")
+record=$(printf '%q ' "$@")
+printf 'gas-driver\t%s\t%s\n' "$name" "$record" >> "${AS01_TRACE_LOG:?}"
 while [ $# -gt 0 ]; do
     case $1 in
         -c) compile=1; shift ;;
@@ -16,6 +18,8 @@ done
 if [ -n "$source" ]; then
     [ "$compile" = 1 ] && [ -n "$output" ] || { echo 'gas-driver: unsupported assembly invocation' >&2; exit 2; }
     printf 'assembly\t%s\t%s\n' "$name" "$source" >> "${AS01_SEAM_LOG:?}"
+    record=$(printf '%q ' --64 -o "$output" "$source")
+    printf 'gas-as\tas\t%s\n' "$record" >> "$AS01_TRACE_LOG"
     exec /usr/bin/as --64 -o "$output" "$source"
 fi
 printf 'other\t%s\n' "$name" >> "${AS01_SEAM_LOG:?}"
