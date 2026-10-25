@@ -1,0 +1,479 @@
+{
+  "special_field_forms": 132,
+  "total_forms": 189,
+  "criterion": "Any recorded site or admissible row needs a legacy/explicit prefix, REX.W or register extension, memory addressing or code32 routing; row-selected prefix bytes are included. This is not code outside the shared table.",
+  "forms": {
+    "add gpr64,gpr64": [
+      "table-selected REX.W"
+    ],
+    "add immediate,gpr64": [
+      "table-selected REX.W"
+    ],
+    "addq gpr64,gpr64": [
+      "table-selected REX.W"
+    ],
+    "addq immediate,gpr64": [
+      "table-selected REX.W"
+    ],
+    "and immediate,gpr64": [
+      "table-selected REX.W"
+    ],
+    "andl immediate,mem[,rip64,,1,disp]": [
+      "memory addressing"
+    ],
+    "andq immediate,gpr64": [
+      "table-selected REX.W"
+    ],
+    "callq *gpr64": [
+      "REX extension or low-byte"
+    ],
+    "cli ": [
+      "code32"
+    ],
+    "cmpb immediate,mem[,gpr64,,1,disp]": [
+      "memory addressing"
+    ],
+    "cmpb immediate,mem[,gpr64,gpr64,1,disp]": [
+      "REX extension or low-byte",
+      "memory addressing"
+    ],
+    "cmpb immediate,mem[,rip64,,1,disp]": [
+      "memory addressing"
+    ],
+    "cmpb mem[,gpr64,,1,disp],gpr8": [
+      "memory addressing"
+    ],
+    "cmpl immediate,gpr32": [
+      "REX extension or low-byte",
+      "code32"
+    ],
+    "cmpl immediate,mem[,rip64,,1,disp]": [
+      "memory addressing"
+    ],
+    "cmpq gpr64,gpr64": [
+      "REX extension or low-byte",
+      "table-selected REX.W"
+    ],
+    "cmpq gpr64,mem[,gpr64,,1,disp]": [
+      "memory addressing",
+      "table-selected REX.W"
+    ],
+    "cmpq gpr64,mem[,rip64,,1,disp]": [
+      "memory addressing",
+      "table-selected REX.W"
+    ],
+    "cmpq immediate,gpr64": [
+      "REX extension or low-byte",
+      "table-selected REX.W"
+    ],
+    "cmpq immediate,mem[,gpr64,,1,disp]": [
+      "REX extension or low-byte",
+      "memory addressing",
+      "table-selected REX.W"
+    ],
+    "cmpq immediate,mem[,rip64,,1,disp]": [
+      "memory addressing",
+      "table-selected REX.W"
+    ],
+    "cmpw immediate,mem[,rip64,,1,disp]": [
+      "memory addressing",
+      "table-selected legacy prefix"
+    ],
+    "decq gpr64": [
+      "REX extension or low-byte",
+      "table-selected REX.W"
+    ],
+    "divl gpr32": [
+      "REX extension or low-byte"
+    ],
+    "divq gpr64": [
+      "REX extension or low-byte",
+      "table-selected REX.W"
+    ],
+    "fnstcw mem[,rip64,,1,disp]": [
+      "memory addressing"
+    ],
+    "fxrstor64 mem[,gpr64,,1,disp]": [
+      "memory addressing",
+      "table-selected REX.W"
+    ],
+    "fxsave64 mem[,gpr64,,1,disp]": [
+      "memory addressing",
+      "table-selected REX.W"
+    ],
+    "imulq immediate,gpr64,gpr64": [
+      "table-selected REX.W"
+    ],
+    "imulq immediate,mem[,gpr64,,1,disp],gpr64": [
+      "memory addressing",
+      "table-selected REX.W"
+    ],
+    "incl gpr32": [
+      "REX extension or low-byte",
+      "code32"
+    ],
+    "incq gpr64": [
+      "REX extension or low-byte",
+      "table-selected REX.W"
+    ],
+    "incq mem[,rip64,,1,disp]": [
+      "memory addressing",
+      "table-selected REX.W"
+    ],
+    "invlpg mem[,gpr64,,1,disp]": [
+      "memory addressing"
+    ],
+    "iretq ": [
+      "table-selected REX.W"
+    ],
+    "jne expression": [
+      "code32"
+    ],
+    "lea mem[,gpr64,,1,disp],gpr64": [
+      "memory addressing",
+      "table-selected REX.W"
+    ],
+    "lea mem[,gpr64,gpr64,8,disp],gpr64": [
+      "memory addressing",
+      "table-selected REX.W"
+    ],
+    "lea mem[,rip64,,1,disp],gpr64": [
+      "memory addressing",
+      "table-selected REX.W"
+    ],
+    "leal mem[,gpr64,,1,disp],gpr32": [
+      "REX extension or low-byte",
+      "memory addressing"
+    ],
+    "leaq mem[,gpr64,,1,disp],gpr64": [
+      "memory addressing",
+      "table-selected REX.W"
+    ],
+    "leaq mem[,gpr64,gpr64,8,disp],gpr64": [
+      "REX extension or low-byte",
+      "memory addressing",
+      "table-selected REX.W"
+    ],
+    "leaq mem[,rip64,,1,disp],gpr64": [
+      "REX extension or low-byte",
+      "memory addressing",
+      "table-selected REX.W"
+    ],
+    "lgdt expression": [
+      "absolute memory addressing",
+      "code32"
+    ],
+    "lgdt mem[,gpr64,,1,disp]": [
+      "memory addressing"
+    ],
+    "lidt mem[,gpr64,,1,disp]": [
+      "memory addressing"
+    ],
+    "ljmp immediate,immediate": [
+      "code32"
+    ],
+    "lretq ": [
+      "table-selected REX.W"
+    ],
+    "mov gpr32,gpr32": [
+      "REX extension or low-byte"
+    ],
+    "mov gpr64,gpr64": [
+      "REX extension or low-byte",
+      "table-selected REX.W"
+    ],
+    "mov gpr64,mem[,gpr64,,1,disp]": [
+      "memory addressing",
+      "table-selected REX.W"
+    ],
+    "mov gpr64,mem[,rip64,,1,disp]": [
+      "memory addressing",
+      "table-selected REX.W"
+    ],
+    "mov gpr8,mem[,gpr64,,1,disp]": [
+      "REX extension or low-byte",
+      "memory addressing"
+    ],
+    "mov mem[,gpr64,,1,disp],gpr64": [
+      "REX extension or low-byte",
+      "memory addressing",
+      "table-selected REX.W"
+    ],
+    "movabs immediate,gpr64": [
+      "table-selected REX.W"
+    ],
+    "movabsq immediate,gpr64": [
+      "REX extension or low-byte",
+      "table-selected REX.W"
+    ],
+    "movb gpr8,mem[,gpr64,,1,disp]": [
+      "REX extension or low-byte",
+      "memory addressing"
+    ],
+    "movb gpr8,mem[,gpr64,gpr64,1,disp]": [
+      "REX extension or low-byte",
+      "memory addressing"
+    ],
+    "movb immediate,mem[,gpr64,,1,disp]": [
+      "memory addressing"
+    ],
+    "movb immediate,mem[,gpr64,gpr64,1,disp]": [
+      "memory addressing"
+    ],
+    "movb immediate,mem[,rip64,,1,disp]": [
+      "memory addressing"
+    ],
+    "movb mem[,gpr64,,1,disp],gpr8": [
+      "memory addressing"
+    ],
+    "movdqu mem[,gpr64,,1,disp],xmm128": [
+      "expanded extended XMM family",
+      "memory addressing",
+      "table-selected legacy prefix"
+    ],
+    "movdqu xmm128,mem[,gpr64,,1,disp]": [
+      "expanded extended XMM family",
+      "memory addressing",
+      "table-selected legacy prefix"
+    ],
+    "movl cr64,gpr32": [
+      "code32"
+    ],
+    "movl gpr32,cr64": [
+      "code32"
+    ],
+    "movl gpr32,expression": [
+      "absolute memory addressing",
+      "code32",
+      "moffs addressing"
+    ],
+    "movl gpr32,gpr32": [
+      "REX extension or low-byte",
+      "code32"
+    ],
+    "movl gpr32,mem[,,gpr32,8,disp]": [
+      "code32",
+      "memory addressing"
+    ],
+    "movl gpr32,mem[,gpr64,,1,disp]": [
+      "memory addressing"
+    ],
+    "movl gpr32,mem[,gpr64,gpr64,1,disp]": [
+      "memory addressing"
+    ],
+    "movl immediate,gpr32": [
+      "REX extension or low-byte",
+      "code32"
+    ],
+    "movl immediate,mem[,,gpr32,8,disp]": [
+      "code32",
+      "memory addressing"
+    ],
+    "movl mem[,gpr64,gpr64,1,disp],gpr32": [
+      "memory addressing"
+    ],
+    "movl mem[,rip64,,1,disp],gpr32": [
+      "memory addressing"
+    ],
+    "movq expression,gpr64": [
+      "absolute memory addressing",
+      "table-selected REX.W"
+    ],
+    "movq gpr64,gpr64": [
+      "REX extension or low-byte",
+      "table-selected REX.W"
+    ],
+    "movq gpr64,mem[,gpr64,,1,disp]": [
+      "memory addressing",
+      "table-selected REX.W"
+    ],
+    "movq gpr64,mem[,rip64,,1,disp]": [
+      "memory addressing",
+      "table-selected REX.W"
+    ],
+    "movq immediate,gpr64": [
+      "table-selected REX.W"
+    ],
+    "movq immediate,mem[,gpr64,,1,disp]": [
+      "memory addressing",
+      "table-selected REX.W"
+    ],
+    "movq immediate,mem[,rip64,,1,disp]": [
+      "memory addressing",
+      "table-selected REX.W"
+    ],
+    "movq mem[,gpr64,,1,disp],gpr64": [
+      "REX extension or low-byte",
+      "memory addressing",
+      "table-selected REX.W"
+    ],
+    "movq mem[,gpr64,gpr64,8,disp],gpr64": [
+      "REX extension or low-byte",
+      "memory addressing",
+      "table-selected REX.W"
+    ],
+    "movq mem[,rip64,,1,disp],gpr64": [
+      "memory addressing",
+      "table-selected REX.W"
+    ],
+    "movsb ": [
+      "explicit prefix"
+    ],
+    "movslq mem[,gpr64,,1,disp],gpr64": [
+      "memory addressing",
+      "table-selected REX.W"
+    ],
+    "movsq ": [
+      "explicit prefix",
+      "table-selected REX.W"
+    ],
+    "movw gpr16,mem[,gpr64,gpr64,1,disp]": [
+      "memory addressing",
+      "table-selected legacy prefix"
+    ],
+    "movw immediate,gpr16": [
+      "table-selected legacy prefix"
+    ],
+    "movw seg16,gpr16": [
+      "table-selected legacy prefix"
+    ],
+    "movzbl mem[,gpr64,,1,disp],gpr32": [
+      "memory addressing"
+    ],
+    "movzbl mem[,gpr64,gpr64,1,disp],gpr32": [
+      "memory addressing"
+    ],
+    "movzbl mem[,rip64,,1,disp],gpr32": [
+      "memory addressing"
+    ],
+    "movzwl mem[,gpr64,,1,disp],gpr32": [
+      "memory addressing"
+    ],
+    "movzwl mem[,gpr64,gpr64,1,disp],gpr32": [
+      "memory addressing"
+    ],
+    "movzwl mem[,rip64,,1,disp],gpr32": [
+      "memory addressing"
+    ],
+    "negq gpr64": [
+      "table-selected REX.W"
+    ],
+    "orl immediate,gpr32": [
+      "code32"
+    ],
+    "orq gpr64,gpr64": [
+      "table-selected REX.W"
+    ],
+    "orq immediate,gpr64": [
+      "table-selected REX.W"
+    ],
+    "orq mem[,gpr64,,1,disp],gpr64": [
+      "memory addressing",
+      "table-selected REX.W"
+    ],
+    "pause ": [
+      "table-selected legacy prefix"
+    ],
+    "pop gpr64": [
+      "REX extension or low-byte"
+    ],
+    "popq gpr64": [
+      "REX extension or low-byte"
+    ],
+    "push gpr64": [
+      "REX extension or low-byte"
+    ],
+    "pushq gpr64": [
+      "REX extension or low-byte"
+    ],
+    "pushq mem[,rip64,,1,disp]": [
+      "memory addressing"
+    ],
+    "rdmsr ": [
+      "code32"
+    ],
+    "rdrand gpr64": [
+      "table-selected REX.W"
+    ],
+    "setc gpr8": [
+      "REX extension or low-byte"
+    ],
+    "shl immediate,gpr64": [
+      "table-selected REX.W"
+    ],
+    "shll immediate,gpr32": [
+      "code32"
+    ],
+    "shlq immediate,gpr64": [
+      "table-selected REX.W"
+    ],
+    "shrq immediate,gpr64": [
+      "table-selected REX.W"
+    ],
+    "stmxcsr mem[,rip64,,1,disp]": [
+      "memory addressing"
+    ],
+    "stosb ": [
+      "explicit prefix"
+    ],
+    "stosq ": [
+      "explicit prefix",
+      "table-selected REX.W"
+    ],
+    "sub immediate,gpr64": [
+      "table-selected REX.W"
+    ],
+    "subl immediate,gpr32": [
+      "REX extension or low-byte"
+    ],
+    "subq gpr64,gpr64": [
+      "table-selected REX.W"
+    ],
+    "subq immediate,gpr64": [
+      "table-selected REX.W"
+    ],
+    "sysretq ": [
+      "table-selected REX.W"
+    ],
+    "test gpr64,gpr64": [
+      "REX extension or low-byte",
+      "table-selected REX.W"
+    ],
+    "testl gpr32,gpr32": [
+      "REX extension or low-byte"
+    ],
+    "testq gpr64,gpr64": [
+      "REX extension or low-byte",
+      "table-selected REX.W"
+    ],
+    "testq immediate,gpr64": [
+      "REX extension or low-byte",
+      "table-selected REX.W"
+    ],
+    "wrmsr ": [
+      "code32"
+    ],
+    "xor gpr64,gpr64": [
+      "table-selected REX.W"
+    ],
+    "xorl gpr32,gpr32": [
+      "REX extension or low-byte",
+      "code32"
+    ],
+    "xrstor64 mem[,gpr64,,1,disp]": [
+      "memory addressing",
+      "table-selected REX.W"
+    ],
+    "xsave64 mem[,gpr64,,1,disp]": [
+      "memory addressing",
+      "table-selected REX.W"
+    ]
+  },
+  "line_counts": {
+    "src/lex/lex.lu": 151,
+    "src/dialect/dialect.lu": 363,
+    "src/x86table/rows.lu": 318
+  },
+  "table_module_lines": 1501,
+  "parser_lines": 514
+}

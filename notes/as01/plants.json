@@ -1,0 +1,36 @@
+{
+  "control_revision": "17b018f",
+  "inspection": "Failed-run rows recorded by the coordinating session; plants closed unmerged there. The lane made one immediate run lookup after each push/create; all three were not yet indexed.",
+  "plants": [
+    {
+      "pr": 5,
+      "branch": "as01-plant-encoding",
+      "head": "43e35e7",
+      "run": 40170658668,
+      "url": "https://github.com/wolffe-lang/clef/actions/runs/40170658668",
+      "mutation": "HLT opcode F4 to F5",
+      "red_rows": ["table row 274 hlt, modes 32 and 64", "GATE table", "GATE assembler", "GATE proof"],
+      "disposition": "closed unmerged"
+    },
+    {
+      "pr": 6,
+      "branch": "as01-plant-addend",
+      "head": "a58c381",
+      "run": 40170680340,
+      "url": "https://github.com/wolffe-lang/clef/actions/runs/40170680340",
+      "mutation": "First relocation addend incremented by one",
+      "red_rows": ["GATE layout", "relocation tuples missing the -4 addend in crt0.S, isr.S and sched.S"],
+      "disposition": "closed unmerged"
+    },
+    {
+      "pr": 7,
+      "branch": "as01-plant-irp",
+      "head": "51301db",
+      "run": 40170704106,
+      "url": "https://github.com/wolffe-lang/clef/actions/runs/40170704106",
+      "mutation": "Explicit irp list order reversed",
+      "red_rows": ["src/expansion_test.lu::main trap(assert)", "GATE unit", "GATE native-logic", "GATE checked-expansion", "GATE expansion", "GATE assembler: pax/boot/isr.S relocation order"],
+      "disposition": "closed unmerged"
+    }
+  ]
+}

@@ -1,0 +1,282 @@
+{
+  "before_revision": "da8afadaed0c8017475e22acca852df128356a63",
+  "after_revision": "62dc2a035939b29ba951766534a052cb310158c0",
+  "manifest_definition": "SHA256 of compact sorted-key JSON array of file/sha256/size records in pinned census order",
+  "before_manifest_sha256": "1f1ad4ad251bd11e63430eeb15197edbf01b549dc15c651b0d5ce618a83cafac",
+  "after_manifest_sha256": "1f1ad4ad251bd11e63430eeb15197edbf01b549dc15c651b0d5ce618a83cafac",
+  "accepted_objects": [
+    {
+      "file": "muzzle/notes/lc01-probes/q2/crt0.S",
+      "sha256": "46d3416ccd868af53604aa3c0084dafb5964afb01d78d48d79bb80465f7a1bdb",
+      "size": 920
+    },
+    {
+      "file": "muzzle/notes/lc01-probes/q2/sys.S",
+      "sha256": "88d2262113dcde2a474e7523c4a4ec7ccfc7cdbc718636a57dd2c55484b4140c",
+      "size": 712
+    },
+    {
+      "file": "muzzle/notes/lc01-probes/q9/cell.S",
+      "sha256": "cd847b3b66218db0202a692d8b084b4ad03c0ba8d04fdd60542edbf352b0fe9b",
+      "size": 696
+    },
+    {
+      "file": "muzzle/src/crt0.S",
+      "sha256": "acd15dbb9ef78b53aa28721dfdc9e5edc30a477a7da648aa00ebb7b6de88b199",
+      "size": 920
+    },
+    {
+      "file": "muzzle/src/sys.S",
+      "sha256": "8bba5d9a96e1fffeeaf640f28841c48caf08a18e388665c30a05004aacad4388",
+      "size": 856
+    },
+    {
+      "file": "pax/boot/console.S",
+      "sha256": "ee50b1c27c7e9105aba3c86655a133c30a8d876b85d054721f6ba9dfd171c40f",
+      "size": 776
+    },
+    {
+      "file": "pax/boot/cpu.S",
+      "sha256": "2505ccf943ee06c8fee6320b7c53599835f5f351d62b1f4de57ddd126530559d",
+      "size": 1368
+    },
+    {
+      "file": "pax/boot/event.S",
+      "sha256": "9e56b4ffcba35089e68702d134767ed7e5182c02e9226c77e551e45cd2aff3f0",
+      "size": 776
+    },
+    {
+      "file": "pax/boot/font.S",
+      "sha256": "bebfd3f836cc7151b46ed2ca5b31799db503ba0df84b91a3d7981a8f38cf4fba",
+      "size": 4864
+    },
+    {
+      "file": "pax/boot/fpu.S",
+      "sha256": "f0b3421d1a484212a8342cceafee9164d219fae1e0a9307e5f18c12db49aece6",
+      "size": 1168
+    },
+    {
+      "file": "pax/boot/io.S",
+      "sha256": "1f8ae280db39adab0ec98f8673b9d6df612f41b20c453e73fb09e80a274641ad",
+      "size": 984
+    },
+    {
+      "file": "pax/boot/isr.S",
+      "sha256": "4bcadfc19cb4ce92018dff9b1e43c848b4b993f8115807393a78b615bf142f0b",
+      "size": 5312
+    },
+    {
+      "file": "pax/boot/net.S",
+      "sha256": "983533f2eddcfa76a1d3b5e61c243e7c84ccdd66f31435fb1d033afe264fee69",
+      "size": 1152
+    },
+    {
+      "file": "pax/boot/sched.S",
+      "sha256": "347357dd6b6ba0831e33cb02dab5dac5dd9c6861e9435f622df80eb20832c6e2",
+      "size": 1336
+    },
+    {
+      "file": "pax/boot/screen.S",
+      "sha256": "c2708a99faad7f8f1361bd8ad5860f2f2dfd3ef92f38ffe7267f918ce99a75a8",
+      "size": 888
+    },
+    {
+      "file": "pax/boot/sound.S",
+      "sha256": "03d8e586a61ad70ec90dbaaec4c26952a46f7dc193dfe4c2605866cfd0d65f1b",
+      "size": 744
+    },
+    {
+      "file": "pax/boot/speaker.S",
+      "sha256": "72a8c053827d20b9f2941ff1bb49caa34a9e1059fe51820c254e4fd566c4e50e",
+      "size": 736
+    },
+    {
+      "file": "pax/boot/start.S",
+      "sha256": "3859ca16e85df7e173544d6dc6df9639a50187a6a69d7f58fa514ce3eefe9cf2",
+      "size": 2272
+    },
+    {
+      "file": "pax/boot/stub/pax-stub.s",
+      "sha256": "e588eb22d47b9cdd2b063778098cbc86abc479f8e4d43699ba1116388f4c6aeb",
+      "size": 2184
+    },
+    {
+      "file": "pax/boot/tree.S",
+      "sha256": "a5c99c082584d51de27ec3ac3a981bc192a25d0f543beb726ce447b1c5c8a857",
+      "size": 824
+    },
+    {
+      "file": "pax/boot/unix.S",
+      "sha256": "3dd22344b65c9092275efdbfd1339c7e6a002163f0bbb660e021484d83848ef4",
+      "size": 736
+    },
+    {
+      "file": "pax/boot/user.S",
+      "sha256": "f2fcbed33bef6ca40f9f42afe5428c430e4df2aa464466c02191a5a3524e2ca5",
+      "size": 1352
+    },
+    {
+      "file": "pax/tests/mkw.d/boot/io.S",
+      "sha256": "aa386297c334140bc72366869cb956f4f252e7d3300a7996fed0f4903a9f3f50",
+      "size": 1432
+    },
+    {
+      "file": "pax/user/elf/ask.S",
+      "sha256": "3ddbe2585070dac44f484fd8538a477eb8234f38f4f6992b4f975828f36ea559",
+      "size": 6392
+    },
+    {
+      "file": "pax/user/elf/hello.S",
+      "sha256": "546d2cca8b3630c4d712a593a215a7c48fcc1b5b4e09b25e48041197207ffaba",
+      "size": 7592
+    },
+    {
+      "file": "pax/user/elf/hold.S",
+      "sha256": "fee1db10e016b4d14ad7f1fb821756d83ad059d9d0a7c81c58a0be3c79c81cc4",
+      "size": 1696
+    },
+    {
+      "file": "pax/user/elf/reboot.S",
+      "sha256": "d80bb2b4e74e5bca709cce2580844b16fb02153dff00da7b6eed548fa6192b97",
+      "size": 760
+    },
+    {
+      "file": "pax/user/elf/seven.S",
+      "sha256": "211ef883de7c21ec063fffea7a8c6f47bce2ce717e6425d01e21381c4eafd922",
+      "size": 712
+    },
+    {
+      "file": "pax/user/play/kd.S",
+      "sha256": "c1f40bf928a2972591d4f72fd95539a017f0b7b93619dec40506ac8f3d6e2b09",
+      "size": 2208
+    },
+    {
+      "file": "pax/user/programs.S",
+      "sha256": "052f11ebbc54882b90aa2841121a0a2a92842349dd3781c562e593dd99130300",
+      "size": 3000
+    },
+    {
+      "file": "pax/user/termwolf/tio.S",
+      "sha256": "9cccc9b53bf09b0b28f249ba4397332c6bb442979c044fa2e6393507aac34b3b",
+      "size": 1320
+    },
+    {
+      "file": "wolf-lang/crates/wolf_driver/tests/fixtures/asm/seven_x86_64.S",
+      "sha256": "71384737a860820b91673fa9efe6068e65f563cfaf2120a421750272b3a9d286",
+      "size": 704
+    },
+    {
+      "file": "wolf-lang/crates/wolf_driver/tests/fixtures/freestanding/rt_stub.S",
+      "sha256": "7a8698e29c9f92c57d8660d9c4388d9b4e214ea6253cce026f8d58cb0f5e2fb8",
+      "size": 856
+    },
+    {
+      "file": "wolf-lang/crates/wolf_driver/tests/fixtures/freestanding/start.S",
+      "sha256": "b997eb0e8665924ce056a708bb89c5abedbdd9ddfe9f2540936b59d95f941014",
+      "size": 768
+    },
+    {
+      "file": "wolf-lang/crates/wolf_driver/tests/fixtures/freestanding_alloc/heap.S",
+      "sha256": "d42b01595e25be20ae7b31b316b2037fa778048a7f7c50fbc27a01238f9e5d63",
+      "size": 616
+    },
+    {
+      "file": "wolf-lang/crates/wolf_driver/tests/fixtures/freestanding_device/dev_window.S",
+      "sha256": "d45fb946eb367620f55a9bce7e1ea3bcd79fd54d73a4d674b73ac4c6f2bb048e",
+      "size": 696
+    },
+    {
+      "file": "wolf-lang/crates/wolf_driver/tests/fixtures/freestanding_interrupt/boot.S",
+      "sha256": "62a5145ff5aa9db5942b541a5d044bba81e89c671a587f89faa68b8f0f48fcad",
+      "size": 2352
+    },
+    {
+      "file": "wolf-lang/crates/wolf_driver/tests/fixtures/freestanding_interrupt/isr.S",
+      "sha256": "6f2503a5a8c0d1850dfae265d4b02758f2ebad64ffc6e5ac0d07ce37e49e09ba",
+      "size": 1752
+    },
+    {
+      "file": "wolf-lang/crates/wolf_driver/tests/fixtures/freestanding_static/table.S",
+      "sha256": "94d3e57e13da45507f5b5eb1f15bcf579c2a91351b49fb09c22eae626e7a583a",
+      "size": 616
+    },
+    {
+      "file": "wolf-lang/crates/wolf_driver/tests/fixtures/freestanding_threads/threads.S",
+      "sha256": "f38d8009cd9e8c874f9ca68d43a69d3132b5bb4b73dc539c7c99c4c8e86dbdc9",
+      "size": 1120
+    },
+    {
+      "file": "wolf-lang/crates/wolf_driver/tests/fixtures/pkg/ffi/kernel/kern/io.S",
+      "sha256": "257d4ae1d28272e9b3e559ad6e88f68eb8cb195b10fd66efb280e3bd8c6f2440",
+      "size": 624
+    },
+    {
+      "file": "wolf-lang/crates/wolf_driver/tests/fixtures/shr_range/rd.S",
+      "sha256": "88a9dc7c8ceb83efcb1dfdc358af67009a5882f6411acc5db1939e54b2b1216e",
+      "size": 624
+    },
+    {
+      "file": "wolf-lang/crates/wolf_driver/tests/fixtures/stale_global/kernel/stale.S",
+      "sha256": "d6ce0e29f544f7c2dc54761680a0ba72bd9129b509e5b32614d1ec7c2f8822aa",
+      "size": 880
+    }
+  ],
+  "refusal_controls": [
+    {
+      "name": "expression",
+      "source": ".quad \u00e9\n",
+      "before": {
+        "status": 134,
+        "stderr": "wolf-trap: bounds\n  at /lane/integration/pre-unicode-src/src/eval/eval.lu:201:9\n",
+        "destination_unchanged": true
+      },
+      "after": {
+        "status": 1,
+        "stderr": "clef: Assembly(Failure { origin: Origin { file: /lane/integration/unicode-control/expression.S, line: 1, chain:  }, reason: bad_expression in \u00e9: GNU as \u00a76 })\n",
+        "destination_unchanged": true
+      }
+    },
+    {
+      "name": "operator",
+      "source": ".quad 1+\u00e9\n",
+      "before": {
+        "status": 134,
+        "stderr": "wolf-trap: bounds\n  at /lane/integration/pre-unicode-src/src/eval/eval.lu:187:17\n",
+        "destination_unchanged": true
+      },
+      "after": {
+        "status": 1,
+        "stderr": "clef: Assembly(Failure { origin: Origin { file: /lane/integration/unicode-control/operator.S, line: 1, chain:  }, reason: bad_expression in 1+\u00e9: GNU as \u00a76 })\n",
+        "destination_unchanged": true
+      }
+    },
+    {
+      "name": "character",
+      "source": ".byte '\u00e9\n",
+      "before": {
+        "status": 134,
+        "stderr": "wolf-trap: bounds\n  at /lane/integration/pre-unicode-src/src/assembly/source.lu:69:13\n",
+        "destination_unchanged": true
+      },
+      "after": {
+        "status": 1,
+        "stderr": "clef: Assembly(Failure { origin: Origin { file: /lane/integration/unicode-control/character.S, line: 1, chain:  }, reason: invalid_or_unterminated_literal: GNU as \u00a73.6.1 })\n",
+        "destination_unchanged": true
+      }
+    },
+    {
+      "name": "macro",
+      "source": ".macro M\n.ascii \"\\\u20ac\"\n.endm\nM\n",
+      "before": {
+        "status": 134,
+        "stderr": "wolf-trap: bounds\n  at /lane/integration/pre-unicode-src/src/expand/expand.lu:61:13\n",
+        "destination_unchanged": true
+      },
+      "after": {
+        "status": 1,
+        "stderr": "clef: Assembly(Failure { origin: Origin { file: /lane/integration/unicode-control/macro.S, line: 2, chain: /lane/integration/unicode-control/macro.S:4 macro M }, reason: bad_string_escape: GNU as \u00a73.6.1 })\n",
+        "destination_unchanged": true
+      }
+    }
+  ]
+}
