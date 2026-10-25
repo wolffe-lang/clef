@@ -1,0 +1,5 @@
+pkg {
+    name: "object_pure",
+    edition: "1",
+    deps: {object: {path: "../../../src/object"}},
+}

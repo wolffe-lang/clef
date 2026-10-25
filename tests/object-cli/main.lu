@@ -1,0 +1,179 @@
+use object
+
+fn zeros(n: int) -> List[byte] {
+    var out = List[byte]()
+    for _ in 0..n { (mut out).push(0 as byte) }
+    out
+}
+
+fn sec(
+    name: str,
+    kind: int,
+    flags: int,
+    align: int,
+    size: int,
+    take data: List[byte],
+) -> object.Section {
+    object.Section { name: name, kind: kind, flags: flags, align: align, size: size, data: data }
+}
+
+fn sym(
+    name: str,
+    binding: int,
+    kind: int,
+    section: str,
+    value: int,
+    size: int,
+    visibility: int,
+) -> object.Symbol {
+    object.Symbol {
+        name: name,
+        binding: binding,
+        kind: kind,
+        section: section,
+        value: value,
+        size: size,
+        visibility: visibility,
+    }
+}
+
+fn rel(section: str, offset: int, kind: int, symbol: str, addend: int) -> object.Relocation {
+    object.Relocation {
+        section: section,
+        offset: offset,
+        kind: kind,
+        symbol: symbol,
+        addend: addend,
+    }
+}
+
+fn defaults() -> List[object.Section] {
+    [
+        sec(".text", 1, 6, 1, 0, take zeros(0)),
+        sec(".data", 1, 3, 1, 0, take zeros(0)),
+        sec(".bss", 8, 3, 1, 0, take zeros(0)),
+    ]
+}
+
+fn fixture(name: str) -> List[byte] ! {invalid_object} {
+    var sections = defaults()
+    var symbols = List[object.Symbol]()
+    var relocations = List[object.Relocation]()
+    if name == "empty" { return object.write(sections, symbols, relocations)? }
+    if name == "signed" {
+        sections[0] = sec(".text", 1, 6, 1, 4, take zeros(4))
+        (mut symbols).push(sym("external", 1, 0, "UND", 0, 0, 0))
+        (mut relocations).push(rel(".text", 0, 11, "external", -7))
+        return object.write(sections, symbols, relocations)?
+    }
+    if name != "full" { return invalid_object }
+    var text = zeros(33)
+    text[12] = 232 as byte
+    sections[0] = sec(".text", 1, 6, 1, 33, take text)
+    var data = List[byte]()
+    for b in [136, 119, 102, 85, 68, 51, 34, 17] { (mut data).push(b as byte) }
+    sections[1] = sec(".data", 1, 3, 8, 8, take data)
+    sections[2] = sec(".bss", 8, 3, 16, 33, take zeros(0))
+    var note = List[byte]()
+    for b in [4, 0, 0, 0, 4, 0, 0, 0, 18, 0, 0, 0, 88, 101, 110, 0, 1, 0, 0, 0] {
+        (mut note).push(b as byte)
+    }
+    (mut sections).push(sec(".note.Xen", 7, 2, 4, 20, take note))
+    (mut sections).push(sec(".note.GNU-stack", 1, 0, 1, 0, take zeros(0)))
+    // Deliberately interleave globals/locals: the writer must remap RELA indices.
+    (mut symbols).push(sym("entry", 1, 2, ".text", 0, 33, 2))
+    (mut symbols).push(sym("datum", 0, 1, ".data", 0, 8, 0))
+    (mut symbols).push(sym("external", 1, 0, "UND", 0, 0, 0))
+    (mut symbols).push(sym("buffer", 0, 1, ".bss", 0, 33, 0))
+    (mut symbols).push(sym("constant", 0, 0, "ABS", -9, 0, 0))
+    (mut symbols).push(sym("weakref", 2, 0, "UND", 0, 0, 0))
+    (mut symbols).push(sym(".data", 0, 3, ".data", 0, 0, 0))
+    (mut relocations).push(rel(".text", 0, 1, "external", 8))
+    (mut relocations).push(rel(".text", 8, 2, "external", 0))
+    (mut relocations).push(rel(".text", 13, 4, "external", -4))
+    (mut relocations).push(rel(".text", 17, 10, "external", 0))
+    (mut relocations).push(rel(".text", 21, 1, ".data", 1))
+    (mut relocations).push(rel(".text", 29, 10, "weakref", 0))
+    object.write(sections, symbols, relocations)?
+}
+
+fn hex(text: str) -> List[byte] ! {bad_fixture} {
+    if text.len % 2 != 0 { return bad_fixture }
+    var out = List[byte]()
+    var n: int = 0
+    for i in 0..text.len {
+        let b = text.bytes()[i] as int
+        let d = if b >= 48 && b <= 57 {
+            b - 48
+        } else if b >= 97 && b <= 102 {
+            b - 87
+        } else {
+            return bad_fixture
+        }
+        n = n * 16 + d
+        if i % 2 == 1 { (mut out).push(n as byte); n = 0 }
+    }
+    out
+}
+
+fn number(text: str) -> int ! {bad_fixture} {
+    text.to_int() else { return bad_fixture }
+}
+
+// A neutral interchange for replaying the measured corpus through the writer.
+// Sections contain literal hex bytes; no assembler or ELF reader is linked here.
+fn replay(text: str) -> List[byte] ! {bad_fixture, invalid_object} {
+    var sections = List[object.Section]()
+    var symbols = List[object.Symbol]()
+    var relocations = List[object.Relocation]()
+    for line in text.lines() {
+        let f = line.split("|")
+        if f.len == 7 && f[0] == "S" {
+            var data = hex(f[6])?
+            (mut sections).push(
+                sec(f[1], number(f[2])?, number(f[3])?, number(f[4])?, number(f[5])?, take data),
+            )
+        } else if f.len == 8 && f[0] == "Y" {
+            (mut symbols).push(
+                sym(
+                    f[1],
+                    number(f[2])?,
+                    number(f[3])?,
+                    f[4],
+                    number(f[5])?,
+                    number(f[6])?,
+                    number(f[7])?,
+                ),
+            )
+        } else if f.len == 6 && f[0] == "R" {
+            (mut relocations).push(rel(f[1], number(f[2])?, number(f[3])?, f[4], number(f[5])?))
+        } else {
+            return bad_fixture
+        }
+    }
+    object.write(sections, symbols, relocations)?
+}
+
+fn main() -> int {
+    let args = env_args()
+    if args.len == 1 && args[0] == "invalid" {
+        return checks()
+    }
+    if args.len < 2 {
+        eprint("usage: object-cli empty|full|signed OUT; replay INPUT OUT; invalid")
+        return 2
+    }
+    let bytes = if args[0] == "replay" {
+        if args.len != 3 { return 2 }
+        let input = fs_read_bytes(args[1]) else { return 1 }
+        let text = str_from_utf8(input) else { return 1 }
+        replay(text) else |e| { eprint("{e}"); return 1 }
+    } else {
+        fixture(args[0]) else |e| { eprint("{e}"); return 1 }
+    }
+    let path = args[args.len - 1]
+    let fd = fs_open_mode(path, 1) else { return 1 }
+    defer fs_close(fd) else |_| {}
+    fs_write_chunk(fd, bytes) else { return 1 }
+    0
+}

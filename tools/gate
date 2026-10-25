@@ -21,6 +21,7 @@ commands=[('planner',['python3','ci/tiers-test.py']),('format',[str(W),'fmt','--
  ('checked-expansion',[str(W),'conform-run','src/expansion_test.lu','--checked','--json']),
  ('lupin-expansion',[str(L),'run','src/expansion_test.lu']),
  ('expression',['tools/expression-test']),('expansion',['tools/expansion-test']),
+ ('object',['bash','tests/object-cli/run']),
  ('census',['tools/census','--check']),('scanner',['tools/scanner-test']),
  ('differ',['tools/differ-test']),('proof',['tools/proof-test']),('roundtrip',['tools/roundtrip-test']),('corpus',['tools/corpus','--check'])]
 results=[]

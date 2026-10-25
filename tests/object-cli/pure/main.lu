@@ -1,0 +1,56 @@
+//! member: false
+
+use object
+
+fn main() -> int ! {invalid_object} {
+    let empty = object.write([], [], [])?
+    assert(empty.len == 208 && empty[60] == 2 as byte && empty[62] == 1 as byte)
+    var data = List[byte]()
+    for _ in 0..8 { (mut data).push(0 as byte) }
+    var sections = [
+        object.Section { name: ".text", kind: 1, flags: 6, align: 8, size: 8, data: data },
+    ]
+    let symbols = [
+        object.Symbol {
+            name: "external",
+            binding: 1,
+            kind: 0,
+            section: "UND",
+            value: 0,
+            size: 0,
+            visibility: 0,
+        },
+    ]
+    var relocations = [
+        object.Relocation { section: ".text", offset: 0, kind: 1, symbol: "external", addend: -1 },
+    ]
+    let bytes = object.write(sections, symbols, relocations)?
+    // Header, contents, RELA and null+global symbol slots at planned offsets.
+    assert(bytes[60] == 6 as byte && bytes[62] == 5 as byte)
+    assert(bytes[80] == 1 as byte && bytes[84] == 1 as byte)
+    for i in 88..96 { assert(bytes[i] == 255 as byte) }
+    for i in 96..120 { assert(bytes[i] == 0 as byte) }
+    assert(bytes[124] == 16 as byte)
+    let again = object.write(sections, symbols, relocations)?
+    assert(bytes.len == again.len)
+    for i in 0..bytes.len { assert(bytes[i] == again[i]) }
+    var bad = false
+    relocations[0].offset = 1
+    let _ = object.write(sections, symbols, relocations) else { bad = true; List[byte]() }
+    assert(bad)
+    bad = false
+    relocations[0].offset = -1
+    let _ = object.write(sections, symbols, relocations) else { bad = true; List[byte]() }
+    assert(bad)
+    bad = false
+    relocations[0].offset = 0
+    sections[0].align = 3
+    let _ = object.write(sections, symbols, relocations) else { bad = true; List[byte]() }
+    assert(bad)
+    bad = false
+    sections[0].align = 67108864
+    let _ = object.write(sections, symbols, relocations) else { bad = true; List[byte]() }
+    assert(bad)
+    print("pure ELF writer fields, signed RELA, determinism and refusal checks: pass")
+    0
+}

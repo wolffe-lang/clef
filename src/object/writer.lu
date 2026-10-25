@@ -1,0 +1,396 @@
+// Independent ELF64-LE ET_REL serialization. Specifications: ELF gABI,
+// Sections / String Table / Symbol Table / Relocation; x86-64 psABI 4.4.
+// No instruction encoding, symbol-choice policy, or implicit sections here.
+/// Ordinary section: PROGBITS/NOTE bytes or NOBITS logical size; W/A/X flags only.
+pub struct Section {
+    name: str,
+    kind: int,
+    flags: int,
+    align: int,
+    size: int,
+    data: List[byte],
+}
+
+/// Named symbol; section selects an ordinary section, UND, or ABS.
+/// A SECTION symbol uses its section name for lookup but emits st_name zero.
+pub struct Symbol {
+    name: str,
+    binding: int,
+    kind: int,
+    section: str,
+    value: int,
+    size: int,
+    visibility: int,
+}
+
+/// Final ELF64 RELA field and symbol choice; signed explicit addend, no bias added.
+pub struct Relocation {
+    section: str,
+    offset: int,
+    kind: int,
+    symbol: str,
+    addend: int,
+}
+
+struct Header {
+    name: str,
+    kind: int,
+    flags: int,
+    offset: int,
+    size: int,
+    link: int,
+    info: int,
+    align: int,
+    entsize: int,
+}
+
+// Explicit implementation limit on serialized bytes, not NOBITS memory size.
+// Checking the complete layout before emission prevents overflow/padding traps.
+fn limit() -> int { 67108864 }
+
+fn add(a: int, b: int) -> int ! {invalid_object} {
+    if a < 0 || b < 0 || a > limit() || b > limit() - a { return invalid_object }
+    a + b
+}
+
+fn aligned(n: int, alignment: int) -> int ! {invalid_object} {
+    if alignment <= 1 { return n }
+    let remainder = n % alignment
+    if remainder == 0 { return n }
+    add(n, alignment - remainder)?
+}
+
+fn valid_name(name: str) -> bool {
+    name.len > 0 && !name.contains("\0")
+}
+
+fn reserved(name: str) -> bool {
+    name == "UND" || name == "ABS" || name == ".symtab" || name == ".strtab" || name == ".shstrtab"
+}
+
+fn section_index(sections: List[Section], name: str) -> int ! {invalid_object} {
+    for i in 0..sections.len {
+        if sections[i].name == name { return i }
+    }
+    invalid_object
+}
+
+fn symbol_index(symbols: List[Symbol], name: str) -> int ! {invalid_object} {
+    for i in 0..symbols.len {
+        if symbols[i].name == name { return i }
+    }
+    invalid_object
+}
+
+fn width(kind: int) -> int ! {invalid_object} {
+    if kind == 1 { return 8 }
+    if kind == 2 || kind == 4 || kind == 10 || kind == 11 { return 4 }
+    // Unsupported GOT, TLS, dynamic, narrow, and other relocation types.
+    invalid_object
+}
+
+fn validate(sections: List[Section], symbols: List[Symbol], relocations: List[Relocation]) -> () ! {
+    invalid_object,
+} {
+    // Extended section numbering and SHN_XINDEX are deliberately unsupported.
+    if sections.len >= 65280 || symbols.len > limit() / 24 - 1 || relocations.len > limit() / 24 {
+        return invalid_object
+    }
+    var names = Map[str, bool]()
+    for s in sections {
+        if !valid_name(s.name) || reserved(s.name) || (names[s.name] else false) {
+            return invalid_object
+        }
+        names[s.name] = true
+        // COMDAT/GROUP, MERGE/STRINGS, TLS, compressed, link-order, OS and
+        // processor-specific flags require fields outside this representation.
+        if s.flags < 0 || s.flags > 7 { return invalid_object }
+        if s.kind != 1 && s.kind != 7 && s.kind != 8 { return invalid_object }
+        if s.align < 0 { return invalid_object }
+        if s.align > 0 && s.align & s.align - 1 != 0 { return invalid_object }
+        if s.size < 0 { return invalid_object }
+        if s.kind == 8 {
+            if s.data.len != 0 { return invalid_object }
+        } else if s.size != s.data.len {
+            return invalid_object
+        }
+    }
+    var symnames = Map[str, bool]()
+    for s in symbols {
+        if !valid_name(s.name) || (symnames[s.name] else false) { return invalid_object }
+        symnames[s.name] = true
+        // FILE, COMMON, TLS, GNU IFUNC/UNIQUE and reserved attributes refused.
+        if s.binding < 0 ||
+            s.binding > 2 ||
+            s.kind < 0 ||
+            s.kind > 3 ||
+            s.visibility < 0 ||
+            s.visibility > 3 ||
+            s.size < 0 {
+            return invalid_object
+        }
+        if s.section == "UND" {
+            if s.value != 0 || s.binding == 0 || s.kind == 3 { return invalid_object }
+        } else if s.section != "ABS" {
+            let _ = section_index(sections, s.section)?
+            if s.value < 0 { return invalid_object }
+        }
+        if s.kind == 3 {
+            let _ = section_index(sections, s.section)?
+            if s.name != s.section ||
+                s.binding != 0 ||
+                s.value != 0 ||
+                s.size != 0 ||
+                s.visibility != 0 {
+                return invalid_object
+            }
+        }
+    }
+    for r in relocations {
+        // A generated RELA name must not collide with an ordinary section.
+        if names[".rela{r.section}"] else false { return invalid_object }
+        let i = section_index(sections, r.section)?
+        let _ = symbol_index(symbols, r.symbol)?
+        let n = width(r.kind)?
+        // SHT_NOBITS cannot contain a relocation field in this writer.
+        if sections[i].kind == 8 ||
+            r.offset < 0 ||
+            sections[i].size < n ||
+            r.offset > sections[i].size - n {
+            return invalid_object
+        }
+    }
+}
+
+fn word(mut out: List[byte], value: int, count: int) {
+    var n = value
+    for _ in 0..count {
+        (mut out).push((n & 255) as byte)
+        n >>= 8
+    }
+}
+
+fn string(mut out: List[byte], text: str) {
+    for b in text.bytes() { (mut out).push(b) }
+    (mut out).push(0 as byte)
+}
+
+fn pad(mut out: List[byte], end: int) {
+    while out.len < end { (mut out).push(0 as byte) }
+}
+
+fn shdr(mut out: List[byte], h: Header, name: int) {
+    word(mut out, name, 4)
+    word(mut out, h.kind, 4)
+    word(mut out, h.flags, 8)
+    word(mut out, 0, 8)
+    word(mut out, h.offset, 8)
+    word(mut out, h.size, 8)
+    word(mut out, h.link, 4)
+    word(mut out, h.info, 4)
+    word(mut out, h.align, 8)
+    word(mut out, h.entsize, 8)
+}
+
+/// Caller supplies ordinary sections in declaration order and final RELA choices.
+/// Emits stable locals-before-nonlocals order, preserving order within each class.
+/// ABS values are int bit patterns (negative values encode the upper u64 half).
+/// All malformed/unsupported input and the documented file limit yield invalid_object.
+pub fn write(
+    sections: List[Section],
+    symbols: List[Symbol],
+    relocations: List[Relocation],
+) -> List[byte] ! {invalid_object} {
+    validate(sections, symbols, relocations)?
+    var counts = List[int]()
+    var indexes = List[int]()
+    var nheaders: int = 1
+    for s in sections {
+        var count: int = 0
+        for r in relocations {
+            if r.section == s.name { count += 1 }
+        }
+        (mut counts).push(count)
+        (mut indexes).push(nheaders)
+        nheaders += if count > 0 then 2 else 1
+    }
+    let tables = symbols.len > 0 || relocations.len > 0
+    let symtab = if tables then nheaders else 0
+    if tables { nheaders += 2 }
+    let shstrtab = nheaders
+    nheaders += 1
+    if nheaders >= 65280 { return invalid_object }
+
+    var order = List[int]()
+    for i in 0..symbols.len {
+        if symbols[i].binding == 0 { (mut order).push(i) }
+    }
+    let first_global = order.len + 1
+    for i in 0..symbols.len {
+        if symbols[i].binding != 0 { (mut order).push(i) }
+    }
+    var symbol_ids = Map[str, int]()
+    var strsize: int = 1
+    for j in 0..order.len {
+        let s = copy symbols[order[j]]
+        symbol_ids[s.name] = j + 1
+        if s.kind != 3 { strsize = add(strsize, add(s.name.len, 1)?)? }
+    }
+
+    // Plan every offset and string index before emitting any bytes.
+    var headers = List[Header]()
+    var cursor: int = 64
+    for i in 0..sections.len {
+        // NOBITS occupies no file bytes: even large logical alignment does not
+        // consume the serialized-file budget. Here 0 < cursor <= limit().
+        let offset = if sections[i].kind == 8 && sections[i].align > limit() {
+            sections[i].align
+        } else {
+            aligned(cursor, sections[i].align)?
+        }
+        (mut headers).push(Header {
+            name: sections[i].name,
+            kind: sections[i].kind,
+            flags: sections[i].flags,
+            offset: offset,
+            size: sections[i].size,
+            link: 0,
+            info: 0,
+            align: sections[i].align,
+            entsize: 0,
+        })
+        if sections[i].kind != 8 { cursor = add(offset, sections[i].size)? }
+        if counts[i] > 0 {
+            cursor = aligned(cursor, 8)?
+            let size = counts[i] * 24
+            (mut headers).push(Header {
+                name: ".rela{sections[i].name}",
+                kind: 4,
+                flags: 64,
+                offset: cursor,
+                size: size,
+                link: symtab,
+                info: indexes[i],
+                align: 8,
+                entsize: 24,
+            })
+            cursor = add(cursor, size)?
+        }
+    }
+    if tables {
+        cursor = aligned(cursor, 8)?
+        let size = (symbols.len + 1) * 24
+        (mut headers).push(Header {
+            name: ".symtab",
+            kind: 2,
+            flags: 0,
+            offset: cursor,
+            size: size,
+            link: symtab + 1,
+            info: first_global,
+            align: 8,
+            entsize: 24,
+        })
+        cursor = add(cursor, size)?
+        (mut headers).push(Header {
+            name: ".strtab",
+            kind: 3,
+            flags: 0,
+            offset: cursor,
+            size: strsize,
+            link: 0,
+            info: 0,
+            align: 1,
+            entsize: 0,
+        })
+        cursor = add(cursor, strsize)?
+    }
+    var namesize: int = 1
+    for h in headers { namesize = add(namesize, add(h.name.len, 1)?)? }
+    namesize = add(namesize, 10)? // .shstrtab plus terminator
+    (mut headers).push(Header {
+        name: ".shstrtab",
+        kind: 3,
+        flags: 0,
+        offset: cursor,
+        size: namesize,
+        link: 0,
+        info: 0,
+        align: 1,
+        entsize: 0,
+    })
+    let shoff = aligned(add(cursor, namesize)?, 8)?
+    let _ = add(shoff, nheaders * 64)?
+
+    var out = List[byte]()
+    for b in "\x7fELF".bytes() { (mut out).push(b) }
+    for b in [2, 1, 1, 0] { (mut out).push(b as byte) }
+    word(mut out, 0, 8)
+    word(mut out, 1, 2)
+    word(mut out, 62, 2)
+    word(mut out, 1, 4)
+    word(mut out, 0, 8)
+    word(mut out, 0, 8)
+    word(mut out, shoff, 8)
+    word(mut out, 0, 4)
+    word(mut out, 64, 2)
+    word(mut out, 0, 2)
+    word(mut out, 0, 2)
+    word(mut out, 64, 2)
+    word(mut out, nheaders, 2)
+    word(mut out, shstrtab, 2)
+    for i in 0..sections.len {
+        if sections[i].kind != 8 {
+            pad(mut out, headers[indexes[i] - 1].offset)
+            for b in sections[i].data { (mut out).push(b) }
+        }
+        if counts[i] > 0 {
+            pad(mut out, headers[indexes[i]].offset)
+            for r in relocations {
+                if r.section == sections[i].name {
+                    word(mut out, r.offset, 8)
+                    // Split r_info avoids signed shift/overflow even at large indices.
+                    word(mut out, r.kind, 4)
+                    word(mut out, symbol_ids[r.symbol] else { return invalid_object }, 4)
+                    word(mut out, r.addend, 8)
+                }
+            }
+        }
+    }
+    if tables {
+        pad(mut out, headers[symtab - 1].offset)
+        for _ in 0..24 { (mut out).push(0 as byte) }
+        var name: int = 1
+        for i in order {
+            let s = copy symbols[i]
+            word(mut out, if s.kind == 3 then 0 else name, 4)
+            if s.kind != 3 { name += s.name.len + 1 }
+            word(mut out, s.binding * 16 + s.kind, 1)
+            word(mut out, s.visibility, 1)
+            let index = if s.section == "UND" {
+                0
+            } else if s.section == "ABS" {
+                65521
+            } else {
+                indexes[section_index(sections, s.section)?]
+            }
+            word(mut out, index, 2)
+            word(mut out, s.value, 8)
+            word(mut out, s.size, 8)
+        }
+        (mut out).push(0 as byte)
+        for i in order {
+            if symbols[i].kind != 3 { string(mut out, symbols[i].name) }
+        }
+    }
+    (mut out).push(0 as byte)
+    for h in headers { string(mut out, h.name) }
+    pad(mut out, shoff)
+    for _ in 0..64 { (mut out).push(0 as byte) }
+    var name: int = 1
+    for h in headers {
+        shdr(mut out, h, name)
+        name += h.name.len + 1
+    }
+    out
+}

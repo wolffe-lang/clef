@@ -1,0 +1,6 @@
+pkg {
+    name: "object_cli",
+    edition: "1",
+    capabilities: [env, fs],
+    deps: {object: {path: "../../src/object"}},
+}

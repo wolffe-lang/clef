@@ -27,3 +27,12 @@ shifts, not that many independently incorrect instructions. All corresponding
 nonassembly objects and runtime archives were byte-identical. kernels.json
 records their hashes. This validates the baseline; clef has not built it yet.
 The related compiler-side finding is wolf-lang#938.
+
+Toolchain portability witnesses:
+- wolf-interp#302: an imported error-set alias does not resolve a raised mark
+  under lupin 0.1.56. The explicit public row runs on all three machines.
+- wolf-lang#939: native wolf 0.2.35 cannot lower copy of a Map lookup's error
+  row carrying a List. Unwrapping before copying is supported. The checked
+  machine and lupin accept the original copy-row witness.
+The minimal sources remain under probes/; item2-core/probe-gaps.log records
+actual verdicts. These gaps are not ignored tests of clef's implementation.

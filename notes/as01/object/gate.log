@@ -1,0 +1,10 @@
+wolf build: note: ld.lld not found on PATH — linking with the system linker (lld ships with the toolchain; packaging is c13)
+wolf build: note: ld.lld not found on PATH — linking with the system linker (lld ships with the toolchain; packaging is c13)
+pure ELF writer fields, signed RELA, determinism and refusal checks: pass
+47 malformed objects refused; NOBITS budget, signed extremes, zero alignment, determinism, no mutation: pass
+gas differential and raw headers: empty
+gas differential and raw headers: full
+gas differential and raw headers: signed
+complete measured corpus: 43 independent serializations match live gas; symbol-order permutation and raw headers pass
+{"commit":"cf0c13d","diagnostics":[],"file":"target/object-tests/pure/main.lu","impl":"wolfgang","impl_version":"0.2.35","phase_reached":"run","protocol":1,"seeded":false,"stdout_inline":"pure ELF writer fields, signed RELA, determinism and refusal checks: pass\n","stdout_sha256":"80f6ba17d1e50c209fbc90fd04a6be0978e2e9ad84876f1677c7a26eb354f400","verdict":"exit(0)","warnings":[]}
+pure ELF writer fields, signed RELA, determinism and refusal checks: pass

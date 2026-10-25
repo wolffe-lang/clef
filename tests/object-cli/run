@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# Invoke inside the pinned Linux oracle container, not on the host.
+set -euo pipefail
+cd "$(dirname "$0")/../.."
+W=${WOLF:-.wolf-bin/wolf/wolf-0.2.35-x86_64-unknown-linux-gnu/wolf}
+L=${LUPIN:-.wolf-bin/lupin/lupin-0.1.56-x86_64-unknown-linux-gnu/lupin}
+mkdir -p target/object-tests/pure/object
+"$W" fmt --check src/object tests/object-cli
+"$W" build --deny-warnings tests/object-cli/main.lu -o target/object-cli
+"$W" build --deny-warnings tests/object-cli/pure/main.lu -o target/object-pure
+target/object-pure
+python3 tests/object-cli/test.py
+# conform-run resolves directory siblings, not wolf.pkg dependency aliases.
+# Stage exactly the same writer and pure test into that supported shape.
+cp src/object/writer.lu target/object-tests/pure/object/writer.lu
+cp tests/object-cli/pure/main.lu target/object-tests/pure/main.lu
+"$W" conform-run target/object-tests/pure/main.lu --checked --json > target/object-tests/checked.json
+cat target/object-tests/checked.json
+python3 - <<'PY'
+import json
+r = json.load(open('target/object-tests/checked.json'))
+assert r['verdict'] == 'exit(0)' and r['phase_reached'] == 'run'
+assert not r['warnings'] and not r['diagnostics']
+PY
+"$L" run target/object-tests/pure/main.lu
