@@ -1,0 +1,21 @@
+as01 prediction, before implementation
+
+The first byte-identity failure will be a forward symbolic immediate in CMP:
+resolving its eventual value too early would choose imm8 instead of gas's imm32.
+Code-section alignment NOP fill is the next likely mismatch.
+I predict 65 of the 189 source operand patterns need prefix, REX, addressing,
+or code32 handling outside a selected encoding row. The table will be about
+450 lines and the parser about 700 lines. The ISR --expand output will be
+about 1,200 source statements plus their inline origin annotations.
+The first full link will not be byte-identical, because symbol-table ordering
+or alignment will reveal an object/layout assumption. After correcting those
+findings I predict no final STOP rows among the 43 x86-64 inputs.
+
+Recommendations, not rulings
+R-as01-1 A: lane-local assembler shims at the pinned PAX revision only.
+R-as01-2 A: implement and test the manual's full expression operator grammar.
+R-as01-3 A: structural symbol/string equality, with byte distance measured.
+R-as01-4 A: provenance off by default.
+
+Implementation follows items 1–10 of the adopted contract in order, with
+per-item tests and coherent commits. No claim of completion precedes evidence.
