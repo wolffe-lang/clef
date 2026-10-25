@@ -23,6 +23,20 @@
       "sha256": "17dae1d6e803d0304e318f451c8abf62cbd5bb2a0068300cdeea77c62075b895"
     },
     {
+      "name": "git-man",
+      "version": "1:2.43.0-1ubuntu7.4",
+      "filename": "git-man_1%3a2.43.0-1ubuntu7.4_all.deb",
+      "url": "https://archive.ubuntu.com/ubuntu/pool/main/g/git/git-man_2.43.0-1ubuntu7.4_all.deb",
+      "sha256": "77f57651734edc24b5a9e7863bc261bf302060ac3c12bbb08a459966ea4d30a6"
+    },
+    {
+      "name": "git",
+      "version": "1:2.43.0-1ubuntu7.4",
+      "filename": "git_1%3a2.43.0-1ubuntu7.4_amd64.deb",
+      "url": "https://archive.ubuntu.com/ubuntu/pool/main/g/git/git_2.43.0-1ubuntu7.4_amd64.deb",
+      "sha256": "c79b7948ef9860c97ec74293a90178676e63368a0711c95c28a55af4edf1adab"
+    },
+    {
       "name": "ipxe-qemu",
       "version": "1.21.1+git-20220113.fbbdc3926-0ubuntu2",
       "filename": "ipxe-qemu_1.21.1+git-20220113.fbbdc3926-0ubuntu2_all.deb",
@@ -86,6 +100,13 @@
       "sha256": "b4aee123a37472d213647594b4f7d4a0d13615b0ca2a6fd33926b768d6b232c2"
     },
     {
+      "name": "liberror-perl",
+      "version": "0.17029-2",
+      "filename": "liberror-perl_0.17029-2_all.deb",
+      "url": "https://archive.ubuntu.com/ubuntu/pool/main/libe/liberror-perl/liberror-perl_0.17029-2_all.deb",
+      "sha256": "1907af6bf33dd8684447c09f216c675d2b8559fadd8ddace29fbf83c6fb2a636"
+    },
+    {
       "name": "libfdt1",
       "version": "1.7.0-2build1",
       "filename": "libfdt1_1.7.0-2build1_amd64.deb",
@@ -98,6 +119,20 @@
       "filename": "libfuse3-3_3.14.0-5build1_amd64.deb",
       "url": "https://archive.ubuntu.com/ubuntu/pool/main/f/fuse3/libfuse3-3_3.14.0-5build1_amd64.deb",
       "sha256": "3042159c6d7d4dcb3df9d49cd21e49ecb57f4ba8c4153a72102f512a4fc534a2"
+    },
+    {
+      "name": "libgdbm-compat4t64",
+      "version": "1.23-5.1build1",
+      "filename": "libgdbm-compat4t64_1.23-5.1build1_amd64.deb",
+      "url": "https://archive.ubuntu.com/ubuntu/pool/main/g/gdbm/libgdbm-compat4t64_1.23-5.1build1_amd64.deb",
+      "sha256": "fb8564afd7b7d74d55207070ba50339478e22d29a39ec740dc482f069ac7ee65"
+    },
+    {
+      "name": "libgdbm6t64",
+      "version": "1.23-5.1build1",
+      "filename": "libgdbm6t64_1.23-5.1build1_amd64.deb",
+      "url": "https://archive.ubuntu.com/ubuntu/pool/main/g/gdbm/libgdbm6t64_1.23-5.1build1_amd64.deb",
+      "sha256": "18d6d74a5c038b458d95ba0c0909e0f086cd50bb9a0fee32697902724fc5645e"
     },
     {
       "name": "libglib2.0-0t64",
@@ -170,6 +205,13 @@
       "sha256": "703bacc9204a7ecc24486ac8c96d15d0b9e2c91c385388e132ad4fd8f56f035a"
     },
     {
+      "name": "libperl5.38t64",
+      "version": "5.38.2-3.2ubuntu0.6",
+      "filename": "libperl5.38t64_5.38.2-3.2ubuntu0.6_amd64.deb",
+      "url": "https://archive.ubuntu.com/ubuntu/pool/main/p/perl/libperl5.38t64_5.38.2-3.2ubuntu0.6_amd64.deb",
+      "sha256": "e9e5ac9a657e0cacf5f0de977c1573c696ee74515d5136c4e9a0ce9467d32ae7"
+    },
+    {
       "name": "libpmem1",
       "version": "1.13.1-1.1ubuntu2",
       "filename": "libpmem1_1.13.1-1.1ubuntu2_amd64.deb",
@@ -212,11 +254,32 @@
       "sha256": "78be9176f05512bcac369fcada499686b1dd34320965d27e3405c7aacbc4e461"
     },
     {
+      "name": "make",
+      "version": "4.3-4.1build2",
+      "filename": "make_4.3-4.1build2_amd64.deb",
+      "url": "https://archive.ubuntu.com/ubuntu/pool/main/m/make-dfsg/make_4.3-4.1build2_amd64.deb",
+      "sha256": "1fe6a815b56c7b6e9ce4086a363f09444bbd0a0d30e230c453d0b78e44b57a99"
+    },
+    {
       "name": "ovmf",
       "version": "2024.02-2ubuntu0.10",
       "filename": "ovmf_2024.02-2ubuntu0.10_all.deb",
       "url": "https://archive.ubuntu.com/ubuntu/pool/main/e/edk2/ovmf_2024.02-2ubuntu0.10_all.deb",
       "sha256": "78a6a3a4ffa666f1cb25e9069e4ec9270b5ceac7987b6eefc2674bd3f58a1473"
+    },
+    {
+      "name": "perl-modules-5.38",
+      "version": "5.38.2-3.2ubuntu0.6",
+      "filename": "perl-modules-5.38_5.38.2-3.2ubuntu0.6_all.deb",
+      "url": "https://archive.ubuntu.com/ubuntu/pool/main/p/perl/perl-modules-5.38_5.38.2-3.2ubuntu0.6_all.deb",
+      "sha256": "9c4c90145209d4f85be9255417008e8decb9cd5d189f446fd39ad096e31199cf"
+    },
+    {
+      "name": "perl",
+      "version": "5.38.2-3.2ubuntu0.6",
+      "filename": "perl_5.38.2-3.2ubuntu0.6_amd64.deb",
+      "url": "https://archive.ubuntu.com/ubuntu/pool/main/p/perl/perl_5.38.2-3.2ubuntu0.6_amd64.deb",
+      "sha256": "1a2341674a1c69e3247537ab243dc3d5878b74a39a696964232e1a4f5a27502d"
     },
     {
       "name": "qemu-system-common",

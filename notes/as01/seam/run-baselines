@@ -8,7 +8,7 @@ exec 9> "$HOME/lanes/hasu-A.lock"
 flock 9
 export PATH=$HOME/lanes/hasu-env/bin:$HOME/lanes/hasu-env/profile/bin:$PATH
 export PIP_CACHE_DIR=$lane/cache/pip CUDA_CACHE_PATH=$lane/cache/cuda
-image=localhost/clef-integration:6b2823772c1ca697
+image=localhost/clef-integration:$(sha256sum "$lane/clef/ci/integration-lock.json" | cut -c1-16)
 printf 'AS01 BASELINE START %s pid=%s image=%s\n' "$(date -u +%FT%TZ)" "$$" "$image"
 podman run --rm --name as01-baseline-build --memory 12g --ulimit core=0:0 -v "$lane:/lane" -w /lane "$image" taskset -c 0-5 bash /lane/clef/notes/as01/seam/build-baselines
 printf 'AS01 LINUX REFERENCES %s\n' "$(date -u +%FT%TZ)"
