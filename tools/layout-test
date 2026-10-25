@@ -33,6 +33,9 @@ for name,text in {
     'relative-trailing':'cmpb $7,item(%rip)\ncmpw $7,item(%rip)\ncmpq $256,item(%rip)\n.data\nitem:.quad 0',
 }.items():compare(name,text)
 for name,text,reason in [
+    ('unicode-expression','.quad é','bad_expression'),
+    ('unicode-character',".byte 'é",'invalid_or_unterminated_literal'),
+    ('unicode-macro','.macro M\n.ascii \"\\€\"\n.endm\nM','bad_string_escape'),
     ('cycle','.set A,B+1\n.set B,A+1','cyclic_set'),
     ('divide','.quad 1/0','division_by_zero'),
     ('cross','.text\na:\n.data\nb:\n.quad a-b','cross_section_algebra'),
@@ -68,5 +71,5 @@ for span in desc['ranges']:
 assert all(all(bitmap) for bitmap in coverage.values())
 assert any('macro ISR' in span['chain'] for span in desc['ranges'])
 b['sections']=[s for s in b['sections'] if s[0]!='.note.clef.src'];assert a==b
-(out/'summary.json').write_text(json.dumps({'exact_layout_rows':rows,'refusals':7,'argv_refusals':5,'provenance_ranges':len(desc['ranges'])},indent=2)+'\n')
-print(f'layout: {len(rows)} exact boundary/layout rows, seven refusal rows, five argv refusals and {len(desc["ranges"])} provenance ranges pass')
+(out/'summary.json').write_text(json.dumps({'exact_layout_rows':rows,'refusals':10,'argv_refusals':5,'provenance_ranges':len(desc['ranges'])},indent=2)+'\n')
+print(f'layout: {len(rows)} exact boundary/layout rows, ten refusal rows, five argv refusals and {len(desc["ranges"])} provenance ranges pass')

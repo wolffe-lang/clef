@@ -1,0 +1,167 @@
+[
+  {
+    "gate": "planner",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "format",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "build",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "dialect-build",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "assembly-build",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "table-build",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "unit",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "native-logic",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "checked",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "lupin",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "checked-dialect",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "lupin-dialect",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "dialect",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "checked-expression",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "lupin-expression",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "checked-expansion",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "lupin-expansion",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "expression",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "expansion",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "object",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "checked-machine",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "lupin-machine",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "checked-assembly",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "lupin-assembly",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "table",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "layout",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "assembler",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "census",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "scanner",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "differ",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "proof",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "roundtrip",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "corpus",
+    "status": 0,
+    "pass": true
+  }
+]

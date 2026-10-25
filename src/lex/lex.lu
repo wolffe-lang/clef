@@ -28,7 +28,7 @@ pub fn literal_end(s: str, start: int) -> int ! {bad_operands} {
     if quote != 34 && quote != 39 { return bad_operands }
     var i = start + 1
     if quote == 39 {
-        if i >= s.len { return bad_operands }
+        if i >= s.len || s.bytes()[i] as int >= 128 { return bad_operands }
         if s.bytes()[i] == 92 as byte {
             i += 1
             if i >= s.len { return bad_operands }
@@ -95,7 +95,7 @@ pub fn source(text: str, file: str) -> List[Statement] ! {Syntax(Failure)} {
         let b = text.bytes()[i] as int
         if b == 34 || b == 39 {
             let end = literal_end(text, i) else {
-                return Syntax(failure(file, line, "unterminated_literal: GNU as §3.6.1"))
+                return Syntax(failure(file, line, "invalid_or_unterminated_literal: GNU as §3.6.1"))
             }
             if buf.len == 0 { start_line = line }
             for k in i..end {

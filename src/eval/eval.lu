@@ -175,6 +175,7 @@ fn tokens(s: str) -> List[str] ! Errors {
     var i = 0
     while i < s.len {
         let c = s.bytes()[i] as int
+        if c >= 128 { return bad_expression }
         if c == 32 || c == 9 || c == 13 || c == 10 { i += 1; continue }
         let start = i
         if c == 39 {
@@ -184,6 +185,7 @@ fn tokens(s: str) -> List[str] ! Errors {
         } else {
             i += 1
             if i < s.len {
+                if s.bytes()[i] as int >= 128 { return bad_expression }
                 let two = s[start..i + 1]
                 if two == "<<" ||
                     two == ">>" ||

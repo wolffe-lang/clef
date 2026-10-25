@@ -58,7 +58,10 @@ fn substitute(s: str, bindings: Map[str, str]) -> str {
     var i = 0
     while i < s.len {
         if s.bytes()[i] == 92 as byte && i + 1 < s.len {
-            if i + 2 < s.len && s[i + 1..i + 3] == "()" { i += 3; continue }
+            if i + 2 < s.len && s.bytes()[i + 1] == 40 as byte && s.bytes()[i + 2] == 41 as byte {
+                i += 3
+                continue
+            }
             var end = i + 1
             while end < s.len {
                 let c = s.bytes()[end] as int
