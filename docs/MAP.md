@@ -38,7 +38,8 @@ without reading any third-party assembler implementation.
 * AT&T syntax uses `$` immediates, `%` registers, `*` indirect branches,
   base/index/scale/displacement memory and RIP-relative addresses. The snapshot
   retains literal spelling and signed/unsigned ranges rather than reducing all
-  immediates to a single exemplar. Explicit segment operands are not used.
+  immediates to a single exemplar. Segment-register operands occur, but explicit
+  segment override prefixes on memory operands are absent.
 * Comments use block comments and hash comments. The AArch64 `#7` is an immediate,
   not a comment. No C-preprocessor feature is needed by the input set.
 

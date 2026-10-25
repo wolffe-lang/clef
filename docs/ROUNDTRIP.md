@@ -15,16 +15,16 @@ and a symlink alias are named exclusions, not silently counted as binaries.
 
 | Set | Binaries | Decoded instruction lines | Lines with an error | Lines with no located diagnostic |
 |---|---:|---:|---:|---:|
-| Org programs and corpus outputs | 77 | 22,860,438 | 210,324 | 22,650,042 (99.0797%) |
+| Org programs and corpus outputs | 77 | 22,861,456 | 210,362 | 22,651,022 (99.0795%) |
 | External toolchain tail: cc and lld | 2 | 9,863,901 | 1,962,502 | 7,901,399 (80.1042%) |
-| Total | 79 | 32,724,339 | 2,172,826 | 30,551,441 (93.3600%) |
+| Total | 79 | 32,725,357 | 2,172,864 | 30,552,421 (93.3601%) |
 
 **Zero of the 79 binaries has every batch assemble. Zero successful whole-body
 byte round trips were obtained.** The no-diagnostic percentage is not a
 reassembly success rate: undeclared symbols and numeric references can fail
-later, and warnings can change the meaning. There are another 13,256 assembler
-errors without source-line numbers, of which 1,366 belong to the org-program
-set. There are 399,579 lines with warnings; warning and error sets overlap.
+later, and warnings can change the meaning. There are another 13,237 assembler
+errors without source-line numbers, of which 1,347 belong to the org-program
+set. There are 399,643 lines with warnings; warning and error sets overlap.
 
 ## Method and limits
 

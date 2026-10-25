@@ -43,11 +43,11 @@
     },
     "org-programs": {
       "binaries": 77,
-      "diagnostic_rejected_lines": 210324,
-      "diagnostic_warned_lines": 53391,
-      "instruction_lines": 22860438,
-      "lines_without_diagnostic": 22650042,
-      "unlocated_errors": 1366
+      "diagnostic_rejected_lines": 210362,
+      "diagnostic_warned_lines": 53455,
+      "instruction_lines": 22861456,
+      "lines_without_diagnostic": 22651022,
+      "unlocated_errors": 1347
     }
   },
   "input_iso": {
@@ -2972,20 +2972,20 @@
     {
       "all_chunks_assembled": false,
       "chunks": 1,
-      "diagnostic_rejected_lines": 13050,
-      "diagnostic_warned_lines": 2991,
+      "diagnostic_rejected_lines": 13088,
+      "diagnostic_warned_lines": 3055,
       "error_categories": {
-        "Error without source line: local label <operand> is not defined": 234,
-        "Error: backward ref to unknown label \"N:\"": 1769,
-        "Error: invalid operands (*ABS* and *UND* sections) for <operand>": 2176,
-        "Error: invalid operands (*UND* and *UND* sections) for <operand>": 815,
-        "Error: junk <operand> after expression": 9786,
+        "Error without source line: local label <operand> is not defined": 215,
+        "Error: backward ref to unknown label \"N:\"": 1519,
+        "Error: invalid operands (*ABS* and *UND* sections) for <operand>": 2231,
+        "Error: invalid operands (*UND* and *UND* sections) for <operand>": 824,
+        "Error: junk <operand> after expression": 9760,
         "Error: same type of prefix used twice": 273,
-        "Warning: missing operand; zero assumed": 2991
+        "Warning: missing operand; zero assumed": 3055
       },
       "examples": {
         "Error without source line: local label <operand> is not defined": {
-          "diagnostic": "local label `\"448\" (instance number 1 of a fb label)' is not defined"
+          "diagnostic": "local label `\"1\" (instance number 1 of a fb label)' is not defined"
         },
         "Error: backward ref to unknown label \"N:\"": {
           "diagnostic": "backward ref to unknown label \"66:\"",
@@ -3018,12 +3018,12 @@
           "line": 5
         }
       },
-      "instruction_lines": 87149,
-      "lines_without_diagnostic": 74099,
-      "lines_without_error_diagnostic": 74099,
+      "instruction_lines": 88167,
+      "lines_without_diagnostic": 75079,
+      "lines_without_error_diagnostic": 75079,
       "path": "target/clef",
-      "sha256": "dc7e57a31162f71ea6e75dd2ce6eaa7407c0e12d98bba4ea1adb1bc5265c389e",
-      "unlocated_errors": 234,
+      "sha256": "50a2b707394fd26e25bca59cf974a6686e63bf8edf7736234349de2911579a8a",
+      "unlocated_errors": 215,
       "whole_body_assembled": null,
       "whole_body_bytes_equal": null
     }
@@ -3032,12 +3032,12 @@
   "totals": {
     "all_chunks_assembled": 0,
     "binaries": 79,
-    "diagnostic_rejected_lines": 2172826,
-    "diagnostic_warned_lines": 399579,
-    "instruction_lines": 32724339,
-    "lines_without_diagnostic": 30551441,
-    "lines_without_error_diagnostic": 30551513,
-    "unlocated_errors": 13256,
+    "diagnostic_rejected_lines": 2172864,
+    "diagnostic_warned_lines": 399643,
+    "instruction_lines": 32725357,
+    "lines_without_diagnostic": 30552421,
+    "lines_without_error_diagnostic": 30552493,
+    "unlocated_errors": 13237,
     "whole_body_assembled": 0,
     "whole_body_bytes_equal": 0
   }
