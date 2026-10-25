@@ -1,0 +1,62 @@
+[
+  {
+    "gate": "planner",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "format",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "build",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "unit",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "checked",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "lupin",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "census",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "scanner",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "differ",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "proof",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "roundtrip",
+    "status": 0,
+    "pass": true
+  },
+  {
+    "gate": "corpus",
+    "status": 0,
+    "pass": true
+  }
+]

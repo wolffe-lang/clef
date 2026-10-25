@@ -1,0 +1,1 @@
+{"differences": {"symbols": {"left": [["", 0, 0, "UND", 0, 0, 0], ["missing", 1, 0, "UND", 0, 0, 0], ["witness", 1, 2, ".text", 0, 6, 0]], "right": [["", 0, 0, "UND", 0, 0, 0], ["missing", 1, 0, "UND", 0, 0, 0], ["witness", 1, 2, ".text", 0, 1, 0]]}}, "equal": false}

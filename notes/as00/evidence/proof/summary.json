@@ -1,0 +1,184 @@
+{
+  "proof_rows": [
+    {
+      "name": "empty-0",
+      "source": "",
+      "text": "",
+      "equal": true
+    },
+    {
+      "name": "mov-0",
+      "source": "movq $4096, %rsp",
+      "text": "48c7c400100000",
+      "equal": true
+    },
+    {
+      "name": "mov-1",
+      "source": "movq $-2147483648, %r15",
+      "text": "49c7c700000080",
+      "equal": true
+    },
+    {
+      "name": "mov-2",
+      "source": "movq $2147483647, %rax",
+      "text": "48c7c0ffffff7f",
+      "equal": true
+    },
+    {
+      "name": "push-0",
+      "source": "push %rbp",
+      "text": "55",
+      "equal": true
+    },
+    {
+      "name": "push-1",
+      "source": "push %r12",
+      "text": "4154",
+      "equal": true
+    },
+    {
+      "name": "pop-0",
+      "source": "pop %r15",
+      "text": "415f",
+      "equal": true
+    },
+    {
+      "name": "pop-1",
+      "source": "pop %rax",
+      "text": "58",
+      "equal": true
+    },
+    {
+      "name": "call-0",
+      "source": "call .+5",
+      "text": "e800000000",
+      "equal": true
+    },
+    {
+      "name": "call-1",
+      "source": "call .-1",
+      "text": "e8faffffff",
+      "equal": true
+    },
+    {
+      "name": "ret-0",
+      "source": "ret",
+      "text": "c3",
+      "equal": true
+    },
+    {
+      "name": "jmp-0",
+      "source": "jmp .",
+      "text": "ebfe",
+      "equal": true
+    },
+    {
+      "name": "jmp-1",
+      "source": "jmp .+129",
+      "text": "eb7f",
+      "equal": true
+    },
+    {
+      "name": "jmp-2",
+      "source": "jmp .-126",
+      "text": "eb80",
+      "equal": true
+    },
+    {
+      "name": "lea-0",
+      "source": "lea 8(%rsi,%rdi,8), %rdx",
+      "text": "488d54fe08",
+      "equal": true
+    },
+    {
+      "name": "lea-1",
+      "source": "lea (%rsp), %r8",
+      "text": "4c8d0424",
+      "equal": true
+    },
+    {
+      "name": "lea-2",
+      "source": "lea (%rbp), %rax",
+      "text": "488d4500",
+      "equal": true
+    },
+    {
+      "name": "lea-3",
+      "source": "lea 128(%r13,%r12,4), %r15",
+      "text": "4f8dbca580000000",
+      "equal": true
+    },
+    {
+      "name": "lea-4",
+      "source": "lea -129(%rax), %r9",
+      "text": "4c8d887fffffff",
+      "equal": true
+    },
+    {
+      "name": "syscall-0",
+      "source": "syscall",
+      "text": "0f05",
+      "equal": true
+    },
+    {
+      "name": "hlt-0",
+      "source": "hlt",
+      "text": "f4",
+      "equal": true
+    },
+    {
+      "name": "cmp-0",
+      "source": "cmpq $1, %r8",
+      "text": "4983f801",
+      "equal": true
+    },
+    {
+      "name": "cmp-1",
+      "source": "cmpq $-128, %rax",
+      "text": "4883f880",
+      "equal": true
+    },
+    {
+      "name": "cmp-2",
+      "source": "cmpq $127, %r15",
+      "text": "4983ff7f",
+      "equal": true
+    }
+  ],
+  "oracle_ties": {
+    "mov-zero": {
+      "source": "movq $0,%rax",
+      "text": "48c7c000000000"
+    },
+    "movabs-zero": {
+      "source": "movabsq $0,%rax",
+      "text": "48b80000000000000000"
+    },
+    "cmp-imm8": {
+      "source": "cmpq $1,%rax",
+      "text": "4883f801"
+    },
+    "cmp-wide": {
+      "source": "cmpq $128,%rax",
+      "text": "483d80000000"
+    },
+    "mov-reg": {
+      "source": "movq %rcx,%rax",
+      "text": "4889c8"
+    },
+    "lea-zero-base5": {
+      "source": "lea (%rbp),%rax",
+      "text": "488d4500"
+    },
+    "cmp-forward-expression": {
+      "source": "cmpq $(.Lend-.Lbegin),%rax\n.Lbegin: .zero 23\n.Lend:",
+      "text": "483d170000000000000000000000000000000000000000000000000000"
+    },
+    "cmp-known-expression": {
+      "source": ".Lbegin: .zero 23\n.Lend:\ncmpq $(.Lend-.Lbegin),%rax",
+      "text": "00000000000000000000000000000000000000000000004883f817"
+    }
+  },
+  "refusals": 9,
+  "usage_refusals": 5
+}

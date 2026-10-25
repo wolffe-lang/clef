@@ -1,0 +1,8 @@
+differ: planted section-byte -> red status=1
+differ: planted relocation-addend -> red status=1
+differ: planted relocation-offset -> red status=1
+differ: planted relocation-type -> red status=1
+differ: planted symbol-value -> red status=1
+differ: planted symbol-size -> red status=1
+differ: planted bss-size -> red status=1
+differ: equality, order freedom, seven planted semantic mutations and invalid-input refusals pass

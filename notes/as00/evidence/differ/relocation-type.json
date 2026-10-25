@@ -1,0 +1,1 @@
+{"differences": {"relocations": {"left": [[".text", 2, 4, "missing", -4]], "right": [[".text", 2, 2, "missing", -4]]}}, "equal": false}

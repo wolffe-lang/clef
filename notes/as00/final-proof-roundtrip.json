@@ -1,0 +1,76 @@
+{
+  "exclusions": [],
+  "method": "Unmodified instruction text from objdump -d --no-show-raw-insn --wide, metadata columns removed; GNU as --64 in 100000-line chunks (no source rewriting). A whole-body run follows only if all chunks parse. A line without an error diagnostic is NOT a byte-identity claim.",
+  "rows": [
+    {
+      "all_chunks_assembled": false,
+      "chunks": 1,
+      "diagnostic_rejected_lines": 13088,
+      "diagnostic_warned_lines": 3055,
+      "error_categories": {
+        "Error without source line: local label <operand> is not defined": 215,
+        "Error: backward ref to unknown label \"N:\"": 1519,
+        "Error: invalid operands (*ABS* and *UND* sections) for <operand>": 2231,
+        "Error: invalid operands (*UND* and *UND* sections) for <operand>": 824,
+        "Error: junk <operand> after expression": 9760,
+        "Error: same type of prefix used twice": 273,
+        "Warning: missing operand; zero assumed": 3055
+      },
+      "examples": {
+        "Error without source line: local label <operand> is not defined": {
+          "diagnostic": "local label `\"1\" (instance number 1 of a fb label)' is not defined"
+        },
+        "Error: backward ref to unknown label \"N:\"": {
+          "diagnostic": "backward ref to unknown label \"66:\"",
+          "instruction": "je     66b1 <_RNvNtCsf27LzyE2WNY_7wolf_rt3str14ambient_refill.llvm.4354046120670520129+0x4a1>",
+          "line": 203
+        },
+        "Error: invalid operands (*ABS* and *UND* sections) for <operand>": {
+          "diagnostic": "invalid operands (*ABS* and *UND* sections) for `<'",
+          "instruction": "call   6160 <_RNvMs4_NtCscdodAO9FK5_5alloc7raw_vecNtB5_11RawVecInner11finish_growCsf27LzyE2WNY_7wolf_rt.llvm.4354046120670520129>",
+          "line": 48
+        },
+        "Error: invalid operands (*UND* and *UND* sections) for <operand>": {
+          "diagnostic": "invalid operands (*UND* and *UND* sections) for `<'",
+          "instruction": "call   a800 <_RNCNvNtCs2AWtUsOyxgP_3std5alloc8rust_oom0B5_>",
+          "line": 3885
+        },
+        "Error: junk <operand> after expression": {
+          "diagnostic": "junk `de<_RINvNvMs2_NtCscdodAO9FK5_5alloc7raw_vecINtB8_11RawVecInnerpE7reserve21do_reserve_and_handleNtNtBa_5alloc6GlobalECsf27LzyE2WNY_7wolf_rt+0x7e>' after expression",
+          "instruction": "je     60de <_RINvNvMs2_NtCscdodAO9FK5_5alloc7raw_vecINtB8_11RawVecInnerpE7reserve21do_reserve_and_handleNtNtBa_5alloc6GlobalECsf27LzyE2WNY_7wolf_rt+0x7e>",
+          "line": 50
+        },
+        "Error: same type of prefix used twice": {
+          "diagnostic": "same type of prefix used twice",
+          "instruction": "data16 data16 data16 mov %fs:0x0,%rax",
+          "line": 263
+        },
+        "Warning: missing operand; zero assumed": {
+          "diagnostic": "missing operand; zero assumed",
+          "instruction": "je     6016 <_init+0x16>",
+          "line": 5
+        }
+      },
+      "instruction_lines": 88167,
+      "lines_without_diagnostic": 75079,
+      "lines_without_error_diagnostic": 75079,
+      "path": "target/clef",
+      "sha256": "50a2b707394fd26e25bca59cf974a6686e63bf8edf7736234349de2911579a8a",
+      "unlocated_errors": 215,
+      "whole_body_assembled": null,
+      "whole_body_bytes_equal": null
+    }
+  ],
+  "totals": {
+    "all_chunks_assembled": 0,
+    "binaries": 1,
+    "diagnostic_rejected_lines": 13088,
+    "diagnostic_warned_lines": 3055,
+    "instruction_lines": 88167,
+    "lines_without_diagnostic": 75079,
+    "lines_without_error_diagnostic": 75079,
+    "unlocated_errors": 215,
+    "whole_body_assembled": 0,
+    "whole_body_bytes_equal": 0
+  }
+}

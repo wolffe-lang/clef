@@ -1,0 +1,1 @@
+{"commit":"cf0c13d","diagnostics":[],"file":"src/proof_test.lu","impl":"wolfgang","impl_version":"0.2.35","phase_reached":"run","protocol":1,"seeded":false,"stdout_inline":"table, integer refusal, lexer, ModRM/SIB/REX, ELF, argv: pass\n","stdout_sha256":"5427bae17014b757830e832323b3ec0a28ddfe5657b5cf85bd57006185b16984","verdict":"exit(0)","warnings":[]}
