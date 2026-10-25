@@ -1,0 +1,72 @@
+#!/usr/bin/env python3
+"""Boundary, layout, symbol, argv and provenance end-to-end witnesses."""
+import json,pathlib,struct,subprocess
+from elf import ELF,differences
+ROOT=pathlib.Path(__file__).resolve().parents[1]
+out=ROOT/'target/evidence/layout';out.mkdir(parents=True,exist_ok=True)
+clef=ROOT/'target/clef'
+rows=[]
+def compare(name,text):
+    src=out/(name+'.S');src.write_text(text+'\n');actual=out/(name+'.o');expected=out/(name+'.gas.o')
+    p=subprocess.run([str(clef),str(src),'-o',str(actual)],capture_output=True,text=True)
+    assert p.returncode==0,(name,p.stderr)
+    subprocess.run(['as','--64',str(src),'-o',str(expected)],check=True)
+    diff=differences(ELF(expected),ELF(actual))
+    assert not diff,(name,diff,next(s for s in ELF(expected).normalized()['sections'] if s[0]=='.text'),next(s for s in ELF(actual).normalized()['sections'] if s[0]=='.text'))
+    rows.append(name)
+for n in [0,1,123,124,125,126,127,128,129,130,255]:
+    for branch in ['jmp','je']:
+        compare(f'forward-{branch}-{n}',f'{branch} after\n.zero {n}\nafter: ret')
+        compare(f'backward-{branch}-{n}',f'before: .zero {n}\n{branch} before')
+for mode in [32,64]:
+    for n in list(range(1,32))+[63,127,128,255]:
+        for raw in [False,True]:
+            lead=('.byte 0xc3\n' if raw else 'ret\n')*n
+            compare(f'align-{mode}-{n}-{raw}',f'.code{mode}\n'+lead+'.p2align 8\nret')
+for name,text in {
+    'global-branch':'.globl f\njmp f\nf: call f\nret',
+    'cross-section':'jmp other\n.data\nother: .quad 0',
+    'sets':'.set A,B+1\n.set B,3\n.long A\n.set B,9\n.long B\n',
+    'set-versions':'.set A,1\n.long A\n.set A,A+1\n.long A\n',
+    'strings':'.ascii "a\\n\\t\\123\\x41\\\"\\\\"\n.asciz "tail"',
+    'align-limit':'.byte 1\n.p2align 4,,3\n.byte 2\n.balign 8,0x55',
+    'relative-trailing':'cmpb $7,item(%rip)\ncmpw $7,item(%rip)\ncmpq $256,item(%rip)\n.data\nitem:.quad 0',
+}.items():compare(name,text)
+for name,text,reason in [
+    ('cycle','.set A,B+1\n.set B,A+1','cyclic_set'),
+    ('divide','.quad 1/0','division_by_zero'),
+    ('cross','.text\na:\n.data\nb:\n.quad a-b','cross_section_algebra'),
+    ('overflow','.quad 18446744073709551616','expression_overflow'),
+    ('bss-data','.bss\n.byte 1','nonzero_nobits_data'),
+    ('missing-local','jmp 1f','undefined_numeric_local'),
+    ('align-power','.balign 3','non_power_of_two_alignment'),
+]:
+    src=out/(name+'.S');src.write_text(text+'\n');dest=out/(name+'.o');dest.write_bytes(b'unchanged')
+    p=subprocess.run([str(clef),str(src),'-o',str(dest)],capture_output=True,text=True)
+    assert p.returncode==1 and reason in p.stderr and dest.read_bytes()==b'unchanged',(name,p.returncode,p.stderr)
+# C-driver-shaped front end is assembly only and never a pass-through.
+src=out/'front.S';src.write_text('ret\n');obj=out/'front.o'
+subprocess.run([str(clef),'--target=x86_64-unknown-none-elf','-c',str(src),'-o',str(obj)],check=True)
+for args in [['-c','x.c'],['--target=aarch64-linux-gnu','-c',str(src)],['--target=x86_64-unknown-none-elf',str(src)],['--expand',str(src),'-o',str(obj)],['-o','x.o','-o','y.o',str(src)]]:
+    assert subprocess.run([str(clef)]+args,capture_output=True).returncode==2,args
+# The note is absent by default and each emitted byte is covered exactly once when enabled.
+source=ROOT/'census/sources/pax/boot/isr.S'
+plain=out/'plain.o';noted=out/'noted.o';again=out/'again.o'
+subprocess.run([str(clef),str(source),'-o',str(plain)],check=True)
+for dest in [noted,again]:subprocess.run([str(clef),'--provenance',str(source),'-o',str(dest)],check=True)
+assert noted.read_bytes()==again.read_bytes()
+a=ELF(plain).normalized();b=ELF(noted).normalized()
+assert not any(s[0]=='.note.clef.src' for s in a['sections'])
+note=next(s for s in b['sections'] if s[0]=='.note.clef.src');raw=bytes.fromhex(note[-1]);namesz,descsz,kind=struct.unpack_from('<III',raw)
+assert (namesz,kind)==(5,1) and raw[12:17]==b'clef\0'
+desc=json.loads(raw[20:20+descsz]);assert desc['version']==1
+coverage={s[0]:bytearray(s[3]) for s in a['sections'] if s[1]!=8}
+for span in desc['ranges']:
+    assert span['line']>0 and span['file']==str(source)
+    bitmap=coverage[span['section']];start=span['offset'];end=start+span['size'];assert end<=len(bitmap)
+    assert not any(bitmap[start:end]);bitmap[start:end]=bytes([1])*span['size']
+assert all(all(bitmap) for bitmap in coverage.values())
+assert any('macro ISR' in span['chain'] for span in desc['ranges'])
+b['sections']=[s for s in b['sections'] if s[0]!='.note.clef.src'];assert a==b
+(out/'summary.json').write_text(json.dumps({'exact_layout_rows':rows,'refusals':7,'argv_refusals':5,'provenance_ranges':len(desc['ranges'])},indent=2)+'\n')
+print(f'layout: {len(rows)} exact boundary/layout rows, seven refusal rows, five argv refusals and {len(desc["ranges"])} provenance ranges pass')

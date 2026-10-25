@@ -1,27 +1,51 @@
-/// The single source and destination paths for the assembler-shaped command line.
+/// Assembler-shaped and assembly-only C-driver-shaped invocations.
 pub struct Options {
     input: str,
     output: str,
+    expand: bool,
+    provenance: bool,
 }
 
-/// Accept -c, --64, -o and one source; usage refuses unknown options and missing or duplicate operands.
+/// Accept one .S/.s source, --64, -c, -o, the freestanding target, and explicit inspection options.
+/// usage refuses unknown options, nonassembly inputs, conflicts, and missing/duplicate operands.
 pub fn parse(args: List[str]) -> Options ! {usage} {
     var input = ""
     var output = "a.out"
+    var output_seen = false
+    var compile = false
+    var target = false
+    var expand = false
+    var provenance = false
     var i = 0
     while i < args.len {
         let a = args[i]
         if a == "-o" {
+            if output_seen { return usage }
+            output_seen = true
             i += 1
-            if i >= args.len || args[i].len == 0 { return usage }
+            if i >= args.len || args[i].len == 0 || args[i].starts_with("-") { return usage }
             output = args[i]
-        } else if a == "--64" || a == "-c" {} else if a.starts_with("-") || input.len != 0 {
+        } else if a == "--expand" {
+            expand = true
+        } else if a == "--provenance" {
+            provenance = true
+        } else if a == "-c" {
+            compile = true
+        } else if a == "--target=x86_64-unknown-none-elf" {
+            target = true
+        } else if a == "--64" {} else if a.starts_with("-") || input.len != 0 {
             return usage
         } else {
             input = a
         }
         i += 1
     }
-    if input.len == 0 || input == output { return usage }
-    Options { input: input, output: output }
+    if input.len == 0 ||
+        input == output ||
+        !input.ends_with(".S") && !input.ends_with(".s") ||
+        target && !compile ||
+        expand && (output_seen || provenance) {
+        return usage
+    }
+    Options { input: input, output: output, expand: expand, provenance: provenance }
 }

@@ -1,0 +1,5 @@
+pkg {
+    name: "assembly",
+    edition: "1",
+    deps: {lex: {path: "../lex"}, dialect: {path: "../dialect"}, eval: {path: "../eval"}, expand: {path: "../expand"}, machine: {path: "../machine"}, object: {path: "../object"}, x86table: {path: "../x86table"}},
+}

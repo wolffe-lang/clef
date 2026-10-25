@@ -1,0 +1,64 @@
+fn hex(c: int) -> int {
+    if c >= 48 && c <= 57 { return c - 48 }
+    if c >= 65 && c <= 70 { return c - 55 }
+    if c >= 97 && c <= 102 { return c - 87 }
+    -1
+}
+
+// GNU as Strings: common escapes, up to three octal digits, hexadecimal byte escapes.
+fn string_bytes(s: str) -> List[byte] ! {bad_literal} {
+    if s.len < 2 || !s.starts_with("\"") || !s.ends_with("\"") { return bad_literal }
+    var out = List[byte]()
+    var i = 1
+    while i < s.len - 1 {
+        let c = s.bytes()[i] as int
+        if c == 34 { return bad_literal }
+        if c != 92 {
+            (mut out).push(c as byte)
+            i += 1
+            continue
+        }
+        i += 1
+        if i >= s.len - 1 { return bad_literal }
+        let e = s.bytes()[i] as int
+        i += 1
+        if e >= 48 && e <= 55 {
+            var n = e - 48
+            var count = 1
+            while count < 3 && i < s.len - 1 {
+                let d = s.bytes()[i] as int
+                if d < 48 || d > 55 { break }
+                n = n * 8 + d - 48
+                count += 1
+                i += 1
+            }
+            (mut out).push(n as byte)
+        } else if e == 120 {
+            var n = 0
+            var count = 0
+            while i < s.len - 1 {
+                let d = hex(s.bytes()[i] as int)
+                if d < 0 { break }
+                n = n * 16 + d & 255
+                count += 1
+                i += 1
+            }
+            if count == 0 { return bad_literal }
+            (mut out).push(n as byte)
+        } else {
+            let n = match e {
+                98 => 8,
+                102 => 12,
+                110 => 10,
+                114 => 13,
+                116 => 9,
+                34 => 34,
+                39 => 39,
+                92 => 92,
+                _ => { return bad_literal },
+            }
+            (mut out).push(n as byte)
+        }
+    }
+    out
+}

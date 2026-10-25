@@ -1,0 +1,64 @@
+use object
+
+fn json_string(s: str) -> str {
+    var out = "\""
+    for c in s.chars() {
+        if c == '"' {
+            out += "\\\""
+        } else if c == '\\' {
+            out += "\\\\"
+        } else if c == '\n' {
+            out += "\\n"
+        } else if c == '\r' {
+            out += "\\r"
+        } else if c == '\t' {
+            out += "\\t"
+        } else if c as int < 32 {
+            let n = c as int
+            let hex = "0123456789abcdef"
+            out += "\\u00{hex[n / 16..n / 16 + 1]}{hex[n % 16..n % 16 + 1]}"
+        } else {
+            out += c
+        }
+    }
+    out + "\""
+}
+
+fn text_bytes(mut out: List[byte], text: str) {
+    for b in text.bytes() { (mut out).push(b) }
+}
+
+fn note_word(mut out: List[byte], n: int) {
+    var value = n
+    for _ in 0..4 { (mut out).push((value & 255) as byte); value >>= 8 }
+}
+
+fn provenance(ranges: List[Range]) -> object.Section {
+    var description = List[byte]()
+    text_bytes(mut description, "{{\"version\":1,\"ranges\":[")
+    for i in 0..ranges.len {
+        let r = copy ranges[i]
+        if i > 0 { text_bytes(mut description, ",") }
+        text_bytes(
+            mut description,
+            "{{\"section\":{json_string(r.section)},\"offset\":{r.offset},\"size\":{r.size},\"file\":{json_string(r.origin.file)},\"line\":{r.origin.line},\"chain\":{json_string(r.origin.chain)}}}",
+        )
+    }
+    text_bytes(mut description, "]}}")
+    var data = List[byte]()
+    note_word(mut data, 5)
+    note_word(mut data, description.len)
+    note_word(mut data, 1)
+    text_bytes(mut data, "clef\0")
+    while data.len % 4 != 0 { (mut data).push(0 as byte) }
+    for b in description { (mut data).push(b) }
+    while data.len % 4 != 0 { (mut data).push(0 as byte) }
+    object.Section {
+        name: ".note.clef.src",
+        kind: 7,
+        flags: 0,
+        align: 4,
+        size: data.len,
+        data: data,
+    }
+}

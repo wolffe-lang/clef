@@ -1,0 +1,6 @@
+pkg {
+    name: "assembly_cli",
+    edition: "1",
+    capabilities: [env, fs],
+    deps: {assembly: {path: "../../src/assembly"}},
+}

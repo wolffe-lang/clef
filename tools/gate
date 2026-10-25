@@ -9,6 +9,8 @@ out=ROOT/'target/evidence';out.mkdir(parents=True,exist_ok=True)
 commands=[('planner',['python3','ci/tiers-test.py']),('format',[str(W),'fmt','--check','src','tests']),
  ('build',[str(W),'build','--deny-warnings','src/clef.lu','-o','target/clef']),
  ('dialect-build',[str(W),'build','--deny-warnings','tests/dialect-cli/main.lu','-o','target/dialect-cli']),
+ ('assembly-build',[str(W),'build','--deny-warnings','tests/assembly-cli/main.lu','-o','target/assembly-cli']),
+ ('table-build',[str(W),'build','--deny-warnings','tests/table-cli/main.lu','-o','target/table-cli']),
  ('unit',[str(W),'test','--deny-warnings','src']),
  ('native-logic',['tools/native-logic-test']),
  ('checked',[str(W),'conform-run','src/proof_test.lu','--checked','--json']),
@@ -22,6 +24,11 @@ commands=[('planner',['python3','ci/tiers-test.py']),('format',[str(W),'fmt','--
  ('lupin-expansion',[str(L),'run','src/expansion_test.lu']),
  ('expression',['tools/expression-test']),('expansion',['tools/expansion-test']),
  ('object',['bash','tests/object-cli/run']),
+ ('checked-machine',[str(W),'conform-run','src/machine_test.lu','--checked','--json']),
+ ('lupin-machine',[str(L),'run','src/machine_test.lu']),
+ ('checked-assembly',[str(W),'conform-run','src/assembly_test.lu','--checked','--json']),
+ ('lupin-assembly',[str(L),'run','src/assembly_test.lu']),
+ ('table',['tools/table-test']),('layout',['tools/layout-test']),('assembler',['tools/assembler-test']),
  ('census',['tools/census','--check']),('scanner',['tools/scanner-test']),
  ('differ',['tools/differ-test']),('proof',['tools/proof-test']),('roundtrip',['tools/roundtrip-test']),('corpus',['tools/corpus','--check'])]
 results=[]
@@ -35,7 +42,7 @@ for name,argv in commands:
             record=json.loads(p.stdout)
             ok=ok and record.get('verdict')=='exit(0)' and record.get('phase_reached')=='run' and not record.get('warnings')
         except ValueError:ok=False
-    if name=='unit':ok=ok and '4 passed; 0 failed; 0 rejected; 0 unsupported' in p.stdout
+    if name=='unit':ok=ok and '6 passed; 0 failed; 0 rejected; 0 unsupported' in p.stdout
     results.append({'gate':name,'status':p.returncode,'pass':ok})
     print(f'GATE {name}: '+('PASS' if ok else 'FAIL'),flush=True)
 (out/'gates.json').write_text(json.dumps(results,indent=2)+'\n')

@@ -1,0 +1,69 @@
+#!/usr/bin/env python3
+"""Whole-census byte, relocation, symbol and determinism gate; no waived rows."""
+import json
+import pathlib
+import subprocess
+from elf import ELF, differences
+
+ROOT=pathlib.Path(__file__).resolve().parents[1]
+out=ROOT/'target/evidence/assembler';out.mkdir(parents=True,exist_ok=True)
+probe=ROOT/'target/assembly-cli'
+rows=[]
+for entry in json.loads((ROOT/'census/org-asm.json').read_text())['files']:
+    if entry['architecture']!='x86_64':
+        continue
+    source=ROOT/'census/sources'/entry['path']
+    dest=out/entry['path'];dest.parent.mkdir(parents=True,exist_ok=True)
+    actual=dest.with_suffix('.clef.o');expected=dest.with_suffix('.gas.o')
+    p=subprocess.run([str(probe),str(source),str(actual)],capture_output=True,text=True,timeout=60)
+    dest.with_suffix('.trace').write_text(p.stdout+p.stderr)
+    row={'file':entry['path'],'status':p.returncode,'equal':False}
+    if p.returncode:
+        row['refusal']=p.stderr.strip()
+        print('FAIL',entry['path'],row['refusal'],flush=True)
+        rows.append(row);continue
+    subprocess.run(['as','--64',str(source),'-o',str(expected)],check=True)
+    wanted=ELF(expected).normalized();got=ELF(actual).normalized()
+    row['differences']=differences(ELF(expected),ELF(actual))
+    detail=[]
+    gs={s[0]:s for s in wanted['sections']};cs={s[0]:s for s in got['sections']}
+    for name in sorted(gs.keys()|cs.keys()):
+        a=gs.get(name);b=cs.get(name)
+        if a==b:continue
+        if a is None or b is None:detail.append({'section':name,'missing':a is None,'extra':b is None});continue
+        av=bytes.fromhex(a[-1]);bv=bytes.fromhex(b[-1]);at=next((i for i,(x,y) in enumerate(zip(av,bv)) if x!=y),min(len(av),len(bv)) if len(av)!=len(bv) else None)
+        detail.append({'section':name,'first_byte':at,'gas_metadata':a[:-1],'clef_metadata':b[:-1],'gas_near':av[at:at+12].hex() if at is not None else '', 'clef_near':bv[at:at+12].hex() if at is not None else ''})
+    for key in ('relocations','symbols'):
+        a={tuple(x) for x in wanted[key]};b={tuple(x) for x in got[key]}
+        if a!=b:detail.append({key:{'missing':sorted(a-b)[:12],'extra':sorted(b-a)[:12]}})
+    row['details']=detail
+    row['table_distance']={}
+    for table in ('.symtab','.strtab','.shstrtab'):
+        def table_bytes(path):
+            elf=ELF(path)
+            for name,header in elf.sections:
+                if name==table:return path.read_bytes()[header[4]:header[4]+header[5]]
+            return b''
+        a=table_bytes(expected);b=table_bytes(actual)
+        row['table_distance'][table]={'gas_size':len(a),'clef_size':len(b),'unequal_positions':sum(x!=y for x,y in zip(a,b))+abs(len(a)-len(b)),'byte_identical':a==b}
+    cli=dest.with_suffix('.cli.o')
+    subprocess.run([str(ROOT/'target/clef'),'--64',str(source),'-o',str(cli)],check=True)
+    assert cli.read_bytes()==actual.read_bytes(),('CLI/library mismatch',entry['path'])
+    again=dest.with_suffix('.again.o')
+    subprocess.run([str(probe),str(source),str(again)],check=True,stdout=subprocess.DEVNULL,timeout=60)
+    row['deterministic']=again.read_bytes()==actual.read_bytes()
+    row['equal']=not row['differences'] and row['deterministic']
+    print(('PASS' if row['equal'] else 'FAIL'),entry['path'],json.dumps(detail) if detail else '',flush=True)
+    rows.append(row)
+(out/'rows.json').write_text(json.dumps(rows,indent=2)+'\n')
+passed=sum(r['equal'] for r in rows)
+passed_files={r['file'] for r in rows if r['equal']}
+forms=json.loads((ROOT/'census/org-asm.json').read_text())['forms']
+covered=[name for name,sites in forms.items() if all(site['file'] in passed_files for site in sites)]
+coverage={'covered':len(covered),'total':len(forms),'forms':covered,'criterion':'all recorded sites belong to whole files matching live gas'}
+(out/'coverage.json').write_text(json.dumps(coverage,indent=2)+'\n')
+print(f'assembler: {passed}/{len(rows)} x86 census sources exact and deterministic; census form coverage {len(covered)}/{len(forms)}; AArch64 deferred by name',flush=True)
+for table in ('.symtab','.strtab','.shstrtab'):
+    measured=[r['table_distance'][table] for r in rows if 'table_distance' in r]
+    print(f'tables {table}: {sum(r["byte_identical"] for r in measured)}/{len(measured)} byte-identical; {sum(r["unequal_positions"] for r in measured)} unequal positions',flush=True)
+raise SystemExit(0 if passed==43 and len(rows)==43 else 1)

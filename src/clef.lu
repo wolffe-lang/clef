@@ -1,61 +1,39 @@
 //! member: false
 
-use elf
-use encode
+use assembly
 use front
-use lex
-use parse
 
 fn main() -> int {
     let args = env_args()
     if args.len == 1 && args[0] == "--version" {
-        print("clef 0.0.0 (ten-form encoding proof; not a general assembler)")
+        print("clef 0.0.0 (GNU-as AT&T x86-64 census dialect)")
         return 0
     }
     let opts = front.parse(args) else |_| {
-        eprint("clef: usage: clef [--64] [-c] FILE.S [-o FILE.o]")
+        eprint(
+            "clef: usage: clef [--64] [-c] [--target=x86_64-unknown-none-elf] FILE.S [-o FILE.o] [--provenance]; clef --expand FILE.S",
+        )
         return 2
     }
     let bytes = fs_read_bytes(opts.input) else |_| {
         eprint("clef: cannot read {opts.input}")
         return 1
     }
-    let text = str_from_utf8(bytes) else |_| {
-        eprint("clef: source is not UTF-8")
-        return 1
-    }
-    var output = List[byte]()
-    let statements = lex.source(text, opts.input) else |e| {
+    let text = str_from_utf8(bytes) else |_| { eprint("clef: source is not UTF-8"); return 1 }
+    let result = assembly.assemble_options(text, opts.input, opts.provenance) else |e| {
         eprint("clef: {e}")
         return 1
     }
-    for row in statements {
-        let line = row.origin.line
-        let s = row.text
-        if s.len == 0 || s == ".text" { continue }
-        if s.starts_with(".") {
-            eprint("clef: {opts.input}:{line}: unsupported directive (GNU as manual §7)")
-            return 1
-        }
-        let inst = parse.instruction(s) else |_| {
-            eprint("clef: {opts.input}:{line}: invalid operands (SDM vol.2 §2.1)")
-            return 1
-        }
-        let encoded = encode.instruction(inst) else |e| {
-            eprint(
-                "clef: {opts.input}:{line}: {e}; outside the ten-form proof (SDM vol.2 instruction opcode table)",
-            )
-            return 1
-        }
-        for b in encoded { (mut output).push(b) }
+    if opts.expand {
+        for line in result.expanded { print(line) }
+        return 0
     }
-    let object = elf.object(output)
     let fd = fs_open_mode(opts.output, 1) else |_| {
         eprint("clef: cannot create {opts.output}")
         return 1
     }
     defer fs_close(fd) else |_| {}
-    fs_write_chunk(fd, object) else |_| {
+    fs_write_chunk(fd, result.bytes) else |_| {
         eprint("clef: cannot write {opts.output}")
         return 1
     }

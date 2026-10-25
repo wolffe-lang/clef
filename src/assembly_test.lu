@@ -1,0 +1,41 @@
+//! member: false
+
+use assembly
+
+fn equal(a: List[byte], b: List[byte]) -> bool {
+    if a.len != b.len { return false }
+    for i in 0..a.len { if a[i] != b[i] { return false } }
+    true
+}
+
+fn main() -> int {
+    let source = "start: movq $1,%rax\njmp 1f\n.byte 0\n1: ret\n.size start,.-start\n"
+    let a = assembly.assemble(source, "one.S") else { return 1 }
+    let b = assembly.assemble(source, "one.S") else { return 1 }
+    assert(equal(a.bytes, b.bytes))
+    assert(
+        a.bytes[64] == 72 as byte &&
+            a.bytes[71] == 235 as byte &&
+            a.bytes[72] == 1 as byte &&
+            a.bytes[74] == 195 as byte,
+    )
+    let macro = assembly.assemble(
+        ".set k,2\n.macro M v\npushq $\\v\n.endm\nM k\n",
+        "macro.S",
+    ) else { return 1 }
+    assert(macro.bytes[64] == 106 as byte && macro.bytes[65] == 2 as byte)
+    let note = assembly.assemble_options(source, "one.S", true) else { return 1 }
+    assert(note.bytes.len > a.bytes.len)
+    for bad in [".set A,B+1\n.set B,A+1\n", ".bss\n.byte 1\n", "jmp 8b\n"] {
+        var refused = false
+        let _ = assembly.assemble(bad, "bad.S") else {
+            refused = true
+            assembly.Result { bytes: [], expanded: [], forms: [], passes: 0 }
+        }
+        assert(refused)
+    }
+    print(
+        "assembly: layout, numeric locals, set/macro values, deterministic ELF, provenance and refusals pass",
+    )
+    0
+}

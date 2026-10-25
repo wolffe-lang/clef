@@ -1,0 +1,1206 @@
+[
+  {
+    "file": "muzzle/notes/lc01-probes/q2/crt0.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 96,
+        "clef_size": 96,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 18,
+        "clef_size": 18,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 65,
+        "clef_size": 71,
+        "unequal_positions": 64,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "muzzle/notes/lc01-probes/q2/sys.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 48,
+        "clef_size": 48,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 12,
+        "clef_size": 12,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 60,
+        "clef_size": 60,
+        "unequal_positions": 54,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "muzzle/notes/lc01-probes/q9/cell.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 48,
+        "clef_size": 48,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 9,
+        "clef_size": 9,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 60,
+        "clef_size": 60,
+        "unequal_positions": 54,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "muzzle/src/crt0.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 96,
+        "clef_size": 96,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 18,
+        "clef_size": 18,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 65,
+        "clef_size": 71,
+        "unequal_positions": 64,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "muzzle/src/sys.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 120,
+        "clef_size": 120,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 65,
+        "clef_size": 65,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 60,
+        "clef_size": 60,
+        "unequal_positions": 54,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "pax/boot/console.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 96,
+        "clef_size": 96,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 42,
+        "clef_size": 42,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 60,
+        "clef_size": 60,
+        "unequal_positions": 54,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "pax/boot/cpu.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 384,
+        "clef_size": 384,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 160,
+        "clef_size": 160,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 60,
+        "clef_size": 60,
+        "unequal_positions": 54,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "pax/boot/event.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 96,
+        "clef_size": 96,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 41,
+        "clef_size": 41,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 60,
+        "clef_size": 60,
+        "unequal_positions": 54,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "pax/boot/font.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 48,
+        "clef_size": 48,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 10,
+        "clef_size": 10,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 68,
+        "clef_size": 68,
+        "unequal_positions": 62,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "pax/boot/fpu.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 240,
+        "clef_size": 240,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 111,
+        "clef_size": 111,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 60,
+        "clef_size": 60,
+        "unequal_positions": 54,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "pax/boot/io.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 216,
+        "clef_size": 216,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 71,
+        "clef_size": 71,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 60,
+        "clef_size": 60,
+        "unequal_positions": 54,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "pax/boot/isr.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 1656,
+        "clef_size": 1656,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 680,
+        "clef_size": 680,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 78,
+        "clef_size": 92,
+        "unequal_positions": 86,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "pax/boot/net.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 336,
+        "clef_size": 336,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 178,
+        "clef_size": 178,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 60,
+        "clef_size": 60,
+        "unequal_positions": 54,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "pax/boot/sched.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 336,
+        "clef_size": 336,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 174,
+        "clef_size": 174,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 65,
+        "clef_size": 71,
+        "unequal_positions": 64,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "pax/boot/screen.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 144,
+        "clef_size": 144,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 76,
+        "clef_size": 76,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 60,
+        "clef_size": 60,
+        "unequal_positions": 54,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "pax/boot/sound.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 72,
+        "clef_size": 72,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 29,
+        "clef_size": 29,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 60,
+        "clef_size": 60,
+        "unequal_positions": 54,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "pax/boot/speaker.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 72,
+        "clef_size": 72,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 28,
+        "clef_size": 28,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 60,
+        "clef_size": 60,
+        "unequal_positions": 54,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "pax/boot/start.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 552,
+        "clef_size": 552,
+        "unequal_positions": 34,
+        "byte_identical": false
+      },
+      ".strtab": {
+        "gas_size": 360,
+        "clef_size": 381,
+        "unequal_positions": 310,
+        "byte_identical": false
+      },
+      ".shstrtab": {
+        "gas_size": 78,
+        "clef_size": 84,
+        "unequal_positions": 77,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "pax/boot/stub/pax-stub.s",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 576,
+        "clef_size": 576,
+        "unequal_positions": 44,
+        "byte_identical": false
+      },
+      ".strtab": {
+        "gas_size": 230,
+        "clef_size": 237,
+        "unequal_positions": 7,
+        "byte_identical": false
+      },
+      ".shstrtab": {
+        "gas_size": 70,
+        "clef_size": 76,
+        "unequal_positions": 69,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "pax/boot/tree.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 96,
+        "clef_size": 96,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 44,
+        "clef_size": 44,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 60,
+        "clef_size": 60,
+        "unequal_positions": 54,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "pax/boot/unix.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 72,
+        "clef_size": 72,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 25,
+        "clef_size": 25,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 60,
+        "clef_size": 60,
+        "unequal_positions": 54,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "pax/boot/user.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 288,
+        "clef_size": 288,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 143,
+        "clef_size": 143,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 65,
+        "clef_size": 71,
+        "unequal_positions": 64,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "pax/tests/mkw.d/boot/io.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 336,
+        "clef_size": 336,
+        "unequal_positions": 20,
+        "byte_identical": false
+      },
+      ".strtab": {
+        "gas_size": 115,
+        "clef_size": 115,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 73,
+        "clef_size": 79,
+        "unequal_positions": 72,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "pax/user/elf/ask.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 1896,
+        "clef_size": 1896,
+        "unequal_positions": 295,
+        "byte_identical": false
+      },
+      ".strtab": {
+        "gas_size": 612,
+        "clef_size": 627,
+        "unequal_positions": 449,
+        "byte_identical": false
+      },
+      ".shstrtab": {
+        "gas_size": 73,
+        "clef_size": 79,
+        "unequal_positions": 72,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "pax/user/elf/hello.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 1680,
+        "clef_size": 1680,
+        "unequal_positions": 214,
+        "byte_identical": false
+      },
+      ".strtab": {
+        "gas_size": 554,
+        "clef_size": 571,
+        "unequal_positions": 393,
+        "byte_identical": false
+      },
+      ".shstrtab": {
+        "gas_size": 73,
+        "clef_size": 79,
+        "unequal_positions": 72,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "pax/user/elf/hold.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 408,
+        "clef_size": 408,
+        "unequal_positions": 45,
+        "byte_identical": false
+      },
+      ".strtab": {
+        "gas_size": 111,
+        "clef_size": 111,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 73,
+        "clef_size": 79,
+        "unequal_positions": 72,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "pax/user/elf/reboot.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 48,
+        "clef_size": 48,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 8,
+        "clef_size": 8,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 60,
+        "clef_size": 60,
+        "unequal_positions": 54,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "pax/user/elf/seven.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 48,
+        "clef_size": 48,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 8,
+        "clef_size": 8,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 60,
+        "clef_size": 60,
+        "unequal_positions": 54,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "pax/user/play/kd.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 408,
+        "clef_size": 408,
+        "unequal_positions": 15,
+        "byte_identical": false
+      },
+      ".strtab": {
+        "gas_size": 199,
+        "clef_size": 199,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 73,
+        "clef_size": 79,
+        "unequal_positions": 72,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "pax/user/programs.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 504,
+        "clef_size": 504,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 342,
+        "clef_size": 342,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 90,
+        "clef_size": 98,
+        "unequal_positions": 92,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "pax/user/termwolf/tio.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 264,
+        "clef_size": 264,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 77,
+        "clef_size": 77,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 65,
+        "clef_size": 71,
+        "unequal_positions": 64,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "wolf-lang/crates/wolf_driver/tests/fixtures/asm/seven_x86_64.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 48,
+        "clef_size": 48,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 10,
+        "clef_size": 10,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 60,
+        "clef_size": 60,
+        "unequal_positions": 54,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "wolf-lang/crates/wolf_driver/tests/fixtures/freestanding/rt_stub.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 96,
+        "clef_size": 96,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 26,
+        "clef_size": 26,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 44,
+        "clef_size": 44,
+        "unequal_positions": 39,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "wolf-lang/crates/wolf_driver/tests/fixtures/freestanding/start.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 72,
+        "clef_size": 72,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 14,
+        "clef_size": 14,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 49,
+        "clef_size": 55,
+        "unequal_positions": 45,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "wolf-lang/crates/wolf_driver/tests/fixtures/freestanding_alloc/heap.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 48,
+        "clef_size": 48,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 9,
+        "clef_size": 9,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 44,
+        "clef_size": 44,
+        "unequal_positions": 39,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "wolf-lang/crates/wolf_driver/tests/fixtures/freestanding_device/dev_window.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 48,
+        "clef_size": 48,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 15,
+        "clef_size": 15,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 51,
+        "clef_size": 51,
+        "unequal_positions": 44,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "wolf-lang/crates/wolf_driver/tests/fixtures/freestanding_interrupt/boot.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 432,
+        "clef_size": 432,
+        "unequal_positions": 40,
+        "byte_identical": false
+      },
+      ".strtab": {
+        "gas_size": 130,
+        "clef_size": 130,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 109,
+        "clef_size": 144,
+        "unequal_positions": 132,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "wolf-lang/crates/wolf_driver/tests/fixtures/freestanding_interrupt/isr.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 480,
+        "clef_size": 480,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 176,
+        "clef_size": 176,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 78,
+        "clef_size": 92,
+        "unequal_positions": 86,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "wolf-lang/crates/wolf_driver/tests/fixtures/freestanding_static/table.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 48,
+        "clef_size": 48,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 10,
+        "clef_size": 10,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 44,
+        "clef_size": 44,
+        "unequal_positions": 39,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "wolf-lang/crates/wolf_driver/tests/fixtures/freestanding_threads/threads.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 216,
+        "clef_size": 216,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 82,
+        "clef_size": 82,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 49,
+        "clef_size": 55,
+        "unequal_positions": 45,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "wolf-lang/crates/wolf_driver/tests/fixtures/pkg/ffi/kernel/kern/io.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 48,
+        "clef_size": 48,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 8,
+        "clef_size": 8,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 44,
+        "clef_size": 44,
+        "unequal_positions": 39,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "wolf-lang/crates/wolf_driver/tests/fixtures/shr_range/rd.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 48,
+        "clef_size": 48,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 4,
+        "clef_size": 4,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 44,
+        "clef_size": 44,
+        "unequal_positions": 39,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  },
+  {
+    "file": "wolf-lang/crates/wolf_driver/tests/fixtures/stale_global/kernel/stale.S",
+    "status": 0,
+    "equal": true,
+    "differences": {},
+    "details": [],
+    "table_distance": {
+      ".symtab": {
+        "gas_size": 120,
+        "clef_size": 120,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".strtab": {
+        "gas_size": 46,
+        "clef_size": 46,
+        "unequal_positions": 0,
+        "byte_identical": true
+      },
+      ".shstrtab": {
+        "gas_size": 49,
+        "clef_size": 55,
+        "unequal_positions": 45,
+        "byte_identical": false
+      }
+    },
+    "deterministic": true
+  }
+]

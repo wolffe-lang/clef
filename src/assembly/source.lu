@@ -1,0 +1,258 @@
+use dialect
+use expand
+use lex
+
+/// Every assembly refusal carries its original source and expansion chain.
+pub error Errors = {Assembly(lex.Failure)}
+
+struct Prepared {
+    nodes: List[dialect.Node],
+    rows: List[lex.Statement],
+    globals: Map[str, bool],
+    kinds: Map[str, int],
+    names: List[str],
+    definitions: Map[str, bool],
+    label_order: Map[str, int],
+}
+
+fn failure(origin: lex.Origin, reason: str) -> lex.Failure {
+    lex.Failure { origin: copy origin, reason: reason }
+}
+
+fn digits(s: str) -> bool {
+    if s.len == 0 { return false }
+    for b in s.bytes() { if b < 48 as byte || b > 57 as byte { return false } }
+    true
+}
+
+fn identifier_byte(c: int) -> bool {
+    c >= 65 && c <= 90 || c >= 97 && c <= 122 || c >= 48 && c <= 57 || c == 46 || c == 95 || c == 36
+}
+
+fn names_in(s: str) -> List[str] {
+    var out = List[str]()
+    var i = 0
+    while i < s.len {
+        let c = s.bytes()[i] as int
+        if c == 39 || c == 34 {
+            i = lex.literal_end(s, i) else { return out }
+            continue
+        }
+        if !identifier_byte(c) { i += 1; continue }
+        let start = i
+        while i < s.len && identifier_byte(s.bytes()[i] as int) { i += 1 }
+        if (c < 48 || c > 57) && s[start..i] != "." { (mut out).push(s[start..i]) }
+    }
+    out
+}
+
+fn positions(map: Map[str, List[int]], name: str) -> List[int] {
+    let v = map[name] else { return [] }
+    copy v
+}
+
+fn local_expression(
+    s: str,
+    locals: Map[str, List[int]],
+    ordinal: int,
+    origin: lex.Origin,
+) -> str ! Errors {
+    var text = List[byte]()
+    var i = 0
+    while i < s.len {
+        let c = s.bytes()[i] as int
+        let start = i
+        if c == 39 || c == 34 {
+            i = lex.literal_end(s, i) else {
+                return Assembly(failure(origin, "bad_literal: GNU as §3.6"))
+            }
+            for b in s[start..i].bytes() { (mut text).push(b) }
+            continue
+        }
+        if !identifier_byte(c) {
+            (mut text).push(c as byte)
+            i += 1
+            continue
+        }
+        while i < s.len && identifier_byte(s.bytes()[i] as int) { i += 1 }
+        var token = s[start..i]
+        if token.len > 1 &&
+            (token.ends_with("b") || token.ends_with("f")) &&
+            digits(token[0..token.len - 1]) {
+            let number = token[0..token.len - 1]
+            let sites = positions(locals, number)
+            var selected = -1
+            for j in 0..sites.len {
+                if token.ends_with("b") && sites[j] <= ordinal { selected = j }
+                if token.ends_with("f") && sites[j] > ordinal { selected = j; break }
+            }
+            if selected < 0 {
+                return Assembly(failure(origin, "undefined_numeric_local {token}: GNU as §5.3"))
+            }
+            token = ".Lclef.numeric.{number}.{selected}"
+        }
+        for b in token.bytes() { (mut text).push(b) }
+    }
+    str_from_utf8(text) else ""
+}
+
+fn expression_argument(name: str, index: int) -> bool {
+    if name == ".set" || name == ".size" { return index == 1 }
+    name == ".byte" ||
+        name == ".word" ||
+        name == ".long" ||
+        name == ".quad" ||
+        name == ".zero" ||
+        name == ".space" ||
+        name == ".p2align" ||
+        name == ".balign"
+}
+
+fn remember(mut out: List[str], mut seen: Map[str, bool], name: str) {
+    if seen[name] else false { return }
+    seen[name] = true
+    (mut out).push(name)
+}
+
+fn prepare(text: str, file: str) -> Prepared ! Errors {
+    let rows = expand.source(text, file) else |e| match e {
+        Syntax(f) => { return Assembly(f) },
+    }
+    var nodes = List[dialect.Node]()
+    var locals = Map[str, List[int]]()
+    for i in 0..rows.len {
+        let node = dialect.statement(rows[i]) else |e| match e {
+            Syntax(f) => { return Assembly(f) },
+        }
+        for label in node.labels {
+            if label.starts_with(".Lclef.numeric.") {
+                return Assembly(failure(node.origin, "reserved_numeric_label_prefix: GNU as §5.3"))
+            }
+            if digits(label) {
+                var sites = positions(locals, label)
+                (mut sites).push(i)
+                locals[label] = sites
+            }
+        }
+        (mut nodes).push(node)
+    }
+    var counts = Map[str, int]()
+    var globals = Map[str, bool]()
+    var kinds = Map[str, int]()
+    var names = List[str]()
+    var seen = Map[str, bool]()
+    var definitions = Map[str, bool]()
+    var label_order = Map[str, int]()
+    for i in 0..nodes.len {
+        var node = copy nodes[i]
+        for j in 0..node.labels.len {
+            var name = node.labels[j]
+            if digits(name) {
+                let count = counts[name] else 0
+                counts[name] = count + 1
+                name = ".Lclef.numeric.{name}.{count}"
+                node.labels[j] = name
+            }
+            if definitions[name] else false {
+                return Assembly(failure(node.origin, "duplicate_label {name}: GNU as §5.1"))
+            }
+            definitions[name] = true
+            label_order[name] = i
+            remember(mut names, mut seen, name)
+        }
+        if node.name == ".globl" {
+            for name in node.arguments { globals[name] = true; remember(mut names, mut seen, name) }
+        }
+        if node.name == ".set" || node.name == ".type" || node.name == ".size" {
+            remember(mut names, mut seen, node.arguments[0])
+        }
+        if node.name == ".type" {
+            let kind = match node.arguments[1] {
+                "@function" => 2,
+                "@object" => 1,
+                "@notype" => 0,
+                _ => {
+                    return Assembly(failure(node.origin, "unsupported_symbol_type: GNU as §7 Type"))
+                },
+            }
+            kinds[node.arguments[0]] = kind
+        }
+        for j in 0..node.arguments.len {
+            if expression_argument(node.name, j) && node.arguments[j].len > 0 {
+                node.arguments[j] = local_expression(node.arguments[j], locals, i, node.origin)?
+                for name in names_in(node.arguments[j]) { remember(mut names, mut seen, name) }
+            }
+        }
+        for j in 0..node.operands.len {
+            if node.operands[j].kind != "register" {
+                node.operands[j].displacement = local_expression(
+                    node.operands[j].displacement,
+                    locals,
+                    i,
+                    node.origin,
+                )?
+                for name in names_in(node.operands[j].displacement) {
+                    remember(mut names, mut seen, name)
+                }
+            }
+        }
+        nodes[i] = node
+    }
+    check_set_cycles(nodes)?
+    Prepared {
+        nodes: nodes,
+        rows: rows,
+        globals: globals,
+        kinds: kinds,
+        names: names,
+        definitions: definitions,
+        label_order: label_order,
+    }
+}
+
+fn walk_sets(graph: List[List[int]], at: int, mut colors: List[int], depth: int) -> int {
+    if depth > 256 { return 2 }
+    if colors[at] == 1 { return 1 }
+    if colors[at] == 2 { return 0 }
+    colors[at] = 1
+    for next in graph[at] {
+        let result = walk_sets(graph, next, mut colors, depth + 1)
+        if result != 0 { return result }
+    }
+    colors[at] = 2
+    0
+}
+
+fn check_set_cycles(nodes: List[dialect.Node]) -> () ! Errors {
+    var definitions = List[int]()
+    for i in 0..nodes.len { if nodes[i].name == ".set" { (mut definitions).push(i) } }
+    var graph = List[List[int]]()
+    var colors = List[int]()
+    for i in 0..definitions.len {
+        let at = definitions[i]
+        var edges = List[int]()
+        for name in names_in(nodes[at].arguments[1]) {
+            var prior = -1
+            var forward = -1
+            for j in 0..definitions.len {
+                if nodes[definitions[j]].arguments[0] != name { continue }
+                if definitions[j] < at { prior = j } else if forward < 0 { forward = j }
+            }
+            let target = if prior >= 0 then prior else forward
+            if target >= 0 { (mut edges).push(target) }
+        }
+        (mut graph).push(edges)
+        (mut colors).push(0)
+    }
+    for i in 0..definitions.len {
+        let status = walk_sets(graph, i, mut colors, 0)
+        if status == 1 {
+            return Assembly(failure(nodes[definitions[i]].origin, "cyclic_set: GNU as §7 Set"))
+        }
+        if status == 2 {
+            return Assembly(
+                failure(nodes[definitions[i]].origin, "set_dependency_depth: GNU as §7 Set"),
+            )
+        }
+    }
+}

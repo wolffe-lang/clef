@@ -1,0 +1,24 @@
+[
+  {
+    "tier": "native",
+    "assembly_calls": 17,
+    "byte_identical": true,
+    "gas_sha256": "54656851650d2da54f31b5304907ab1943998039ccc019a1c08bd4b943145962",
+    "clef_sha256": "54656851650d2da54f31b5304907ab1943998039ccc019a1c08bd4b943145962",
+    "gas_size": 2863656,
+    "clef_size": 2863656,
+    "first_difference": null,
+    "unequal_positions": 0
+  },
+  {
+    "tier": "release",
+    "assembly_calls": 17,
+    "byte_identical": true,
+    "gas_sha256": "efb815659784e0759dbc1e114d4bfdf863dd72a02add4adff00900ad5909836a",
+    "clef_sha256": "efb815659784e0759dbc1e114d4bfdf863dd72a02add4adff00900ad5909836a",
+    "gas_size": 2262344,
+    "clef_size": 2262344,
+    "first_difference": null,
+    "unequal_positions": 0
+  }
+]

@@ -7,7 +7,7 @@ import subprocess
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 out = ROOT / 'target/evidence/expansion'
 out.mkdir(parents=True, exist_ok=True)
-probe = ROOT / 'target/dialect-cli'
+probe = ROOT / 'target/clef'
 rows = []
 for entry in json.loads((ROOT / 'census/org-asm.json').read_text())['files']:
     if entry['architecture'] != 'x86_64':
@@ -15,11 +15,11 @@ for entry in json.loads((ROOT / 'census/org-asm.json').read_text())['files']:
     source = ROOT / 'census/sources' / entry['path']
     dest = out / entry['path']
     dest.parent.mkdir(parents=True, exist_ok=True)
-    p = subprocess.run([str(probe), 'expand', str(source)], capture_output=True, text=True)
+    p = subprocess.run([str(probe), '--expand', str(source)], capture_output=True, text=True)
     assert p.returncode == 0, (entry['path'],p.stderr)
     assert not any(line.startswith(('.macro ','.irp ','.endm','.endr')) for line in p.stdout.splitlines())
     dest.write_text(p.stdout)
-    again = subprocess.check_output([str(probe),'expand',str(source)], text=True)
+    again = subprocess.check_output([str(probe),'--expand',str(source)], text=True)
     assert again == p.stdout, entry['path']
     original_obj = dest.with_suffix('.original.o')
     expanded_obj = dest.with_suffix('.expanded.o')
