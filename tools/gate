@@ -1,0 +1,31 @@
+#!/usr/bin/env python3
+"""Run every gate and preserve each status; never hide failures behind a pipe."""
+import json,os,pathlib,subprocess,sys
+ROOT=pathlib.Path(__file__).resolve().parents[1];os.chdir(ROOT)
+subprocess.run(['tools/fetch-toolchain'],check=True)
+W=ROOT/'.wolf-bin/wolf/wolf-0.2.35-x86_64-unknown-linux-gnu/wolf'
+L=ROOT/'.wolf-bin/lupin/lupin-0.1.56-x86_64-unknown-linux-gnu/lupin'
+out=ROOT/'target/evidence';out.mkdir(parents=True,exist_ok=True)
+commands=[('planner',['python3','ci/tiers-test.py']),('format',[str(W),'fmt','--check','src']),
+ ('build',[str(W),'build','--deny-warnings','src/clef.lu','-o','target/clef']),
+ ('unit',[str(W),'test','--deny-warnings','src']),
+ ('checked',[str(W),'conform-run','src/proof_test.lu','--checked','--json']),
+ ('lupin',[str(L),'run','src/proof_test.lu']),
+ ('census',['tools/census','--check']),('scanner',['tools/scanner-test']),
+ ('differ',['tools/differ-test']),('proof',['tools/proof-test']),('corpus',['tools/corpus','--check'])]
+results=[]
+for name,argv in commands:
+    print('GATE '+name,flush=True)
+    p=subprocess.run(argv,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True)
+    (out/(name+'.log')).write_text(p.stdout);print(p.stdout,flush=True)
+    ok=p.returncode==0
+    if name=='checked':
+        try:
+            record=json.loads(p.stdout)
+            ok=ok and record.get('verdict')=='exit(0)' and record.get('phase_reached')=='run' and not record.get('warnings')
+        except ValueError:ok=False
+    if name=='unit':ok=ok and '1 passed; 0 failed; 0 rejected; 0 unsupported' in p.stdout
+    results.append({'gate':name,'status':p.returncode,'pass':ok})
+    print(f'GATE {name}: '+('PASS' if ok else 'FAIL'),flush=True)
+(out/'gates.json').write_text(json.dumps(results,indent=2)+'\n')
+raise SystemExit(0 if all(r['pass'] for r in results) else 1)

@@ -1,0 +1,5 @@
+pkg {
+    name: "parse",
+    edition: "1",
+    deps: {expr: {path: "../expr"}, lex: {path: "../lex"}},
+}

@@ -1,0 +1,19 @@
+#!/usr/bin/env python3
+"""Build only from digest-checked binary packages; run pinned to allowed cores."""
+import hashlib,json,os,pathlib,shutil,subprocess,sys
+ROOT=pathlib.Path(__file__).resolve().parents[1]
+lock=json.loads((ROOT/'ci/oracle-lock.json').read_text())
+engine=os.environ.get('CLEF_ENGINE','podman');stage=ROOT/'target/container';stage.mkdir(parents=True,exist_ok=True)
+checks=[]
+for p in lock['packages']:
+    dest=stage/p['filename']
+    if not dest.exists(): subprocess.run(['curl','-fsSL','--retry','3',p['url'],'-o',str(dest)],check=True)
+    if hashlib.sha256(dest.read_bytes()).hexdigest()!=p['sha256']: raise SystemExit('package digest mismatch: '+p['filename'])
+    checks.append(p['sha256']+'  '+p['filename'])
+(stage/'sums').write_text('\n'.join(checks)+'\n')
+(stage/'Containerfile').write_text('FROM '+lock['base']+'\nCOPY . /packages\nRUN cd /packages && sha256sum -c sums && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends /packages/*.deb && rm -rf /packages\nENV LC_ALL=C\nWORKDIR /work\n')
+image='localhost/clef-oracle:'+hashlib.sha256((ROOT/'ci/oracle-lock.json').read_bytes()).hexdigest()[:16]
+subprocess.run([engine,'build','--network','none','-t',image,'-f',str(stage/'Containerfile'),str(stage)],check=True)
+cores=os.environ.get('CLEF_CPUS') or ','.join(map(str,sorted(os.sched_getaffinity(0))[:4]))
+cmd=[engine,'run','--rm','--memory','12g','-v',str(ROOT)+':/work','-w','/work',image,'taskset','-c',cores]+(sys.argv[1:] or ['tools/gate'])
+raise SystemExit(subprocess.run(cmd).returncode)

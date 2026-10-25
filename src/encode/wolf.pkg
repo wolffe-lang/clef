@@ -1,0 +1,5 @@
+pkg {
+    name: "encode",
+    edition: "1",
+    deps: {expr: {path: "../expr"}, parse: {path: "../parse"}, table: {path: "../table"}},
+}
