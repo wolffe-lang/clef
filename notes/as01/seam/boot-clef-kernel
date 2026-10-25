@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd /lane/inputs/pax
+export PAX_BUILD=/lane/integration/clef-full PAX_REQUIRE_UEFI=1 PAX_TASKSET_CPUS=0-5
+export PAX_CACHE=/lane/integration/cache TMPDIR=/lane/integration/tmp
+tests/mpx5-wolf --images "$PAX_BUILD/mpx5-wolf" --tier both --firmware both
+. tools/lib.sh
+m=$PAX_BUILD/muzzle
+for tier in native release; do
+    for firmware in bios uefi; do
+        log=$m/$tier-$firmware.serial.log
+        tools/qemu-halt --accel tcg --firmware "$firmware" --serial "$log" --timeout 120 \
+            --qemu -m --qemu 1024M --elf "$PAX_BUILD/mpx5-wolf/$tier/kmain_console.elf" \
+            --marker 'halt|PANIC .*' "$m/$tier.iso" > "$log.verdict" 2>&1
+        serial_norm "$log" > "$log.norm"
+        grep -Fxq 'clef muzzle CRT: pass' "$log.norm"
+        grep -Fxq 'PAX: init /bin/muzzle-witness ended with status 7; nothing left to run' "$log.norm"
+        if grep -Eq '^PANIC |: refused: ' "$log.norm"; then exit 1; fi
+        printf 'AS01 MUZZLE PAX PASS %s %s: stdout and exit 7, halted\n' "$tier" "$firmware"
+    done
+done

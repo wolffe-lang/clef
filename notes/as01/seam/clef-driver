@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Route assembly only; all other compiler work retains its original real driver.
+set -euo pipefail
+name=${0##*/}
+source=
+for arg in "$@"; do
+    case $arg in *.S|*.s) [ -z "$source" ] || exit 2; source=$arg ;; esac
+done
+record=$(printf '%q ' "$@")
+printf 'clef-driver\t%s\t%s\n' "$name" "$record" >> "${AS01_TRACE_LOG:?}"
+if [ -n "$source" ]; then
+    printf 'assembly\t%s\t%s\n' "$name" "$source" >> "${AS01_SEAM_LOG:?}"
+    exec /lane/clef/target/clef "$@"
+fi
+printf 'other\t%s\n' "$name" >> "${AS01_SEAM_LOG:?}"
+case $name in
+    cc) exec /usr/bin/cc "$@" ;;
+    clang) exec /usr/bin/clang "$@" ;;
+    *) exit 2 ;;
+esac

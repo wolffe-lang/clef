@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -euo pipefail
+lane=$HOME/lanes/as01
+printf '%s\n' "$$" > "$lane/clef-kernel.pid"
+trap 'rc=$?; printf "%s\n" "$rc" > "$lane/clef-kernel.exit"' EXIT
+exec 9> "$HOME/lanes/hasu-A.lock"
+flock 9
+export PATH=$HOME/lanes/hasu-env/bin:$HOME/lanes/hasu-env/profile/bin:$PATH
+export PIP_CACHE_DIR=$lane/cache/pip CUDA_CACHE_PATH=$lane/cache/cuda
+image=localhost/clef-integration:$(sha256sum "$lane/clef/ci/integration-lock.json" | cut -c1-16)
+printf 'AS01 CLEF KERNEL START %s pid=%s head=%s image=%s\n' "$(date -u +%FT%TZ)" "$$" "$(git -C "$lane/clef" rev-parse HEAD)" "$image"
+podman run --rm --name as01-clef-build --memory 12g --ulimit core=0:0 -v "$lane:/lane" -w /lane "$image" taskset -c 0-5 bash /lane/clef/notes/as01/seam/build-clef-kernel
+printf 'AS01 CLEF LINUX REFERENCES %s\n' "$(date -u +%FT%TZ)"
+export PAX_TREE_IMAGE=$image PAX_ENGINE=$lane/clef/notes/as01/seam/linux-engine PAX_BUILD=$lane/integration/clef-full
+"$lane/inputs/pax/tests/mpx5-wolf" --only linux --images "$lane/integration/clef-full/mpx5-wolf"
+printf 'AS01 CLEF BOOTS %s\n' "$(date -u +%FT%TZ)"
+podman run --rm --name as01-clef-boot --memory 12g --ulimit core=0:0 -v "$lane:/lane" -w /lane/inputs/pax "$image" taskset -c 0-5 bash /lane/clef/notes/as01/seam/boot-clef-kernel
+printf 'AS01 CLEF KERNEL COMPLETE %s\n' "$(date -u +%FT%TZ)"

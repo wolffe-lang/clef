@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+set -euo pipefail
+export PAX_WOLF=/lane/clef/.wolf-bin/wolf/wolf-0.2.35-x86_64-unknown-linux-gnu/wolf
+export PAX_CACHE=/lane/integration/cache
+export PAX_BUILD=/lane/integration/clef-full
+export PAX_DEV_BASE=/lane/integration/dev-base
+export PAX_DEV_WOLF_DIR=/lane/inputs/initramfs/usr/bin
+export PAX_DEV_STD_DIR=/lane/inputs/initramfs/usr/share/wolf/std
+export TMPDIR=/lane/integration/tmp
+export AS01_TRACE_LOG=$PAX_BUILD/commands.tsv AS01_SEAM_LOG=$PAX_BUILD/seam.tsv
+mkdir -p "$PAX_BUILD" "$TMPDIR" /lane/integration/trace-bin /lane/integration/clef-bin
+: > "$AS01_TRACE_LOG"; : > "$AS01_SEAM_LOG"
+for driver in cc clang ld.lld; do ln -sf /lane/clef/notes/as01/seam/trace-driver "/lane/integration/trace-bin/$driver"; done
+for driver in cc clang; do ln -sf /lane/clef/notes/as01/seam/clef-driver "/lane/integration/clef-bin/$driver"; done
+export PATH=/lane/integration/clef-bin:/lane/integration/trace-bin:$PATH
+export WOLF_CLANG=/lane/integration/clef-bin/clang
+cd /lane/inputs/pax
+[ "$(git rev-parse HEAD)" = 105d0d1fe74bce11107a363a73751e35c9ac0987 ]
+[ -z "$(git status --porcelain)" ]
+tests/mpx5-wolf --only build --tier both
+python3 -I - <<'PY'
+import pathlib,hashlib,json,subprocess
+root=pathlib.Path('/lane/integration');rows=[]
+for tier in ['native','release']:
+    gas=root/'gas/mpx5-wolf'/tier;clef=root/'clef-full/mpx5-wolf'/tier
+    inputs=[]
+    for p in sorted(gas.glob('kmain_console.*')):
+        if p.name.endswith(('.o','.a')) and '.asm-' not in p.name:
+            assert p.read_bytes()==(clef/p.name).read_bytes(),('compiler input changed',p)
+            inputs.append({'name':p.name,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()})
+    asms=list(sorted(gas.glob('*.asm-*.o')))+[gas/'start.o']
+    for p in asms:subprocess.run(['/lane/clef/tools/differ',str(p),str(clef/p.name)],check=True,stdout=subprocess.DEVNULL)
+    a=(gas/'kmain_console.elf').read_bytes();b=(clef/'kmain_console.elf').read_bytes()
+    assert a==b,('kernel byte mismatch',tier,next((i for i,(x,y) in enumerate(zip(a,b)) if x!=y),None),len(a),len(b))
+    assert (root/'gas/mpx5-wolf/wolf.cpio').read_bytes()==(root/'clef-full/mpx5-wolf/wolf.cpio').read_bytes()
+    row={'tier':tier,'assembly_objects':len(asms),'kernel_bytes':len(a),'sha256':hashlib.sha256(a).hexdigest(),'byte_identical_to_gas':True,'identical_nonassembly_inputs':inputs}
+    rows.append(row);print('AS01 KERNEL',tier,'byte-identical',row['sha256'],'assembly_objects',len(asms))
+seam=(root/'clef-full/seam.tsv').read_text().splitlines();counts={k:sum(line.startswith(k+'\t') for line in seam) for k in ['assembly','other']}
+assert counts['assembly']==34,counts
+(root/'clef-full/kernels.json').write_text(json.dumps({'rows':rows,'shim_counts':counts},indent=2)+'\n')
+print('AS01 SHIM COUNTS',counts)
+PY
+# A fresh executable using muzzle's pinned CRT and syscall bridge, all assembled by clef.
+m=$PAX_BUILD/muzzle
+mkdir -p "$m"
+for name in crt0 sys; do
+    /lane/clef/target/clef --64 -o "$m/$name.o" "/lane/clef/census/sources/muzzle/src/$name.S"
+    /usr/bin/as --64 -o "$m/$name.gas.o" "/lane/clef/census/sources/muzzle/src/$name.S"
+done
+/lane/clef/target/clef --64 -o "$m/main.o" /lane/clef/notes/as01/seam/muzzle-user.S
+/usr/bin/as --64 -o "$m/main.gas.o" /lane/clef/notes/as01/seam/muzzle-user.S
+/usr/bin/ld.lld -nostdlib -static -z max-page-size=0x1000 -e _start -o "$m/witness.elf" "$m/crt0.o" "$m/sys.o" "$m/main.o"
+/usr/bin/ld.lld -nostdlib -static -z max-page-size=0x1000 -e _start -o "$m/witness.gas.elf" "$m/crt0.gas.o" "$m/sys.gas.o" "$m/main.gas.o"
+cmp "$m/witness.elf" "$m/witness.gas.elf"
+rc=0; "$m/witness.elf" > "$m/linux.stdout" || rc=$?
+[ "$rc" = 7 ]; printf 'clef muzzle CRT: pass\n' > "$m/expected.stdout"; cmp "$m/expected.stdout" "$m/linux.stdout"
+printf '/bin/muzzle-witness\n' > "$m/pax-run"
+tools/mkinitramfs "$m/user.cpio" "/bin/muzzle-witness=$m/witness.elf:755" "/etc/pax-run=$m/pax-run:644" > "$m/initramfs.log"
+for tier in native release; do
+    tools/mkimage --conf boot/limine-initramfs.conf --add "$m/user.cpio" initramfs.cpio "$PAX_BUILD/mpx5-wolf/$tier/kmain_console.elf" "$m/$tier.iso"
+done
+sha256sum "$m/witness.elf"
+printf 'AS01 MUZZLE LINUX PASS: exact stdout and exit 7\n'
