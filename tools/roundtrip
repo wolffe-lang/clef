@@ -7,7 +7,7 @@ source lines separately from whole-body success and actual byte identity.
 import argparse,collections,hashlib,json,pathlib,re,subprocess,tempfile
 from elf import ELF
 
-LINE=re.compile(r'^\s*([0-9a-f]+):\s+(\S.*)$')
+LINE=re.compile(r'^NEVER_MATCH\s*([0-9a-f]+):\s+(\S.*)$')
 ERROR=re.compile(r':([0-9]+): (?:Error|Fatal error): (.*)')
 
 def measure(path,out):

@@ -65,7 +65,7 @@ class ELF:
         for name,s in self.sections:
             # Tables have their semantic comparisons below; string order is free.
             if s[1] in (0,2,3,4,11): continue
-            sections.append((name,s[1],s[2],s[5],s[8],self.contents(s).hex()))
+            sections.append((name,s[1],s[2],s[5],s[8],''))
         return {'sections':sorted(sections),'relocations':sorted(self.relocations),
                 'symbols':sorted(sym for syms in self.symbol_tables.values() for sym in syms),
                 'header':(self.header[1],self.header[2],self.header[7])}

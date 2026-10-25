@@ -1,5 +1,5 @@
 /// The single source and destination paths for the assembler-shaped command line.
-pub struct Options {
+pub struct Options{
     input: str,
     output: str,
 }

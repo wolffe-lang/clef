@@ -87,7 +87,7 @@ pub fn load(line: str) -> Form ! {invalid_table} {
 /// The ten independently transcribed worked rows, one per census mnemonic.
 pub fn source() -> List[str] {
     [
-        "mov|imm32,r64|199|0|1|1|0|4|2B|4.3 MOV|4-35|opcode table C7 /0 id|none|64|64|digit/rm|none|none|C7 sign-extended imm32; never replace with xor",
+        "mov|imm32,r64|199|0|1|1|0|2|2B|4.3 MOV|4-35|opcode table C7 /0 id|none|64|64|digit/rm|none|none|C7 sign-extended imm32; never replace with xor",
         "push|r64|80|0|1|0|0|0|2B|4.3 PUSH|4-520|opcode table 50+rd|none|64|64|opcode+rd|none|none|50+rd shorter than FF/6",
         "pop|r64|88|0|1|0|0|0|2B|4.3 POP|4-396|opcode table 58+rd|none|64|64|opcode+rd|none|none|58+rd shorter than 8F/0",
         "call|rel32|232|0|1|0|0|4|2A|3.3 CALL|3-139|opcode table E8 cd|none|64|64|none|none|rel32|E8 near relative",

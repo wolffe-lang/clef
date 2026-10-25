@@ -333,7 +333,7 @@
           "type": 3
         }
       ],
-      "gas_status": 0,
+      "gas_status": 1,
       "section_differences": [
         {
           "clang_alignment": null,

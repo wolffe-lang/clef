@@ -64,7 +64,7 @@ def register(s):
     if re.fullmatch(r'%[xyz]mm\d+', s): return {'x':'xmm128','y':'ymm256','z':'zmm512'}[s[1]]
     if re.fullmatch(r'%(r\d+b|[abcd][hl]|[sd]il|[bs]pl)', s): return 'gpr8'
     if re.fullmatch(r'%(r\d+w|[abcd]x|[sd]i|[bs]p)', s): return 'gpr16'
-    if re.fullmatch(r'%(r\d+d|e[a-z]+)', s): return 'gpr32'
+    if re.fullmatch(r'%(r\d+d|e[a-z]+)', s): return 'gpr16'
     if re.fullmatch(r'%(r\d+|r[a-z]+)', s): return 'gpr64'
     return 'register:'+s
 
