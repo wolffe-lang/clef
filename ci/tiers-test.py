@@ -117,6 +117,7 @@ say(all("- %s" % j in tblk for j in ["plan"] + ALL) and "!cancelled()" in tblk a
 say("cancel-in-progress: ${{ github.event_name == 'pull_request' }}" in WF, "T4 cancel-in-progress for pull requests only")
 say("branches: [trunk]" in WF and "schedule:" in WF and "labeled" in WF and "inputs:" in WF,
     "T4 the trunk push, the nightly, the label and the dispatch input")
+say("format('noop-{0}', github.run_id)" in WF, "T4 unrelated labels cannot cancel an active PR tier")
 # T6
 say(verdict(needs_for("full", ALL)) == 0, "T6 a green full")
 say(verdict(needs_for("pr", PR)) == 0, "T6 a green pr")
