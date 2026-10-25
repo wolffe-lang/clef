@@ -1,0 +1,432 @@
+use lex
+
+/// GNU as §6 evaluation refusals; overflow is explicit, never a host arithmetic trap.
+pub error Errors = {
+    bad_expression,
+    expression_overflow,
+    division_by_zero,
+    unresolved_expression,
+    cross_section_algebra,
+    expression_depth,
+    cyclic_set,
+}
+
+/// Signed magnitude supports signed offsets and the whole unsigned .quad literal range.
+pub struct Number {
+    magnitude: u64,
+    negative: bool,
+}
+
+/// An absolute number, section offset, or undefined-symbol addend; known records selection time.
+pub struct Value {
+    number: Number,
+    section: str,
+    name: str,
+    known: bool,
+}
+
+/// One .set definition with its own location-counter value, supplied by layout.
+pub struct Definition {
+    name: str,
+    expression: str,
+    location: Value,
+}
+
+struct Cursor {
+    tokens: List[str],
+    pos: int,
+}
+
+fn max_unsigned() -> u64 { 18446744073709551615 }
+
+fn min_magnitude() -> u64 { 9223372036854775808 }
+
+fn checked(magnitude: u64, negative: bool) -> Number ! Errors {
+    if negative && magnitude > min_magnitude() { return expression_overflow }
+    Number { magnitude: magnitude, negative: negative && magnitude != 0 }
+}
+
+/// Construct a signed offset without negating INT64_MIN.
+pub fn number(n: int) -> Number {
+    if n < 0 { return Number { magnitude: -(n + 1) as u64 + 1, negative: true } }
+    Number { magnitude: n as u64, negative: false }
+}
+
+/// The low 64-bit representation, used only for bitwise operators and byte emission.
+pub fn bits(n: Number) -> u64 {
+    if n.negative { return !n.magnitude + 1 }
+    n.magnitude
+}
+
+fn from_bits(n: u64) -> Number {
+    if n >= min_magnitude() { return Number { magnitude: !n + 1, negative: true } }
+    Number { magnitude: n, negative: false }
+}
+
+/// Convert a representable signed result; unsigned data literals need not use this path.
+pub fn signed(n: Number) -> int ! Errors {
+    if n.negative {
+        if n.magnitude == min_magnitude() { return -9223372036854775807 - 1 }
+        return -(n.magnitude as int)
+    }
+    if n.magnitude >= min_magnitude() { return expression_overflow }
+    n.magnitude as int
+}
+
+/// A canonical decimal spelling, preserving unsigned high literals.
+pub fn spelling(n: Number) -> str {
+    if n.negative { return "-{n.magnitude}" }
+    "{n.magnitude}"
+}
+
+fn negate(n: Number) -> Number ! Errors {
+    checked(n.magnitude, !n.negative)?
+}
+
+fn add(a: Number, b: Number) -> Number ! Errors {
+    if a.negative == b.negative {
+        if a.magnitude > max_unsigned() - b.magnitude { return expression_overflow }
+        return checked(a.magnitude + b.magnitude, a.negative)?
+    }
+    if a.magnitude >= b.magnitude { return checked(a.magnitude - b.magnitude, a.negative)? }
+    checked(b.magnitude - a.magnitude, b.negative)?
+}
+
+fn subtract(a: Number, b: Number) -> Number ! Errors {
+    if a.negative != b.negative {
+        if a.magnitude > max_unsigned() - b.magnitude { return expression_overflow }
+        return checked(a.magnitude + b.magnitude, a.negative)?
+    }
+    if a.magnitude >= b.magnitude { return checked(a.magnitude - b.magnitude, a.negative)? }
+    checked(b.magnitude - a.magnitude, !a.negative)?
+}
+
+/// Construct an absolute signed value.
+pub fn absolute(n: int) -> Value {
+    Value { number: number(n), section: "ABS", name: "", known: true }
+}
+
+/// Construct a defined section-relative symbol.
+pub fn section_value(section: str, name: str, offset: int) -> Value {
+    Value { number: number(offset), section: section, name: name, known: true }
+}
+
+fn absolute_number(n: Number, known: bool) -> Value {
+    Value { number: copy n, section: "ABS", name: "", known: known }
+}
+
+fn digit(c: int) -> int {
+    if c >= 48 && c <= 57 { return c - 48 }
+    if c >= 65 && c <= 70 { return c - 55 }
+    if c >= 97 && c <= 102 { return c - 87 }
+    -1
+}
+
+fn literal(s: str) -> Number ! Errors {
+    if s.starts_with("'") {
+        let end = lex.literal_end(s, 0) else { return bad_expression }
+        if end != s.len { return bad_expression }
+        var c = s.bytes()[1] as int
+        if c == 92 {
+            let escaped = s.bytes()[2] as int
+            c = match escaped {
+                98 => 8,
+                102 => 12,
+                110 => 10,
+                114 => 13,
+                116 => 9,
+                34 => 34,
+                39 => 39,
+                92 => 92,
+                _ => { return bad_expression },
+            }
+        }
+        return number(c)
+    }
+    var radix: u64 = 10
+    var start = 0
+    if s.starts_with("0x") || s.starts_with("0X") {
+        radix = 16
+        start = 2
+    } else if s.starts_with("0b") || s.starts_with("0B") {
+        radix = 2
+        start = 2
+    } else if s.len > 1 && s.starts_with("0") {
+        radix = 8
+        start = 1
+    }
+    if start == s.len { return bad_expression }
+    var n: u64 = 0
+    for c in s[start..].bytes() {
+        let d = digit(c as int)
+        if d < 0 || d as u64 >= radix { return bad_expression }
+        if n > (max_unsigned() - d as u64) / radix { return expression_overflow }
+        n = n * radix + d as u64
+    }
+    checked(n, false)?
+}
+
+fn name_char(c: int) -> bool {
+    c >= 65 && c <= 90 || c >= 97 && c <= 122 || c >= 48 && c <= 57 || c == 95 || c == 46 || c == 36
+}
+
+fn tokens(s: str) -> List[str] ! Errors {
+    var out = List[str]()
+    var i = 0
+    while i < s.len {
+        let c = s.bytes()[i] as int
+        if c == 32 || c == 9 || c == 13 || c == 10 { i += 1; continue }
+        let start = i
+        if c == 39 {
+            i = lex.literal_end(s, i) else { return bad_expression }
+        } else if name_char(c) {
+            while i < s.len && name_char(s.bytes()[i] as int) { i += 1 }
+        } else {
+            i += 1
+            if i < s.len {
+                let two = s[start..i + 1]
+                if two == "<<" ||
+                    two == ">>" ||
+                    two == "==" ||
+                    two == "!=" ||
+                    two == "<>" ||
+                    two == "<=" ||
+                    two == ">=" ||
+                    two == "&&" ||
+                    two == "||" {
+                    i += 1
+                }
+            }
+        }
+        (mut out).push(s[start..i])
+    }
+    out
+}
+
+fn precedence(op: str) -> int {
+    match op {
+        "||" => 1,
+        "&&" => 2,
+        "==" | "!=" | "<>" | "<" | ">" | "<=" | ">=" => 3,
+        "+" | "-" => 4,
+        "|" | "&" | "^" | "!" => 5,
+        "*" | "/" | "%" | "<<" | ">>" => 6,
+        _ => 0,
+    }
+}
+
+fn numeric_local(s: str) -> bool {
+    if s.len < 2 || !s.ends_with("b") && !s.ends_with("f") { return false }
+    for c in s[0..s.len - 1].bytes() { if c < 48 as byte || c > 57 as byte { return false } }
+    true
+}
+
+fn primary(
+    mut cur: Cursor,
+    symbols: Map[str, Value],
+    location: Value,
+    depth: int,
+) -> Value ! Errors {
+    if depth > 128 { return expression_depth }
+    if cur.pos >= cur.tokens.len { return bad_expression }
+    let word = cur.tokens[cur.pos]
+    cur.pos += 1
+    if word == "(" {
+        let v = expression(mut cur, symbols, location, 1, depth + 1)?
+        if cur.pos >= cur.tokens.len || cur.tokens[cur.pos] != ")" { return bad_expression }
+        cur.pos += 1
+        return v
+    }
+    if word == "+" || word == "-" || word == "~" || word == "!" {
+        let v = primary(mut cur, symbols, location, depth + 1)?
+        if v.section != "ABS" {
+            if v.section == "UND" { return unresolved_expression }
+            return cross_section_algebra
+        }
+        if word == "+" { return v }
+        if word == "-" { return absolute_number(negate(v.number)?, v.known) }
+        if word == "~" { return absolute_number(from_bits(!bits(v.number)), v.known) }
+        return absolute_number(number(if v.number.magnitude == 0 then 1 else 0), v.known)
+    }
+    if word == "." { return copy location }
+    let first = word.bytes()[0] as int
+    if word.starts_with("'") || first >= 48 && first <= 57 && !numeric_local(word) {
+        return absolute_number(literal(word)?, true)
+    }
+    if !name_char(first) { return bad_expression }
+    let found = symbols[word] else {
+        return Value { number: number(0), section: "UND", name: word, known: false }
+    }
+    copy found
+}
+
+fn binary(op: str, a: Value, b: Value) -> Value ! Errors {
+    let known = a.known && b.known
+    if op == "+" || op == "-" {
+        if op == "+" {
+            if a.section != "ABS" && b.section != "ABS" { return cross_section_algebra }
+            var out = if a.section == "ABS" then copy b else copy a
+            out.number = add(a.number, b.number)?
+            out.known = known
+            return out
+        }
+        if b.section == "ABS" {
+            var out = copy a
+            out.number = subtract(a.number, b.number)?
+            out.known = known
+            return out
+        }
+        if a.section == b.section && (a.section != "UND" || a.name == b.name) {
+            return absolute_number(subtract(a.number, b.number)?, known)
+        }
+        if a.section == "UND" || b.section == "UND" { return unresolved_expression }
+        return cross_section_algebra
+    }
+    if a.section != "ABS" || b.section != "ABS" {
+        if a.section == "UND" || b.section == "UND" { return unresolved_expression }
+        return cross_section_algebra
+    }
+    let x = a.number
+    let y = b.number
+    var result = number(0)
+    if op == "*" {
+        if y.magnitude != 0 && x.magnitude > max_unsigned() / y.magnitude {
+            return expression_overflow
+        }
+        result = checked(x.magnitude * y.magnitude, x.negative != y.negative)?
+    } else if op == "/" || op == "%" {
+        if y.magnitude == 0 { return division_by_zero }
+        result = if op == "/" {
+            checked(x.magnitude / y.magnitude, x.negative != y.negative)?
+        } else {
+            checked(x.magnitude % y.magnitude, x.negative)?
+        }
+    } else if op == "<<" || op == ">>" {
+        if y.negative || y.magnitude >= 64 { return expression_overflow }
+        let shift = y.magnitude
+        if op == "<<" {
+            if x.magnitude > max_unsigned() >> shift { return expression_overflow }
+            result = checked(x.magnitude << shift, x.negative)?
+        } else {
+            result = from_bits(bits(x) >> shift)
+        }
+    } else if op == "&" {
+        result = from_bits(bits(x) & bits(y))
+    } else if op == "|" {
+        result = from_bits(bits(x) | bits(y))
+    } else if op == "^" {
+        result = from_bits(bits(x) ^ bits(y))
+    } else if op == "!" {
+        result = from_bits(bits(x) | !bits(y))
+    } else {
+        let xs = from_bits(bits(x))
+        let ys = from_bits(bits(y))
+        let eq = bits(x) == bits(y)
+        let less = if xs.negative != ys.negative {
+            xs.negative
+        } else if xs.negative {
+            xs.magnitude > ys.magnitude
+        } else {
+            xs.magnitude < ys.magnitude
+        }
+        let truth = match op {
+            "==" => eq,
+            "!=" | "<>" => !eq,
+            "<" => less,
+            ">" => !less && !eq,
+            "<=" => less || eq,
+            ">=" => !less,
+            "&&" => x.magnitude != 0 && y.magnitude != 0,
+            "||" => x.magnitude != 0 || y.magnitude != 0,
+            _ => { return bad_expression },
+        }
+        result = number(if !truth then 0 else if op == "&&" || op == "||" then 1 else -1)
+    }
+    absolute_number(result, known)
+}
+
+fn expression(
+    mut cur: Cursor,
+    symbols: Map[str, Value],
+    location: Value,
+    floor: int,
+    depth: int,
+) -> Value ! Errors {
+    var left = primary(mut cur, symbols, location, depth)?
+    while cur.pos < cur.tokens.len {
+        let op = cur.tokens[cur.pos]
+        let rank = precedence(op)
+        if rank < floor { break }
+        cur.pos += 1
+        let right = expression(mut cur, symbols, location, rank + 1, depth + 1)?
+        left = binary(op, left, right)?
+    }
+    left
+}
+
+/// Evaluate with gas precedence, including the measured comparison/unary-! rows.
+pub fn evaluate(s: str, symbols: Map[str, Value], location: Value) -> Value ! Errors {
+    var cur = Cursor { tokens: tokens(s)?, pos: 0 }
+    if cur.tokens.len == 0 { return bad_expression }
+    let value = expression(mut cur, symbols, location, 1, 0)?
+    if cur.pos != cur.tokens.len { return bad_expression }
+    value
+}
+
+fn contains_symbol(symbols: Map[str, Value], name: str) -> bool {
+    let _ = symbols[name] else { return false }
+    true
+}
+
+/// Resolve a set of forward definitions. Layout supplies labels and each saved dot.
+/// Duplicate definitions are refused here; sequential redefinition is handled by layout.
+pub fn resolve(
+    definitions: List[Definition],
+    initial: Map[str, Value],
+) -> Map[str, Value] ! Errors {
+    var symbols = copy initial
+    var names = Map[str, bool]()
+    for d in definitions {
+        if names[d.name] else false { return bad_expression }
+        names[d.name] = true
+    }
+    var pending = copy definitions
+    var passes = 0
+    while pending.len > 0 {
+        var next = List[Definition]()
+        var progress = 0
+        for d in pending {
+            let v = evaluate(d.expression, symbols, d.location) else |e| match e {
+                unresolved_expression => { (mut next).push(copy d); continue },
+                bad_expression => { return bad_expression },
+                expression_overflow => { return expression_overflow },
+                division_by_zero => { return division_by_zero },
+                cross_section_algebra => { return cross_section_algebra },
+                expression_depth => { return expression_depth },
+                cyclic_set => { return cyclic_set },
+            }
+            if v.section == "UND" && (names[v.name] else false) {
+                (mut next).push(copy d)
+            } else {
+                symbols[d.name] = v
+                progress += 1
+            }
+        }
+        if progress == 0 {
+            for d in next {
+                for token in tokens(d.expression)? {
+                    let first = token.bytes()[0] as int
+                    if token == "." || !name_char(first) { continue }
+                    if first >= 48 && first <= 57 && !numeric_local(token) { continue }
+                    if names[token] else false { continue }
+                    if !contains_symbol(symbols, token) { return unresolved_expression }
+                }
+            }
+            return cyclic_set
+        }
+        pending = next
+        passes += 1
+        if passes > definitions.len { return cyclic_set }
+    }
+    symbols
+}

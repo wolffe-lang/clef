@@ -1,0 +1,5 @@
+pkg {
+    name: "expand",
+    edition: "1",
+    deps: {lex: {path: "../lex"}, dialect: {path: "../dialect"}},
+}

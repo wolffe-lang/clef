@@ -1,0 +1,35 @@
+#!/usr/bin/env python3
+"""Reassemble every macro-expanded census input with the pinned gas oracle."""
+import json
+import pathlib
+import subprocess
+
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+out = ROOT / 'target/evidence/expansion'
+out.mkdir(parents=True, exist_ok=True)
+probe = ROOT / 'target/dialect-cli'
+rows = []
+for entry in json.loads((ROOT / 'census/org-asm.json').read_text())['files']:
+    if entry['architecture'] != 'x86_64':
+        continue
+    source = ROOT / 'census/sources' / entry['path']
+    dest = out / entry['path']
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    p = subprocess.run([str(probe), 'expand', str(source)], capture_output=True, text=True)
+    assert p.returncode == 0, (entry['path'],p.stderr)
+    assert not any(line.startswith(('.macro ','.irp ','.endm','.endr')) for line in p.stdout.splitlines())
+    dest.write_text(p.stdout)
+    again = subprocess.check_output([str(probe),'expand',str(source)], text=True)
+    assert again == p.stdout, entry['path']
+    original_obj = dest.with_suffix('.original.o')
+    expanded_obj = dest.with_suffix('.expanded.o')
+    subprocess.run(['as','--64',str(source),'-o',str(original_obj)],check=True)
+    subprocess.run(['as','--64',str(dest),'-o',str(expanded_obj)],check=True)
+    result = subprocess.run([str(ROOT/'tools/differ'),str(original_obj),str(expanded_obj)],capture_output=True,text=True)
+    assert result.returncode == 0, (entry['path'],result.stdout)
+    comments = sum(line.startswith('# clef ') for line in p.stdout.splitlines())
+    assert comments and comments*2 == len(p.stdout.splitlines()), entry['path']
+    rows.append({'file':entry['path'],'expanded_statements':comments,'output_lines':comments*2,'output_bytes':len(p.stdout.encode()),'exact_gas_semantics':True})
+(out/'rows.json').write_text(json.dumps(rows,indent=2)+'\n')
+isr = next(r for r in rows if r['file']=='pax/boot/isr.S')
+print(f'expansion: {len(rows)} full-source gas comparisons and deterministic reruns pass; ISR {isr["expanded_statements"]} statements, {isr["output_lines"]} lines including origins')

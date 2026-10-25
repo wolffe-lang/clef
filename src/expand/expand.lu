@@ -1,0 +1,225 @@
+use dialect
+use lex
+
+struct Macro {
+    name: str,
+    parameters: List[str],
+    body: List[lex.Statement],
+}
+
+// Copy the payload after unwrapping: wolf 0.2.35 cannot lower a copy of an error row.
+fn lookup(macros: Map[str, Macro], name: str) -> Macro ! {none} {
+    let value = macros[name]?
+    copy value
+}
+
+fn failure(origin: lex.Origin, reason: str) -> lex.Failure {
+    lex.Failure { origin: copy origin, reason: "{reason}: GNU as §7 Macro/Irp" }
+}
+
+fn identifier(s: str) -> bool {
+    if s.len == 0 { return false }
+    for i in 0..s.len {
+        let c = s.bytes()[i] as int
+        if c >= 65 && c <= 90 || c >= 97 && c <= 122 || c == 95 { continue }
+        if i > 0 && c >= 48 && c <= 57 { continue }
+        return false
+    }
+    true
+}
+
+fn append(mut out: List[lex.Statement], row: lex.Statement) -> () ! {Syntax(lex.Failure)} {
+    if out.len >= 100000 { return Syntax(failure(row.origin, "expansion_size_exceeded")) }
+    (mut out).push(copy row)
+}
+
+fn boundary(rows: List[lex.Statement], start: int, opener: str, closer: str) -> int ! {
+    Syntax(lex.Failure),
+} {
+    var depth = 1
+    var i = start + 1
+    while i < rows.len {
+        let node = dialect.head(rows[i])?
+        if node.name == opener { depth += 1 }
+        if node.name == closer { depth -= 1 }
+        if depth == 0 {
+            if node.arguments.len != 0 || node.labels.len != 0 {
+                return Syntax(failure(rows[i].origin, "terminator_arguments"))
+            }
+            return i
+        }
+        i += 1
+    }
+    Syntax(failure(rows[start].origin, "unterminated_{opener}"))
+}
+
+fn substitute(s: str, bindings: Map[str, str]) -> str {
+    var out = List[byte]()
+    var i = 0
+    while i < s.len {
+        if s.bytes()[i] == 92 as byte && i + 1 < s.len {
+            if i + 2 < s.len && s[i + 1..i + 3] == "()" { i += 3; continue }
+            var end = i + 1
+            while end < s.len {
+                let c = s.bytes()[end] as int
+                if !(c >= 65 && c <= 90 || c >= 97 && c <= 122 || c >= 48 && c <= 57 || c == 95) {
+                    break
+                }
+                end += 1
+            }
+            if end > i + 1 {
+                let key = s[i + 1..end]
+                let value = bindings[key] else {
+                    (mut out).push(s.bytes()[i])
+                    i += 1
+                    continue
+                }
+                for b in value.bytes() { (mut out).push(b) }
+                i = end
+                continue
+            }
+        }
+        (mut out).push(s.bytes()[i])
+        i += 1
+    }
+    str_from_utf8(out) else ""
+}
+
+fn instantiated(
+    body: List[lex.Statement],
+    bindings: Map[str, str],
+    caller: lex.Origin,
+    frame: str,
+) -> List[lex.Statement] {
+    var rows = List[lex.Statement]()
+    let chain = if caller.chain.len == 0 {
+        "{caller.file}:{caller.line} {frame}"
+    } else {
+        "{caller.chain} -> {caller.file}:{caller.line} {frame}"
+    }
+    for row in body {
+        (mut rows).push(lex.Statement {
+            text: substitute(row.text, bindings),
+            origin: lex.Origin { file: row.origin.file, line: row.origin.line, chain: chain },
+        })
+    }
+    rows
+}
+
+fn labels(mut out: List[lex.Statement], node: dialect.Node) -> () ! {Syntax(lex.Failure)} {
+    for name in node.labels {
+        append(mut out, lex.Statement { text: "{name}:", origin: copy node.origin })?
+    }
+}
+
+fn walk(
+    rows: List[lex.Statement],
+    mut macros: Map[str, Macro],
+    mut out: List[lex.Statement],
+    depth: int,
+) -> () ! {Syntax(lex.Failure)} {
+    if depth > 32 {
+        let origin = if rows.len == 0 {
+            lex.Origin { file: "<expansion>", line: 0, chain: "" }
+        } else {
+            copy rows[0].origin
+        }
+        return Syntax(failure(origin, "expansion_depth_exceeded"))
+    }
+    var i = 0
+    while i < rows.len {
+        let row = copy rows[i]
+        let node = dialect.head(row)?
+        if node.name == ".macro" {
+            if node.labels.len > 0 || node.prefixes.len > 0 {
+                return Syntax(failure(row.origin, "macro_definition_label_or_prefix"))
+            }
+            let end = boundary(rows, i, ".macro", ".endm")?
+            let signature = row.text[6..].replace(",", " ").words()
+            if signature.len == 0 || !identifier(signature[0]) {
+                return Syntax(failure(row.origin, "bad_macro_name"))
+            }
+            let name = signature[0]
+            let exists = lookup(macros, name) else Macro { name: "", parameters: [], body: [] }
+            if exists.name.len > 0 { return Syntax(failure(row.origin, "duplicate_macro {name}")) }
+            var params = List[str]()
+            var seen = Map[str, bool]()
+            for k in 1..signature.len {
+                if !identifier(signature[k]) || (seen[signature[k]] else false) {
+                    return Syntax(failure(row.origin, "unsupported_macro_parameter {signature[k]}"))
+                }
+                seen[signature[k]] = true
+                (mut params).push(signature[k])
+            }
+            macros[name] = Macro { name: name, parameters: params, body: rows[i + 1..end] }
+            i = end + 1
+            continue
+        }
+        if node.name == ".irp" {
+            if node.prefixes.len > 0 || node.arguments.len < 2 || !identifier(node.arguments[0]) {
+                return Syntax(failure(row.origin, "bad_irp_arguments"))
+            }
+            let end = boundary(rows, i, ".irp", ".endr")?
+            labels(mut out, node)?
+            let body = rows[i + 1..end]
+            for n in 1..node.arguments.len {
+                if node.arguments[n].len == 0 {
+                    return Syntax(failure(row.origin, "empty_irp_value"))
+                }
+                var bindings = Map[str, str]()
+                bindings[node.arguments[0]] = node.arguments[n]
+                let expanded = instantiated(
+                    body,
+                    bindings,
+                    row.origin,
+                    "irp {node.arguments[0]}={node.arguments[n]}",
+                )
+                walk(expanded, mut macros, mut out, depth + 1)?
+            }
+            i = end + 1
+            continue
+        }
+        if node.name == ".endm" || node.name == ".endr" {
+            return Syntax(failure(row.origin, "unexpected_{node.name}"))
+        }
+        let definition = lookup(macros, node.name) else {
+            append(mut out, row)?
+            i += 1
+            continue
+        }
+        let macro_copy = definition
+        if node.prefixes.len > 0 { return Syntax(failure(row.origin, "prefix_on_macro")) }
+        var args = copy node.arguments
+        if args.len == 1 && macro_copy.parameters.len > 1 { args = args[0].words() }
+        if args.len != macro_copy.parameters.len {
+            return Syntax(failure(row.origin, "macro_arity {node.name}"))
+        }
+        var bindings = Map[str, str]()
+        for n in 0..args.len {
+            if args[n].len == 0 || args[n].contains("=") {
+                return Syntax(failure(row.origin, "unsupported_macro_argument"))
+            }
+            bindings[macro_copy.parameters[n]] = args[n]
+        }
+        labels(mut out, node)?
+        let expanded = instantiated(macro_copy.body, bindings, row.origin, "macro {node.name}")
+        walk(expanded, mut macros, mut out, depth + 1)?
+        i += 1
+    }
+}
+
+/// Expand positional macros and explicit-list .irp in source order with bounded recursion.
+pub fn source(text: str, file: str) -> List[lex.Statement] ! {Syntax(lex.Failure)} {
+    let rows = lex.source(text, file)?
+    var macros = Map[str, Macro]()
+    var out = List[lex.Statement]()
+    walk(rows, mut macros, mut out, 0)?
+    out
+}
+
+/// An origin comment that remains legal assembly if --expand is assembled again.
+pub fn origin_comment(origin: lex.Origin) -> str {
+    let file = origin.file.replace("\n", "\\n").replace("\r", "\\r")
+    let chain = origin.chain.replace("\n", "\\n").replace("\r", "\\r")
+    "# clef {file}:{origin.line} {chain}"
+}

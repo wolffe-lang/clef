@@ -1,0 +1,46 @@
+//! member: false
+
+use expand
+use lex
+
+fn main() -> int ! {Syntax(lex.Failure)} {
+    let origin = lex.Origin { file: "test.S", line: 1, chain: "" }
+    assert(expand.origin_comment(origin).starts_with("# clef test.S:1"))
+    let text = ".macro ISR v\n.type isr\\v,@function\nisr\\v:\npushq $\\v\n.size isr\\v,.-isr\\v\n.endm\n.irp n,2,0,1\nISR \\n\n.endr\n"
+    let rows = expand.source(text, "isr.S")?
+    assert(rows.len == 12)
+    assert(
+        rows[0].text == ".type isr2,@function" &&
+            rows[4].text == ".type isr0,@function" &&
+            rows[8].text == ".type isr1,@function",
+    )
+    assert(rows[2].text == "pushq $2" && rows[2].origin.line == 4)
+    assert(rows[2].origin.chain.contains("irp n=2") && rows[2].origin.chain.contains("macro ISR"))
+    let xmm = expand.source(".irp n,0,15\nmovdqu %xmm\\n,(%rsp)\n.endr\n", "xmm.S")?
+    assert(xmm.len == 2 && xmm[1].text == "movdqu %xmm15,(%rsp)")
+    let nested = expand.source(".irp a,1,2\n.irp b,3,4\n.byte \\a,\\b\n.endr\n.endr\n", "nested.S")?
+    assert(nested.len == 4 && nested[0].text == ".byte 1,3" && nested[3].text == ".byte 2,4")
+    let boundary = expand.source(
+        ".macro m p\n\\p\\()suffix: .byte 1\n.endm\nm foo\n",
+        "boundary.S",
+    )?
+    assert(boundary.len == 1 && boundary[0].text == "foosuffix: .byte 1")
+    for text in [
+        ".endm\n",
+        ".endr\n",
+        ".macro M a:req\n.endm\n",
+        ".macro M a\n.byte \\a\n.endm\nM\n",
+        ".macro M\nM\n.endm\nM\n",
+        ".irp n,\n.byte 0\n.endr\n",
+        ".macro M\n.byte 1\n",
+        ".irp n,1\n.byte 1\n",
+    ] {
+        var refused = false
+        let _ = expand.source(text, "bad.S") else { refused = true; [] }
+        assert(refused)
+    }
+    print(
+        "expansion: positional macros, nested irp order, XMM families, boundaries, origins and bounded refusals pass",
+    )
+    0
+}

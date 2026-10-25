@@ -1,0 +1,52 @@
+PROBE imported-error-alias
+wolf build: note: ld.lld not found on PATH — linking with the system linker (lld ships with the toolchain; packaging is c13)
+warning[W0313]: this `pub` item has no doc comment
+ --> probes/imported-error-alias/errors/row.lu:1:1
+  |
+1 | pub error Failures = {broken}
+  | ^^^ exported, but undocumented
+  |
+  = note: an exported item carries a `///` contract: what it computes, what each row tag means,
+    when it traps. If it is not worth documenting, it is rarely worth exporting.
+
+warning[W0313]: this `pub` item has no doc comment
+ --> probes/imported-error-alias/errors/row.lu:3:1
+  |
+3 | pub fn anchor() -> int { 0 }
+  | ^^^ exported, but undocumented
+  |
+
+native_build=0
+warning[W0313]: this `pub` item has no doc comment
+ --> probes/imported-error-alias/errors/row.lu:1:1
+  |
+1 | pub error Failures = {broken}
+  | ^^^ exported, but undocumented
+  |
+  = note: an exported item carries a `///` contract: what it computes, what each row tag means,
+    when it traps. If it is not worth documenting, it is rarely worth exporting.
+
+warning[W0313]: this `pub` item has no doc comment
+ --> probes/imported-error-alias/errors/row.lu:3:1
+  |
+3 | pub fn anchor() -> int { 0 }
+  | ^^^ exported, but undocumented
+  |
+
+{"commit":"cf0c13d","diagnostics":[{"code":"W0313","file":1,"severity":"warning","span":[0,3]},{"code":"W0313","file":1,"severity":"warning","span":[31,34]}],"file":"probes/imported-error-alias/main.lu","files":["main.lu","errors/row.lu"],"impl":"wolfgang","impl_version":"0.2.35","phase_reached":"run","protocol":1,"seeded":false,"stdout_inline":"error: broken\n","stdout_sha256":"1aec1be753f8c682d248107b6bb05a9794cf696ce17203290fc7f3adac5a64e4","verdict":"exit(1)","warnings":[{"code":"W0313","span":[0,3]},{"code":"W0313","span":[31,34]}]}
+checked_status=0
+probes/imported-error-alias/main.lu: unsupported: `broken` does not resolve at this raise site: it is not a binding, not a module-level name, and not a tag of the enclosing function's declared row
+lupin_status=4
+PROBE copy-row
+wolf build: note: ld.lld not found on PATH — linking with the system linker (lld ships with the toolchain; packaging is c13)
+wolf build: cannot compile this yet — `copy` of this shape of heap value (a row payload, a Pool, a shared cell) (pipeline is honest through `mem`; the conservatism ledger, not a bug in your program)
+ --> probes/copy-row/main.lu:4:19
+  |
+4 |     let payload = copy values["x"] else []
+  |                   ^^^^^^^^^^^^^^^^
+  |
+native_build=4
+{"commit":"cf0c13d","diagnostics":[],"file":"probes/copy-row/main.lu","impl":"wolfgang","impl_version":"0.2.35","phase_reached":"run","protocol":1,"seeded":false,"stdout_inline":"1\n","stdout_sha256":"4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865","verdict":"exit(0)","warnings":[]}
+checked_status=0
+1
+lupin_status=0

@@ -1,0 +1,6 @@
+fn main() {
+    var values = Map[str, List[int]]()
+    values["x"] = [1]
+    let payload = copy values["x"] else []
+    print("{payload.len}")
+}

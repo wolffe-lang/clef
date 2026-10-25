@@ -1,0 +1,44 @@
+#!/usr/bin/env python3
+"""Differential for GNU as's operator tiers, not a copy of an evaluator."""
+import json
+import pathlib
+import random
+import subprocess
+from elf import ELF
+
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+out = ROOT / 'target/evidence/expression'
+out.mkdir(parents=True, exist_ok=True)
+probe = ROOT / 'target/dialect-cli'
+expressions = ['1==2+3', '!0', '!1', '1!2', '1+2<<3', '8|2&1',
+               '-1 >> 1', '-7/2', '-7%2', '~0', '1<2', '1<>2',
+               '2<=2', '2>=3', '2&&3', '0||3', '0||1&&0',
+               '0xf6b8f4b39de7d1ae', '0xffffffffffffffff',
+               '-9223372036854775808', '0b101101', '0777', "'A'", "'\\n'"]
+rng = random.Random(101)
+for _ in range(240):
+    a, b, c = (rng.randrange(1, 31) for _ in range(3))
+    op = rng.choice(['+', '-', '*', '/', '%', '&', '|', '^', '!', '==', '<>', '<', '>', '<=', '>=', '&&', '||'])
+    second = rng.choice(['+', '-', '*', '&', '|', '^', '=='])
+    expressions.append(f'{a}{op}{b}{second}{c}')
+source = out / 'operators.S'
+source.write_text(''.join('.quad ' + e + '\n' for e in expressions))
+obj = out / 'operators.o'
+subprocess.run(['as', '--64', str(source), '-o', str(obj)], check=True)
+text = next(s[-1] for s in ELF(obj).normalized()['sections'] if s[0] == '.text')
+raw = bytes.fromhex(text)
+assert len(raw) == 8 * len(expressions)
+rows = []
+for i, expr in enumerate(expressions):
+    p = subprocess.run([str(probe), 'expression', expr], capture_output=True, text=True)
+    expected = int.from_bytes(raw[8*i:8*i+8], 'little')
+    assert p.returncode == 0, (expr, p.stderr)
+    assert int(p.stdout) == expected, (expr, expected, p.stdout)
+    rows.append({'source':expr, 'gas_bits':str(expected), 'clef_bits':p.stdout.strip()})
+for expression, reason in [('1/0','division_by_zero'), ('1%0','division_by_zero'),
+                           ('18446744073709551615+1','expression_overflow'),
+                           ('1<<64','expression_overflow'), ('1+','bad_expression')]:
+    p = subprocess.run([str(probe),'expression',expression], capture_output=True,text=True)
+    assert p.returncode == 1 and reason in p.stderr, (expression,p.returncode,p.stderr)
+(out / 'rows.json').write_text(json.dumps(rows, indent=2)+'\n')
+print(f'expression: {len(rows)} exact gas values; five named refusal rows pass')

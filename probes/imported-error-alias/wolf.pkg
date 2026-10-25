@@ -1,0 +1,4 @@
+pkg {
+    name: "imported_error_alias",
+    edition: "1",
+}

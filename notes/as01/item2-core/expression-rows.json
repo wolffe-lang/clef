@@ -1,0 +1,1322 @@
+[
+  {
+    "source": "1==2+3",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "!0",
+    "gas_bits": "1",
+    "clef_bits": "1"
+  },
+  {
+    "source": "!1",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "1!2",
+    "gas_bits": "18446744073709551613",
+    "clef_bits": "18446744073709551613"
+  },
+  {
+    "source": "1+2<<3",
+    "gas_bits": "17",
+    "clef_bits": "17"
+  },
+  {
+    "source": "8|2&1",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "-1 >> 1",
+    "gas_bits": "9223372036854775807",
+    "clef_bits": "9223372036854775807"
+  },
+  {
+    "source": "-7/2",
+    "gas_bits": "18446744073709551613",
+    "clef_bits": "18446744073709551613"
+  },
+  {
+    "source": "-7%2",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "~0",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "1<2",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "1<>2",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "2<=2",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "2>=3",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "2&&3",
+    "gas_bits": "1",
+    "clef_bits": "1"
+  },
+  {
+    "source": "0||3",
+    "gas_bits": "1",
+    "clef_bits": "1"
+  },
+  {
+    "source": "0||1&&0",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "0xf6b8f4b39de7d1ae",
+    "gas_bits": "17778228581330571694",
+    "clef_bits": "17778228581330571694"
+  },
+  {
+    "source": "0xffffffffffffffff",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "-9223372036854775808",
+    "gas_bits": "9223372036854775808",
+    "clef_bits": "9223372036854775808"
+  },
+  {
+    "source": "0b101101",
+    "gas_bits": "45",
+    "clef_bits": "45"
+  },
+  {
+    "source": "0777",
+    "gas_bits": "511",
+    "clef_bits": "511"
+  },
+  {
+    "source": "'A'",
+    "gas_bits": "65",
+    "clef_bits": "65"
+  },
+  {
+    "source": "'\\n'",
+    "gas_bits": "10",
+    "clef_bits": "10"
+  },
+  {
+    "source": "19<28&7",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "2|22|17",
+    "gas_bits": "23",
+    "clef_bits": "23"
+  },
+  {
+    "source": "8&&30^10",
+    "gas_bits": "1",
+    "clef_bits": "1"
+  },
+  {
+    "source": "26>=7+11",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "9*7&6",
+    "gas_bits": "6",
+    "clef_bits": "6"
+  },
+  {
+    "source": "25|18&12",
+    "gas_bits": "8",
+    "clef_bits": "8"
+  },
+  {
+    "source": "26>11&8",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "7>=3*14",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "7<>4^21",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "28>29==9",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "13*8&14",
+    "gas_bits": "8",
+    "clef_bits": "8"
+  },
+  {
+    "source": "24+22==14",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "15/7*18",
+    "gas_bits": "36",
+    "clef_bits": "36"
+  },
+  {
+    "source": "26<1+12",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "9%19+27",
+    "gas_bits": "36",
+    "clef_bits": "36"
+  },
+  {
+    "source": "14*6==9",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "5<13^22",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "19&&16==6",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "29&17^10",
+    "gas_bits": "27",
+    "clef_bits": "27"
+  },
+  {
+    "source": "17+22+28",
+    "gas_bits": "67",
+    "clef_bits": "67"
+  },
+  {
+    "source": "3<2|19",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "23/29^15",
+    "gas_bits": "15",
+    "clef_bits": "15"
+  },
+  {
+    "source": "23>=20==25",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "21&5==22",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "7>=24-30",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "3==5*29",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "13<3&2",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "2<>7+9",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "9!30&5",
+    "gas_bits": "1",
+    "clef_bits": "1"
+  },
+  {
+    "source": "7||14==4",
+    "gas_bits": "1",
+    "clef_bits": "1"
+  },
+  {
+    "source": "29/11*8",
+    "gas_bits": "16",
+    "clef_bits": "16"
+  },
+  {
+    "source": "21+29+6",
+    "gas_bits": "56",
+    "clef_bits": "56"
+  },
+  {
+    "source": "21>=13^28",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "19<>2-26",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "26|9|16",
+    "gas_bits": "27",
+    "clef_bits": "27"
+  },
+  {
+    "source": "19<>18+11",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "30<5^10",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "12>29^13",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "2||24+8",
+    "gas_bits": "1",
+    "clef_bits": "1"
+  },
+  {
+    "source": "7/5-22",
+    "gas_bits": "18446744073709551595",
+    "clef_bits": "18446744073709551595"
+  },
+  {
+    "source": "11+4&12",
+    "gas_bits": "15",
+    "clef_bits": "15"
+  },
+  {
+    "source": "28<22|7",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "22|21-18",
+    "gas_bits": "5",
+    "clef_bits": "5"
+  },
+  {
+    "source": "15<>18*18",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "22!10-24",
+    "gas_bits": "18446744073709551583",
+    "clef_bits": "18446744073709551583"
+  },
+  {
+    "source": "29>=14*7",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "25-2|8",
+    "gas_bits": "15",
+    "clef_bits": "15"
+  },
+  {
+    "source": "11>=24&29",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "22|2+9",
+    "gas_bits": "31",
+    "clef_bits": "31"
+  },
+  {
+    "source": "25-29+15",
+    "gas_bits": "11",
+    "clef_bits": "11"
+  },
+  {
+    "source": "14!30==15",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "20-5+16",
+    "gas_bits": "31",
+    "clef_bits": "31"
+  },
+  {
+    "source": "23/28^9",
+    "gas_bits": "9",
+    "clef_bits": "9"
+  },
+  {
+    "source": "3>=20*26",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "17%24&3",
+    "gas_bits": "1",
+    "clef_bits": "1"
+  },
+  {
+    "source": "23!14+4",
+    "gas_bits": "18446744073709551611",
+    "clef_bits": "18446744073709551611"
+  },
+  {
+    "source": "8/12-7",
+    "gas_bits": "18446744073709551609",
+    "clef_bits": "18446744073709551609"
+  },
+  {
+    "source": "24&7-21",
+    "gas_bits": "18446744073709551595",
+    "clef_bits": "18446744073709551595"
+  },
+  {
+    "source": "24|30&19",
+    "gas_bits": "18",
+    "clef_bits": "18"
+  },
+  {
+    "source": "5||2^7",
+    "gas_bits": "1",
+    "clef_bits": "1"
+  },
+  {
+    "source": "26||30-22",
+    "gas_bits": "1",
+    "clef_bits": "1"
+  },
+  {
+    "source": "4+19*17",
+    "gas_bits": "327",
+    "clef_bits": "327"
+  },
+  {
+    "source": "29%30|17",
+    "gas_bits": "29",
+    "clef_bits": "29"
+  },
+  {
+    "source": "22%16+30",
+    "gas_bits": "36",
+    "clef_bits": "36"
+  },
+  {
+    "source": "4*2*15",
+    "gas_bits": "120",
+    "clef_bits": "120"
+  },
+  {
+    "source": "13-25+5",
+    "gas_bits": "18446744073709551609",
+    "clef_bits": "18446744073709551609"
+  },
+  {
+    "source": "10-22+17",
+    "gas_bits": "5",
+    "clef_bits": "5"
+  },
+  {
+    "source": "10&10^8",
+    "gas_bits": "2",
+    "clef_bits": "2"
+  },
+  {
+    "source": "27>13-21",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "26<>28^29",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "2>8-10",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "16<=8-7",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "20>=6&16",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "30!7==29",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "1|25*30",
+    "gas_bits": "751",
+    "clef_bits": "751"
+  },
+  {
+    "source": "25==2|8",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "9>2-25",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "9<19==27",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "26!29==15",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "2==15+22",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "6<22&1",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "28>2+28",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "12+2&8",
+    "gas_bits": "12",
+    "clef_bits": "12"
+  },
+  {
+    "source": "5/16^13",
+    "gas_bits": "13",
+    "clef_bits": "13"
+  },
+  {
+    "source": "6>=14*23",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "12|27^24",
+    "gas_bits": "7",
+    "clef_bits": "7"
+  },
+  {
+    "source": "20>10-28",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "25&&6*17",
+    "gas_bits": "1",
+    "clef_bits": "1"
+  },
+  {
+    "source": "30||8+14",
+    "gas_bits": "1",
+    "clef_bits": "1"
+  },
+  {
+    "source": "2+17==4",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "23>=16^10",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "12%20*10",
+    "gas_bits": "120",
+    "clef_bits": "120"
+  },
+  {
+    "source": "16%8==25",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "15>24+3",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "20/25|16",
+    "gas_bits": "16",
+    "clef_bits": "16"
+  },
+  {
+    "source": "2>=29*22",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "27>12-27",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "25^3==18",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "25||28==23",
+    "gas_bits": "1",
+    "clef_bits": "1"
+  },
+  {
+    "source": "14&24^14",
+    "gas_bits": "6",
+    "clef_bits": "6"
+  },
+  {
+    "source": "2/12+24",
+    "gas_bits": "24",
+    "clef_bits": "24"
+  },
+  {
+    "source": "6&9|27",
+    "gas_bits": "27",
+    "clef_bits": "27"
+  },
+  {
+    "source": "5==18|24",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "19^19|29",
+    "gas_bits": "29",
+    "clef_bits": "29"
+  },
+  {
+    "source": "19*24-23",
+    "gas_bits": "433",
+    "clef_bits": "433"
+  },
+  {
+    "source": "5|2==18",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "16%4&20",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "16%10-6",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "6&&16==14",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "2*6|12",
+    "gas_bits": "12",
+    "clef_bits": "12"
+  },
+  {
+    "source": "9+6+22",
+    "gas_bits": "37",
+    "clef_bits": "37"
+  },
+  {
+    "source": "11!2-5",
+    "gas_bits": "18446744073709551610",
+    "clef_bits": "18446744073709551610"
+  },
+  {
+    "source": "30&29^21",
+    "gas_bits": "9",
+    "clef_bits": "9"
+  },
+  {
+    "source": "28^30^14",
+    "gas_bits": "12",
+    "clef_bits": "12"
+  },
+  {
+    "source": "28%7==11",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "30<19==11",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "23^13|11",
+    "gas_bits": "27",
+    "clef_bits": "27"
+  },
+  {
+    "source": "10||10&10",
+    "gas_bits": "1",
+    "clef_bits": "1"
+  },
+  {
+    "source": "26%6^22",
+    "gas_bits": "20",
+    "clef_bits": "20"
+  },
+  {
+    "source": "1||13&4",
+    "gas_bits": "1",
+    "clef_bits": "1"
+  },
+  {
+    "source": "27&29*25",
+    "gas_bits": "17",
+    "clef_bits": "17"
+  },
+  {
+    "source": "7|15-16",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "4>3==14",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "1%10|6",
+    "gas_bits": "7",
+    "clef_bits": "7"
+  },
+  {
+    "source": "20-24^13",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "20*12^20",
+    "gas_bits": "228",
+    "clef_bits": "228"
+  },
+  {
+    "source": "6==7==26",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "1-6&30",
+    "gas_bits": "18446744073709551611",
+    "clef_bits": "18446744073709551611"
+  },
+  {
+    "source": "12|23==17",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "28||21&28",
+    "gas_bits": "1",
+    "clef_bits": "1"
+  },
+  {
+    "source": "23<5-8",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "1^16*15",
+    "gas_bits": "241",
+    "clef_bits": "241"
+  },
+  {
+    "source": "29*15&11",
+    "gas_bits": "3",
+    "clef_bits": "3"
+  },
+  {
+    "source": "22-15^12",
+    "gas_bits": "19",
+    "clef_bits": "19"
+  },
+  {
+    "source": "21-12==16",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "3<>12+12",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "2>=3&26",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "10|8-9",
+    "gas_bits": "1",
+    "clef_bits": "1"
+  },
+  {
+    "source": "27%18|7",
+    "gas_bits": "15",
+    "clef_bits": "15"
+  },
+  {
+    "source": "17/10^9",
+    "gas_bits": "8",
+    "clef_bits": "8"
+  },
+  {
+    "source": "5+12-23",
+    "gas_bits": "18446744073709551610",
+    "clef_bits": "18446744073709551610"
+  },
+  {
+    "source": "20<>14|22",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "10<>12^19",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "5||14|22",
+    "gas_bits": "1",
+    "clef_bits": "1"
+  },
+  {
+    "source": "26<=29+8",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "1|10-12",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "25&11+26",
+    "gas_bits": "35",
+    "clef_bits": "35"
+  },
+  {
+    "source": "22*29*10",
+    "gas_bits": "6380",
+    "clef_bits": "6380"
+  },
+  {
+    "source": "18<9+5",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "24-8|8",
+    "gas_bits": "16",
+    "clef_bits": "16"
+  },
+  {
+    "source": "1>10+21",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "15/11&25",
+    "gas_bits": "1",
+    "clef_bits": "1"
+  },
+  {
+    "source": "27>29^13",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "11*24|14",
+    "gas_bits": "270",
+    "clef_bits": "270"
+  },
+  {
+    "source": "4&&9==10",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "24|3-14",
+    "gas_bits": "13",
+    "clef_bits": "13"
+  },
+  {
+    "source": "1&8+16",
+    "gas_bits": "16",
+    "clef_bits": "16"
+  },
+  {
+    "source": "3&17|26",
+    "gas_bits": "27",
+    "clef_bits": "27"
+  },
+  {
+    "source": "19>10==7",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "30*28-15",
+    "gas_bits": "825",
+    "clef_bits": "825"
+  },
+  {
+    "source": "28&10+11",
+    "gas_bits": "19",
+    "clef_bits": "19"
+  },
+  {
+    "source": "25!7+22",
+    "gas_bits": "15",
+    "clef_bits": "15"
+  },
+  {
+    "source": "27&30*24",
+    "gas_bits": "16",
+    "clef_bits": "16"
+  },
+  {
+    "source": "20-24&21",
+    "gas_bits": "4",
+    "clef_bits": "4"
+  },
+  {
+    "source": "2<=22^6",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "17-24|27",
+    "gas_bits": "18446744073709551606",
+    "clef_bits": "18446744073709551606"
+  },
+  {
+    "source": "7&&5+7",
+    "gas_bits": "1",
+    "clef_bits": "1"
+  },
+  {
+    "source": "24<=13-5",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "13||28|27",
+    "gas_bits": "1",
+    "clef_bits": "1"
+  },
+  {
+    "source": "11*26==17",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "4<=17-1",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "18&21^15",
+    "gas_bits": "31",
+    "clef_bits": "31"
+  },
+  {
+    "source": "24>=9^17",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "4>=6-4",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "7-23|8",
+    "gas_bits": "18446744073709551592",
+    "clef_bits": "18446744073709551592"
+  },
+  {
+    "source": "30+26-24",
+    "gas_bits": "32",
+    "clef_bits": "32"
+  },
+  {
+    "source": "10^7&11",
+    "gas_bits": "9",
+    "clef_bits": "9"
+  },
+  {
+    "source": "3|4|2",
+    "gas_bits": "7",
+    "clef_bits": "7"
+  },
+  {
+    "source": "25&&21==8",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "18<15==4",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "3==8-11",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "2>=20==26",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "6*30==9",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "1/28^2",
+    "gas_bits": "2",
+    "clef_bits": "2"
+  },
+  {
+    "source": "3%3^29",
+    "gas_bits": "29",
+    "clef_bits": "29"
+  },
+  {
+    "source": "23>23==20",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "27-10^21",
+    "gas_bits": "18446744073709551612",
+    "clef_bits": "18446744073709551612"
+  },
+  {
+    "source": "26%25^2",
+    "gas_bits": "3",
+    "clef_bits": "3"
+  },
+  {
+    "source": "18<=4^16",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "9/25==26",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "16%11^25",
+    "gas_bits": "28",
+    "clef_bits": "28"
+  },
+  {
+    "source": "11^27*15",
+    "gas_bits": "414",
+    "clef_bits": "414"
+  },
+  {
+    "source": "19>=5&6",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "24-9|22",
+    "gas_bits": "18446744073709551609",
+    "clef_bits": "18446744073709551609"
+  },
+  {
+    "source": "21|27==8",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "26>=2&6",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "11==18+29",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "26<15*9",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "9<=14*8",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "7<>20+22",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "17^6+11",
+    "gas_bits": "34",
+    "clef_bits": "34"
+  },
+  {
+    "source": "14||25^20",
+    "gas_bits": "1",
+    "clef_bits": "1"
+  },
+  {
+    "source": "25&&19-17",
+    "gas_bits": "1",
+    "clef_bits": "1"
+  },
+  {
+    "source": "21!26-11",
+    "gas_bits": "18446744073709551594",
+    "clef_bits": "18446744073709551594"
+  },
+  {
+    "source": "25+17==2",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "23|12&30",
+    "gas_bits": "30",
+    "clef_bits": "30"
+  },
+  {
+    "source": "17!23==4",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "6!15-1",
+    "gas_bits": "18446744073709551605",
+    "clef_bits": "18446744073709551605"
+  },
+  {
+    "source": "22>26==18",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "19==22|25",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "3==18^4",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "5+19-18",
+    "gas_bits": "6",
+    "clef_bits": "6"
+  },
+  {
+    "source": "29^16+3",
+    "gas_bits": "16",
+    "clef_bits": "16"
+  },
+  {
+    "source": "12!9==25",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "23^16&3",
+    "gas_bits": "3",
+    "clef_bits": "3"
+  },
+  {
+    "source": "26<=15-30",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "7<=29^9",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "18<>21^29",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "6/14-16",
+    "gas_bits": "18446744073709551600",
+    "clef_bits": "18446744073709551600"
+  },
+  {
+    "source": "29>12|28",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "15/26+28",
+    "gas_bits": "28",
+    "clef_bits": "28"
+  },
+  {
+    "source": "9<>14==16",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "12&&23^20",
+    "gas_bits": "1",
+    "clef_bits": "1"
+  },
+  {
+    "source": "6%26^11",
+    "gas_bits": "13",
+    "clef_bits": "13"
+  },
+  {
+    "source": "30/22*19",
+    "gas_bits": "19",
+    "clef_bits": "19"
+  },
+  {
+    "source": "5<=20^26",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "25==16|9",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "28-4&18",
+    "gas_bits": "28",
+    "clef_bits": "28"
+  },
+  {
+    "source": "2<>8|12",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "24>=28*8",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "29<>28&9",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "12>=23==18",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "2>17^12",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "5<14-10",
+    "gas_bits": "0",
+    "clef_bits": "0"
+  },
+  {
+    "source": "19>17&21",
+    "gas_bits": "18446744073709551615",
+    "clef_bits": "18446744073709551615"
+  },
+  {
+    "source": "11||16&17",
+    "gas_bits": "1",
+    "clef_bits": "1"
+  },
+  {
+    "source": "3/30+23",
+    "gas_bits": "23",
+    "clef_bits": "23"
+  },
+  {
+    "source": "3^30&4",
+    "gas_bits": "4",
+    "clef_bits": "4"
+  },
+  {
+    "source": "8|11+26",
+    "gas_bits": "37",
+    "clef_bits": "37"
+  },
+  {
+    "source": "1^24+26",
+    "gas_bits": "51",
+    "clef_bits": "51"
+  }
+]

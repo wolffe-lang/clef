@@ -1,0 +1,158 @@
+//! member: false
+
+use eval
+
+fn value(s: str) -> int ! eval.Errors {
+    eval.signed(eval.evaluate(s, Map[str, eval.Value](), eval.absolute(0))?.number)?
+}
+
+fn main() -> int ! {
+    bad_expression,
+    expression_overflow,
+    division_by_zero,
+    unresolved_expression,
+    cross_section_algebra,
+    expression_depth,
+    cyclic_set,
+} {
+    let sources = [
+        "1+2*3",
+        "1+2<<3",
+        "8|2&1",
+        "8-3-2",
+        "~8",
+        "!0",
+        "!1",
+        "1!2",
+        "7/2",
+        "-7/2",
+        "-7%2",
+        "7%2",
+        "8>>2",
+        "3^1",
+        "1==2+3",
+        "3==3",
+        "1<>2",
+        "1!=1",
+        "1<2",
+        "1>2",
+        "2<=2",
+        "2>=3",
+        "2&&3",
+        "0||3",
+        "0||1&&0",
+        "+(3+4)",
+        "0xff",
+        "0b101",
+        "077",
+        "'A'",
+        "'A",
+        "'\\n'",
+        "-9223372036854775808",
+    ]
+    let expected: List[int] = [
+        7,
+        17,
+        0,
+        3,
+        -9,
+        1,
+        0,
+        -3,
+        3,
+        -3,
+        -1,
+        1,
+        2,
+        2,
+        0,
+        -1,
+        -1,
+        0,
+        -1,
+        0,
+        -1,
+        0,
+        1,
+        1,
+        0,
+        7,
+        255,
+        5,
+        63,
+        65,
+        65,
+        10,
+        -9223372036854775807 - 1,
+    ]
+    for i in 0..sources.len { assert(value(sources[i])? == expected[i]) }
+    let wide = eval.evaluate("0xf6b8f4b39de7d1ae", Map[str, eval.Value](), eval.absolute(0))?
+    assert(eval.bits(wide.number) == 0xf6b8f4b39de7d1ae)
+    let shifted = eval.evaluate("-1 >> 1", Map[str, eval.Value](), eval.absolute(0))?
+    assert(eval.signed(shifted.number)? == 9223372036854775807)
+    var symbols = Map[str, eval.Value]()
+    symbols["begin"] = eval.section_value(".text", "begin", 4)
+    symbols["end"] = eval.section_value(".text", "end", 27)
+    symbols["data"] = eval.section_value(".data", "data", 0)
+    let diff = eval.evaluate("end-begin", symbols, eval.absolute(0))?
+    assert(diff.section == "ABS" && eval.signed(diff.number)? == 23)
+    let dot = eval.evaluate(".-begin", symbols, eval.section_value(".text", "", 30))?
+    assert(eval.signed(dot.number)? == 26)
+    let rel = eval.evaluate("external+4", symbols, eval.absolute(0))?
+    assert(
+        rel.section == "UND" &&
+            rel.name == "external" &&
+            !rel.known &&
+            eval.signed(rel.number)? == 4,
+    )
+    for s in ["data-begin", "begin+end", "begin*2", "-begin"] {
+        var refused = false
+        let _ = eval.evaluate(s, symbols, eval.absolute(0)) else {
+            refused = true
+            eval.absolute(0)
+        }
+        assert(refused)
+    }
+    for s in [
+        "18446744073709551616",
+        "18446744073709551615+1",
+        "-9223372036854775809",
+        "18446744073709551615*2",
+        "1/0",
+        "1%0",
+        "1<<64",
+        "1<<-1",
+        "1+",
+        "(1",
+        "1 2",
+        "0x",
+        "09",
+        "foo-bar",
+    ] {
+        var refused = false
+        let _ = eval.evaluate(s, symbols, eval.absolute(0)) else {
+            refused = true
+            eval.absolute(0)
+        }
+        assert(refused)
+    }
+    let defs = [
+        eval.Definition { name: "A", expression: "B+1", location: eval.absolute(0) },
+        eval.Definition { name: "B", expression: "C*2", location: eval.absolute(0) },
+        eval.Definition { name: "C", expression: "3", location: eval.absolute(0) },
+    ]
+    let resolved = eval.resolve(defs, symbols)?
+    let a = resolved["A"] else { return bad_expression }
+    assert(eval.signed(a.number)? == 7)
+    let cycle = [
+        eval.Definition { name: "A", expression: "B", location: eval.absolute(0) },
+        eval.Definition { name: "B", expression: "A", location: eval.absolute(0) },
+    ]
+    var refused = false
+    let _ = eval.resolve(cycle, symbols) else { refused = true; Map[str, eval.Value]() }
+    assert(refused)
+    print(
+        "expressions: all operators, gas precedence, unsigned quads, symbol algebra, forward sets and named refusals pass",
+    )
+    0
+}

@@ -1,0 +1,303 @@
+[
+  {
+    "file": "muzzle/notes/lc01-probes/q2/crt0.S",
+    "expanded_statements": 13,
+    "output_lines": 26,
+    "output_bytes": 1057,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "muzzle/notes/lc01-probes/q2/sys.S",
+    "expanded_statements": 12,
+    "output_lines": 24,
+    "output_bytes": 987,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "muzzle/notes/lc01-probes/q9/cell.S",
+    "expanded_statements": 6,
+    "output_lines": 12,
+    "output_bytes": 483,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "muzzle/src/crt0.S",
+    "expanded_statements": 15,
+    "output_lines": 30,
+    "output_bytes": 990,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "muzzle/src/sys.S",
+    "expanded_statements": 32,
+    "output_lines": 64,
+    "output_bytes": 2174,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "pax/boot/console.S",
+    "expanded_statements": 14,
+    "output_lines": 28,
+    "output_bytes": 937,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "pax/boot/cpu.S",
+    "expanded_statements": 134,
+    "output_lines": 268,
+    "output_bytes": 8794,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "pax/boot/event.S",
+    "expanded_statements": 14,
+    "output_lines": 28,
+    "output_bytes": 924,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "pax/boot/font.S",
+    "expanded_statements": 262,
+    "output_lines": 524,
+    "output_bytes": 38725,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "pax/boot/fpu.S",
+    "expanded_statements": 110,
+    "output_lines": 220,
+    "output_bytes": 7108,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "pax/boot/io.S",
+    "expanded_statements": 57,
+    "output_lines": 114,
+    "output_bytes": 3653,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "pax/boot/isr.S",
+    "expanded_statements": 485,
+    "output_lines": 970,
+    "output_bytes": 49091,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "pax/boot/net.S",
+    "expanded_statements": 42,
+    "output_lines": 84,
+    "output_bytes": 2640,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "pax/boot/sched.S",
+    "expanded_statements": 76,
+    "output_lines": 152,
+    "output_bytes": 5079,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "pax/boot/screen.S",
+    "expanded_statements": 34,
+    "output_lines": 68,
+    "output_bytes": 2307,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "pax/boot/sound.S",
+    "expanded_statements": 9,
+    "output_lines": 18,
+    "output_bytes": 599,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "pax/boot/speaker.S",
+    "expanded_statements": 10,
+    "output_lines": 20,
+    "output_bytes": 676,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "pax/boot/start.S",
+    "expanded_statements": 67,
+    "output_lines": 134,
+    "output_bytes": 5324,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "pax/boot/stub/pax-stub.s",
+    "expanded_statements": 75,
+    "output_lines": 150,
+    "output_bytes": 6016,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "pax/boot/tree.S",
+    "expanded_statements": 30,
+    "output_lines": 60,
+    "output_bytes": 1982,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "pax/boot/unix.S",
+    "expanded_statements": 10,
+    "output_lines": 20,
+    "output_bytes": 652,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "pax/boot/user.S",
+    "expanded_statements": 82,
+    "output_lines": 164,
+    "output_bytes": 5516,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "pax/tests/mkw.d/boot/io.S",
+    "expanded_statements": 68,
+    "output_lines": 136,
+    "output_bytes": 5144,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "pax/user/elf/ask.S",
+    "expanded_statements": 429,
+    "output_lines": 858,
+    "output_bytes": 30444,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "pax/user/elf/hello.S",
+    "expanded_statements": 701,
+    "output_lines": 1402,
+    "output_bytes": 65667,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "pax/user/elf/hold.S",
+    "expanded_statements": 67,
+    "output_lines": 134,
+    "output_bytes": 4746,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "pax/user/elf/reboot.S",
+    "expanded_statements": 19,
+    "output_lines": 38,
+    "output_bytes": 1359,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "pax/user/elf/seven.S",
+    "expanded_statements": 8,
+    "output_lines": 16,
+    "output_bytes": 541,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "pax/user/play/kd.S",
+    "expanded_statements": 161,
+    "output_lines": 322,
+    "output_bytes": 11557,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "pax/user/programs.S",
+    "expanded_statements": 204,
+    "output_lines": 408,
+    "output_bytes": 14728,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "pax/user/termwolf/tio.S",
+    "expanded_statements": 64,
+    "output_lines": 128,
+    "output_bytes": 4758,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "wolf-lang/crates/wolf_driver/tests/fixtures/asm/seven_x86_64.S",
+    "expanded_statements": 6,
+    "output_lines": 12,
+    "output_bytes": 658,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "wolf-lang/crates/wolf_driver/tests/fixtures/freestanding/rt_stub.S",
+    "expanded_statements": 52,
+    "output_lines": 104,
+    "output_bytes": 5994,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "wolf-lang/crates/wolf_driver/tests/fixtures/freestanding/start.S",
+    "expanded_statements": 10,
+    "output_lines": 20,
+    "output_bytes": 1094,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "wolf-lang/crates/wolf_driver/tests/fixtures/freestanding_alloc/heap.S",
+    "expanded_statements": 5,
+    "output_lines": 10,
+    "output_bytes": 568,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "wolf-lang/crates/wolf_driver/tests/fixtures/freestanding_device/dev_window.S",
+    "expanded_statements": 5,
+    "output_lines": 10,
+    "output_bytes": 628,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "wolf-lang/crates/wolf_driver/tests/fixtures/freestanding_interrupt/boot.S",
+    "expanded_statements": 106,
+    "output_lines": 212,
+    "output_bytes": 13090,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "wolf-lang/crates/wolf_driver/tests/fixtures/freestanding_interrupt/isr.S",
+    "expanded_statements": 118,
+    "output_lines": 236,
+    "output_bytes": 16176,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "wolf-lang/crates/wolf_driver/tests/fixtures/freestanding_static/table.S",
+    "expanded_statements": 5,
+    "output_lines": 10,
+    "output_bytes": 575,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "wolf-lang/crates/wolf_driver/tests/fixtures/freestanding_threads/threads.S",
+    "expanded_statements": 52,
+    "output_lines": 104,
+    "output_bytes": 6392,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "wolf-lang/crates/wolf_driver/tests/fixtures/pkg/ffi/kernel/kern/io.S",
+    "expanded_statements": 7,
+    "output_lines": 14,
+    "output_bytes": 779,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "wolf-lang/crates/wolf_driver/tests/fixtures/shr_range/rd.S",
+    "expanded_statements": 5,
+    "output_lines": 10,
+    "output_bytes": 508,
+    "exact_gas_semantics": true
+  },
+  {
+    "file": "wolf-lang/crates/wolf_driver/tests/fixtures/stale_global/kernel/stale.S",
+    "expanded_statements": 16,
+    "output_lines": 32,
+    "output_bytes": 1874,
+    "exact_gas_semantics": true
+  }
+]
