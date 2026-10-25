@@ -98,6 +98,8 @@ for path in ("src/object/store.lu", "src/oid/oid.lu", "src/index/index.lu", "src
 gate = open(os.path.join(ROOT, "tools", "gate")).read()
 say("tools/differ-test" in gate, "T2 independent differ integration gate is mandatory")
 say("tools/proof-test" in gate, "T2 proof integration gate is mandatory")
+for required in ("tools/table-test", "tools/assembler-test", "tools/expansion-test", "tools/layout-test", "tests/object-cli/run", "tools/native-logic-test"):
+    say(required in gate, "T2 mandatory assembler gate " + required)
 # T3
 p = plan(["somewhere/new"], event="pull_request", action="opened")
 say(p["tier"] == "full", "T3 a path no rule names is full")
