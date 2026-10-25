@@ -1,0 +1,82 @@
+as02 — the package path
+
+Goal
+Make assembler selection explicit in wolf and PAX, then qualify the packaged
+clef executable rather than retaining lane-local driver wrappers. Use separate
+wolf-lang and PAX PRs: an Astra lane for the driver/spec work and an Opus lane
+for the kernel/image seam. Neither changes the other's repository implicitly.
+
+Inputs
+- clef as01: 43 exact x86 census sources, 189 observed forms, 312 SDM table
+  descriptors, 530 generated row/mode comparisons, deterministic output.
+- wolf-lang#937 owns --assembler / WOLF_AS. clef#4 owns the later lossless
+  disassembler; neither is closed by this package-path work.
+- Existing census pins remain in census/repositories.json. Move a pin only as
+  an explicit measured change; do not silently substitute current trunk.
+- CLI: clef [--64] [-o OUTPUT] SOURCE.S; or -c SOURCE.S -o OUTPUT with optional
+  --target=x86_64-unknown-none-elf. It produces ELF64 x86-64, not COFF or Mach-O.
+- --expand prints origins and resolved .set definitions. --provenance is off
+  by default; .note.clef.src version1 is documented in docs/FORMATS.md.
+- Kernel links use pinned distro lld18.1.3. The ISO's static lld17.0.6 remains
+  a user-toolchain input, not a substitute kernel linker (pax#172, ligature#4,
+  wolf-lang#938). Never add --no-relax silently.
+
+Wolf driver lane
+Read crates/wolf_driver/src/asm.rs and the existing command/config/spec surfaces.
+Recommend CLI --assembler over WOLF_AS over the existing target-specific driver
+fallback. A selected assembler failure is final: no silent retry through clang.
+Invoke a selected assembler with the as-shaped protocol, preserve source/object
+paths and quoting, and keep the existing ELF machine/class verification. The
+release backend's clang -x ir -c -O2 -fPIC path is compiler code generation, not
+this assembly seam; it remains unchanged.
+
+Tests: configured path with spaces, CLI/environment precedence, absent tool,
+nonzero exit, malformed/foreign output, every root-manifest assembly source,
+quoted source/output paths, hosted versus freestanding target behavior, and a
+fresh package build using real clef. Existing unsupported hosted-Windows or
+foreign-target rows must not be enabled by accident. Keep the checked machine's
+assembly boundary and the exported-symbol roster explicit. Update the spec and
+CLI documentation where the option is defined. Plant the failed-tool/output
+witness in the smallest appropriate CI job before requesting merge.
+
+PAX lane
+Read tools/build-kernel and its boot/start.S assembly branch separately from the
+manifest assembly that wolf builds. Recommend honoring the same explicit WOLF_AS
+choice at both seams, without changing ordinary C/LLVM invocations. Test the
+absence/presence/failure choices and count the assembly calls. The as01 baseline
+contains 17 assembly objects per tier, not 26 boot objects.
+
+Build/package a PAX-compatible clef executable: static ET_EXEC, no INTERP,
+matching runtime/std/toolchain inputs by digest. The current hosted Linux binary
+is not automatically a qualified PAX binary. Read PAX's own user-tool builders
+for the measured static recipe; do not invent a new libc/toolchain substitution.
+Run the packaged command on the image against a copied source corpus and compare
+its output with the same pinned GNU-as oracle. Include its CLI refusals and the
+macro-heavy ISR --expand result. Record binary size, hashes and dependencies.
+
+Repeat native/release kernel builds with the explicit seam and the same non-asm
+objects. Compare against the gas baseline byte-for-byte, and record literal
+stock-clang differences separately. Run mpx5-wolf on BIOS and UEFI and the fresh
+muzzle CRT witness. The as01 log/hash and scripts are under notes/as01/kernel/
+and notes/as01/seam/; they are controls, not production installation scripts.
+
+Do not claim that all C toolchain binaries have left the image merely because
+.S assembly uses clef. Native linking still needs the configured linker/runtime,
+and the release compiler still needs its LLVM path. Coordinate the linker/image
+claim with ligature's package milestone.
+
+Done when
+Both PRs have measured explicit seams, refusal plants, standalone package tests,
+updated READMEs, source/binary pins and a clean audit. The new image's own clef
+passes the copied corpus and expansion tests. Native/release kernels and the
+muzzle witness pass all named boot legs. Follow the current lane contracts for
+CI reads, labels and merging; do not import as01's local wrapper paths into a
+production default.
+
+Questions to recommend, not decide
+R-as02-1: CLI > WOLF_AS > legacy default, with no fallback after an explicit
+selection fails (recommended).
+R-as02-2: a shared WOLF_AS setting for PAX boot/start.S and wolf's manifest seam
+(recommended), versus a separate PAX_AS setting requiring coordinated values.
+R-as02-3: qualify the static PAX package before making it the image default
+(recommended), versus an opt-in experimental image first.

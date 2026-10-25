@@ -411,15 +411,69 @@ Per-file order, symbol values/sizes and relocation tuples are in the JSON.
 | R_X86_64_PLT32 | 15 |
 | R_X86_64_32 | 11 |
 
-## Coverage boundary
+## Implemented coverage and object distances
 
-Clef currently encodes ten selected forms from ten mnemonic families. It does
-not yet assemble any whole PAX or muzzle source. The oracle census is the
-specification for that next step, not evidence that it is implemented.
-`tools/proof-test` produces 24 exact object comparisons including the empty
-writer, plus explicit refusals and determinism checks. `tools/differ-test`
-proves that changes to text, BSS size, relocation offset/type/addend and symbol
-value/size are observable, while symbol ordering is not.
+All **43/43 x86-64 sources** assemble with byte-identical ordinary section
+contents and relocation tuples to pinned GNU as, with structural symbol equality.
+All recorded sites contribute to the measured **189/189 source-form coverage**.
+The one AArch64 Mach-O fixture remains explicitly deferred. **No x86 STOP rows.**
 
-The binary round-trip measurement and its exclusions are recorded separately
-in `census/roundtrip.json`; it measures objdump, not a clef disassembler.
+The table has 312 SDM-provenanced descriptors and 112 spelling mappings. Its
+separate generated differential passes **530/530 row-by-mode witnesses**. These
+include alternative legal forms beyond the accepted source vocabulary; the row
+count is not an ISA-completeness claim. Every source is assembled twice, and the
+CLI output agrees byte-for-byte with the library test driver.
+
+Raw symbol/string-table distances across the 43 source objects are:
+
+| Table | Byte-identical objects | Unequal byte positions, including size differences |
+|---|---:|---:|
+| `.symtab` | 35/43 | 707 |
+| `.strtab` | 39/43 | 1,159 |
+| `.shstrtab` | 0/43 | 2,576 |
+
+The structural contract permits these serialization differences. The independent
+writer additionally reserializes all 43 oracle records with reversed supplied
+symbol order and checks them against live gas. Its refusal suite has 47 cases.
+
+All 43 `--expand` outputs reassemble to the original gas semantics. The PAX ISR
+output contains 485 statements and 970 lines with origins. Layout tests cover
+191 boundary/selection/alignment cases; the provenance witness maps the ISR's
+emitted bytes exactly once in 271 ranges. The note is off by default.
+
+## Kernel integration
+
+The census contains **26 PAX sources in total**, not 26 boot stubs. The pinned
+kernel manifest plus `boot/start.S` assemble **17 objects per tier**. Lane-local
+cc/clang wrappers routed 34 assembly calls through clef across native and release,
+with one nonassembly driver call forwarded to the original compiler. No PAX or
+wolf-lang source was changed.
+
+Both complete kernel ELF files match the GNU-as baseline byte-for-byte:
+
+| Tier | Bytes | SHA256 |
+|---|---:|---|
+| Native | 2,863,656 | `54656851650d2da54f31b5304907ab1943998039ccc019a1c08bd4b943145962` |
+| Release | 2,262,344 | `efb815659784e0759dbc1e114d4bfdf863dd72a02add4adff00900ad5909836a` |
+
+The four `mpx5-wolf` BIOS/UEFI × native/release legs passed, including eight exact
+root/pax transcript comparisons and clean halt on every leg. A fresh program using
+clef-assembled muzzle `crt0.S` and `sys.S` printed its expected message and exited
+7 on all four legs. The fixture supplies its own test main/exit; it does not claim
+to link the whole muzzle libc.
+
+The literal stock-clang images remain a separate measurement: first file byte
+difference 96 in both tiers, with 1,236,684 unequal positions native and 1,138,042
+release. Those counts include shifted layout, not independent instruction bugs.
+The corresponding nonassembly compiler objects and runtime archives were equal.
+
+Kernel links use digest-pinned Ubuntu lld 18.1.3, matching PAX CI. The ISO's static
+lld 17.0.6 failed the release-kernel GOTPCRELX relaxation control; changing only
+the linker to 18.1.3 passed. `--no-relax` was a diagnostic control, not a baseline
+flag. See pax#172, ligature#4 and wolf-lang#938.
+
+Evidence is under `notes/as01/{complete-census,table-differential,layout,kernel}`.
+The kernel log SHA256 is
+`146eba5d520d58033b33accd3e162832adb55e6c2308f2b75a0724ef6709f0f7`.
+The binary round-trip instrument remains separate in `census/roundtrip.json`;
+there is still no clef disassembler.

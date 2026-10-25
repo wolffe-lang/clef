@@ -20,8 +20,9 @@ SHA256: `55b64951731ef661f8a7922b665e649715e3b3a7db06e4ff15158b875ccd1dce`.
 * Volume 2B §4.3: MOV p.4-35, POP p.4-396, PUSH p.4-520,
   RET p.4-566, SYSCALL p.4-695, each instruction's opcode table.
 
-`src/table/format.lu` attaches the volume, section, page, and individual opcode row
-to every worked form. Decimal opcode fields in the data are byte values, not a
+`src/x86table/rows.lu` attaches the volume, section, page, and individual opcode
+row to all 312 encoding descriptors; the earlier worked proof remains under
+`src/table/`. Decimal opcode fields in the data are byte values, not a
 second instruction database. The PDF itself is not vendored or modified.
 
 ## Objects and assembly dialect
@@ -57,3 +58,27 @@ archive's bundled standard library and runtime archives stay paired with its bin
 `--target=x86_64-unknown-none-elf`. No C preprocessor feature is required by the
 copied sources. The AArch64 Mach-O fixture is retained in the census but excluded
 by name from both x86-64 oracle commands.
+
+## System semantics supplement
+
+Intel SDM Volume 3, **325384-093US, September 2026**, downloaded from
+[the official Volume 3 endpoint](https://cdrdv2.intel.com/v1/dl/getContent/671447).
+SHA256: `77919be320f35da2782771ef2cb65a868cf68e62c8f8279f2ca61199cb70d1f8`.
+Read clauses: 3A §§2.3–2.6 (IF/IOPL, descriptor/control registers and XCR0),
+§§2.8.1–2.8.11 (system instructions), §6.8.8 (SYSCALL/SYSRET), and
+§§7.14.2–7.14.3 (64-bit interrupt frames and IRET). This supplies semantic
+context, not replacement encoding data: opcode rows remain at Volume 2 edition
+086. No newer instruction family is imported by this supplement.
+
+## Kernel integration binaries
+
+`ci/integration-lock.json` extends the unchanged oracle image with 46 additional
+SHA256-pinned binary packages, including QEMU 8.2.2, firmware and Ubuntu lld
+18.1.3. `tools/integration-image` checks each archive twice and builds offline.
+The kernel linker executable SHA256 is
+`7ad9a0e8fe6d0e79b71172d731e33872c0274e49fceb7b516d774876d5a58ade`.
+The ISO's static lld 17.0.6 (`1217ca75f9df70439294844b2aba14895adc557e2514c6cdc76c4c6676a3757b`)
+retains its user-toolchain role and is not substituted for the kernel linker.
+
+Specification excerpts and downloaded manuals are kept outside the repository;
+`notes/as01/table/source-index.json` records their identities and clauses.

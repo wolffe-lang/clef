@@ -1,167 +1,189 @@
 # Encoding and relocatable-object formats
 
-## Encoding rows
+## Pipeline
 
-`src/table/format.lu` is the executable worked format. `source()` returns ten
-pipe-separated rows; `load()` refuses invalid sizes, missing provenance and
-prefix/mode combinations not implemented by this proof. The numeric fields are
-decimal. There is one row per selected mnemonic/operand form, not one row claiming
-all encodings of a mnemonic.
+`lex.source` preserves physical file/line origins while removing hash and block
+comments and separating statements. `expand.source` expands positional `.macro`
+and explicit-list `.irp` bodies in order, retaining the definition site and the
+ordered invocation chain. `dialect.statement` parses directives, symbolic and
+numeric labels, registers, immediates, indirect operands and memory references.
+
+`assembly` resolves numeric locals internally, evaluates symbols and versioned
+`.set` definitions, iterates layout to convergence, chooses encoding rows and
+applies fixups. It hands ordinary sections, symbols and RELA records to the
+independent `object.write` serializer. No assembler subprocess is used by clef.
+The output file is not opened until the entire source and object have succeeded.
+
+## Encoding data
+
+`src/x86table/rows.lu` contains 312 declarative descriptors, each transcribed from
+an individual Intel SDM opcode row. `aliases.lu` explicitly maps the 112 census
+spellings to canonical families and width hints. `format.lu` validates rows and
+provides cached lookup by family, role, operand width and code mode.
+
+The pipe-separated columns are:
 
 | Columns | Meaning |
 |---|---|
-| mnemonic, operands | normalized mnemonic and explicit operand shape |
-| opcode, second, opcode_len | one or two opcode bytes; opcode-plus-register uses the low three register bits |
-| rex_w, extension, immediate | REX.W; ModRM /digit; trailing immediate/relative displacement width in bytes |
-| volume, section, page, citation | SDM identity of the encoding; edition is pinned in SOURCES.md |
-| legacy_prefixes | ordered 66/67/F2/F3 bytes, or `none`; this proof accepts only `none` |
-| operand_bits, address_bits | zero denotes no explicit operands; proof modes are 64-bit |
-| modrm_rule, sib_rule, displacement_rule | operand roles, SIB construction and displacement selection |
-| preference | measured GNU as choice when more than one encoding is possible |
+| volume, section, page, citation | SDM identity and individual opcode row; printed pages, not PDF indices |
+| family, role, bits, modes | Canonical instruction, explicit operand direction/form, logical width and admitted modes |
+| opcode | One to three decimal byte values |
+| extension | ModRM `/digit`, or -1 when unused |
+| prefix, rex_w | Complete operand-size/mandatory legacy prefix, and explicit REX.W policy |
+| immediate | Encoded byte count, not logical operand width |
+| reg_operand, rm_operand, opcode_operand, immediate_operand | Zero-based AT&T operand indices; -1 means an unused field |
+| guard, preference | Legality checks and separately identified encoding-selection policy |
+| feature | Architectural feature requirement, not host CPU probing |
+| operands, immediate_kind, allowed_prefixes | Typed operand pattern, field semantics and permitted explicit prefixes |
 
-The format deliberately separates a valid encoding from a preference. Future
-rows must add mode/feature predicates and explicit operand-direction fields,
-not infer them from mnemonic spelling. Legacy prefix order is recorded before
-REX, REX.R/X/B extend the appropriate register fields, and REX.W selects 64-bit
-operands only when the instruction requires it. PUSH/POP in long mode do not
-need REX.W. The existing descriptor is a version-one worked subset: it is not
-a complete x86 instruction schema or a decoder yet.
+The generic encoder validates patterns before emission. REX.R/X/B derive from
+the selected register roles, ModRM/SIB from the address, and RIP displacement
+bias from the complete instruction length, including any trailing immediate.
+REX precedes the opcode; high-byte registers cannot coexist with a REX prefix.
+No `66` or REX.W prefix is inferred merely from the logical width: LTR, segment
+moves, control-register moves and stack instructions have different rules.
 
-### Worked rows
+`tools/table-test` generates a source witness for every descriptor in every
+admitted mode: **530/530 byte comparisons**, covering **312/312 rows**. The full
+assembler gate independently measures **189/189 census forms** through all
+recorded sites in 43 exact source comparisons. A structural candidate in
+`census-map.json` is not, by itself, a passing differential.
 
-| Mnemonic | Worked form | Encoding |
-|---|---|---|
-| mov | signed imm32 to r64 | REX.W C7 /0 id |
-| push | r64 | REX.B if needed, 50+rd |
-| pop | r64 | REX.B if needed, 58+rd |
-| call | resolved current-location rel32 | E8 cd |
-| ret | near, no adjustment | C3 |
-| jmp | resolved current-location rel8 | EB cb |
-| lea | disp(base[,index,scale]) to r64 | REX.W 8D /r, optional SIB and disp8/disp32 |
-| syscall | no operands | 0F 05 |
-| hlt | no operands | F4 |
-| cmp | known signed imm8 to r64 | REX.W 83 /7 ib |
+The old ten-form proof remains in `src/table/` and `src/encode/` as a small,
+independent regression boundary. It is not the production encoder.
 
-`tools/proof-test` generates operand variants, runs clef and GNU as separately,
-and invokes `tools/differ` for every object. It checks extended registers,
-base-low-bits 4 and 5, an extended SIB index, signed displacement boundaries,
-negative immediates and the two rel8 endpoints. These are ten worked forms,
-not the complete census's MOV/CMP/LEA families. General labels, symbolic
-relocations, 8/16/32-bit operands and the rest of those families remain refused.
-No output file is opened until the whole source has passed the proof encoder.
+## GNU as selection and layout
 
-### Encoding choice is not simply “shortest”
+The baseline is pinned GNU as 2.42, not simply the shortest legal encoding:
 
-The baseline is the pinned GNU as decision, including when it is not the
-shortest legal encoding. Numeric `cmpq $1,%rax` chooses 83 /7 ib; a wider
-known immediate to the accumulator chooses 3D id rather than 81 /7 id.
-A register-register MOV chooses the 89 direction. PUSH/POP choose the
-opcode-plus-register form, not FF /6 or 8F /0. `movq $0,%rax` uses C7 id,
-never an XOR substitution; explicit `movabsq` retains B8 iq.
+* Register-register MOV uses the `89` direction. PUSH/POP registers use their
+  opcode-plus-register forms. Explicit MOVABS retains its wide immediate.
+* Known sign-extended imm8 forms are preferred where available. A wider
+  accumulator immediate uses its accumulator opcode. Expressions not known at
+  initial selection retain the wide form even if layout later makes them small.
+  The forward and backward symbol-difference CMP controls test this distinction.
+* Same-section jumps, including global targets, relax to rel8 where possible.
+  Calls to global/undefined symbols retain their relocation semantics. Layout
+  is iterated with section switching and alignment included.
+* `.code32` changes instruction/address defaults inside ELF64; it does not
+  change ELF class or machine. The mixed-mode fixture retains gas's `_32`
+  indexed-address and `PC32` cross-section choices, not clang's alternatives.
+* Gas omits redundant REX.W for register-only segment-register aliases. The two
+  initially mismatching rows and corrected differential are retained in the
+  table evidence; the SDM's zero-extension/low-selector semantics are cited.
+* Code alignment uses gas's NOP policy, rather than zero fill. After raw-data
+  fragments gas first emits a one-byte NOP. It then uses sequences up to eleven
+  bytes, including redundant legacy prefixes, and jumps over runs of eight or
+  more maximum-length NOPs. Data alignment uses zeros unless a fill is explicit.
+  `notes/as01/layout/gas-padding.json` records 510 black-box controls. The SDM
+  NOP table supplies the underlying instruction forms; gas supplies this policy.
 
-**An expression containing a not-yet-known symbol keeps the imm32 form.**
-In `pax/user/programs.S`, `cmpq $(.Lhello_msg_end-.Lhello_msg),%rax` is
-`48 3d 17 00 00 00` under GNU as, versus clang's `48 83 f8 17`.
-The same difference evaluated before the instruction permits the short form.
-The assembler must retain whether an expression was known at the encoding
-choice, not merely its eventual numeric value. These are oracle-only probes
-in the proof harness; they are not falsely accepted by the current encoder.
+## Expressions and symbol algebra
 
-GNU as also resolves and shortens same-section jumps to globally visible
-symbols where clang retains PLT32 relocations. Branch relaxation must therefore
-iterate layout to stability, while preserving GNU as's policy on symbol binding
-and forward immediate expressions. No clang exception is applied.
+Values are absolute numbers, section offsets or undefined-symbol addends.
+Absolute plus relocatable stays relocatable; same-section subtraction becomes
+absolute. Unsupported cross-section algebra, cyclic definitions, division by
+zero and overflow are named refusals. Signed magnitude supports negative signed
+64-bit offsets and the full unsigned 64-bit literal range needed by `.quad`.
+Bitwise operations use the 64-bit representation; right shift is logical, as
+measured from gas. Decimal, hexadecimal, binary, octal and ASCII character
+literals are supported. Strings may contain UTF-8 bytes; expression identifiers
+and character literals are restricted to the accepted ASCII dialect.
 
-## Expression and macro design
+Precedence, highest first, with left associativity within each binary tier:
 
-The complete source-level statements, operands and expression tokens are in
-`census/org-asm.json`. A1 needs a real tokenizer: block comments, hash comments,
-strings with escapes, character immediates, semicolon statement separators,
-local numeric labels (`1f`/`1b`), named labels and macro backslash parameters.
-Source file and line travel through every expansion.
+1. Unary `+ - ~ !` and parentheses.
+2. `* / % << >>`.
+3. `| & ^ !` (binary `!` is OR-NOT).
+4. `+ -`.
+5. `== != <> < > <= >=`.
+6. `&&`, then `||`.
 
-Use a precedence parser matching GNU as's Expressions chapter, not C's
-precedence by assumption. Represent values as `Absolute(integer)`,
-`SectionOffset(section, addend)` or `Undefined(symbol, addend)`. Same-section
-subtraction becomes absolute; cross-section subtraction is a named refusal
-unless the output relocation expresses it. Unary and binary operations on
-relocatable values must follow the documented gas algebra. Arithmetic overflow,
-division by zero, undefined constants and cyclic `.set` dependencies are errors,
-not wrapping guesses. Keep the *known at selection* bit described above.
+Comparisons return -1/0; logical operators return 1/0. The manual's Infix
+Operators page groups comparisons alongside addition/subtraction, but the pinned
+binary gives `.quad 1==2+3` the value 0. Its Prefix Operators page lists `-` and
+`~`, while the binary also accepts unary `!`. Both differences have explicit
+witnesses in the 264-value expression differential.
 
-The observed `.macro` definitions take one positional `v` parameter and produce
-ISR labels, immediates and `.type`/`.size` expressions through `\\v` substitution.
-`.irp` iterates explicit comma-separated integer lists, with a `v` or `n`
-parameter, ending at `.endr`; `%xmm\\n` and label suffixes require token-boundary
-aware textual substitution. `.endm` and `.endr` are separate terminators. The
-census does not exercise defaults, variadic macros, recursion or conditional
-assembly; refuse these until they have their own specification and tests.
+`.set` binds a version of an expression: a later redefinition cannot retroactively
+change an earlier definition's dependency. Forward references resolve to the
+appropriate first definition. Each location counter is tied to its definition
+site, and selection-time availability is distinct from the final numeric value.
 
-`.code32` changes instruction/address defaults but does not change ELFCLASS64
-or EM_X86_64. Its current consumer is the freestanding interrupt fixture's boot
-source. In that file GNU as uses R_X86_64_32 for 32-bit indexed memory operands
-where clang chooses R_X86_64_32S; a cross-section jump is PC32 under GNU as and
-PLT32 under clang. Preserve the GNU as side of each choice, not a generalized
-“all branch relocations are PLT32” shortcut.
+Limits are explicit: 100,000 expanded statements, macro depth 32, expression
+depth 128, `.set` dependency depth 256 and 64 layout passes. Serialized objects
+are limited to 64 MiB; section counters are bounded by 2,147,483,647 bytes.
+Unsupported macro defaults, keyword/variadic arguments and unsupported directives
+are refused. These are implementation boundaries, not GNU as completeness claims.
 
-## ELF64 writer
+## ELF64 representation
 
-The object representation is independent of ligature's reader. All scalar
-fields are explicitly little-endian; the file carries no timestamp. The
-minimal writer in `src/elf/writer.lu` emits a 64-byte ELF header, `.text` bytes,
-section names, zero padding to an eight-byte boundary, and five 64-byte section
-headers. Header fields are ET_REL=1, EM_X86_64=62, EV_CURRENT=1, no entry point,
-no program headers, `e_shentsize=64`, `e_shnum=5`, `e_shstrndx=4`.
+`src/object/writer.lu` independently serializes ELF64 little-endian ET_REL for
+EM_X86_64. Its input records are:
 
-GNU as's empty object has no symbol table or relocation table. Its section
-order is NULL, `.text` (PROGBITS, AX, align 1), `.data` (PROGBITS, WA, align 1),
-`.bss` (NOBITS, WA, align 1), `.shstrtab` (STRTAB, align 1). The proof writer
-matches that structure; `tools/proof-test` compares every section header field
-apart from offsets and string indices, as well as the semantic differ.
+```text
+Section(name, kind, flags, align, size, data)
+Symbol(name, binding, kind, section, value, size, visibility)
+Relocation(section, offset, kind, symbol, addend)
+```
 
-For nonempty census sources, `census/oracle-results.json` records every emitted
-section in order, flags, type, size, alignment, link, info and entry size, plus
-all symbols and RELA tuples. This measured per-file layout is the writer's
-specification. The extension plan is:
+The layout layer supplies ordinary sections in declaration order, including
+empty `.text`, `.data` and `.bss`. The writer inserts adjacent `.rela.*` sections,
+then symbol/string/section-name tables when needed. Empty objects have no symbol
+table. NOBITS consumes logical size but no file data; NOTE and explicit
+`.note.GNU-stack` sections preserve their type and flags.
 
-1. Keep the default `.text`, `.data`, `.bss` even when empty. Create named input
-   sections in declaration order; preserve flags and section kind. `.zero` in
-   NOBITS advances size without file bytes. `.note.Xen` is SHT_NOTE, not PROGBITS.
-2. Track each section's location counter and maximum alignment. `.p2align n`
-   aligns to 2^n; `.balign n` aligns to n. Preserve the observed fill bytes,
-   including data-vs-code alignment, and recompute after branch relaxation.
-3. Place each `.rela<name>` next to its relocated section in the section-header
-   order observed from GNU as. ELF64 RELA entries are (u64 offset, u64 info,
-   i64 addend), 24 bytes. `sh_link` names `.symtab`; `sh_info` names the target
-   section; alignment is 8, flags include SHF_INFO_LINK (64).
-4. Append `.symtab`, `.strtab`, `.shstrtab` after ordinary sections, where
-   symbols exist. Emit STN_UNDEF, section symbols where needed, locals before
-   globals, then globals/undefined references. `sh_info` is the first nonlocal
-   symbol. Ordering within each class is not part of the comparison contract.
-5. `.globl` supplies binding, `.type` supplies STT_FUNC/STT_OBJECT, `.size`
-   supplies explicit constants or current-location differences. `.set` absolute
-   names have SHN_ABS. Section-relative relocations use section symbols plus
-   addends when GNU as does; preserve externally named references otherwise.
-6. `.note.GNU-stack` is an explicit zero-sized, non-alloc PROGBITS section in
-   these sources. Do not silently synthesize it for sources that omit it.
+The writer adds the null symbol and stable-partitions locals before nonlocals.
+Section symbols have empty ELF names but use section names for internal lookup.
+`sh_link`, `sh_info`, alignment and entry sizes are checked before emission.
+Symbol/string ordering and string suffix sharing are not copied from gas.
 
-The gas census uses relocation numbers 1 (64), 2 (PC32), 4 (PLT32), and 10 (32).
-For PC-relative relocations, include instruction-end bias in the addend:
-usually -4 for a four-byte field, but -5/-6/-8 when an immediate follows the
-RIP displacement. The actual per-site tuples in the census, not that usual
-case, are authoritative.
+The census uses relocation types 1 (`64`), 2 (`PC32`), 4 (`PLT32`) and 10 (`32`).
+The writer also handles 11 (`32S`) for signed address/immediate forms. Local
+defined references use section symbols plus addends where gas does; global and
+undefined references retain their names. PC-relative addends include all bytes
+from the field to instruction end, not an unconditional -4.
+
+COMDAT, TLS, extended section numbering and unrelated ELF features remain
+unsupported. The writer gate rejects 47 malformed objects and reserializes all
+43 oracle records with permuted symbol order, comparing against live gas.
+
+## Optional source provenance note
+
+`--provenance` adds `.note.clef.src` (SHT_NOTE=7, flags=0, alignment=4). It is
+absent by default. ELF note fields are little-endian u32:
+
+```text
+namesz = 5
+names  = "clef\0", padded to four bytes
+type   = 1
+descsz = UTF-8 JSON byte length
+desc   = JSON below, padded to four bytes
+```
+
+The physical header order is `namesz, descsz, type`, followed by name and
+descriptor. Version 1 has this shape:
+
+```json
+{"version":1,"ranges":[{"section":".text","offset":0,"size":2,"file":"example.S","line":3,"chain":"example.S:6 macro PUSH"}]}
+```
+
+Offsets are section-relative and ranges are half-open `[offset, offset+size)`.
+Only emitted bytes are mapped; NOBITS reservations and the provenance note itself
+are excluded. File/line identifies the source statement or macro definition;
+`chain` records ordered invocation sites. The format is deterministic for the
+same source and source-path spelling. The ISR witness maps every emitted byte
+once in 271 ranges.
+
+This is the source-side counterpart to ligature's `.note.wolf.link`: a future
+consumer can connect linked ranges to assembly origins. No cross-repository
+consumer or manifest change is included here.
 
 ## Differential normalization
 
-`tools/differ A.o B.o` exits 0 on agreement, 1 on a semantic mismatch, and 2
-on malformed/unsupported input. It compares ordinary section contents, names,
-kind, flags, size and alignment; relocations as sorted tuples of target section,
-offset, type, symbol name and addend; symbols as sorted tuples of name, binding,
-type, section, value, size and visibility. Symbol/string-table layout and file
-offsets are free. Duplicates retain multiplicity. The null symbol is retained.
-A `.bss` size difference is observable even though it has no file bytes.
-
-The comparator rejects truncated structures, unsupported ELF class/endianness/
-machine, malformed strings, bad symbol indices and SHT_REL. Extended section
-numbering and COMDAT are outside this census and currently refused or unmodeled;
-A1 must not claim general ELF support from the empty-object proof.
+`tools/differ A.o B.o` exits 0 for agreement, 1 for a semantic mismatch and 2
+for malformed/unsupported input. It compares ordinary section contents and
+metadata, relocation tuple multisets, and structural symbol records; duplicates
+retain multiplicity. File offsets and symbol/string-table ordering are free.
+Raw table distances are measured separately in MAP. The optional source note is
+not silently ignored by the normal comparator.
