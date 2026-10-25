@@ -1,0 +1,134 @@
+[
+  {
+    "repository": "pax",
+    "head": "105d0d1fe74bce11107a363a73751e35c9ac0987",
+    "files": [
+      "boot/console.S",
+      "boot/cpu.S",
+      "boot/event.S",
+      "boot/font.S",
+      "boot/fpu.S",
+      "boot/io.S",
+      "boot/isr.S",
+      "boot/net.S",
+      "boot/sched.S",
+      "boot/screen.S",
+      "boot/sound.S",
+      "boot/speaker.S",
+      "boot/start.S",
+      "boot/stub/pax-stub.s",
+      "boot/tree.S",
+      "boot/unix.S",
+      "boot/user.S",
+      "tests/mkw.d/boot/io.S",
+      "user/elf/ask.S",
+      "user/elf/hello.S",
+      "user/elf/hold.S",
+      "user/elf/reboot.S",
+      "user/elf/seven.S",
+      "user/play/kd.S",
+      "user/programs.S",
+      "user/termwolf/tio.S"
+    ]
+  },
+  {
+    "repository": "muzzle",
+    "head": "eff9eb5ba1ff37cc2e69cc5e68550408ba464533",
+    "files": [
+      "notes/lc01-probes/q2/crt0.S",
+      "notes/lc01-probes/q2/sys.S",
+      "notes/lc01-probes/q9/cell.S",
+      "src/crt0.S",
+      "src/sys.S"
+    ]
+  },
+  {
+    "repository": "wolf-lang",
+    "head": "fc9064082cbda51b2faf3af8e2f21e376ba3a1e3",
+    "files": [
+      "crates/wolf_driver/tests/fixtures/asm/seven_aarch64_macos.S",
+      "crates/wolf_driver/tests/fixtures/asm/seven_x86_64.S",
+      "crates/wolf_driver/tests/fixtures/freestanding/rt_stub.S",
+      "crates/wolf_driver/tests/fixtures/freestanding/start.S",
+      "crates/wolf_driver/tests/fixtures/freestanding_alloc/heap.S",
+      "crates/wolf_driver/tests/fixtures/freestanding_device/dev_window.S",
+      "crates/wolf_driver/tests/fixtures/freestanding_interrupt/boot.S",
+      "crates/wolf_driver/tests/fixtures/freestanding_interrupt/isr.S",
+      "crates/wolf_driver/tests/fixtures/freestanding_static/table.S",
+      "crates/wolf_driver/tests/fixtures/freestanding_threads/threads.S",
+      "crates/wolf_driver/tests/fixtures/pkg/ffi/kernel/kern/io.S",
+      "crates/wolf_driver/tests/fixtures/shr_range/rd.S",
+      "crates/wolf_driver/tests/fixtures/stale_global/kernel/stale.S"
+    ]
+  },
+  {
+    "repository": "boreutils",
+    "head": "37e3825c1b7ba374e1480cdcddefd959f5ecdb51",
+    "files": []
+  },
+  {
+    "repository": "pelt",
+    "head": "f424a10a5c03c4b45e383b4790cd5ab8f358d4ce",
+    "files": []
+  },
+  {
+    "repository": "den",
+    "head": "b017d29655e174ad0b75fb8b6a286352da02346b",
+    "files": []
+  },
+  {
+    "repository": "scent",
+    "head": "7f6651d68468efd8b5e9ba2dff358a841107b98c",
+    "files": []
+  },
+  {
+    "repository": "yew",
+    "head": "280012fe03a508484527a6e85854f1d41bf81670",
+    "files": []
+  },
+  {
+    "repository": "aspen",
+    "head": "5f99a37e016aa4c676799b7508a945da0e1bf177",
+    "files": []
+  },
+  {
+    "repository": "lope",
+    "head": "ce00c73892e21569427d663634ab4d5a7ab95f78",
+    "files": []
+  },
+  {
+    "repository": "lobo",
+    "head": "866789c82e8f3d8b8dd6df2830176c093515aeb4",
+    "files": []
+  },
+  {
+    "repository": "wolf-std",
+    "head": "78b9d3cbc41d51db44d18c40b6694403644d1c83",
+    "files": []
+  },
+  {
+    "repository": "wolf-interp",
+    "head": "a1a394d9d787c6f7a1735024af3d3f30b532eb9b",
+    "files": []
+  },
+  {
+    "repository": "wolf-lsp",
+    "head": "4e2c1f5d4c42b5f1c97339b60aad4e6d3c6b4178",
+    "files": []
+  },
+  {
+    "repository": "tree-sitter-wolf",
+    "head": "7d18e441d3c0c5b70ad6fb75fab3a7ab45aa25ff",
+    "files": []
+  },
+  {
+    "repository": "wolf-book",
+    "head": "dadc38bee9eb8d5570cfe638bf9fb79bfe977ab0",
+    "files": []
+  },
+  {
+    "repository": "wolf-web",
+    "head": "19e8b06189444109ef99353deba4f3023b6a22c5",
+    "files": []
+  }
+]

@@ -1,0 +1,140 @@
+#!/usr/bin/env python3
+"""Inventory source syntax, preserving every statement and its origin.
+This is a scanner, not a macro expander or an assembler. It never guesses opcodes.
+"""
+import collections
+import hashlib
+import json
+import pathlib
+import re
+import sys
+
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+
+def statements(text, hash_comment=True):
+    """Strip comments outside strings; retain physical line numbers."""
+    buf, line, start, quote, block, escape = '', 1, 1, False, False, False
+    i = 0
+    while i < len(text):
+        c, pair = text[i], text[i:i+2]
+        if block:
+            if pair == '*/':
+                block = False; i += 2; continue
+            if c == '\n':
+                if buf.strip(): yield start, buf.strip()
+                buf = ''; line += 1; start = line
+            i += 1; continue
+        if not quote and pair == '/*':
+            block = True; buf += ' '; i += 2; continue
+        if not quote and ((hash_comment and c == '#') or pair == '//'):
+            i = text.find('\n', i)
+            if i < 0: break
+            continue
+        if c == '"' and not escape: quote = not quote
+        if not quote and c in ';\n':
+            if buf.strip(): yield start, buf.strip()
+            buf = ''
+            if c == '\n': line += 1
+            start = line
+        else:
+            buf += c
+        escape = c == '\\' and not escape
+        i += 1
+    if buf.strip(): yield start, buf.strip()
+
+def operands(text):
+    out, buf, depth, quote, escape = [], '', 0, False, False
+    for c in text:
+        if c == '"' and not escape: quote = not quote
+        if not quote:
+            if c in '([': depth += 1
+            if c in ')]': depth -= 1
+        if c == ',' and depth == 0 and not quote:
+            out.append(buf.strip()); buf = ''
+        else: buf += c
+        escape = c == '\\' and not escape
+    if buf.strip(): out.append(buf.strip())
+    return out
+
+def register(s):
+    if s == '%rip': return 'rip64'
+    if s == '%eip': return 'eip32'
+    if re.fullmatch(r'%(cr|dr)\d+', s): return s[1:3]+'64'
+    if re.fullmatch(r'%(cs|ds|es|fs|gs|ss)', s): return 'seg16'
+    if re.fullmatch(r'%[xyz]mm\d+', s): return {'x':'xmm128','y':'ymm256','z':'zmm512'}[s[1]]
+    if re.fullmatch(r'%(r\d+b|[abcd][hl]|[sd]il|[bs]pl)', s): return 'gpr8'
+    if re.fullmatch(r'%(r\d+w|[abcd]x|[sd]i|[bs]p)', s): return 'gpr16'
+    if re.fullmatch(r'%(r\d+d|e[a-z]+)', s): return 'gpr32'
+    if re.fullmatch(r'%(r\d+|r[a-z]+)', s): return 'gpr64'
+    return 'register:'+s
+
+def expression(s):
+    return {'text':s, 'operators': sorted(set(re.findall(r'<<|>>|[+*/&|~^-]', s))),
+            'location_counter':bool(re.search(r'(?<![\w.])\.(?![\w.])',s)),
+            'symbols':sorted(set(re.findall(r'(?<![\w])(?:[A-Za-z_.$][\w.$]*|[0-9]+[fb])', s))),
+            'macro_parameter':'\\' in s}
+
+def operand(s):
+    indirect = s.startswith('*'); s = s[1:] if indirect else s
+    if s.startswith('$'): data={'kind':'immediate','expression':expression(s[1:])}
+    elif re.fullmatch(r'%\w+',s): data={'kind':register(s),'register':s}
+    elif '(' in s:
+        m=re.fullmatch(r'(?:(%\w+):)?(.*?)\((.*?)\)',s)
+        if not m: data={'kind':'expression','expression':expression(s)}
+        else:
+            seg,disp,inside=m.groups(); parts=inside.split(',')+['','','']
+            base,index,scale=(x.strip() for x in parts[:3])
+            data={'kind':'memory','segment':seg,'base':base,'index':index,'scale':scale or '1','displacement':expression(disp or '0')}
+    elif s.startswith('"'): data={'kind':'string','text':s}
+    else: data={'kind':'expression','expression':expression(s)}
+    data['indirect']=indirect
+    return data
+
+def shape(o):
+    prefix='*' if o['indirect'] else ''
+    if o['kind']=='memory':
+        return prefix+'mem['+','.join([('seg:' + o['segment']) if o['segment'] else '',register(o['base']) if o['base'] else '',register(o['index']) if o['index'] else '',o['scale'],'disp'])+']'
+    return prefix+o['kind']
+
+def inventory(root):
+    files=[]; forms=collections.defaultdict(list); directives=collections.defaultdict(list)
+    for path in sorted(root.rglob('*')):
+        if path.suffix not in ('.S','.s','.asm'): continue
+        text=path.read_text(); arch='aarch64' if 'aarch64' in str(path) else 'x86_64'; raw=list(statements(text, arch=='x86_64'))
+        macro_names={s.split(None,1)[1].split()[0].split(',')[0] for _,s in raw if s.startswith('.macro ')}
+        records=[]; mode=64
+        for line,s in raw:
+            labels=[]
+            while (m:=re.match(r'^([\w.$\\]+):\s*',s)):
+                labels.append(m[1]); s=s[m.end():]
+            if not s:
+                records.append({'line':line,'labels':labels}); continue
+            words=s.split(None,1); name=words[0]; args=words[1] if len(words)>1 else ''
+            prefixes=[]
+            while name in ('rep','repe','repz','repne','repnz','lock','data16','addr32') and args:
+                prefixes.append(name); words=args.split(None,1); name=words[0]; args=words[1] if len(words)>1 else ''
+            kind='directive' if name.startswith('.') else ('macro_call' if name in macro_names else 'instruction')
+            if name in ('.code32','.code64'): mode=int(name[-2:])
+            ops=[operand(x) for x in operands(args)]
+            record={'line':line,'labels':labels,'kind':kind,'name':name,'arguments':args,'operands':ops,'mode':mode,'prefixes':prefixes}
+            records.append(record)
+            key=name+' '+','.join(shape(o) for o in ops)
+            site={'file':str(path.relative_to(root)),'line':line,'text':s,'mode':mode,'prefixes':prefixes}
+            if kind=='instruction' and arch=='x86_64': forms[key].append(site)
+            if kind=='directive': directives[name].append(site)
+        files.append({'path':str(path.relative_to(root)),'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),
+                      'architecture':arch,
+                      'comment_styles':[x for x,pat in [('#',r'#'),('/* */',r'/\*'),('//',r'//')] if re.search(pat,text)],
+                      'macros':sorted(macro_names),'statements':records})
+    return {'schema':1,'definition':'Unique tracked assembly paths at the repository heads in repositories.json; source-level forms, macro calls separately classified.',
+            'files':files,'forms':dict(sorted(forms.items())),'directives':dict(sorted(directives.items())),
+            'counts':{'files':len(files),'mnemonics':len({k.split()[0] for k in forms}),'forms':len(forms),'macro_or_irp_files':sum(bool(f['macros']) or any(s.get('name')=='.irp' for s in f['statements']) for f in files)}}
+
+def main():
+    data=inventory(ROOT/'census/sources')
+    out=json.dumps(data,indent=2,sort_keys=True)+'\n'
+    if '--check' in sys.argv:
+        assert (ROOT/'census/org-asm.json').read_text()==out, 'census differs; regenerate tools/census'
+    else: (ROOT/'census/org-asm.json').write_text(out)
+    print(json.dumps(data['counts'],sort_keys=True))
+if __name__=='__main__': main()

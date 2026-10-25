@@ -1,0 +1,14 @@
+#!/usr/bin/env python3
+import pathlib,runpy
+m=runpy.run_path(str(pathlib.Path(__file__).with_name('census')))
+scan=m['statements'];ops=m['operands'];shape=m['shape'];operand=m['operand']
+assert list(scan('.ascii "a#b;/*c*/" # tail\nret; hlt'))==[(1,'.ascii "a#b;/*c*/"'),(2,'ret'),(2,'hlt')]
+assert list(scan('/*x\ny*/mov $7,%eax\n'))==[(2,'mov $7,%eax')]
+assert list(scan('mov x0, #7',False))==[(1,'mov x0, #7')]
+assert ops('8(%rsi,%rdi,8), %rdx')==['8(%rsi,%rdi,8)','%rdx']
+assert shape(operand('%r12d'))=='gpr32'
+assert shape(operand('*%rdi'))=='*gpr64'
+assert operand('%fs:8(%rax)')['segment']=='%fs'
+assert operand('cell+8(%rip)')['base']=='%rip'
+assert m['expression']('.-symbol')['location_counter']
+print('scanner: quotes, comments, A64 immediates, SIB, register widths, expressions pass')
