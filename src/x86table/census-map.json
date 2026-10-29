@@ -6,7 +6,9 @@
     "census_spellings": 112,
     "census_forms": 189,
     "encoding_rows": 312,
-    "forms_with_candidates": 189
+    "forms_with_candidates": 191,
+    "aliases": 117,
+    "forms_outside_census": 2
   },
   "forms": [
     {
@@ -1953,6 +1955,36 @@
       "statements": [
         "invlpg  (%rdi)"
       ]
+    },
+    {
+      "observed_form": "inw gpr16,gpr16",
+      "spelling": "inw",
+      "family": "in",
+      "bits": 16,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "in",
+          "role": "dx_acc",
+          "bits": 16,
+          "mode": 64,
+          "sdm": {
+            "volume": "2A",
+            "section": "3.3 IN",
+            "page": "3-515",
+            "opcode_row": "ED IN accumulator16,port"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "inw %dx, %ax"
+      ],
+      "origin": "tests/ports/pax/boot/io.S",
+      "origin_commit": "pax eb6592de8ebe737fd039fd190b1f692fe47d99f0 (px76), outside the pinned census"
     },
     {
       "observed_form": "iretq ",
@@ -5333,6 +5365,36 @@
       "statements": [
         "outl    %eax, %dx"
       ]
+    },
+    {
+      "observed_form": "outw gpr16,gpr16",
+      "spelling": "outw",
+      "family": "out",
+      "bits": 16,
+      "source_bits": 0,
+      "modes": [
+        64
+      ],
+      "candidates": [
+        {
+          "family": "out",
+          "role": "acc_dx",
+          "bits": 16,
+          "mode": 64,
+          "sdm": {
+            "volume": "2B",
+            "section": "4.3 OUT",
+            "page": "4-178",
+            "opcode_row": "EF OUT accumulator16,port"
+          }
+        }
+      ],
+      "site_count": 1,
+      "statements": [
+        "outw %ax, %dx"
+      ],
+      "origin": "tests/ports/pax/boot/io.S",
+      "origin_commit": "pax eb6592de8ebe737fd039fd190b1f692fe47d99f0 (px76), outside the pinned census"
     },
     {
       "observed_form": "pause ",
