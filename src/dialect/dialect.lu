@@ -221,9 +221,10 @@ fn named(names: List[str], s: str) -> bool {
     false
 }
 
-/// Accepted census spellings; the encoder separately validates mnemonic × operand forms.
+/// Accepted census spellings and as02c's word ports (in inw out outw xorq); the encoder
+/// separately validates mnemonic × operand forms.
 pub fn mnemonics() -> List[str] {
-    "add addb addl addq and andb andl andq btl call callq clac cld cli cmpb cmpl cmpq cmpw cpuid decl decq divl divq fnstcw fxrstor64 fxsave64 hlt imulq inb incl incq inl int3 invlpg iretq ja jae jb jc je jle jmp jne jns jnz js jz lea leal leaq lgdt lidt ljmp lretq ltr mov movabs movabsq movb movdqu movl movq movsb movslq movsq movw movzbl movzwl negq nop orl orq outb outl pause pop popq push pushfq pushq rdmsr rdrand rdtsc ret setc shl shll shlq shrl shrq stac sti stmxcsr stosb stosq sub subl subq syscall sysretq test testb testl testq ud2 wrmsr xgetbv xor xorl xrstor64 xsave64 xsetbv cmp".
+    "add addb addl addq and andb andl andq btl call callq clac cld cli cmpb cmpl cmpq cmpw cpuid decl decq divl divq fnstcw fxrstor64 fxsave64 hlt imulq in inb incl incq inl int3 invlpg inw iretq ja jae jb jc je jle jmp jne jns jnz js jz lea leal leaq lgdt lidt ljmp lretq ltr mov movabs movabsq movb movdqu movl movq movsb movslq movsq movw movzbl movzwl negq nop orl orq out outb outl outw pause pop popq push pushfq pushq rdmsr rdrand rdtsc ret setc shl shll shlq shrl shrq stac sti stmxcsr stosb stosq sub subl subq syscall sysretq test testb testl testq ud2 wrmsr xgetbv xor xorl xorq xrstor64 xsave64 xsetbv cmp".
         words()
 }
 
@@ -235,6 +236,63 @@ pub fn directives() -> List[str] {
 
 fn fail(origin: lex.Origin, reason: str) -> lex.Failure {
     lex.Failure { origin: copy origin, reason: reason }
+}
+
+/// IN/OUT spellings; their port is DX or imm8 and their other operand the accumulator
+/// (Intel SDM vol.2A 3.3 IN p.3-515, vol.2B 4.3 OUT p.4-178).
+fn port_mnemonic(name: str) -> bool {
+    named(["in", "inb", "inw", "inl", "out", "outb", "outw", "outl"], name)
+}
+
+/// GNU as also spells the DX port `(%dx)`, spaces allowed inside (measured by as02c on the
+/// pinned GNU as 2.42); it names the register, never a memory reference.
+fn port_text(name: str, arg: str) -> str {
+    let s = arg.trim()
+    if port_mnemonic(name) && s.starts_with("(") && s.ends_with(")") && s.len > 2 {
+        if s[1..s.len - 1].trim() == "%dx" { return "%dx" }
+    }
+    arg
+}
+
+/// The port operand of IN (first) and OUT (last), the accumulator a suffix implies when the
+/// port is the only operand (GNU as 9.16.4.1 sizes by suffix), and the named refusals of
+/// R-as02c-1: a 32/64-bit register as the port, and a bare form with nothing to size it.
+fn port_operands(node: Node) -> List[Operand] ! {Syntax(lex.Failure)} {
+    var ops = copy node.operands
+    if !port_mnemonic(node.name) || ops.len == 0 { return ops }
+    let at = if node.name.starts_with("in") then 0 else ops.len - 1
+    let port = copy ops[at]
+    if port.kind == "register" &&
+        port.reg.family == "gpr" &&
+        port.reg.code == 2 &&
+        port.reg.bits > 16 {
+        return Syntax(
+            fail(
+                node.origin,
+                "port_register {port.reg.name}: SDM vol.2A 3.3 IN, vol.2B 4.3 OUT take the port in DX or imm8",
+            ),
+        )
+    }
+    if ops.len != 1 { return ops }
+    if port.kind != "immediate" && !(port.kind == "register" && port.reg.name == "%dx") {
+        return ops
+    }
+    var acc = ""
+    if node.name.ends_with("b") { acc = "%al" }
+    if node.name.ends_with("w") { acc = "%ax" }
+    if node.name.ends_with("l") { acc = "%eax" }
+    if acc.len == 0 {
+        return Syntax(
+            fail(
+                node.origin,
+                "implicit_operand_size {node.name}: GNU as 9.16.4.1 (no suffix and no accumulator to size the port)",
+            ),
+        )
+    }
+    let implied = operand(acc) else {
+        return Syntax(fail(node.origin, "bad_operand {acc}: SDM vol.2A §2.1"))
+    }
+    if node.name.starts_with("in") then [port, implied] else [implied, port]
 }
 
 /// Parse labels and the statement head, before expanding macro bodies.
@@ -349,7 +407,7 @@ pub fn statement(row: lex.Statement) -> Node ! {Syntax(lex.Failure)} {
         return Syntax(fail(row.origin, "unknown_mnemonic {node.name}: SDM vol.2 instruction set"))
     }
     for arg in node.arguments {
-        let value = operand(arg) else {
+        let value = operand(port_text(node.name, arg)) else {
             return Syntax(
                 fail(
                     row.origin,
@@ -359,5 +417,6 @@ pub fn statement(row: lex.Statement) -> Node ! {Syntax(lex.Failure)} {
         }
         (mut node.operands).push(value)
     }
+    node.operands = port_operands(node)?
     node
 }
