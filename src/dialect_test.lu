@@ -78,6 +78,28 @@ fn main() -> int ! {Syntax(lex.Failure), bad_operands, bad_register} {
             a.arguments[0] == "X" &&
             a.arguments[1] == "(2+3)",
     )
+    // as02c: GNU as's (%dx) spelling and the accumulator a suffixed IN/OUT implies.
+    let ports = lex.source(
+        "inw ( %dx )\noutb $0x61\noutl %eax,(%dx)\nin %dx,%ax\nxorq %rax,%rax\n",
+        "ports.S",
+    )?
+    let inw = dialect.statement(ports[0])?
+    assert(inw.operands.len == 2 && inw.operands[0].reg.name == "%dx")
+    assert(inw.operands[1].kind == "register" && inw.operands[1].reg.name == "%ax")
+    let outb = dialect.statement(ports[1])?
+    assert(outb.operands.len == 2 && outb.operands[0].reg.name == "%al")
+    assert(outb.operands[1].kind == "immediate" && outb.operands[1].displacement == "0x61")
+    let outl = dialect.statement(ports[2])?
+    assert(outl.operands.len == 2 && outl.operands[1].kind == "register")
+    assert(outl.operands[1].reg.name == "%dx")
+    assert(dialect.statement(ports[3])?.operands.len == 2)
+    assert(dialect.statement(ports[4])?.operands.len == 2)
+    for text in ["in %dx", "out $0x60", "inw %edx,%ax", "outw %ax,%rdx", "movw %ax,(%dx)"] {
+        let input = lex.source(text, "port.S")?
+        var refused = false
+        let _ = dialect.statement(input[0]) else { refused = true; dialect.statement(rows[0])? }
+        assert(refused)
+    }
     let chars = lex.source(".byte '#; .byte ';\n", "chars.S")?
     assert(chars.len == 2 && chars[0].text == ".byte '#" && chars[1].text == ".byte ';")
     print(
