@@ -1,0 +1,302 @@
+#!/usr/bin/env python3
+"""The word ports (as02c): inw, outw, xorq and GNU as's implicit port spellings.
+
+Encoding rows: each statement is assembled alone by target/clef and by the
+pinned GNU as. Section contents, relocations and symbols must agree, and the
+.text bytes must equal the bytes as02c measured on the oracle
+(notes/as02c/spellings.json), so a moved oracle is red too.
+Refusal rows: clef must refuse by the named reason, exit 1 and leave the
+destination untouched. The oracle's own verdict is checked as recorded; a
+spelling GNU as accepts and clef refuses is listed by name (R-as02c-1).
+Fixtures: every source in tests/ports/sources.json (PAX boot/io.S at px76's
+head, pax eb6592de) must match its sha256 and assemble byte-identical to GNU as,
+twice the same. Census map: each form a fixture adds to the pinned census has an
+entry whose SDM rows resolve in rows.lu with the same provenance.
+
+Intel SDM 325383-086US: vol.2A 3.3 IN p.3-515; vol.2B 4.3 OUT p.4-178; vol.2D
+6.1 XOR p.6-40; vol.2A 2.1.1 (66H operand-size override), 2.2.1 (REX.W).
+GNU as manual 9.16.4.1 Instruction Naming. No assembler source is read.
+"""
+import hashlib
+import importlib.machinery
+import importlib.util
+import json
+import pathlib
+import re
+import subprocess
+from elf import ELF, differences
+
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+out = ROOT / 'target/evidence/ports'
+out.mkdir(parents=True, exist_ok=True)
+clef = ROOT / 'target/clef'
+
+# Assembled in .code64 and .code32: the SDM's IN/OUT rows are valid in both.
+PORT_ROWS = [
+    # SDM 16-bit forms: 66H selects the non-default (16-bit) operand size.
+    ('inw %dx,%ax', '66ed'), ('inw $0x60,%ax', '66e560'),
+    ('inw $0,%ax', '66e500'), ('inw $255,%ax', '66e5ff'),
+    ('outw %ax,%dx', '66ef'), ('outw %ax,$0x60', '66e760'),
+    ('outw %ax,$0', '66e700'), ('outw %ax,$255', '66e7ff'),
+    ('.set PM1_CNT,0x64\ninw $PM1_CNT,%ax', '66e564'),
+    ('.set PM1_CNT,0x64\noutw %ax,$PM1_CNT', '66e764'),
+    # GNU as's implicit spellings, measured: (%dx) names DX; the suffix implies the accumulator.
+    ('inw (%dx),%ax', '66ed'), ('inw ( %dx ),%ax', '66ed'), ('inw (%dx ),%ax', '66ed'),
+    ('inw %dx', '66ed'), ('inw (%dx)', '66ed'), ('inw $0x60', '66e560'),
+    ('outw %ax,(%dx)', '66ef'), ('outw %ax, ( %dx )', '66ef'),
+    ('outw %dx', '66ef'), ('outw (%dx)', '66ef'), ('outw $0x60', '66e760'),
+    # Bare in/out take their width from the accumulator (GNU as manual 9.16.4.1).
+    ('in %dx,%ax', '66ed'), ('in (%dx),%ax', '66ed'), ('in $0x60,%ax', '66e560'),
+    ('out %ax,%dx', '66ef'), ('out %ax,(%dx)', '66ef'), ('out %ax,$0x60', '66e760'),
+    ('in %dx,%al', 'ec'), ('in %dx,%eax', 'ed'), ('in $0x60,%al', 'e460'),
+    ('in $0x60,%eax', 'e560'), ('out %al,%dx', 'ee'), ('out %eax,%dx', 'ef'),
+    ('out %al,$0x60', 'e660'), ('out %eax,$0x60', 'e760'),
+    # The byte and long neighbours share the same operand rules.
+    ('inb %dx', 'ec'), ('inb (%dx),%al', 'ec'), ('inb $0x60', 'e460'),
+    ('inl %dx', 'ed'), ('inl (%dx),%eax', 'ed'), ('inl $0x60', 'e560'),
+    ('outb %dx', 'ee'), ('outb %al,(%dx)', 'ee'), ('outb $0x60', 'e660'),
+    ('outl %dx', 'ef'), ('outl %eax,(%dx)', 'ef'), ('outl $0x60', 'e760'),
+]
+
+# REX.W forms: valid in 64-bit mode only (SDM vol.2D XOR, "N.E." in compat/legacy).
+XORQ_ROWS = [
+    ('xorq %rax,%rax', '4831c0'), ('xorq %rcx,%rdx', '4831ca'),
+    ('xorq %r8,%r15', '4d31c7'), ('xorq %r12,%r13', '4d31e5'),
+    ('xorq %rcx,(%rax)', '483108'), ('xorq (%rax),%rcx', '483308'),
+    ('xorq %rax,8(%rsp)', '4831442408'), ('xorq 8(%rsp),%rax', '4833442408'),
+    ('xorq %r9,-16(%rbp,%rcx,8)', '4c314ccdf0'), ('xorq -16(%rbp,%rcx,8),%r9', '4c334ccdf0'),
+    ('xorq %rax,(%r12)', '49310424'), ('xorq (%r13),%rax', '49334500'),
+    ('xorq $1,%rcx', '4883f101'), ('xorq $-1,%rax', '4883f0ff'),
+    ('xorq $127,%rax', '4883f07f'), ('xorq $-128,%rax', '4883f080'),
+    ('xorq $128,%rax', '483580000000'), ('xorq $128,%rcx', '4881f180000000'),
+    ('xorq $256,%rax', '483500010000'), ('xorq $256,%rcx', '4881f100010000'),
+    ('xorq $0x7fffffff,%rdx', '4881f2ffffff7f'), ('xorq $-0x80000000,%rdx', '4881f200000080'),
+    ('xorq $0xffffffffffffffff,%rax', '4883f0ff'),
+    ('xorq $1,(%rax)', '48833001'), ('xorq $256,(%rax)', '48813000010000'),
+    ('xorq $1,8(%rsp)', '488374240801'), ('xorq $256,%r11', '4981f300010000'),
+    # Relocated operands: RIP-relative memory and a symbolic immediate.
+    ('xorq %rax,item(%rip)\n.data\nitem: .quad 0', '48310500000000'),
+    ('xorq item(%rip),%rcx\n.data\nitem: .quad 0', '48330d00000000'),
+    ('xorq $1,item(%rip)\n.data\nitem: .quad 0', '4883350000000001'),
+    ('xorq external(%rip),%rax', '48330500000000'),
+    ('xorq $external,%rax', '483500000000'),
+]
+
+A = {64: None, 32: None}      # the oracle refuses in both modes
+W = {64: None}                # 64-bit only
+# (statement, clef's refusal, the oracle's verdict per mode: None refuses, hex accepts)
+REFUSALS = [
+    ('inw %ax', 'bad_operands', A), ('inw', 'bad_operands', A),
+    ('inw $256,%ax', 'encoding_range', A), ('inw $-1,%ax', 'encoding_range', A),
+    ('inw 0x60,%ax', 'bad_operands', A), ('inw %dx,%eax', 'bad_operands', A),
+    ('inw %dx,%bx', 'bad_operands', A), ('inw %dx,%al', 'bad_operands', A),
+    ('inw %cx,%ax', 'bad_operands', A), ('inw %ax,%dx', 'bad_operands', A),
+    ('inw (%edx),%ax', 'bad_operands', A), ('inw %dx,%ax,%ax', 'bad_operands', A),
+    ('inw *%dx,%ax', 'bad_operands', A), ('inw 0(%dx),%ax', 'bad_operand 0(%dx)', A),
+    ('inw %dl,%ax', 'bad_operands', A),
+    ('outw %ax', 'bad_operands', A), ('outw', 'bad_operands', A),
+    ('outw %ax,$256', 'encoding_range', A), ('outw %ax,$-1', 'encoding_range', A),
+    ('outw %ax,0x60', 'bad_operands', A), ('outw %eax,%dx', 'bad_operands', A),
+    ('outw %bx,%dx', 'bad_operands', A), ('outw %al,%dx', 'bad_operands', A),
+    ('outw %ax,%cx', 'bad_operands', A), ('outw %dx,%ax', 'bad_operands', A),
+    ('outw %ax,(%edx)', 'bad_operands', A), ('outw $0x60,%ax', 'bad_operands', A),
+    ('in %dx,%bl', 'bad_operands', A), ('in %al', 'bad_operands', A),
+    ('in %dx,%rax', 'unknown_form', A), ('out %rax,%dx', 'unknown_form', A),
+    ('movw %ax,(%dx)', 'bad_operand (%dx)', A),
+    ('xorq %rax,%rax', 'unknown_form', {32: None}),
+    ('xorq $0x80000000,%rax', 'encoding_range', W),
+    ('xorq $0x100000000,%rcx', 'encoding_range', W),
+    ('lock xorq %rax,%rcx', 'bad_operands', W), ('xorq %eax,%rax', 'bad_operands', W),
+    ('xorq %rax,%eax', 'bad_operands', W), ('xorq %ax,%ax', 'bad_operands', W),
+    ('xorq %rax', 'bad_operands', W), ('xorq', 'bad_operands', W),
+    ('xorq (%rax),(%rcx)', 'bad_operands', W), ('xorq %ah,%rax', 'bad_operands', W),
+    # Named: GNU as accepts these and clef refuses them (R-as02c-1). A 32/64-bit
+    # register is not the SDM's port operand (DX); a bare one-operand form has
+    # nothing to size it (GNU as warns and takes long, manual 9.16.4.1).
+    ('inw %edx,%ax', 'port_register %edx', {64: '66ed', 32: '66ed'}),
+    ('inw %edx', 'port_register %edx', {64: '66ed', 32: '66ed'}),
+    ('outw %ax,%edx', 'port_register %edx', {64: '66ef', 32: '66ef'}),
+    ('outw %edx', 'port_register %edx', {64: '66ef', 32: '66ef'}),
+    ('in %edx,%ax', 'port_register %edx', {64: '66ed', 32: '66ed'}),
+    ('out %ax,%edx', 'port_register %edx', {64: '66ef', 32: '66ef'}),
+    ('inb %edx,%al', 'port_register %edx', {64: 'ec', 32: 'ec'}),
+    ('inl %edx,%eax', 'port_register %edx', {64: 'ed', 32: 'ed'}),
+    ('outb %al,%edx', 'port_register %edx', {64: 'ee', 32: 'ee'}),
+    ('outl %eax,%edx', 'port_register %edx', {64: 'ef', 32: 'ef'}),
+    ('inw %rdx,%ax', 'port_register %rdx', {64: '66ed', 32: None}),
+    ('outw %ax,%rdx', 'port_register %rdx', {64: '66ef', 32: None}),
+    ('in %dx', 'implicit_operand_size in', {64: 'ed', 32: 'ed'}),
+    ('in (%dx)', 'implicit_operand_size in', {64: 'ed', 32: 'ed'}),
+    ('in $0x60', 'implicit_operand_size in', {64: 'e560', 32: 'e560'}),
+    ('out %dx', 'implicit_operand_size out', {64: 'ef', 32: 'ef'}),
+    ('out (%dx)', 'implicit_operand_size out', {64: 'ef', 32: 'ef'}),
+    ('out $0x60', 'implicit_operand_size out', {64: 'e760', 32: 'e760'}),
+    # Named: LOCK is outside clef's dialect for every family (emit takes only REP).
+    ('lock xorq %rax,(%rcx)', 'bad_operands', {64: 'f0483101'}),
+    ('lock xorq $1,(%rcx)', 'bad_operands', {64: 'f048833101'}),
+]
+
+
+def text_bytes(path):
+    return next((s[-1] for s in ELF(path).normalized()['sections'] if s[0] == '.text'), '')
+
+
+def assemble(stem, source):
+    src = out / (stem + '.S')
+    src.write_text(source)
+    gas_o = out / (stem + '.gas.o')
+    clef_o = out / (stem + '.clef.o')
+    gas_o.unlink(missing_ok=True)
+    clef_o.write_bytes(b'unchanged')
+    gas = subprocess.run(['as', '--64', str(src), '-o', str(gas_o)], capture_output=True, text=True)
+    ours = subprocess.run([str(clef), '--64', str(src), '-o', str(clef_o)],
+                          capture_output=True, text=True, timeout=60)
+    return gas, ours, gas_o, clef_o
+
+
+def label(text, mode):
+    return f"{text.splitlines()[-1] if text.startswith('.set') else text.splitlines()[0]} [.code{mode}]"
+
+
+results = {'encoding': [], 'refusals': [], 'fixtures': [], 'census_map': []}
+index = 0
+for rows, modes in ((PORT_ROWS, (64, 32)), (XORQ_ROWS, (64,))):
+    for text, want in rows:
+        for mode in modes:
+            index += 1
+            gas, ours, gas_o, clef_o = assemble(f'enc-{index:03d}-{mode}', f'.code{mode}\n{text}\n')
+            got_gas = text_bytes(gas_o) if gas.returncode == 0 else None
+            got = text_bytes(clef_o) if ours.returncode == 0 else None
+            diff = differences(ELF(gas_o), ELF(clef_o)) if got_gas is not None and got is not None else ['unassembled']
+            ok = got_gas == want and got == want and not diff
+            row = {'name': label(text, mode), 'source': text, 'mode': mode, 'oracle_measured': want,
+                   'gas': got_gas, 'clef': got, 'clef_status': ours.returncode,
+                   'clef_stderr': ours.stderr.strip(), 'differences': diff, 'equal': ok}
+            results['encoding'].append(row)
+            print(('PASS' if ok else 'FAIL'), 'encoding', row['name'], want if ok else
+                  f"measured {want} gas {got_gas} clef {got} (clef exit {ours.returncode}) {ours.stderr.strip()[:160]} {diff if got and got_gas else ''}",
+                  flush=True)
+
+for text, reason, verdicts in REFUSALS:
+    for mode, gas_want in verdicts.items():
+        index += 1
+        gas, ours, gas_o, clef_o = assemble(f'ref-{index:03d}-{mode}', f'.code{mode}\n{text}\n')
+        got_gas = text_bytes(gas_o) if gas.returncode == 0 else None
+        untouched = clef_o.read_bytes() == b'unchanged'
+        ok = ours.returncode == 1 and reason in ours.stderr and untouched and got_gas == gas_want
+        row = {'name': label(text, mode), 'source': text, 'mode': mode, 'reason': reason,
+               'gas_accepts': gas_want, 'gas': got_gas, 'gas_stderr': gas.stderr.strip(),
+               'clef_status': ours.returncode, 'clef_stderr': ours.stderr.strip(),
+               'destination_untouched': untouched, 'refused_as_named': ok}
+        results['refusals'].append(row)
+        print(('PASS' if ok else 'FAIL'), 'refusal', row['name'], reason,
+              '(GNU as accepts: ' + gas_want + ')' if gas_want else '(GNU as refuses too)',
+              '' if ok else f"clef exit {ours.returncode} {ours.stderr.strip()[:160]} gas {got_gas} untouched {untouched}",
+              flush=True)
+
+sources = json.loads((ROOT / 'tests/ports/sources.json').read_text())['files']
+for entry in sources:
+    source = ROOT / 'tests/ports' / entry['path']
+    name = f"{entry['repository'].split('/')[-1]}@{entry['commit'][:8]}:{entry['source_path']}"
+    digest = hashlib.sha256(source.read_bytes()).hexdigest()
+    stem = 'fixture-' + re.sub(r'[^A-Za-z0-9]+', '-', entry['path'])
+    expected = out / (stem + '.gas.o')
+    actual = out / (stem + '.clef.o')
+    again = out / (stem + '.again.o')
+    for p in (expected, actual, again):
+        p.unlink(missing_ok=True)
+    gas = subprocess.run(['as', '--64', str(source), '-o', str(expected)], capture_output=True, text=True)
+    ours = subprocess.run([str(clef), '--64', str(source), '-o', str(actual)], capture_output=True, text=True, timeout=60)
+    row = {'name': name, 'sha256': digest, 'sha256_pinned': digest == entry['sha256'],
+           'gas_status': gas.returncode, 'clef_status': ours.returncode, 'clef_stderr': ours.stderr.strip()}
+    detail = []
+    if gas.returncode == 0 and ours.returncode == 0:
+        row['differences'] = differences(ELF(expected), ELF(actual))
+        wanted = ELF(expected).normalized()
+        got = ELF(actual).normalized()
+        gs = {s[0]: s for s in wanted['sections']}
+        cs = {s[0]: s for s in got['sections']}
+        for sec in sorted(gs.keys() | cs.keys()):
+            a, b = gs.get(sec), cs.get(sec)
+            if a == b:
+                continue
+            if a is None or b is None:
+                detail.append({'section': sec, 'missing': a is None, 'extra': b is None})
+                continue
+            av, bv = bytes.fromhex(a[-1]), bytes.fromhex(b[-1])
+            at = next((i for i, (x, y) in enumerate(zip(av, bv)) if x != y), min(len(av), len(bv)))
+            detail.append({'section': sec, 'first_byte': at, 'gas_near': av[at:at + 12].hex(),
+                           'clef_near': bv[at:at + 12].hex(), 'gas_size': len(av), 'clef_size': len(bv)})
+        for key in ('relocations', 'symbols'):
+            a = {tuple(x) for x in wanted[key]}
+            b = {tuple(x) for x in got[key]}
+            if a != b:
+                detail.append({key: {'missing': sorted(a - b)[:12], 'extra': sorted(b - a)[:12]}})
+        subprocess.run([str(clef), '--64', str(source), '-o', str(again)], check=True, timeout=60)
+        row['deterministic'] = again.read_bytes() == actual.read_bytes()
+        row['text_bytes'] = text_bytes(expected)
+    row['details'] = detail
+    row['equal'] = (row['sha256_pinned'] and gas.returncode == 0 and ours.returncode == 0
+                    and not row.get('differences') and row.get('deterministic', False))
+    results['fixtures'].append(row)
+    print(('PASS' if row['equal'] else 'FAIL'), 'fixture', name,
+          'byte-identical to GNU as, deterministic' if row['equal'] else
+          f"sha256 {'ok' if row['sha256_pinned'] else 'MOVED'}; clef exit {ours.returncode} {ours.stderr.strip()[:200]} {json.dumps(detail)}",
+          flush=True)
+
+# The census map carries each form a fixture adds to the pinned census.
+loader = importlib.machinery.SourceFileLoader('clef_census', str(ROOT / 'tools/census'))
+spec = importlib.util.spec_from_loader('clef_census', loader)
+census = importlib.util.module_from_spec(spec)
+loader.exec_module(census)
+observed = census.inventory(ROOT / 'tests/ports')['forms']
+pinned = set(json.loads((ROOT / 'census/org-asm.json').read_text())['forms'])
+cmap = json.loads((ROOT / 'src/x86table/census-map.json').read_text())
+entries = {f['observed_form']: f for f in cmap['forms']}
+table = [r.split('|') for r in re.findall(r'"([^"\n]+\|[^"\n]+)"', (ROOT / 'src/x86table/rows.lu').read_text())]
+spellings = re.findall(r'spelling: "([^"]+)"', (ROOT / 'src/x86table/aliases.lu').read_text())
+outside = [f for f in cmap['forms'] if f.get('origin')]
+for form in sorted(set(observed) - pinned):
+    sites = observed[form]
+    entry = entries.get(form)
+    problems = []
+    if entry is None:
+        problems.append('no census-map entry')
+    else:
+        if entry.get('origin') != 'tests/ports/' + sites[0]['file']:
+            problems.append('origin ' + str(entry.get('origin')))
+        if entry['site_count'] != len(sites):
+            problems.append(f"site_count {entry['site_count']} != {len(sites)}")
+        if entry['statements'] != sorted({s['text'] for s in sites}):
+            problems.append('statements differ')
+        if entry['modes'] != sorted({s['mode'] for s in sites}):
+            problems.append('modes differ')
+        if entry['spelling'] not in spellings:
+            problems.append('spelling not in aliases.lu')
+        for c in entry['candidates']:
+            hit = [r for r in table if r[4] == c['family'] and r[5] == c['role'] and int(r[6]) == c['bits']
+                   and str(c['mode']) in r[7].split(',')
+                   and [r[0], r[1], r[2], r[3]] == [c['sdm']['volume'], c['sdm']['section'], c['sdm']['page'], c['sdm']['opcode_row']]]
+            if len(hit) != 1:
+                problems.append('candidate does not resolve: ' + json.dumps(c))
+    row = {'form': form, 'sites': sites, 'problems': problems, 'pass': not problems}
+    results['census_map'].append(row)
+    print(('PASS' if not problems else 'FAIL'), 'census-map', form, '; '.join(problems), flush=True)
+counts = cmap['counts']
+counted = counts.get('forms_outside_census') == len(outside) and counts.get('aliases') == len(spellings)
+print(('PASS' if counted else 'FAIL'), 'census-map counts', f"aliases {counts.get('aliases')} (aliases.lu {len(spellings)}),",
+      f"forms_outside_census {counts.get('forms_outside_census')} (entries {len(outside)})", flush=True)
+
+(out / 'rows.json').write_text(json.dumps(results, indent=2) + '\n')
+enc = results['encoding']
+ref = results['refusals']
+fix = results['fixtures']
+cm = results['census_map']
+accepted = [r for r in ref if r['gas_accepts']]
+print(f"ports: {sum(r['equal'] for r in enc)}/{len(enc)} encoding rows byte-identical to pinned GNU as; "
+      f"{sum(r['refused_as_named'] for r in ref)}/{len(ref)} refusals named ({len(accepted)} that GNU as accepts); "
+      f"{sum(r['equal'] for r in fix)}/{len(fix)} fixtures byte-identical; census map {sum(r['pass'] for r in cm)}/{len(cm)} new forms",
+      flush=True)
+ok = (all(r['equal'] for r in enc) and all(r['refused_as_named'] for r in ref) and fix and all(r['equal'] for r in fix)
+      and cm and all(r['pass'] for r in cm) and counted)
+raise SystemExit(0 if ok else 1)
