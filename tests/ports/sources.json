@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "definition": "Assembly sources outside the pinned census (census/repositories.json) that a clef lane must assemble byte-identical to the pinned GNU as. Each is copied byte for byte from its repository at the named commit; tools/ports-test checks the sha256 and the oracle.",
+  "files": [
+    {
+      "path": "pax/boot/io.S",
+      "repository": "wolffe-lang/pax",
+      "commit": "eb6592de8ebe737fd039fd190b1f692fe47d99f0",
+      "branch": "px76",
+      "source_path": "boot/io.S",
+      "git_blob": "71d28946f5b40c7c97716d3594ae1dc2fe2c1974",
+      "sha256": "84d2de103462059802814c903ef6089d52df56eeddf41361a8005882ee886f34",
+      "licence": "census/licenses/pax",
+      "lane": "as02c",
+      "why": "pax_inw/pax_outw (the 16-bit ACPI PM1 control registers, kernel/power); clef 996a3ccd refused inw at line 86 (pax run 40832410617, kernel-as K5)"
+    }
+  ]
+}
