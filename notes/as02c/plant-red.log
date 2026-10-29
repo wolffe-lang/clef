@@ -1,0 +1,64 @@
+start 2026-10-29T07:04:30-04:00 head 6a449b94ddffe5362f725ca5e8062c7675533084
+GATE planner: PASS
+GATE format: PASS
+GATE build: PASS
+GATE dialect-build: PASS
+GATE assembly-build: PASS
+GATE table-build: PASS
+GATE unit: FAIL
+GATE native-logic: FAIL
+GATE checked: PASS
+GATE lupin: PASS
+GATE checked-dialect: PASS
+GATE lupin-dialect: PASS
+GATE dialect: PASS
+GATE checked-expression: PASS
+GATE lupin-expression: PASS
+GATE checked-expansion: PASS
+GATE lupin-expansion: PASS
+GATE expression: PASS
+GATE expansion: PASS
+GATE object: PASS
+GATE checked-machine: FAIL
+GATE lupin-machine: FAIL
+GATE checked-assembly: PASS
+GATE lupin-assembly: PASS
+GATE table: FAIL
+GATE layout: PASS
+GATE assembler: PASS
+GATE ports: FAIL
+GATE census: PASS
+GATE scanner: PASS
+GATE differ: PASS
+GATE proof: PASS
+GATE roundtrip: PASS
+GATE corpus: PASS
+table: 528/530 row×mode byte differentials; 311/312 rows witnessed
+assembler: 43/43 x86 census sources exact and deterministic; census form coverage 189/189; AArch64 deferred by name
+ports: 110/126 encoding rows byte-identical to pinned GNU as; 113/113 refusals named (36 that GNU as accepts); 0/1 fixtures byte-identical; census map 2/2 new forms
+FAIL {"row": 262, "family": "in", "role": "dx_acc", "bits": 16, "mode": 32, "source": "inw %dx,%ax", "gas_status": 0, "clef_status": 0, "gas_bytes": "66ed", "clef_bytes": "ed", "equal": false, "diagnostic": "", "provenance": ["2A", "3.3 IN", "3-515", "ED IN accumulator16,port"]}
+FAIL {"row": 262, "family": "in", "role": "dx_acc", "bits": 16, "mode": 64, "source": "inw %dx,%ax", "gas_status": 0, "clef_status": 0, "gas_bytes": "66ed", "clef_bytes": "ed", "equal": false, "diagnostic": "", "provenance": ["2A", "3.3 IN", "3-515", "ED IN accumulator16,port"]}
+FAIL encoding inw %dx,%ax [.code64] measured 66ed gas 66ed clef ed (clef exit 0)  {'sections': {'left': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 2, 1, '66ed')], 'right': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 1, 1, 'ed')]}}
+FAIL encoding inw %dx,%ax [.code32] measured 66ed gas 66ed clef ed (clef exit 0)  {'sections': {'left': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 2, 1, '66ed')], 'right': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 1, 1, 'ed')]}}
+FAIL encoding inw (%dx),%ax [.code64] measured 66ed gas 66ed clef ed (clef exit 0)  {'sections': {'left': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 2, 1, '66ed')], 'right': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 1, 1, 'ed')]}}
+FAIL encoding inw (%dx),%ax [.code32] measured 66ed gas 66ed clef ed (clef exit 0)  {'sections': {'left': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 2, 1, '66ed')], 'right': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 1, 1, 'ed')]}}
+FAIL encoding inw ( %dx ),%ax [.code64] measured 66ed gas 66ed clef ed (clef exit 0)  {'sections': {'left': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 2, 1, '66ed')], 'right': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 1, 1, 'ed')]}}
+FAIL encoding inw ( %dx ),%ax [.code32] measured 66ed gas 66ed clef ed (clef exit 0)  {'sections': {'left': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 2, 1, '66ed')], 'right': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 1, 1, 'ed')]}}
+FAIL encoding inw (%dx ),%ax [.code64] measured 66ed gas 66ed clef ed (clef exit 0)  {'sections': {'left': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 2, 1, '66ed')], 'right': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 1, 1, 'ed')]}}
+FAIL encoding inw (%dx ),%ax [.code32] measured 66ed gas 66ed clef ed (clef exit 0)  {'sections': {'left': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 2, 1, '66ed')], 'right': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 1, 1, 'ed')]}}
+FAIL encoding inw %dx [.code64] measured 66ed gas 66ed clef ed (clef exit 0)  {'sections': {'left': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 2, 1, '66ed')], 'right': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 1, 1, 'ed')]}}
+FAIL encoding inw %dx [.code32] measured 66ed gas 66ed clef ed (clef exit 0)  {'sections': {'left': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 2, 1, '66ed')], 'right': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 1, 1, 'ed')]}}
+FAIL encoding inw (%dx) [.code64] measured 66ed gas 66ed clef ed (clef exit 0)  {'sections': {'left': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 2, 1, '66ed')], 'right': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 1, 1, 'ed')]}}
+FAIL encoding inw (%dx) [.code32] measured 66ed gas 66ed clef ed (clef exit 0)  {'sections': {'left': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 2, 1, '66ed')], 'right': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 1, 1, 'ed')]}}
+FAIL encoding in %dx,%ax [.code64] measured 66ed gas 66ed clef ed (clef exit 0)  {'sections': {'left': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 2, 1, '66ed')], 'right': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 1, 1, 'ed')]}}
+FAIL encoding in %dx,%ax [.code32] measured 66ed gas 66ed clef ed (clef exit 0)  {'sections': {'left': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 2, 1, '66ed')], 'right': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 1, 1, 'ed')]}}
+FAIL encoding in (%dx),%ax [.code64] measured 66ed gas 66ed clef ed (clef exit 0)  {'sections': {'left': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 2, 1, '66ed')], 'right': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 1, 1, 'ed')]}}
+FAIL encoding in (%dx),%ax [.code32] measured 66ed gas 66ed clef ed (clef exit 0)  {'sections': {'left': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 2, 1, '66ed')], 'right': [('.bss', 8, 3, 0, 1, ''), ('.data', 1, 3, 0, 1, ''), ('.text', 1, 6, 1, 1, 'ed')]}}
+FAIL fixture pax@eb6592de:boot/io.S sha256 ok; clef exit 0  [{"section": ".text", "first_byte": 26, "gas_near": "66edc389fa89f066efc3fa48", "clef_near": "edc389fa89f066efc3fa4883", "gas_size": 86, "clef_size": 85}, {"symbols": {"missing": [["pax_big", 1, 2, ".text", 75, 11, 0], ["pax_exit", 1, 2, ".text", 69, 6, 0], ["pax_halt", 1, 2, ".text", 59, 10, 0], ["pax_inw", 1, 2, ".text", 22, 7, 0], ["pax_outw", 1, 2, ".text", 29, 7, 0], ["pax_triple_fault", 1, 2, ".text", 36, 23, 0]], "extra": [["pax_big", 1, 2, ".text", 74, 11, 0], ["pax_exit", 1, 2, ".text", 68, 6, 0], ["pax_halt", 1, 2, ".text", 58, 10, 0], ["pax_inw", 1, 2, ".text", 22, 6, 0], ["pax_outw", 1, 2, ".text", 28, 7, 0], ["pax_triple_fault", 1, 2, ".text", 35, 23, 0]]}}]
+  at /work/src/machine_test.lu:90:9
+{"commit":"cf0c13d","diagnostics":[],"file":"src/machine_test.lu","impl":"wolfgang","impl_version":"0.2.35","phase_reached":"run","protocol":1,"seeded":false,"stdout_inline":null,"stdout_sha256":null,"verdict":"trap(assert)","warnings":[],"x-trap-clause":"mem.ub.defined","x-trap-pos":[90,9],"x-trap-span":[3080,3165]}
+src/machine_test.lu: trap(assert): assertion failed [conf.trap.map] at 90:9
+subprocess.CalledProcessError: Command '['/work/target/native-machine_test']' returned non-zero exit status 134.
+test src/machine_test.lu::main ... FAILED (trap(assert))
+wolf test: 5 passed; 1 failed; 0 rejected; 0 unsupported; 0 filtered out
+end 2026-10-29T07:04:48-04:00 exit 1

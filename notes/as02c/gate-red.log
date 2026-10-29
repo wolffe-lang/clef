@@ -1,0 +1,44 @@
+start 2026-10-29T07:00:34-04:00 head e768a32584c7149f9ae0e88b11a4e260e136fe46
+GATE planner: PASS
+GATE format: PASS
+GATE build: PASS
+GATE dialect-build: PASS
+GATE assembly-build: PASS
+GATE table-build: PASS
+GATE unit: FAIL
+GATE native-logic: FAIL
+GATE checked: PASS
+GATE lupin: PASS
+GATE checked-dialect: FAIL
+GATE lupin-dialect: FAIL
+GATE dialect: PASS
+GATE checked-expression: PASS
+GATE lupin-expression: PASS
+GATE checked-expansion: PASS
+GATE lupin-expansion: PASS
+GATE expression: PASS
+GATE expansion: PASS
+GATE object: PASS
+GATE checked-machine: FAIL
+GATE lupin-machine: FAIL
+GATE checked-assembly: PASS
+GATE lupin-assembly: PASS
+GATE table: PASS
+GATE layout: PASS
+GATE assembler: PASS
+GATE ports: FAIL
+GATE census: PASS
+GATE scanner: PASS
+GATE differ: PASS
+GATE proof: PASS
+GATE roundtrip: PASS
+GATE corpus: PASS
+FAIL fixture pax@eb6592de:boot/io.S sha256 ok; clef exit 1 clef: Assembly(Failure { origin: Origin { file: /work/tests/ports/pax/boot/io.S, line: 86, chain:  }, reason: unknown_mnemonic inw: SDM vol.2 instruction set }) []
+FAIL census-map inw gpr16,gpr16 no census-map entry
+FAIL census-map outw gpr16,gpr16 no census-map entry
+FAIL census-map counts aliases None (aliases.lu 112), forms_outside_census None (entries 0)
+ports: 0/126 encoding rows byte-identical to pinned GNU as; 2/113 refusals named (36 that GNU as accepts); 0/1 fixtures byte-identical; census map 0/2 new forms
+FAIL encoding inw %dx,%ax [.code64] measured 66ed gas 66ed clef None (clef exit 1) clef: Assembly(Failure { origin: Origin { file: /work/target/evidence/ports/enc-001-64.S, line: 2, chain:  }, reason: unknown_mnemonic inw: SDM vol.2 instructio 
+FAIL encoding inw %dx,%ax [.code32] measured 66ed gas 66ed clef None (clef exit 1) clef: Assembly(Failure { origin: Origin { file: /work/target/evidence/ports/enc-002-32.S, line: 2, chain:  }, reason: unknown_mnemonic inw: SDM vol.2 instructio 
+FAIL encoding inw $0x60,%ax [.code64] measured 66e560 gas 66e560 clef None (clef exit 1) clef: Assembly(Failure { origin: Origin { file: /work/target/evidence/ports/enc-003-64.S, line: 2, chain:  }, reason: unknown_mnemonic inw: SDM vol.2 instructio 
+end 2026-10-29T07:00:51-04:00 exit 1
