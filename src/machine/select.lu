@@ -187,6 +187,15 @@ pub fn choose(
                 }
             } else if family == "in" || family == "out" {
                 if ops.len != 2 { return bad_operands }
+                // A bare in/out is sized by its accumulator, never by the DX port (GNU as 9.16.4.1).
+                let acc = if family == "in" then 1 else 0
+                if alias.bits == 0 {
+                    bits = if ops[acc].kind == "register" && ops[acc].reg.family == "gpr" {
+                        ops[acc].reg.bits
+                    } else {
+                        0
+                    }
+                }
                 if family == "in" {
                     role = if ops[0].kind == "register" then "dx_acc" else "imm_acc"
                 } else {
