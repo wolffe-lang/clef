@@ -138,3 +138,10 @@ gates and the 43-source count for one file. The fixture's new forms still reach 
 - clef#9 is closed unmerged after it is read red.
 - Prune after review: hasu `~/lanes/as02c/` (the clone, `pax-eb6592de/`, `specs/`, run logs; 783 MB with
   `target/`); the Mac worktree `~/lanes/as02c/clef`.
+
+### Done-when
+
+`Footprint: module` (ruling #104). The local gauntlet is green at the head and cited above: 34/34 at `7e661f7`,
+whose code equals the head's. No label was added. The PR's `tier pr` run is read once at the head and not waited
+on (R4). The plant ran locally as well as in its draft PR's own run. The lane hands back with the audit's last line;
+the orchestrator merges on a green `tier pr`.
