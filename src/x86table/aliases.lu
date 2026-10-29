@@ -8,7 +8,8 @@ pub struct Alias {
     citation: str,
 }
 
-/// Every one of the pinned census's 112 spellings, including identity mappings.
+/// The pinned census's 112 spellings, including identity mappings, and as02c's five word-port
+/// spellings (in, inw, out, outw, xorq; pax eb6592de boot/io.S needs inw and outw).
 pub fn aliases() -> List[Alias] {
     [
         Alias {
@@ -236,6 +237,14 @@ pub fn aliases() -> List[Alias] {
             citation: "GNU as 9.16.4.1 Instruction Naming; Intel SDM instruction row after normalization",
         },
         Alias {
+            spelling: "in",
+            family: "in",
+            bits: 0,
+            source_bits: 0,
+            role: "select",
+            citation: "GNU as 9.16.4.1 Instruction Naming (no suffix: the accumulator sizes it); Intel SDM vol.2A 3.3 IN p.3-515 (E4/E5 ib, EC/ED; 66H for AX, vol.2A 2.1.1 p.2-1)",
+        },
+        Alias {
             spelling: "inb",
             family: "in",
             bits: 8,
@@ -282,6 +291,14 @@ pub fn aliases() -> List[Alias] {
             source_bits: 0,
             role: "mem",
             citation: "GNU as 9.16.4.1 Instruction Naming; Intel SDM instruction row after normalization",
+        },
+        Alias {
+            spelling: "inw",
+            family: "in",
+            bits: 16,
+            source_bits: 0,
+            role: "select",
+            citation: "GNU as 9.16.4.1 Instruction Naming (w: word); Intel SDM vol.2A 3.3 IN p.3-515, IN AX,imm8 (66 E5 ib) and IN AX,DX (66 ED); 66H operand-size override, vol.2A 2.1.1 p.2-1",
         },
         Alias {
             spelling: "iretq",
@@ -588,6 +605,14 @@ pub fn aliases() -> List[Alias] {
             citation: "GNU as 9.16.4.1 Instruction Naming; Intel SDM instruction row after normalization",
         },
         Alias {
+            spelling: "out",
+            family: "out",
+            bits: 0,
+            source_bits: 0,
+            role: "select",
+            citation: "GNU as 9.16.4.1 Instruction Naming (no suffix: the accumulator sizes it); Intel SDM vol.2B 4.3 OUT p.4-178 (E6/E7 ib, EE/EF; 66H for AX, vol.2A 2.1.1 p.2-1)",
+        },
+        Alias {
             spelling: "outb",
             family: "out",
             bits: 8,
@@ -602,6 +627,14 @@ pub fn aliases() -> List[Alias] {
             source_bits: 0,
             role: "select",
             citation: "GNU as 9.16.4.1 Instruction Naming; Intel SDM instruction row after normalization",
+        },
+        Alias {
+            spelling: "outw",
+            family: "out",
+            bits: 16,
+            source_bits: 0,
+            role: "select",
+            citation: "GNU as 9.16.4.1 Instruction Naming (w: word); Intel SDM vol.2B 4.3 OUT p.4-178, OUT imm8,AX (66 E7 ib) and OUT DX,AX (66 EF); 66H operand-size override, vol.2A 2.1.1 p.2-1",
         },
         Alias {
             spelling: "pause",
@@ -882,6 +915,14 @@ pub fn aliases() -> List[Alias] {
             source_bits: 0,
             role: "select",
             citation: "GNU as 9.16.4.1 Instruction Naming; Intel SDM instruction row after normalization",
+        },
+        Alias {
+            spelling: "xorq",
+            family: "xor",
+            bits: 64,
+            source_bits: 0,
+            role: "select",
+            citation: "GNU as 9.16.4.1 Instruction Naming (q: quadword); Intel SDM vol.2D 6.1 XOR p.6-40, REX.W + 31 /r, 33 /r, 81 /6 id, 83 /6 ib, 35 id; REX.W, vol.2A 2.2.1 p.2-8",
         },
         Alias {
             spelling: "xrstor64",
