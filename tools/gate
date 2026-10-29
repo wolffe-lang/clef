@@ -29,6 +29,7 @@ commands=[('planner',['python3','ci/tiers-test.py']),('format',[str(W),'fmt','--
  ('checked-assembly',[str(W),'conform-run','src/assembly_test.lu','--checked','--json']),
  ('lupin-assembly',[str(L),'run','src/assembly_test.lu']),
  ('table',['tools/table-test']),('layout',['tools/layout-test']),('assembler',['tools/assembler-test']),
+ ('ports',['tools/ports-test']),
  ('census',['tools/census','--check']),('scanner',['tools/scanner-test']),
  ('differ',['tools/differ-test']),('proof',['tools/proof-test']),('roundtrip',['tools/roundtrip-test']),('corpus',['tools/corpus','--check'])]
 results=[]
