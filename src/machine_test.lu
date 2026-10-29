@@ -84,7 +84,40 @@ fn main() -> int ! {
     assert(mov64.data.len == 7 && mov64.data[1] == 199 as byte)
     let xmm = encode("movdqu %xmm15,(%r12)", 64)?
     assert(xmm.data.len == 6 && xmm.data[0] == 243 as byte && xmm.data[1] == 69 as byte)
+    // as02c: SDM vol.2A IN/vol.2B OUT 16-bit rows carry 66H (vol.2A 2.1.1); XOR's REX.W rows.
+    for mode in [64, 32] {
+        let inw = encode("inw %dx,%ax", mode)?
+        assert(inw.data.len == 2 && inw.data[0] == 102 as byte && inw.data[1] == 237 as byte)
+        let inwp = encode("inw $0x60", mode)?
+        assert(inwp.data.len == 3 && inwp.data[0] == 102 as byte && inwp.data[1] == 229 as byte)
+        let outw = encode("outw %ax,(%dx)", mode)?
+        assert(outw.data.len == 2 && outw.data[0] == 102 as byte && outw.data[1] == 239 as byte)
+        let outwp = encode("outw %ax,$0x60", mode)?
+        assert(outwp.data.len == 3 && outwp.data[1] == 231 as byte && outwp.data[2] == 96 as byte)
+        let bare = encode("out %al,%dx", mode)?
+        assert(bare.data.len == 1 && bare.data[0] == 238 as byte)
+    }
+    let xorq = encode("xorq %rax,%rax", 64)?
+    assert(xorq.data.len == 3 && xorq.data[0] == 72 as byte && xorq.data[1] == 49 as byte)
+    assert(xorq.data[2] == 192 as byte)
+    let xorqm = encode("xorq 8(%rsp),%rax", 64)?
+    assert(xorqm.data.len == 5 && xorqm.data[1] == 51 as byte && xorqm.data[4] == 8 as byte)
+    let xorqi = encode("xorq $256,%rax", 64)?
+    assert(xorqi.data.len == 6 && xorqi.data[1] == 53 as byte && xorqi.data[3] == 1 as byte)
+    let xorq8 = encode("xorq $-1,%rcx", 64)?
+    assert(xorq8.data.len == 4 && xorq8.data[1] == 131 as byte && xorq8.data[2] == 241 as byte)
+    var refused32 = false
+    let _ = encode("xorq %rax,%rax", 32) else {
+        refused32 = true
+        machine.Encoded { data: [], fixups: [] }
+    }
+    assert(refused32)
     for text in [
+        "inw %dx,%eax",
+        "outw %eax,%dx",
+        "inw $256,%ax",
+        "xorq %eax,%rax",
+        "xorq $0x80000000,%rax",
         "movq %eax,%rax",
         "movq %xmm0,%rax",
         "movb %ah,%r8b",
