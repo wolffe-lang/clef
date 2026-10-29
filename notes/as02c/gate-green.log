@@ -1,0 +1,55 @@
+start 2026-10-29T07:10:51-04:00 head 7e661f7caab05794419af2fc58b34b2d39c949b9
+GATE planner: PASS
+GATE format: PASS
+GATE build: PASS
+GATE dialect-build: PASS
+GATE assembly-build: PASS
+GATE table-build: PASS
+GATE unit: PASS
+GATE native-logic: PASS
+GATE checked: PASS
+GATE lupin: PASS
+GATE checked-dialect: PASS
+GATE lupin-dialect: PASS
+GATE dialect: PASS
+GATE checked-expression: PASS
+GATE lupin-expression: PASS
+GATE checked-expansion: PASS
+GATE lupin-expansion: PASS
+GATE expression: PASS
+GATE expansion: PASS
+GATE object: PASS
+GATE checked-machine: PASS
+GATE lupin-machine: PASS
+GATE checked-assembly: PASS
+GATE lupin-assembly: PASS
+GATE table: PASS
+GATE layout: PASS
+GATE assembler: PASS
+GATE ports: PASS
+GATE census: PASS
+GATE scanner: PASS
+GATE differ: PASS
+GATE proof: PASS
+GATE roundtrip: PASS
+GATE corpus: PASS
+wolf test: 6 passed; 0 failed; 0 rejected; 0 unsupported; 0 filtered out
+dialect: comments, strings, origins, labels, 24 directives, registers, operands and named refusals pass
+machine: SDM rows, typed widths, ModRM/SIB/REX, code32, immediates and relocation-field biases pass
+native logic: 6 compiled test programs passed
+dialect: comments, strings, origins, labels, 24 directives, registers, operands and named refusals pass
+dialect: 43 x86-64 files, 3204 statements, 2472 operand sites, 473 distinct operand spellings; AArch64 deferred by name
+machine: SDM rows, typed widths, ModRM/SIB/REX, code32, immediates and relocation-field biases pass
+table: 530/530 row×mode byte differentials; 312/312 rows witnessed
+layout: 191 exact boundary/layout rows, ten refusal rows, five argv refusals and 271 provenance ranges pass
+assembler: 43/43 x86 census sources exact and deterministic; census form coverage 189/189; AArch64 deferred by name
+tables .symtab: 35/43 byte-identical; 707 unequal positions
+tables .strtab: 39/43 byte-identical; 1159 unequal positions
+tables .shstrtab: 0/43 byte-identical; 2576 unequal positions
+ports: 126/126 encoding rows byte-identical to pinned GNU as; 113/113 refusals named (36 that GNU as accepts); 1/1 fixtures byte-identical; census map 2/2 new forms
+corpus: matched 44 named source dispositions; excluded architectures counted
+PASS fixture pax@eb6592de:boot/io.S byte-identical to GNU as, deterministic
+PASS census-map inw gpr16,gpr16 
+PASS census-map outw gpr16,gpr16 
+PASS census-map counts aliases 117 (aliases.lu 117), forms_outside_census 2 (entries 2)
+end 2026-10-29T07:11:11-04:00 exit 0

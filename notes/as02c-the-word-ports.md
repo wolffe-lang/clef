@@ -71,14 +71,14 @@ was read at `eb6592de` only (`git show`, `git archive`); it was not edited.
 
 `notes/as02c/`: `prediction.txt`, `spellings.json`/`.log` (the oracle measurement), `gate-red.log` (the gate at
 `e768a32`, tests in, implementation out), `plant-red.log`, `sweep.py` and `sweep-pax-eb6592de.json`/`.log`, and
-`gate-green.log` (the final gauntlet). Host: hasu block A under `flock /home/mfwolffe/lanes/hasu-block-A.lock`,
+`gate-green.log` (the final gauntlet), `ports-rows.json` (every ports row, bytes and messages). Host: hasu block A under `flock /home/mfwolffe/lanes/hasu-block-A.lock`,
 `taskset -c 0-5` inside the container, lane clone `/home/mfwolffe/lanes/as02c/clef`. A gauntlet takes about 90 s.
 
 - [x] Baseline: trunk with the prediction, 33/33 gates (`~/lanes/as02c/baseline.log` on hasu).
 - [x] Seen red before green at `e768a32`: `ports` reads `0/126 encoding rows`, and the fixture refuses
   `unknown_mnemonic inw` at line 86. `unit`, `native-logic`, `checked-`/`lupin-dialect` and
   `checked-`/`lupin-machine` are red too.
-- [x] Green at `5698d74` and again at the final head: 34/34 gates. `ports: 126/126 encoding rows byte-identical to
+- [x] Green at `5698d74` and at `7e661f7` (the note; the final commit adds only this log and `ports-rows.json`): 34/34 gates. `ports: 126/126 encoding rows byte-identical to
   pinned GNU as; 113/113 refusals named (36 that GNU as accepts); 1/1 fixtures byte-identical; census map 2/2 new
   forms`. `table` is still 530/530 with 312/312 rows, and `assembler` is still 43/43 with 189/189 forms.
 - [x] `io.S` differential: `pax@eb6592de:boot/io.S` is byte-identical to GNU as in every section, relocation and
