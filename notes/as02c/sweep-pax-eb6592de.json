@@ -1,0 +1,231 @@
+[
+ {
+  "file": "boot/console.S",
+  "gas": 0,
+  "clef": 0,
+  "clef_stderr": "",
+  "differences": {},
+  "equal": true
+ },
+ {
+  "file": "boot/cpu.S",
+  "gas": 0,
+  "clef": 0,
+  "clef_stderr": "",
+  "differences": {},
+  "equal": true
+ },
+ {
+  "file": "boot/event.S",
+  "gas": 0,
+  "clef": 0,
+  "clef_stderr": "",
+  "differences": {},
+  "equal": true
+ },
+ {
+  "file": "boot/font.S",
+  "gas": 0,
+  "clef": 0,
+  "clef_stderr": "",
+  "differences": {},
+  "equal": true
+ },
+ {
+  "file": "boot/fpu.S",
+  "gas": 0,
+  "clef": 0,
+  "clef_stderr": "",
+  "differences": {},
+  "equal": true
+ },
+ {
+  "file": "boot/io.S",
+  "gas": 0,
+  "clef": 0,
+  "clef_stderr": "",
+  "differences": {},
+  "equal": true
+ },
+ {
+  "file": "boot/isr.S",
+  "gas": 0,
+  "clef": 0,
+  "clef_stderr": "",
+  "differences": {},
+  "equal": true
+ },
+ {
+  "file": "boot/net.S",
+  "gas": 0,
+  "clef": 0,
+  "clef_stderr": "",
+  "differences": {},
+  "equal": true
+ },
+ {
+  "file": "boot/sched.S",
+  "gas": 0,
+  "clef": 0,
+  "clef_stderr": "",
+  "differences": {},
+  "equal": true
+ },
+ {
+  "file": "boot/screen.S",
+  "gas": 0,
+  "clef": 0,
+  "clef_stderr": "",
+  "differences": {},
+  "equal": true
+ },
+ {
+  "file": "boot/sound.S",
+  "gas": 0,
+  "clef": 0,
+  "clef_stderr": "",
+  "differences": {},
+  "equal": true
+ },
+ {
+  "file": "boot/speaker.S",
+  "gas": 0,
+  "clef": 0,
+  "clef_stderr": "",
+  "differences": {},
+  "equal": true
+ },
+ {
+  "file": "boot/start.S",
+  "gas": 0,
+  "clef": 0,
+  "clef_stderr": "",
+  "differences": {},
+  "equal": true
+ },
+ {
+  "file": "boot/stub/pax-stub.s",
+  "gas": 0,
+  "clef": 0,
+  "clef_stderr": "",
+  "differences": {},
+  "equal": true
+ },
+ {
+  "file": "boot/tree.S",
+  "gas": 0,
+  "clef": 0,
+  "clef_stderr": "",
+  "differences": {},
+  "equal": true
+ },
+ {
+  "file": "boot/unix.S",
+  "gas": 0,
+  "clef": 0,
+  "clef_stderr": "",
+  "differences": {},
+  "equal": true
+ },
+ {
+  "file": "boot/user.S",
+  "gas": 0,
+  "clef": 0,
+  "clef_stderr": "",
+  "differences": {},
+  "equal": true
+ },
+ {
+  "file": "tests/mkw.d/boot/io.S",
+  "gas": 0,
+  "clef": 0,
+  "clef_stderr": "",
+  "differences": {},
+  "equal": true
+ },
+ {
+  "file": "tests/mpx5-clef.d/unknown.S",
+  "gas": 1,
+  "clef": 1,
+  "clef_stderr": "clef: Assembly(Failure { origin: Origin { file: /work/target/pax-eb6592de/tests/mpx5-clef.d/unknown.S, line: 1, chain:  }, reason: unknown_mnemonic frobnicate: SDM vol.2 instruction set })",
+  "equal": false
+ },
+ {
+  "file": "user/elf/ask.S",
+  "gas": 0,
+  "clef": 0,
+  "clef_stderr": "",
+  "differences": {},
+  "equal": true
+ },
+ {
+  "file": "user/elf/hello.S",
+  "gas": 0,
+  "clef": 0,
+  "clef_stderr": "",
+  "differences": {},
+  "equal": true
+ },
+ {
+  "file": "user/elf/hold.S",
+  "gas": 0,
+  "clef": 0,
+  "clef_stderr": "",
+  "differences": {},
+  "equal": true
+ },
+ {
+  "file": "user/elf/reboot.S",
+  "gas": 0,
+  "clef": 0,
+  "clef_stderr": "",
+  "differences": {},
+  "equal": true
+ },
+ {
+  "file": "user/elf/seven.S",
+  "gas": 0,
+  "clef": 0,
+  "clef_stderr": "",
+  "differences": {},
+  "equal": true
+ },
+ {
+  "file": "user/fsck/open.S",
+  "gas": 0,
+  "clef": 1,
+  "clef_stderr": "clef: Assembly(Failure { origin: Origin { file: /work/target/pax-eb6592de/user/fsck/open.S, line: 7, chain:  }, reason: unknown_directive .skip: GNU as \u00a77 })",
+  "equal": false
+ },
+ {
+  "file": "user/install/raw.S",
+  "gas": 0,
+  "clef": 1,
+  "clef_stderr": "clef: Assembly(Failure { origin: Origin { file: /work/target/pax-eb6592de/user/install/raw.S, line: 80, chain:  }, reason: unknown_directive .align: GNU as \u00a77 })",
+  "equal": false
+ },
+ {
+  "file": "user/play/kd.S",
+  "gas": 0,
+  "clef": 0,
+  "clef_stderr": "",
+  "differences": {},
+  "equal": true
+ },
+ {
+  "file": "user/programs.S",
+  "gas": 0,
+  "clef": 0,
+  "clef_stderr": "",
+  "differences": {},
+  "equal": true
+ },
+ {
+  "file": "user/termwolf/tio.S",
+  "gas": 0,
+  "clef": 0,
+  "clef_stderr": "",
+  "differences": {},
+  "equal": true
+ }
+]

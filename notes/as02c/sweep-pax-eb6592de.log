@@ -1,0 +1,32 @@
+start 2026-10-29T07:06:37-04:00 head 5698d7442871c5150dd479a2d805940ee69bb7ba
+PASS boot/console.S 
+PASS boot/cpu.S 
+PASS boot/event.S 
+PASS boot/font.S 
+PASS boot/fpu.S 
+PASS boot/io.S 
+PASS boot/isr.S 
+PASS boot/net.S 
+PASS boot/sched.S 
+PASS boot/screen.S 
+PASS boot/sound.S 
+PASS boot/speaker.S 
+PASS boot/start.S 
+PASS boot/stub/pax-stub.s 
+PASS boot/tree.S 
+PASS boot/unix.S 
+PASS boot/user.S 
+PASS tests/mkw.d/boot/io.S 
+FAIL tests/mpx5-clef.d/unknown.S {"file": "tests/mpx5-clef.d/unknown.S", "gas": 1, "clef": 1, "clef_stderr": "clef: Assembly(Failure { origin: Origin { file: /work/target/pax-eb6592de/tests/mpx5-clef.d/unknown.S, line: 1, chain:  }, reason: unknown_mnemonic frobnicate: SDM vol.2 instruction set })",
+PASS user/elf/ask.S 
+PASS user/elf/hello.S 
+PASS user/elf/hold.S 
+PASS user/elf/reboot.S 
+PASS user/elf/seven.S 
+FAIL user/fsck/open.S {"file": "user/fsck/open.S", "gas": 0, "clef": 1, "clef_stderr": "clef: Assembly(Failure { origin: Origin { file: /work/target/pax-eb6592de/user/fsck/open.S, line: 7, chain:  }, reason: unknown_directive .skip: GNU as \u00a77 })", "equal": false}
+FAIL user/install/raw.S {"file": "user/install/raw.S", "gas": 0, "clef": 1, "clef_stderr": "clef: Assembly(Failure { origin: Origin { file: /work/target/pax-eb6592de/user/install/raw.S, line: 80, chain:  }, reason: unknown_directive .align: GNU as \u00a77 })", "equal": false}
+PASS user/play/kd.S 
+PASS user/programs.S 
+PASS user/termwolf/tio.S 
+sweep target/pax-eb6592de: 26/29 byte-identical to GNU as
+end 2026-10-29T07:06:38-04:00 exit 0
