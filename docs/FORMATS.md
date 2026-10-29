@@ -17,9 +17,10 @@ The output file is not opened until the entire source and object have succeeded.
 ## Encoding data
 
 `src/x86table/rows.lu` contains 312 declarative descriptors, each transcribed from
-an individual Intel SDM opcode row. `aliases.lu` explicitly maps the 112 census
-spellings to canonical families and width hints. `format.lu` validates rows and
-provides cached lookup by family, role, operand width and code mode.
+an individual Intel SDM opcode row. `aliases.lu` explicitly maps 117 spellings to
+canonical families and width hints: the census's 112 and five word-port spellings
+(`in`, `inw`, `out`, `outw`, `xorq`). `format.lu` validates rows and provides
+cached lookup by family, role, operand width and code mode.
 
 The pipe-separated columns are:
 
@@ -77,6 +78,36 @@ The baseline is pinned GNU as 2.42, not simply the shortest legal encoding:
   more maximum-length NOPs. Data alignment uses zeros unless a fill is explicit.
   `notes/as01/layout/gas-padding.json` records 510 black-box controls. The SDM
   NOP table supplies the underlying instruction forms; gas supplies this policy.
+
+## Port operands and the word ports
+
+IN and OUT take the accumulator (AL, AX or EAX) and a port, DX or an imm8
+(SDM vol.2A 3.3 IN p.3-515, vol.2B 4.3 OUT p.4-178). A word access is the
+doubleword opcode with the 66H operand-size override (vol.2A 2.1.1). `dialect`
+normalizes the spellings the pinned GNU as also accepts, as measured in
+`notes/as02c/spellings.json`:
+
+* `(%dx)`, with spaces allowed inside the parentheses, names DX for IN and OUT
+  only. Any other instruction still refuses it as a 16-bit base.
+* A suffixed one-operand form implies the accumulator: `inw %dx` is
+  `inw %dx,%ax`, and `outb $0x61` is `outb %al,$0x61`.
+* A bare `in` or `out` takes its width from the accumulator, never from DX.
+
+Two spellings GNU as accepts are refused by name. A 32- or 64-bit register as
+the port is `port_register`; gas encodes `inw %edx,%ax` as `66 ed`, but the SDM's
+operand is DX. A bare one-operand form, such as `in %dx`, has nothing to size it
+and is `implicit_operand_size`; gas warns and takes long. The `lock` prefix is
+outside the dialect for every family.
+
+`xorq` selects the existing REX.W XOR rows (vol.2D 6.1 XOR p.6-40, REX.W from
+vol.2A 2.2.1). They are 64-bit only, so `.code32` refuses it as `unknown_form`.
+
+`tools/ports-test` holds 126 row-by-mode encodings, each byte-identical to the
+pinned GNU as and to the measured bytes. It also holds 113 named refusals, 36 of
+them spellings gas accepts, and PAX `boot/io.S` at pax `eb6592de` from
+`tests/ports/`, with its sha256 pinned. Each form a fixture adds to the census
+appears in `census-map.json` with its `origin`. The map's `aliases` and
+`forms_outside_census` counts are checked against the table.
 
 ## Expressions and symbol algebra
 
