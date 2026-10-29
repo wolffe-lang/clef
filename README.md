@@ -14,7 +14,9 @@ All **43 x86-64 sources** in the pinned PAX, muzzle and wolf-lang census match
 GNU as in section contents, relocation tuples and structural symbols. This
 covers **112 mnemonic spellings and 189 observed operand forms**, including
 mixed `.code32`/`.code64` input, macros, numeric local labels and symbolic
-expressions. Unsupported syntax or encodings are refused rather than guessed.
+expressions. Five more spellings (`in`, `inw`, `out`, `outw`, `xorq`) carry
+PAX's 16-bit port access: PAX `boot/io.S` at pax `eb6592de` matches GNU as too.
+Unsupported syntax or encodings are refused rather than guessed.
 
 The native and release PAX kernel images built through clef are byte-identical
 to the GNU-as baseline and pass the four BIOS/UEFI test legs. The original
@@ -32,11 +34,11 @@ CLEF_ENGINE=docker tools/in-container tools/gate
 # CLEF_ENGINE=podman is the default.
 ```
 
-The **33 gates** check formatting, warning-denied builds, six compiled native
+The **34 gates** check formatting, warning-denied builds, six compiled native
 logic programs, checked/lupin execution, all source statements, expression and
 macro differentials, the ELF writer, instruction-table rows, layout/refusals,
-and the complete assembler corpus. Results are written to `target/evidence/`;
-the executable is `target/clef`.
+the complete assembler corpus and the word-port rows. Results are written to
+`target/evidence/`; the executable is `target/clef`.
 
 ```sh
 printf 'movq $4096, %%rsp\nret\n' > example.S
@@ -73,6 +75,11 @@ See [EXPAND](docs/EXPAND.md) for the expansion contract and
   assembled twice to check determinism. No x86 census source is waived.
 * 191 layout/boundary controls, ten named source refusals, five additional CLI
   refusals, and complete byte-range coverage for the ISR provenance witness.
+* 126 word-port encoding rows (IN/OUT word forms and GNU as's implicit port
+  spellings in both modes, `xorq` in 64-bit mode) match GNU as byte for byte.
+  113 refusals are named; 36 of them are spellings GNU as accepts that clef
+  refuses on purpose: a 32/64-bit port register, an unsized bare `in`/`out`,
+  and `lock`. See [FORMATS](docs/FORMATS.md).
 * Symbol/string tables need structural equality, not identical serialization.
   [MAP](docs/MAP.md) records the measured raw-table distances.
 * The retained objdump round-trip instrument measured 79 binaries and
@@ -96,6 +103,7 @@ rejects unsupported section/relocation features such as COMDAT and TLS.
 | `census/` | Exact source snapshots, repository pins and oracle records |
 | `tools/`, `tests/` | Differential, native, interpreter and refusal gates |
 | `notes/as01/` | Measured evidence and lane-local kernel integration controls |
+| `notes/as02c/` | The word-port spelling measurement and the PAX source sweep |
 
 CI runs every assembler gate in `tier pr`. `tier full` adds the independent
 exhaustive oracle-corpus job and runs on trunk, nightly, dispatches and explicitly
