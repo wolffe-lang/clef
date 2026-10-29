@@ -264,7 +264,7 @@ pub fn source() -> List[str] {
         "2A|3.3 IN|3-515|E4 ib IN accumulator8,port|in|imm_acc|8|32,64|228|-1|0|0|1|-1|-1|-1|0|unsigned8;accumulator1|unique-role|base|port8,acc8|unsigned|none",
         "2B|4.3 OUT|4-178|EE OUT accumulator8,port|out|acc_dx|8|32,64|238|-1|0|0|0|-1|-1|-1|-1|accumulator0;dx1|unique-role|base|acc8,dx|none|none",
         "2B|4.3 OUT|4-178|E6 ib OUT accumulator8,port|out|acc_imm|8|32,64|230|-1|0|0|1|-1|-1|-1|1|accumulator0;unsigned8|unique-role|base|acc8,port8|unsigned|none",
-        "2A|3.3 IN|3-515|ED IN accumulator16,port|in|dx_acc|16|32,64|237|-1|102|0|0|-1|-1|-1|-1|dx0;accumulator1|unique-role|base|dx,acc16|none|none",
+        "2A|3.3 IN|3-515|ED IN accumulator16,port|in|dx_acc|16|32,64|237|-1|0|0|0|-1|-1|-1|-1|dx0;accumulator1|unique-role|base|dx,acc16|none|none",
         "2A|3.3 IN|3-515|E5 ib IN accumulator16,port|in|imm_acc|16|32,64|229|-1|102|0|1|-1|-1|-1|0|unsigned8;accumulator1|unique-role|base|port8,acc16|unsigned|none",
         "2B|4.3 OUT|4-178|EF OUT accumulator16,port|out|acc_dx|16|32,64|239|-1|102|0|0|-1|-1|-1|-1|accumulator0;dx1|unique-role|base|acc16,dx|none|none",
         "2B|4.3 OUT|4-178|E7 ib OUT accumulator16,port|out|acc_imm|16|32,64|231|-1|102|0|1|-1|-1|-1|1|accumulator0;unsigned8|unique-role|base|acc16,port8|unsigned|none",
