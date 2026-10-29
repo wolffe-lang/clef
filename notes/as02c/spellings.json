@@ -1,0 +1,2163 @@
+{
+ "oracle": "GNU assembler (GNU Binutils for Ubuntu) 2.42",
+ "groups": {
+  "inw": [
+   {
+    "source": "inw %dx,%ax",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ed",
+    "warning": ""
+   },
+   {
+    "source": "inw %dx,%ax",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ed",
+    "warning": ""
+   },
+   {
+    "source": "inw (%dx),%ax",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ed",
+    "warning": ""
+   },
+   {
+    "source": "inw (%dx),%ax",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ed",
+    "warning": ""
+   },
+   {
+    "source": "inw %dx",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ed",
+    "warning": ""
+   },
+   {
+    "source": "inw %dx",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ed",
+    "warning": ""
+   },
+   {
+    "source": "inw (%dx)",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ed",
+    "warning": ""
+   },
+   {
+    "source": "inw (%dx)",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ed",
+    "warning": ""
+   },
+   {
+    "source": "inw $0x60,%ax",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66e560",
+    "warning": ""
+   },
+   {
+    "source": "inw $0x60,%ax",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66e560",
+    "warning": ""
+   },
+   {
+    "source": "inw $0x60",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66e560",
+    "warning": ""
+   },
+   {
+    "source": "inw $0x60",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66e560",
+    "warning": ""
+   },
+   {
+    "source": "inw $0,%ax",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66e500",
+    "warning": ""
+   },
+   {
+    "source": "inw $0,%ax",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66e500",
+    "warning": ""
+   },
+   {
+    "source": "inw $255,%ax",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66e5ff",
+    "warning": ""
+   },
+   {
+    "source": "inw $255,%ax",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66e5ff",
+    "warning": ""
+   },
+   {
+    "source": "inw %ax",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "invalid instruction suffix for `in'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inw %ax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "invalid instruction suffix for `in'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inw",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "number of operands mismatch for `in'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inw",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "number of operands mismatch for `in'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inw $256,%ax",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "operand type mismatch for `in'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inw $256,%ax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "operand type mismatch for `in'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inw $-1,%ax",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "operand type mismatch for `in'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inw $-1,%ax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "operand type mismatch for `in'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inw 0x60,%ax",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "operand size mismatch for `in'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inw 0x60,%ax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "operand size mismatch for `in'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inw %dx,%eax",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "incorrect register `%eax' used with `w' suffix",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inw %dx,%eax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "incorrect register `%eax' used with `w' suffix",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inw %dx,%bx",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "operand type mismatch for `in'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inw %dx,%bx",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "operand type mismatch for `in'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inw %dx,%al",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "`%al' not allowed with `inw'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inw %dx,%al",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`%al' not allowed with `inw'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inw %cx,%ax",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "operand type mismatch for `in'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inw %cx,%ax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "operand type mismatch for `in'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inw %edx,%ax",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ed",
+    "warning": ""
+   },
+   {
+    "source": "inw %edx,%ax",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ed",
+    "warning": ""
+   },
+   {
+    "source": "inw %ax,%dx",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "operand type mismatch for `in'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inw %ax,%dx",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "operand type mismatch for `in'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inw (%edx),%ax",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "operand size mismatch for `in'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inw (%edx),%ax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "operand size mismatch for `in'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inw (%rdx),%ax",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "operand size mismatch for `in'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inw (%rdx),%ax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "bad register name `%rdx)'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inw %dx,%ax,%ax",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "number of operands mismatch for `in'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inw %dx,%ax,%ax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "number of operands mismatch for `in'",
+    "bytes": null,
+    "warning": ""
+   }
+  ],
+  "outw": [
+   {
+    "source": "outw %ax,%dx",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ef",
+    "warning": ""
+   },
+   {
+    "source": "outw %ax,%dx",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ef",
+    "warning": ""
+   },
+   {
+    "source": "outw %ax,(%dx)",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ef",
+    "warning": ""
+   },
+   {
+    "source": "outw %ax,(%dx)",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ef",
+    "warning": ""
+   },
+   {
+    "source": "outw %dx",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ef",
+    "warning": ""
+   },
+   {
+    "source": "outw %dx",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ef",
+    "warning": ""
+   },
+   {
+    "source": "outw (%dx)",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ef",
+    "warning": ""
+   },
+   {
+    "source": "outw (%dx)",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ef",
+    "warning": ""
+   },
+   {
+    "source": "outw %ax,$0x60",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66e760",
+    "warning": ""
+   },
+   {
+    "source": "outw %ax,$0x60",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66e760",
+    "warning": ""
+   },
+   {
+    "source": "outw $0x60",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66e760",
+    "warning": ""
+   },
+   {
+    "source": "outw $0x60",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66e760",
+    "warning": ""
+   },
+   {
+    "source": "outw %ax,$0",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66e700",
+    "warning": ""
+   },
+   {
+    "source": "outw %ax,$0",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66e700",
+    "warning": ""
+   },
+   {
+    "source": "outw %ax,$255",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66e7ff",
+    "warning": ""
+   },
+   {
+    "source": "outw %ax,$255",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66e7ff",
+    "warning": ""
+   },
+   {
+    "source": "outw %ax",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "invalid instruction suffix for `out'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "outw %ax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "invalid instruction suffix for `out'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "outw",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "number of operands mismatch for `out'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "outw",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "number of operands mismatch for `out'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "outw %ax,$256",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "operand type mismatch for `out'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "outw %ax,$256",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "operand type mismatch for `out'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "outw %ax,$-1",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "operand type mismatch for `out'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "outw %ax,$-1",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "operand type mismatch for `out'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "outw %ax,0x60",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "operand size mismatch for `out'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "outw %ax,0x60",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "operand size mismatch for `out'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "outw %eax,%dx",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "incorrect register `%eax' used with `w' suffix",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "outw %eax,%dx",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "incorrect register `%eax' used with `w' suffix",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "outw %bx,%dx",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "operand type mismatch for `out'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "outw %bx,%dx",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "operand type mismatch for `out'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "outw %al,%dx",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "`%al' not allowed with `outw'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "outw %al,%dx",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`%al' not allowed with `outw'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "outw %ax,%cx",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "operand type mismatch for `out'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "outw %ax,%cx",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "operand type mismatch for `out'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "outw %ax,%edx",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ef",
+    "warning": ""
+   },
+   {
+    "source": "outw %ax,%edx",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ef",
+    "warning": ""
+   },
+   {
+    "source": "outw %dx,%ax",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "operand type mismatch for `out'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "outw %dx,%ax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "operand type mismatch for `out'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "outw %ax,(%edx)",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "operand size mismatch for `out'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "outw %ax,(%edx)",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "operand size mismatch for `out'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "outw $0x60,%ax",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "operand type mismatch for `out'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "outw $0x60,%ax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "operand type mismatch for `out'",
+    "bytes": null,
+    "warning": ""
+   }
+  ],
+  "bare in/out": [
+   {
+    "source": "in %dx,%ax",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ed",
+    "warning": ""
+   },
+   {
+    "source": "in %dx,%ax",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ed",
+    "warning": ""
+   },
+   {
+    "source": "in (%dx),%ax",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ed",
+    "warning": ""
+   },
+   {
+    "source": "in (%dx),%ax",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ed",
+    "warning": ""
+   },
+   {
+    "source": "in $0x60,%ax",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66e560",
+    "warning": ""
+   },
+   {
+    "source": "in $0x60,%ax",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66e560",
+    "warning": ""
+   },
+   {
+    "source": "in %dx",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ed",
+    "warning": "no instruction mnemonic suffix given and no register operands; using default for `in'"
+   },
+   {
+    "source": "in %dx",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ed",
+    "warning": "no instruction mnemonic suffix given and no register operands; using default for `in'"
+   },
+   {
+    "source": "in $0x60",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "e560",
+    "warning": "no instruction mnemonic suffix given and no register operands; using default for `in'"
+   },
+   {
+    "source": "in $0x60",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "e560",
+    "warning": "no instruction mnemonic suffix given and no register operands; using default for `in'"
+   },
+   {
+    "source": "out %ax,%dx",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ef",
+    "warning": ""
+   },
+   {
+    "source": "out %ax,%dx",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ef",
+    "warning": ""
+   },
+   {
+    "source": "out %ax,(%dx)",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ef",
+    "warning": ""
+   },
+   {
+    "source": "out %ax,(%dx)",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ef",
+    "warning": ""
+   },
+   {
+    "source": "out %ax,$0x60",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66e760",
+    "warning": ""
+   },
+   {
+    "source": "out %ax,$0x60",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66e760",
+    "warning": ""
+   },
+   {
+    "source": "out %dx",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ef",
+    "warning": "no instruction mnemonic suffix given and no register operands; using default for `out'"
+   },
+   {
+    "source": "out %dx",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ef",
+    "warning": "no instruction mnemonic suffix given and no register operands; using default for `out'"
+   },
+   {
+    "source": "out $0x60",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "e760",
+    "warning": "no instruction mnemonic suffix given and no register operands; using default for `out'"
+   },
+   {
+    "source": "out $0x60",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "e760",
+    "warning": "no instruction mnemonic suffix given and no register operands; using default for `out'"
+   },
+   {
+    "source": "in %dx,%al",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ec",
+    "warning": ""
+   },
+   {
+    "source": "in %dx,%al",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ec",
+    "warning": ""
+   },
+   {
+    "source": "in %dx,%eax",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ed",
+    "warning": ""
+   },
+   {
+    "source": "in %dx,%eax",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ed",
+    "warning": ""
+   },
+   {
+    "source": "out %al,%dx",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ee",
+    "warning": ""
+   },
+   {
+    "source": "out %al,%dx",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ee",
+    "warning": ""
+   },
+   {
+    "source": "out %eax,%dx",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ef",
+    "warning": ""
+   },
+   {
+    "source": "out %eax,%dx",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ef",
+    "warning": ""
+   }
+  ],
+  "port register widths and spacing": [
+   {
+    "source": "inw %rdx,%ax",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ed",
+    "warning": ""
+   },
+   {
+    "source": "inw %rdx,%ax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "bad register name `%rdx'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inw %edx",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ed",
+    "warning": ""
+   },
+   {
+    "source": "inw %edx",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ed",
+    "warning": ""
+   },
+   {
+    "source": "outw %edx",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ef",
+    "warning": ""
+   },
+   {
+    "source": "outw %edx",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ef",
+    "warning": ""
+   },
+   {
+    "source": "outw %ax,%rdx",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ef",
+    "warning": ""
+   },
+   {
+    "source": "outw %ax,%rdx",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "bad register name `%rdx'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inb %edx,%al",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ec",
+    "warning": ""
+   },
+   {
+    "source": "inb %edx,%al",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ec",
+    "warning": ""
+   },
+   {
+    "source": "inl %edx,%eax",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ed",
+    "warning": ""
+   },
+   {
+    "source": "inl %edx,%eax",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ed",
+    "warning": ""
+   },
+   {
+    "source": "outb %al,%edx",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ee",
+    "warning": ""
+   },
+   {
+    "source": "outb %al,%edx",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ee",
+    "warning": ""
+   },
+   {
+    "source": "outl %eax,%edx",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ef",
+    "warning": ""
+   },
+   {
+    "source": "outl %eax,%edx",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ef",
+    "warning": ""
+   },
+   {
+    "source": "inw %dl,%ax",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "operand type mismatch for `in'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inw %dl,%ax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "operand type mismatch for `in'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inw ( %dx ),%ax",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ed",
+    "warning": ""
+   },
+   {
+    "source": "inw ( %dx ),%ax",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ed",
+    "warning": ""
+   },
+   {
+    "source": "inw (%dx ),%ax",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ed",
+    "warning": ""
+   },
+   {
+    "source": "inw (%dx ),%ax",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ed",
+    "warning": ""
+   },
+   {
+    "source": "outw %ax, ( %dx )",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ef",
+    "warning": ""
+   },
+   {
+    "source": "outw %ax, ( %dx )",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ef",
+    "warning": ""
+   },
+   {
+    "source": "inw *%dx,%ax",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "invalid char '*' beginning operand 1 `*%dx'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inw *%dx,%ax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "invalid char '*' beginning operand 1 `*%dx'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inw 0(%dx),%ax",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "`0(%dx)' is not a valid base/index expression",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "inw 0(%dx),%ax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`0(%dx)' is not a valid base/index expression",
+    "bytes": null,
+    "warning": ""
+   }
+  ],
+  "bare in/out, more": [
+   {
+    "source": "in %dx,%bl",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "operand type mismatch for `in'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "in %dx,%bl",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "operand type mismatch for `in'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "in (%dx)",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ed",
+    "warning": "no instruction mnemonic suffix given and no register operands; using default for `in'"
+   },
+   {
+    "source": "in (%dx)",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ed",
+    "warning": "no instruction mnemonic suffix given and no register operands; using default for `in'"
+   },
+   {
+    "source": "out (%dx)",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ef",
+    "warning": "no instruction mnemonic suffix given and no register operands; using default for `out'"
+   },
+   {
+    "source": "out (%dx)",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ef",
+    "warning": "no instruction mnemonic suffix given and no register operands; using default for `out'"
+   },
+   {
+    "source": "in %al",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "operand size mismatch for `in'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "in %al",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "operand size mismatch for `in'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "in $0x60,%al",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "e460",
+    "warning": ""
+   },
+   {
+    "source": "in $0x60,%al",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "e460",
+    "warning": ""
+   },
+   {
+    "source": "in $0x60,%eax",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "e560",
+    "warning": ""
+   },
+   {
+    "source": "in $0x60,%eax",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "e560",
+    "warning": ""
+   },
+   {
+    "source": "out %al,$0x60",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "e660",
+    "warning": ""
+   },
+   {
+    "source": "out %al,$0x60",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "e660",
+    "warning": ""
+   },
+   {
+    "source": "out %eax,$0x60",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "e760",
+    "warning": ""
+   },
+   {
+    "source": "out %eax,$0x60",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "e760",
+    "warning": ""
+   },
+   {
+    "source": "in %edx,%ax",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ed",
+    "warning": ""
+   },
+   {
+    "source": "in %edx,%ax",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ed",
+    "warning": ""
+   },
+   {
+    "source": "out %ax,%edx",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ef",
+    "warning": ""
+   },
+   {
+    "source": "out %ax,%edx",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "66ef",
+    "warning": ""
+   },
+   {
+    "source": "in %dx,%rax",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "operand size mismatch for `in'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "in %dx,%rax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "bad register name `%rax'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "out %rax,%dx",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "operand size mismatch for `out'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "out %rax,%dx",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "bad register name `%rax'",
+    "bytes": null,
+    "warning": ""
+   }
+  ],
+  "b/l neighbours (implicit forms, for the record)": [
+   {
+    "source": "inb %dx",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ec",
+    "warning": ""
+   },
+   {
+    "source": "inb %dx",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ec",
+    "warning": ""
+   },
+   {
+    "source": "inb (%dx),%al",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ec",
+    "warning": ""
+   },
+   {
+    "source": "inb (%dx),%al",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ec",
+    "warning": ""
+   },
+   {
+    "source": "inb $0x60",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "e460",
+    "warning": ""
+   },
+   {
+    "source": "inb $0x60",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "e460",
+    "warning": ""
+   },
+   {
+    "source": "inl %dx",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ed",
+    "warning": ""
+   },
+   {
+    "source": "inl %dx",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ed",
+    "warning": ""
+   },
+   {
+    "source": "inl (%dx),%eax",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ed",
+    "warning": ""
+   },
+   {
+    "source": "inl (%dx),%eax",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ed",
+    "warning": ""
+   },
+   {
+    "source": "inl $0x60",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "e560",
+    "warning": ""
+   },
+   {
+    "source": "inl $0x60",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "e560",
+    "warning": ""
+   },
+   {
+    "source": "outb %dx",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ee",
+    "warning": ""
+   },
+   {
+    "source": "outb %dx",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ee",
+    "warning": ""
+   },
+   {
+    "source": "outb %al,(%dx)",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ee",
+    "warning": ""
+   },
+   {
+    "source": "outb %al,(%dx)",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ee",
+    "warning": ""
+   },
+   {
+    "source": "outb $0x60",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "e660",
+    "warning": ""
+   },
+   {
+    "source": "outb $0x60",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "e660",
+    "warning": ""
+   },
+   {
+    "source": "outl %dx",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ef",
+    "warning": ""
+   },
+   {
+    "source": "outl %dx",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ef",
+    "warning": ""
+   },
+   {
+    "source": "outl %eax,(%dx)",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ef",
+    "warning": ""
+   },
+   {
+    "source": "outl %eax,(%dx)",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "ef",
+    "warning": ""
+   },
+   {
+    "source": "outl $0x60",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "e760",
+    "warning": ""
+   },
+   {
+    "source": "outl $0x60",
+    "mode": 32,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "e760",
+    "warning": ""
+   }
+  ],
+  "xorq": [
+   {
+    "source": "xorq %rax,%rax",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "4831c0",
+    "warning": ""
+   },
+   {
+    "source": "xorq %rax,%rax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq %rcx,%rdx",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "4831ca",
+    "warning": ""
+   },
+   {
+    "source": "xorq %rcx,%rdx",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq %r8,%r15",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "4d31c7",
+    "warning": ""
+   },
+   {
+    "source": "xorq %r8,%r15",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq %r12,%r13",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "4d31e5",
+    "warning": ""
+   },
+   {
+    "source": "xorq %r12,%r13",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq %rcx,(%rax)",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "483108",
+    "warning": ""
+   },
+   {
+    "source": "xorq %rcx,(%rax)",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq (%rax),%rcx",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "483308",
+    "warning": ""
+   },
+   {
+    "source": "xorq (%rax),%rcx",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq %rax,8(%rsp)",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "4831442408",
+    "warning": ""
+   },
+   {
+    "source": "xorq %rax,8(%rsp)",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq 8(%rsp),%rax",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "4833442408",
+    "warning": ""
+   },
+   {
+    "source": "xorq 8(%rsp),%rax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq %r9,-16(%rbp,%rcx,8)",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "4c314ccdf0",
+    "warning": ""
+   },
+   {
+    "source": "xorq %r9,-16(%rbp,%rcx,8)",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq -16(%rbp,%rcx,8),%r9",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "4c334ccdf0",
+    "warning": ""
+   },
+   {
+    "source": "xorq -16(%rbp,%rcx,8),%r9",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq %rax,(%r12)",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "49310424",
+    "warning": ""
+   },
+   {
+    "source": "xorq %rax,(%r12)",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq (%r13),%rax",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "49334500",
+    "warning": ""
+   },
+   {
+    "source": "xorq (%r13),%rax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq $1,%rcx",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "4883f101",
+    "warning": ""
+   },
+   {
+    "source": "xorq $1,%rcx",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq $-1,%rax",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "4883f0ff",
+    "warning": ""
+   },
+   {
+    "source": "xorq $-1,%rax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq $127,%rax",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "4883f07f",
+    "warning": ""
+   },
+   {
+    "source": "xorq $127,%rax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq $-128,%rax",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "4883f080",
+    "warning": ""
+   },
+   {
+    "source": "xorq $-128,%rax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq $128,%rax",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "483580000000",
+    "warning": ""
+   },
+   {
+    "source": "xorq $128,%rax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq $128,%rcx",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "4881f180000000",
+    "warning": ""
+   },
+   {
+    "source": "xorq $128,%rcx",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq $256,%rax",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "483500010000",
+    "warning": ""
+   },
+   {
+    "source": "xorq $256,%rax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq $256,%rcx",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "4881f100010000",
+    "warning": ""
+   },
+   {
+    "source": "xorq $256,%rcx",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq $0x7fffffff,%rdx",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "4881f2ffffff7f",
+    "warning": ""
+   },
+   {
+    "source": "xorq $0x7fffffff,%rdx",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq $-0x80000000,%rdx",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "4881f200000080",
+    "warning": ""
+   },
+   {
+    "source": "xorq $-0x80000000,%rdx",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq $0xffffffffffffffff,%rax",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "4883f0ff",
+    "warning": ""
+   },
+   {
+    "source": "xorq $0xffffffffffffffff,%rax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq $0x80000000,%rax",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "operand type mismatch for `xor'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq $0x80000000,%rax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq $0x100000000,%rcx",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "operand type mismatch for `xor'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq $0x100000000,%rcx",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq $1,(%rax)",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "48833001",
+    "warning": ""
+   },
+   {
+    "source": "xorq $1,(%rax)",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq $256,(%rax)",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "48813000010000",
+    "warning": ""
+   },
+   {
+    "source": "xorq $256,(%rax)",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq $1,8(%rsp)",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "488374240801",
+    "warning": ""
+   },
+   {
+    "source": "xorq $1,8(%rsp)",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq $256,%r11",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "4981f300010000",
+    "warning": ""
+   },
+   {
+    "source": "xorq $256,%r11",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "lock xorq %rax,(%rcx)",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "f0483101",
+    "warning": ""
+   },
+   {
+    "source": "lock xorq %rax,(%rcx)",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "lock xorq $1,(%rcx)",
+    "mode": 64,
+    "gas_status": 0,
+    "diagnostic": "",
+    "bytes": "f048833101",
+    "warning": ""
+   },
+   {
+    "source": "lock xorq $1,(%rcx)",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "lock xorq %rax,%rcx",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "expecting lockable instruction after `lock'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "lock xorq %rax,%rcx",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq %eax,%rax",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "register type mismatch for `xor'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq %eax,%rax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq %rax,%eax",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "register type mismatch for `xor'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq %rax,%eax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq %ax,%ax",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "incorrect register `%ax' used with `q' suffix",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq %ax,%ax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq %rax",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "number of operands mismatch for `xor'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq %rax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "number of operands mismatch for `xor'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq (%rax),(%rcx)",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "operand size mismatch for `xor'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq (%rax),(%rcx)",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq %ah,%rax",
+    "mode": 64,
+    "gas_status": 1,
+    "diagnostic": "register type mismatch for `xor'",
+    "bytes": null,
+    "warning": ""
+   },
+   {
+    "source": "xorq %ah,%rax",
+    "mode": 32,
+    "gas_status": 1,
+    "diagnostic": "`xorq' is only supported in 64-bit mode",
+    "bytes": null,
+    "warning": ""
+   }
+  ]
+ }
+}

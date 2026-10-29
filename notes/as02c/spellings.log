@@ -1,0 +1,297 @@
+start 2026-10-29T06:54:31-04:00 head 1b24087a9cd5268dca4e6088cb3b981e2f7f8787
+STEP 1/6: FROM docker.io/library/ubuntu:24.04@sha256:a2d43bffc46670d7108bb3c0468c67c5557c4c92e83e1e34cbff1322ad1b94dc
+STEP 2/6: COPY . /packages
+--> Using cache fbac01071c1ee776479c56f32dfab6de6af7271278fd162728352ac78c87d290
+--> fbac01071c1e
+STEP 3/6: ARG CLEF_CPUS
+--> Using cache 7435ffd8248379e4621989e12942330598e2b2dadf117b17b9ab794ae0ae0269
+--> 7435ffd82483
+STEP 4/6: RUN taskset -c "$CLEF_CPUS" sh -ec 'cd /packages; sha256sum -c sums; DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends /packages/*.deb; rm -rf /packages'
+--> Using cache 437320c7cb743c7befe9772f0366e05783ea2a87dcc0864f3680b2cd046b818a
+--> 437320c7cb74
+STEP 5/6: ENV LC_ALL=C
+--> Using cache 312b2ecbf6055dc48bb193f4ab8fbc19a9e453b3a70a917fc86aa2c79b97e450
+--> 312b2ecbf605
+STEP 6/6: WORKDIR /work
+--> Using cache e696b204fb554a3d3d0a256366448b1860917fd5889bd8f16aea7cb4e7a6cad0
+COMMIT localhost/clef-oracle:bce39162bc0b1e5e
+--> e696b204fb55
+Successfully tagged localhost/clef-oracle:bce39162bc0b1e5e
+e696b204fb554a3d3d0a256366448b1860917fd5889bd8f16aea7cb4e7a6cad0
+## inw
+  .code64  inw %dx,%ax                        ok  66ed                     
+  .code32  inw %dx,%ax                        ok  66ed                     
+  .code64  inw (%dx),%ax                      ok  66ed                     
+  .code32  inw (%dx),%ax                      ok  66ed                     
+  .code64  inw %dx                            ok  66ed                     
+  .code32  inw %dx                            ok  66ed                     
+  .code64  inw (%dx)                          ok  66ed                     
+  .code32  inw (%dx)                          ok  66ed                     
+  .code64  inw $0x60,%ax                      ok  66e560                   
+  .code32  inw $0x60,%ax                      ok  66e560                   
+  .code64  inw $0x60                          ok  66e560                   
+  .code32  inw $0x60                          ok  66e560                   
+  .code64  inw $0,%ax                         ok  66e500                   
+  .code32  inw $0,%ax                         ok  66e500                   
+  .code64  inw $255,%ax                       ok  66e5ff                   
+  .code32  inw $255,%ax                       ok  66e5ff                   
+  .code64  inw %ax                            REFUSED                      invalid instruction suffix for `in'
+  .code32  inw %ax                            REFUSED                      invalid instruction suffix for `in'
+  .code64  inw                                REFUSED                      number of operands mismatch for `in'
+  .code32  inw                                REFUSED                      number of operands mismatch for `in'
+  .code64  inw $256,%ax                       REFUSED                      operand type mismatch for `in'
+  .code32  inw $256,%ax                       REFUSED                      operand type mismatch for `in'
+  .code64  inw $-1,%ax                        REFUSED                      operand type mismatch for `in'
+  .code32  inw $-1,%ax                        REFUSED                      operand type mismatch for `in'
+  .code64  inw 0x60,%ax                       REFUSED                      operand size mismatch for `in'
+  .code32  inw 0x60,%ax                       REFUSED                      operand size mismatch for `in'
+  .code64  inw %dx,%eax                       REFUSED                      incorrect register `%eax' used with `w' suffix
+  .code32  inw %dx,%eax                       REFUSED                      incorrect register `%eax' used with `w' suffix
+  .code64  inw %dx,%bx                        REFUSED                      operand type mismatch for `in'
+  .code32  inw %dx,%bx                        REFUSED                      operand type mismatch for `in'
+  .code64  inw %dx,%al                        REFUSED                      `%al' not allowed with `inw'
+  .code32  inw %dx,%al                        REFUSED                      `%al' not allowed with `inw'
+  .code64  inw %cx,%ax                        REFUSED                      operand type mismatch for `in'
+  .code32  inw %cx,%ax                        REFUSED                      operand type mismatch for `in'
+  .code64  inw %edx,%ax                       ok  66ed                     
+  .code32  inw %edx,%ax                       ok  66ed                     
+  .code64  inw %ax,%dx                        REFUSED                      operand type mismatch for `in'
+  .code32  inw %ax,%dx                        REFUSED                      operand type mismatch for `in'
+  .code64  inw (%edx),%ax                     REFUSED                      operand size mismatch for `in'
+  .code32  inw (%edx),%ax                     REFUSED                      operand size mismatch for `in'
+  .code64  inw (%rdx),%ax                     REFUSED                      operand size mismatch for `in'
+  .code32  inw (%rdx),%ax                     REFUSED                      bad register name `%rdx)'
+  .code64  inw %dx,%ax,%ax                    REFUSED                      number of operands mismatch for `in'
+  .code32  inw %dx,%ax,%ax                    REFUSED                      number of operands mismatch for `in'
+## outw
+  .code64  outw %ax,%dx                       ok  66ef                     
+  .code32  outw %ax,%dx                       ok  66ef                     
+  .code64  outw %ax,(%dx)                     ok  66ef                     
+  .code32  outw %ax,(%dx)                     ok  66ef                     
+  .code64  outw %dx                           ok  66ef                     
+  .code32  outw %dx                           ok  66ef                     
+  .code64  outw (%dx)                         ok  66ef                     
+  .code32  outw (%dx)                         ok  66ef                     
+  .code64  outw %ax,$0x60                     ok  66e760                   
+  .code32  outw %ax,$0x60                     ok  66e760                   
+  .code64  outw $0x60                         ok  66e760                   
+  .code32  outw $0x60                         ok  66e760                   
+  .code64  outw %ax,$0                        ok  66e700                   
+  .code32  outw %ax,$0                        ok  66e700                   
+  .code64  outw %ax,$255                      ok  66e7ff                   
+  .code32  outw %ax,$255                      ok  66e7ff                   
+  .code64  outw %ax                           REFUSED                      invalid instruction suffix for `out'
+  .code32  outw %ax                           REFUSED                      invalid instruction suffix for `out'
+  .code64  outw                               REFUSED                      number of operands mismatch for `out'
+  .code32  outw                               REFUSED                      number of operands mismatch for `out'
+  .code64  outw %ax,$256                      REFUSED                      operand type mismatch for `out'
+  .code32  outw %ax,$256                      REFUSED                      operand type mismatch for `out'
+  .code64  outw %ax,$-1                       REFUSED                      operand type mismatch for `out'
+  .code32  outw %ax,$-1                       REFUSED                      operand type mismatch for `out'
+  .code64  outw %ax,0x60                      REFUSED                      operand size mismatch for `out'
+  .code32  outw %ax,0x60                      REFUSED                      operand size mismatch for `out'
+  .code64  outw %eax,%dx                      REFUSED                      incorrect register `%eax' used with `w' suffix
+  .code32  outw %eax,%dx                      REFUSED                      incorrect register `%eax' used with `w' suffix
+  .code64  outw %bx,%dx                       REFUSED                      operand type mismatch for `out'
+  .code32  outw %bx,%dx                       REFUSED                      operand type mismatch for `out'
+  .code64  outw %al,%dx                       REFUSED                      `%al' not allowed with `outw'
+  .code32  outw %al,%dx                       REFUSED                      `%al' not allowed with `outw'
+  .code64  outw %ax,%cx                       REFUSED                      operand type mismatch for `out'
+  .code32  outw %ax,%cx                       REFUSED                      operand type mismatch for `out'
+  .code64  outw %ax,%edx                      ok  66ef                     
+  .code32  outw %ax,%edx                      ok  66ef                     
+  .code64  outw %dx,%ax                       REFUSED                      operand type mismatch for `out'
+  .code32  outw %dx,%ax                       REFUSED                      operand type mismatch for `out'
+  .code64  outw %ax,(%edx)                    REFUSED                      operand size mismatch for `out'
+  .code32  outw %ax,(%edx)                    REFUSED                      operand size mismatch for `out'
+  .code64  outw $0x60,%ax                     REFUSED                      operand type mismatch for `out'
+  .code32  outw $0x60,%ax                     REFUSED                      operand type mismatch for `out'
+## bare in/out
+  .code64  in %dx,%ax                         ok  66ed                     
+  .code32  in %dx,%ax                         ok  66ed                     
+  .code64  in (%dx),%ax                       ok  66ed                     
+  .code32  in (%dx),%ax                       ok  66ed                     
+  .code64  in $0x60,%ax                       ok  66e560                   
+  .code32  in $0x60,%ax                       ok  66e560                   
+  .code64  in %dx                             ok  ed                       no instruction mnemonic suffix given and no register operands; using default for `in'
+  .code32  in %dx                             ok  ed                       no instruction mnemonic suffix given and no register operands; using default for `in'
+  .code64  in $0x60                           ok  e560                     no instruction mnemonic suffix given and no register operands; using default for `in'
+  .code32  in $0x60                           ok  e560                     no instruction mnemonic suffix given and no register operands; using default for `in'
+  .code64  out %ax,%dx                        ok  66ef                     
+  .code32  out %ax,%dx                        ok  66ef                     
+  .code64  out %ax,(%dx)                      ok  66ef                     
+  .code32  out %ax,(%dx)                      ok  66ef                     
+  .code64  out %ax,$0x60                      ok  66e760                   
+  .code32  out %ax,$0x60                      ok  66e760                   
+  .code64  out %dx                            ok  ef                       no instruction mnemonic suffix given and no register operands; using default for `out'
+  .code32  out %dx                            ok  ef                       no instruction mnemonic suffix given and no register operands; using default for `out'
+  .code64  out $0x60                          ok  e760                     no instruction mnemonic suffix given and no register operands; using default for `out'
+  .code32  out $0x60                          ok  e760                     no instruction mnemonic suffix given and no register operands; using default for `out'
+  .code64  in %dx,%al                         ok  ec                       
+  .code32  in %dx,%al                         ok  ec                       
+  .code64  in %dx,%eax                        ok  ed                       
+  .code32  in %dx,%eax                        ok  ed                       
+  .code64  out %al,%dx                        ok  ee                       
+  .code32  out %al,%dx                        ok  ee                       
+  .code64  out %eax,%dx                       ok  ef                       
+  .code32  out %eax,%dx                       ok  ef                       
+## port register widths and spacing
+  .code64  inw %rdx,%ax                       ok  66ed                     
+  .code32  inw %rdx,%ax                       REFUSED                      bad register name `%rdx'
+  .code64  inw %edx                           ok  66ed                     
+  .code32  inw %edx                           ok  66ed                     
+  .code64  outw %edx                          ok  66ef                     
+  .code32  outw %edx                          ok  66ef                     
+  .code64  outw %ax,%rdx                      ok  66ef                     
+  .code32  outw %ax,%rdx                      REFUSED                      bad register name `%rdx'
+  .code64  inb %edx,%al                       ok  ec                       
+  .code32  inb %edx,%al                       ok  ec                       
+  .code64  inl %edx,%eax                      ok  ed                       
+  .code32  inl %edx,%eax                      ok  ed                       
+  .code64  outb %al,%edx                      ok  ee                       
+  .code32  outb %al,%edx                      ok  ee                       
+  .code64  outl %eax,%edx                     ok  ef                       
+  .code32  outl %eax,%edx                     ok  ef                       
+  .code64  inw %dl,%ax                        REFUSED                      operand type mismatch for `in'
+  .code32  inw %dl,%ax                        REFUSED                      operand type mismatch for `in'
+  .code64  inw ( %dx ),%ax                    ok  66ed                     
+  .code32  inw ( %dx ),%ax                    ok  66ed                     
+  .code64  inw (%dx ),%ax                     ok  66ed                     
+  .code32  inw (%dx ),%ax                     ok  66ed                     
+  .code64  outw %ax, ( %dx )                  ok  66ef                     
+  .code32  outw %ax, ( %dx )                  ok  66ef                     
+  .code64  inw *%dx,%ax                       REFUSED                      invalid char '*' beginning operand 1 `*%dx'
+  .code32  inw *%dx,%ax                       REFUSED                      invalid char '*' beginning operand 1 `*%dx'
+  .code64  inw 0(%dx),%ax                     REFUSED                      `0(%dx)' is not a valid base/index expression
+  .code32  inw 0(%dx),%ax                     REFUSED                      `0(%dx)' is not a valid base/index expression
+## bare in/out, more
+  .code64  in %dx,%bl                         REFUSED                      operand type mismatch for `in'
+  .code32  in %dx,%bl                         REFUSED                      operand type mismatch for `in'
+  .code64  in (%dx)                           ok  ed                       no instruction mnemonic suffix given and no register operands; using default for `in'
+  .code32  in (%dx)                           ok  ed                       no instruction mnemonic suffix given and no register operands; using default for `in'
+  .code64  out (%dx)                          ok  ef                       no instruction mnemonic suffix given and no register operands; using default for `out'
+  .code32  out (%dx)                          ok  ef                       no instruction mnemonic suffix given and no register operands; using default for `out'
+  .code64  in %al                             REFUSED                      operand size mismatch for `in'
+  .code32  in %al                             REFUSED                      operand size mismatch for `in'
+  .code64  in $0x60,%al                       ok  e460                     
+  .code32  in $0x60,%al                       ok  e460                     
+  .code64  in $0x60,%eax                      ok  e560                     
+  .code32  in $0x60,%eax                      ok  e560                     
+  .code64  out %al,$0x60                      ok  e660                     
+  .code32  out %al,$0x60                      ok  e660                     
+  .code64  out %eax,$0x60                     ok  e760                     
+  .code32  out %eax,$0x60                     ok  e760                     
+  .code64  in %edx,%ax                        ok  66ed                     
+  .code32  in %edx,%ax                        ok  66ed                     
+  .code64  out %ax,%edx                       ok  66ef                     
+  .code32  out %ax,%edx                       ok  66ef                     
+  .code64  in %dx,%rax                        REFUSED                      operand size mismatch for `in'
+  .code32  in %dx,%rax                        REFUSED                      bad register name `%rax'
+  .code64  out %rax,%dx                       REFUSED                      operand size mismatch for `out'
+  .code32  out %rax,%dx                       REFUSED                      bad register name `%rax'
+## b/l neighbours (implicit forms, for the record)
+  .code64  inb %dx                            ok  ec                       
+  .code32  inb %dx                            ok  ec                       
+  .code64  inb (%dx),%al                      ok  ec                       
+  .code32  inb (%dx),%al                      ok  ec                       
+  .code64  inb $0x60                          ok  e460                     
+  .code32  inb $0x60                          ok  e460                     
+  .code64  inl %dx                            ok  ed                       
+  .code32  inl %dx                            ok  ed                       
+  .code64  inl (%dx),%eax                     ok  ed                       
+  .code32  inl (%dx),%eax                     ok  ed                       
+  .code64  inl $0x60                          ok  e560                     
+  .code32  inl $0x60                          ok  e560                     
+  .code64  outb %dx                           ok  ee                       
+  .code32  outb %dx                           ok  ee                       
+  .code64  outb %al,(%dx)                     ok  ee                       
+  .code32  outb %al,(%dx)                     ok  ee                       
+  .code64  outb $0x60                         ok  e660                     
+  .code32  outb $0x60                         ok  e660                     
+  .code64  outl %dx                           ok  ef                       
+  .code32  outl %dx                           ok  ef                       
+  .code64  outl %eax,(%dx)                    ok  ef                       
+  .code32  outl %eax,(%dx)                    ok  ef                       
+  .code64  outl $0x60                         ok  e760                     
+  .code32  outl $0x60                         ok  e760                     
+## xorq
+  .code64  xorq %rax,%rax                     ok  4831c0                   
+  .code32  xorq %rax,%rax                     REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq %rcx,%rdx                     ok  4831ca                   
+  .code32  xorq %rcx,%rdx                     REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq %r8,%r15                      ok  4d31c7                   
+  .code32  xorq %r8,%r15                      REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq %r12,%r13                     ok  4d31e5                   
+  .code32  xorq %r12,%r13                     REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq %rcx,(%rax)                   ok  483108                   
+  .code32  xorq %rcx,(%rax)                   REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq (%rax),%rcx                   ok  483308                   
+  .code32  xorq (%rax),%rcx                   REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq %rax,8(%rsp)                  ok  4831442408               
+  .code32  xorq %rax,8(%rsp)                  REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq 8(%rsp),%rax                  ok  4833442408               
+  .code32  xorq 8(%rsp),%rax                  REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq %r9,-16(%rbp,%rcx,8)          ok  4c314ccdf0               
+  .code32  xorq %r9,-16(%rbp,%rcx,8)          REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq -16(%rbp,%rcx,8),%r9          ok  4c334ccdf0               
+  .code32  xorq -16(%rbp,%rcx,8),%r9          REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq %rax,(%r12)                   ok  49310424                 
+  .code32  xorq %rax,(%r12)                   REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq (%r13),%rax                   ok  49334500                 
+  .code32  xorq (%r13),%rax                   REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq $1,%rcx                       ok  4883f101                 
+  .code32  xorq $1,%rcx                       REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq $-1,%rax                      ok  4883f0ff                 
+  .code32  xorq $-1,%rax                      REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq $127,%rax                     ok  4883f07f                 
+  .code32  xorq $127,%rax                     REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq $-128,%rax                    ok  4883f080                 
+  .code32  xorq $-128,%rax                    REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq $128,%rax                     ok  483580000000             
+  .code32  xorq $128,%rax                     REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq $128,%rcx                     ok  4881f180000000           
+  .code32  xorq $128,%rcx                     REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq $256,%rax                     ok  483500010000             
+  .code32  xorq $256,%rax                     REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq $256,%rcx                     ok  4881f100010000           
+  .code32  xorq $256,%rcx                     REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq $0x7fffffff,%rdx              ok  4881f2ffffff7f           
+  .code32  xorq $0x7fffffff,%rdx              REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq $-0x80000000,%rdx             ok  4881f200000080           
+  .code32  xorq $-0x80000000,%rdx             REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq $0xffffffffffffffff,%rax      ok  4883f0ff                 
+  .code32  xorq $0xffffffffffffffff,%rax      REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq $0x80000000,%rax              REFUSED                      operand type mismatch for `xor'
+  .code32  xorq $0x80000000,%rax              REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq $0x100000000,%rcx             REFUSED                      operand type mismatch for `xor'
+  .code32  xorq $0x100000000,%rcx             REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq $1,(%rax)                     ok  48833001                 
+  .code32  xorq $1,(%rax)                     REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq $256,(%rax)                   ok  48813000010000           
+  .code32  xorq $256,(%rax)                   REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq $1,8(%rsp)                    ok  488374240801             
+  .code32  xorq $1,8(%rsp)                    REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq $256,%r11                     ok  4981f300010000           
+  .code32  xorq $256,%r11                     REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  lock xorq %rax,(%rcx)              ok  f0483101                 
+  .code32  lock xorq %rax,(%rcx)              REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  lock xorq $1,(%rcx)                ok  f048833101               
+  .code32  lock xorq $1,(%rcx)                REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  lock xorq %rax,%rcx                REFUSED                      expecting lockable instruction after `lock'
+  .code32  lock xorq %rax,%rcx                REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq %eax,%rax                     REFUSED                      register type mismatch for `xor'
+  .code32  xorq %eax,%rax                     REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq %rax,%eax                     REFUSED                      register type mismatch for `xor'
+  .code32  xorq %rax,%eax                     REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq %ax,%ax                       REFUSED                      incorrect register `%ax' used with `q' suffix
+  .code32  xorq %ax,%ax                       REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq %rax                          REFUSED                      number of operands mismatch for `xor'
+  .code32  xorq %rax                          REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq                               REFUSED                      number of operands mismatch for `xor'
+  .code32  xorq                               REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq (%rax),(%rcx)                 REFUSED                      operand size mismatch for `xor'
+  .code32  xorq (%rax),(%rcx)                 REFUSED                      `xorq' is only supported in 64-bit mode
+  .code64  xorq %ah,%rax                      REFUSED                      register type mismatch for `xor'
+  .code32  xorq %ah,%rax                      REFUSED                      `xorq' is only supported in 64-bit mode
+GNU assembler (GNU Binutils for Ubuntu) 2.42
+end 2026-10-29T06:54:32-04:00 exit 0
