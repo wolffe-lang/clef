@@ -44,8 +44,8 @@ second instruction database. The PDF itself is not vendored or modified.
 | Ubuntu | 24.04, manifest `a2d43bffc46670d7108bb3c0468c67c5557c4c92e83e1e34cbff1322ad1b94dc` | `ci/oracle-lock.json` |
 | GNU as / objdump / readelf / nm / ar | Ubuntu binutils 2.42 | exact versions, binary package URLs and SHA256 in that lock |
 | clang integrated assembler | Ubuntu clang 18.1.3 (1ubuntu1) | same lock |
-| wolf | 0.2.35, Linux x86-64 archive | `wolf-toolchain.toml`, SHA256 `4cc4045bbbb605c07835bc4f32685953c784eeef4cd3139a48b457dfc90dad1a` |
-| lupin | 0.1.56, Linux x86-64 archive | same file, SHA256 `ad703550ac4787e8e4bb26989d591a731410274d7332f2b4e8b9a64c878822cc` |
+| wolf | 0.2.36, Linux x86-64 archive (release 427033151, bundled std `78b9d3cb`) | `wolf-toolchain.toml`, SHA256 `d383c74c8cd123b9d9dfaa268271d4f004294f85c2b230237d0ef07027d9500d` |
+| lupin | 0.1.58, Linux x86-64 archive (wolf-interp release 425116893) | same file, SHA256 `34f52792bb59bc7565e0edc1235cd47d9a6ad13d5e6528993627f2e699b62193` |
 
 All 120 installed binary packages, including dependencies, are pinned. The container
 is rebuilt with networking disabled after each package is checked against its hash.
