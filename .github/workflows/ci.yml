@@ -48,7 +48,10 @@ jobs:
     needs: plan
     if: contains(fromJSON(needs.plan.outputs.jobs || '[]'), 'linux')
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    # 60, not 20: a toolchain pin misses the cache (its key hashes
+    # wolf-toolchain.toml), and the cold build downloads the 120 pinned
+    # packages one by one; twice that alone outlasted 20 minutes (clef#14).
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: actions/cache@v4
