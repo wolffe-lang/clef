@@ -3,7 +3,7 @@
 import pathlib
 import subprocess
 root = pathlib.Path(__file__).resolve().parents[1]
-wolf = root / '.wolf-bin/wolf/wolf-0.2.35-x86_64-unknown-linux-gnu/wolf'
+wolf = root / '.wolf-bin/wolf/wolf-0.2.36-x86_64-unknown-linux-gnu/wolf'
 files = sorted((root / 'src').glob('*_test.lu'))
 assert files
 for source in files:

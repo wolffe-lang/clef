@@ -3,8 +3,8 @@
 import json,os,pathlib,subprocess,sys
 ROOT=pathlib.Path(__file__).resolve().parents[1];os.chdir(ROOT)
 subprocess.run(['tools/fetch-toolchain'],check=True)
-W=ROOT/'.wolf-bin/wolf/wolf-0.2.35-x86_64-unknown-linux-gnu/wolf'
-L=ROOT/'.wolf-bin/lupin/lupin-0.1.56-x86_64-unknown-linux-gnu/lupin'
+W=ROOT/'.wolf-bin/wolf/wolf-0.2.36-x86_64-unknown-linux-gnu/wolf'
+L=ROOT/'.wolf-bin/lupin/lupin-0.1.58-x86_64-unknown-linux-gnu/lupin'
 out=ROOT/'target/evidence';out.mkdir(parents=True,exist_ok=True)
 commands=[('planner',['python3','ci/tiers-test.py']),('format',[str(W),'fmt','--check','src','tests']),
  ('build',[str(W),'build','--deny-warnings','src/clef.lu','-o','target/clef']),
