@@ -66,7 +66,7 @@ for mode in (32, 64):
                          f'{value},,0', f'{value},0,14', f'{value},0,15', '0', '', ',0'):
                 compare(f'{mode}:{section}:{directive} {args}', prefix + raw + directive + ' ' + args + '\n')
             if section != '.bss':
-                for fill in ('0x5a', '-1', '0x1234', '-257'):
+                for fill in ('0x5a', '-1', '0x1234', '-257', '0xffffffffffffffff'):
                     compare(f'{mode}:{section}:{directive}:fill={fill}',
                             prefix + raw + f'{directive} {value},{fill}\n')
                 compare(f'{mode}:{section}:{directive}:labels-relocs', prefix +
@@ -75,7 +75,7 @@ for mode in (32, 64):
             for args in ('0', '1', '7', '16,0'):
                 compare(f'{mode}:{section}:{directive} {args}', prefix + directive + ' ' + args + '\n')
             if section != '.bss':
-                for fill in ('0x5a', '-1', '0x1234', '-257'):
+                for fill in ('0x5a', '-1', '0x1234', '-257', '0xffffffffffffffff'):
                     compare(f'{mode}:{section}:{directive}:fill={fill}', prefix + f'{directive} 7,{fill}\n')
 
 # Every family listed in SDM LOCK, all widths and legacy modes, reg and immediate
