@@ -1,0 +1,156 @@
+{
+  "repository": "wolffe-lang/pax",
+  "commit": "3e28a8bc79d7ff879f74c1872fe1bc9ccfa97a1f",
+  "files": [
+    {
+      "path": "boot/console.S",
+      "sha256": "bf7cb9792017e521986bd1a35d203c2b1b6ee63b913f73d393b4039c3fa998b3",
+      "refusal": false
+    },
+    {
+      "path": "boot/cpu.S",
+      "sha256": "72f05e39f4b601e2afea201b5904ec33136285b02a3f16214f5d2805267ae21d",
+      "refusal": false
+    },
+    {
+      "path": "boot/event.S",
+      "sha256": "ecfbe5e08ba290085647545424b85ef1fa17da7f213fa5d9a0ecf8adb462dbff",
+      "refusal": false
+    },
+    {
+      "path": "boot/font.S",
+      "sha256": "2f3cab76bbb5f1fa2ecf4fa02b36449182388e6add60b88c77d750f7f12adf0c",
+      "refusal": false
+    },
+    {
+      "path": "boot/fpu.S",
+      "sha256": "1274c014c4f020b0b27ebcc2d276c57d5d0e81bdb9317831456457c8402318f3",
+      "refusal": false
+    },
+    {
+      "path": "boot/io.S",
+      "sha256": "34a6257a4a751095d162d8c82ad9b56288589f5a97552040cf9008fd144c361d",
+      "refusal": false
+    },
+    {
+      "path": "boot/isr.S",
+      "sha256": "4b30a38ffd7544f42721a5af9c9f3bbbfa0e019faf9616cffb86a0f0413827e1",
+      "refusal": false
+    },
+    {
+      "path": "boot/net.S",
+      "sha256": "283dd34a758543d0aeaf91ff913a2bd9de55e819c475e5720001a46f32534bd1",
+      "refusal": false
+    },
+    {
+      "path": "boot/sched.S",
+      "sha256": "fae00cb759debee6332b648835cc18b22437c6aa3c3abab332a3ea5dfed263a9",
+      "refusal": false
+    },
+    {
+      "path": "boot/screen.S",
+      "sha256": "38227fab451d91e65c9ebd8a98b708a469a8682cc37887039612114a780e8ecf",
+      "refusal": false
+    },
+    {
+      "path": "boot/sound.S",
+      "sha256": "0592eb93684685ce2d70a98504f7677d94c911eba2d40db2af2f1d552d164544",
+      "refusal": false
+    },
+    {
+      "path": "boot/speaker.S",
+      "sha256": "3683780cd5414c0ad2e40f148fb9a9fd1da0d4c60b0e260ffb9a38e6eed71df0",
+      "refusal": false
+    },
+    {
+      "path": "boot/start.S",
+      "sha256": "b865062aa0f0cb1f3c1dcada231ef7d6f96d3e4f02afffa035850f71f6b12494",
+      "refusal": false
+    },
+    {
+      "path": "boot/stub/pax-stub.s",
+      "sha256": "877691f055bd0ff1cac08746a823928d6cfd7b05ed85ecd101f684e3f87ea326",
+      "refusal": false
+    },
+    {
+      "path": "boot/tree.S",
+      "sha256": "f01ba3ab05f52987299b2720c0b4a5df3d800475067b0df7b26e6bb00d73744f",
+      "refusal": false
+    },
+    {
+      "path": "boot/triage.S",
+      "sha256": "29de3dc2cde5d03bb8ab49fff79e152b21cd4a7e7ebc4159ad18acbe46cbd989",
+      "refusal": false
+    },
+    {
+      "path": "boot/unix.S",
+      "sha256": "0d1dbba66058c30233df2c1436600070d330c5f3ee469f5bfd1d621e451cba41",
+      "refusal": false
+    },
+    {
+      "path": "boot/user.S",
+      "sha256": "c1d689c15ed5d8b75e65008439704c9448d14630d482497d639bd7a325477a96",
+      "refusal": false
+    },
+    {
+      "path": "tests/mkw.d/boot/io.S",
+      "sha256": "c4e52f38359ea41e969855865cce614897bdfda074cde27d7f59f2e99e8da77e",
+      "refusal": false
+    },
+    {
+      "path": "tests/mpx5-clef.d/unknown.S",
+      "sha256": "71d523e2161c6c1993889be5f4f72f5535a04922ed4c62755d65265b2154c2fc",
+      "refusal": true
+    },
+    {
+      "path": "user/elf/ask.S",
+      "sha256": "38d969c9ca54ef0f0e5868c8d52d8e650cd70e953549bba1e934427ba4d678e1",
+      "refusal": false
+    },
+    {
+      "path": "user/elf/hello.S",
+      "sha256": "fdec225b18e9fccfcadbeeb142ac550876e5ec440a2673ac3def97aa7d0be60b",
+      "refusal": false
+    },
+    {
+      "path": "user/elf/hold.S",
+      "sha256": "74f193d441b092be3ab11970b9b05a5a21878f7e2b579e81e3ecf8c872770c62",
+      "refusal": false
+    },
+    {
+      "path": "user/elf/reboot.S",
+      "sha256": "0a32105fc24ba3ce71368be177f9f10b04c7f6a9f5e92132e9548544f2af74a5",
+      "refusal": false
+    },
+    {
+      "path": "user/elf/seven.S",
+      "sha256": "9614b2c96d76a8e1e4b68c27e4a25704fdbd93ea7c1fc5bc28c12d33d27efbc1",
+      "refusal": false
+    },
+    {
+      "path": "user/fsck/open.S",
+      "sha256": "f35b399d78c9544767aa8001c31cdbf4e9c7aa2e950c3fd5245417bd5eb03335",
+      "refusal": false
+    },
+    {
+      "path": "user/install/raw.S",
+      "sha256": "4b9f69198a2ec853015bad4e9572c1fa1c8b0a8e7f317125f922ad78359c02c3",
+      "refusal": false
+    },
+    {
+      "path": "user/play/kd.S",
+      "sha256": "7421d18f4cd6ddb18a3bc14e7c6e26b61d9957bb3f9ddaf807ef1538fab7a147",
+      "refusal": false
+    },
+    {
+      "path": "user/programs.S",
+      "sha256": "20d8ce187c8145f790f1646dd146e33c3615246f15b2f877b91ba219a7d79836",
+      "refusal": false
+    },
+    {
+      "path": "user/termwolf/tio.S",
+      "sha256": "d194605c5e5321e2319c87aabc0a6aa83f7b1edf813bc1df11eb84b5af6ba43c",
+      "refusal": false
+    }
+  ]
+}
