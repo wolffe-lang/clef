@@ -1,0 +1,29 @@
+as02d prediction — 2026-11-02
+Base clef 5e8e8d7b; pax sources pinned to 3e28a8bc, read-only.
+
+.skip should be exactly .space; .align should be exactly .balign on x86 ELF.
+Existing .space/.balign/.p2align implement fills and max-skip; differential rows
+will cover omitted fill, explicit zero, nonzero fill, BSS, code32/code64, zero
+alignment, boundaries and labels/relocations around padding. I expect aliases
+to fix fsck/open.S and install/raw.S without other instruction changes.
+
+LOCK should emit F0 before operand-size and REX prefixes, only on the SDM's
+memory-destination read-modify-write forms: ADC ADD AND BTC BTR BTS CMPXCHG
+CMPXCHG8B CMPXCHG16B DEC INC NEG NOT OR SBB SUB XADD XCHG XOR. Register-only,
+source-memory, CMP/TEST, duplicate and conflicting prefixes must be named
+refusals. Existing table metadata may need correction, not blind trust.
+New differential and refusal rows will be committed and witnessed red before
+implementation. The off-line plant will make .p2align one byte short and must
+fail a named raw-section differential row.
+
+The pax roster is expected to contain 29 paths, including deliberately invalid
+tests/mpx5-clef.d/unknown.S (both gas and clef refuse). R-as02d-1 recommendation:
+count 28 byte-identical objects plus the explicit shared refusal, rather than
+claim all 29 assemble. Alternative: remove the refusal fixture from the roster.
+Implement the truthful 28+1 policy and report the contract's literal limit.
+
+Both clef CI tiers run the same assembler gate; the new rows will be reached
+through the existing assembler/ports gates (no CI/pin changes). Run checked
+and lupin logic rows plus native object differentials. One stop-on-first-error
+wrapper at final head will print END for every step. README will be updated
+for aliases, LOCK support and measured counts, without enlarging ISA claims.
