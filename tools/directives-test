@@ -119,6 +119,16 @@ for text in ('lock movq %rax,(%rcx)', 'lock cmpq %rax,(%rcx)', 'lock testq %rax,
              'lock lock addq %rax,(%rcx)', 'lock nop', 'lock ret'):
     compare(text, text + '\n', 'invalid_lock_prefix')
 
+# New families also need canonical unlocked register encodings, not just valid bytes.
+for mode in (32, 64):
+    for bits in ((8, 16, 32) if mode == 32 else (8, 16, 32, 64)):
+        suffix, reg = suffixes[bits]
+        acc = {8: '%al', 16: '%ax', 32: '%eax', 64: '%rax'}[bits]
+        for family in ('adc', 'sbb', 'cmpxchg', 'xadd', 'xchg'):
+            for operands in (reg + ',' + acc, acc + ',' + reg, acc + ',' + acc):
+                compare(f'unlocked-{mode}-{family}{suffix}-{operands}',
+                        f'.code{mode}\n{family}{suffix} {operands}\n')
+
 manifest = json.loads((ROOT / 'tests/directives/sources.json').read_text())
 assert len(manifest['files']) == 30
 for entry in manifest['files']:
