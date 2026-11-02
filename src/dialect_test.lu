@@ -68,7 +68,7 @@ fn main() -> int ! {Syntax(lex.Failure), bad_operands, bad_register} {
         ".ascii \"a,b\"\n.asciz \"x\"\n.balign 8\n.bss\n.byte 1,2\n.code32\n.code64\n.data\n.endm\n.endr\n.globl foo\n.irp n,0,1\n.long 3\n.macro ISR v\n.p2align 4\n.quad foo\n.section .note.GNU-stack,\"\",@progbits\n.set x,4\n.size foo,.-foo\n.text\n.type foo,@function\n.word 2\n.zero 16\n.space 8\n",
         "directives.S",
     )?
-    assert(directives.len == 24)
+    assert(directives.len == 26)
     for row in directives { assert(dialect.statement(row)?.kind == "directive") }
     let assigned = lex.source("X = (2+3)\n", "set.S")?
     let a = dialect.statement(assigned[0])?

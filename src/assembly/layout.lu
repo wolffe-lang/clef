@@ -81,6 +81,12 @@ fn signed_bits(n: eval.Number) -> int {
     bits as int
 }
 
+// Padding takes the low byte of an absolute expression, including unsigned 64-bit values.
+fn fill_integer(value: eval.Value, origin: lex.Origin, final: bool) -> int ! Errors {
+    if value.section == "ABS" { return signed_bits(value.number) & 255 }
+    integer(value, origin, final)?
+}
+
 fn add_bytes(mut pass: Pass, bytes: List[byte], origin: lex.Origin) -> () ! Errors {
     let i = pass.current
     if bytes.len > 67108864 || pass.sections[i].size > 2147483647 - bytes.len {
@@ -103,13 +109,11 @@ fn add_bytes(mut pass: Pass, bytes: List[byte], origin: lex.Origin) -> () ! Erro
 
 fn fill(mut pass: Pass, count: int, byte_value: int, origin: lex.Origin) -> () ! Errors {
     if count < 0 ||
-        count > 2147483647 - pass.sections[pass.current].size ||
-        byte_value < -128 ||
-        byte_value > 255 {
+        count > 2147483647 - pass.sections[pass.current].size {
         return Assembly(failure(origin, "invalid_space_size_or_fill: GNU as §7 Space"))
     }
     if pass.sections[pass.current].kind == 8 {
-        if byte_value != 0 {
+        if byte_value & 255 != 0 && count > 0 {
             return Assembly(failure(origin, "nonzero_nobits_data: ELF gABI Sections"))
         }
         pass.sections[pass.current].size += count
@@ -484,14 +488,14 @@ fn run_pass(
                     data_field(mut pass, v, width, prepared.globals, node.origin, final)?
                 }
                 pass.raw_tail[pass.current] = true
-            } else if node.name == ".zero" || node.name == ".space" {
+            } else if node.name == ".zero" || node.name == ".space" || node.name == ".skip" {
                 let count = integer(
                     at_value(pass, prepared, i, args[0], old_dots, final)?,
                     node.origin,
                     final,
                 )?
                 let byte_value = if args.len > 1 {
-                    integer(
+                    fill_integer(
                         at_value(pass, prepared, i, args[1], old_dots, final)?,
                         node.origin,
                         final,
@@ -501,12 +505,16 @@ fn run_pass(
                 }
                 fill(mut pass, count, byte_value, node.origin)?
                 if count > 0 { pass.raw_tail[pass.current] = true }
-            } else if node.name == ".p2align" || node.name == ".balign" {
-                let value = integer(
-                    at_value(pass, prepared, i, args[0], old_dots, final)?,
-                    node.origin,
-                    final,
-                )?
+            } else if node.name == ".p2align" || node.name == ".balign" || node.name == ".align" {
+                let value = if args.len == 0 || args[0].len == 0 {
+                    0
+                } else {
+                    integer(
+                        at_value(pass, prepared, i, args[0], old_dots, final)?,
+                        node.origin,
+                        final,
+                    )?
+                }
                 if value < 0 || value > 1073741824 || node.name == ".p2align" && value > 30 {
                     return Assembly(failure(node.origin, "invalid_alignment: GNU as §7 Align"))
                 }
@@ -540,7 +548,7 @@ fn run_pass(
                     if count > maxskip { count = 0 }
                 }
                 if args.len > 1 && args[1].len > 0 {
-                    let byte_value = integer(
+                    let byte_value = fill_integer(
                         at_value(pass, prepared, i, args[1], old_dots, final)?,
                         node.origin,
                         final,

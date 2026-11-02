@@ -224,13 +224,13 @@ fn named(names: List[str], s: str) -> bool {
 /// Accepted census spellings and as02c's word ports (in inw out outw xorq); the encoder
 /// separately validates mnemonic × operand forms.
 pub fn mnemonics() -> List[str] {
-    "add addb addl addq and andb andl andq btl call callq clac cld cli cmpb cmpl cmpq cmpw cpuid decl decq divl divq fnstcw fxrstor64 fxsave64 hlt imulq in inb incl incq inl int3 invlpg inw iretq ja jae jb jc je jle jmp jne jns jnz js jz lea leal leaq lgdt lidt ljmp lretq ltr mov movabs movabsq movb movdqu movl movq movsb movslq movsq movw movzbl movzwl negq nop orl orq out outb outl outw pause pop popq push pushfq pushq rdmsr rdrand rdtsc ret setc shl shll shlq shrl shrq stac sti stmxcsr stosb stosq sub subl subq syscall sysretq test testb testl testq ud2 wrmsr xgetbv xor xorl xorq xrstor64 xsave64 xsetbv cmp".
+    "add addb addl addq and andb andl andq btl call callq clac cld cli cmpb cmpl cmpq cmpw cpuid decl decq divl divq fnstcw fxrstor64 fxsave64 hlt imulq in inb incl incq inl int3 invlpg inw iretq ja jae jb jc je jle jmp jne jns jnz js jz lea leal leaq lgdt lidt ljmp lretq ltr mov movabs movabsq movb movdqu movl movq movsb movslq movsq movw movzbl movzwl negq nop orl orq out outb outl outw pause pop popq push pushfq pushq rdmsr rdrand rdtsc ret setc shl shll shlq shrl shrq stac sti stmxcsr stosb stosq sub subl subq syscall sysretq test testb testl testq ud2 wrmsr xgetbv xor xorl xorq xrstor64 xsave64 xsetbv cmp adc adcb adcw adcl adcq addw andw btc btcw btcl btcq btr btrw btrl btrq bts btsw btsl btsq cmpxchg cmpxchgb cmpxchgw cmpxchgl cmpxchgq dec decb decw inc incb incw neg negb negw negl not notb notw notl notq or orb orw sbb sbbb sbbw sbbl sbbq subb subw xadd xaddb xaddw xaddl xaddq xchg xchgb xchgw xchgl xchgq xorb xorw cmpxchg8b cmpxchg16b".
         words()
 }
 
 /// The 23 census directives, plus .space (GNU as's .zero counterpart).
 pub fn directives() -> List[str] {
-    ".ascii .asciz .balign .bss .byte .code32 .code64 .data .endm .endr .globl .irp .long .macro .p2align .quad .section .set .size .text .type .word .zero .space".
+    ".ascii .asciz .balign .bss .byte .code32 .code64 .data .endm .endr .globl .irp .long .macro .p2align .quad .section .set .size .text .type .word .zero .space .skip .align".
         words()
 }
 
@@ -369,7 +369,7 @@ pub fn statement(row: lex.Statement) -> Node ! {Syntax(lex.Failure)} {
                 return Syntax(fail(row.origin, "directive_arguments {node.name}: GNU as §7"))
             }
         } else {
-            if n == 0 {
+            if n == 0 && !named([".align", ".balign", ".p2align"], node.name) {
                 return Syntax(
                     fail(row.origin, "missing_directive_arguments {node.name}: GNU as §7"),
                 )
@@ -381,14 +381,14 @@ pub fn statement(row: lex.Statement) -> Node ! {Syntax(lex.Failure)} {
             if node.name == ".section" && n > 3 {
                 return Syntax(fail(row.origin, "section_arguments: GNU as §7 Section"))
             }
-            if named([".p2align", ".balign"], node.name) && n > 3 {
+            if named([".p2align", ".balign", ".align"], node.name) && n > 3 {
                 return Syntax(fail(row.origin, "align_arguments: GNU as §7"))
             }
-            if named([".zero", ".space"], node.name) && n > 2 {
+            if named([".zero", ".space", ".skip"], node.name) && n > 2 {
                 return Syntax(fail(row.origin, "space_arguments: GNU as §7"))
             }
             for arg in node.arguments {
-                if arg.len == 0 && !named([".p2align", ".balign"], node.name) {
+                if arg.len == 0 && !named([".p2align", ".balign", ".align"], node.name) {
                     return Syntax(fail(row.origin, "empty_argument: GNU as §7"))
                 }
                 if node.name == ".globl" && !symbol(arg) {
