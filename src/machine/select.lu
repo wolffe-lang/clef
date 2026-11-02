@@ -171,6 +171,12 @@ pub fn choose(
                 } else {
                     "rm"
                 }
+            } else if family == "xchg" && ops.len == 2 && bits > 8 &&
+                ops[0].kind == "register" && ops[1].kind == "register" &&
+                (ops[0].reg.code == 0 || ops[1].reg.code == 0) &&
+                !(bits == 32 && mode == 64 && ops[0].reg.code == 0 && ops[1].reg.code == 0) {
+                // GNU as retains 87 C0 for EAX,EAX in long mode: 90 would not clear upper RAX.
+                role = if ops[0].reg.code == 0 then "acc_reg" else "reg_acc"
             } else if family == "imul" {
                 if ops.len != 3 { return bad_operands }
                 role = if short_imm(values, known, 0, bits) then "imm8_rm_reg" else "imm_rm_reg"

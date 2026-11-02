@@ -392,5 +392,11 @@ pub fn source() -> List[str] {
         "2D|6.1 XCHG|6-32|REX.W + 87 /r XCHG r/m64, r64|xchg|rm_reg|64|64|135|-1|0|1|0|1|0|-1|-1|none|unique-role|base|rm64,r64|none|lock-memory-destination",
         "2A|3.3 CMPXCHG8B/CMPXCHG16B|3-215|0F C7 /1 CMPXCHG8B m64|cmpxchg8b|mem|64|32,64|15,199|1|0|0|0|-1|0|-1|-1|none|unique-role|cx8|mem|none|lock-memory-destination",
         "2A|3.3 CMPXCHG8B/CMPXCHG16B|3-215|REX.W + 0F C7 /1 CMPXCHG16B m128|cmpxchg16b|mem|128|64|15,199|1|0|1|0|-1|0|-1|-1|none|unique-role|cx16|mem|none|lock-memory-destination",
+        "2D|6.1 XCHG|6-32|90+r XCHG accumulator, r16|xchg|acc_reg|16|32,64|144|-1|102|0|0|-1|-1|1|-1|none|prefer-accumulator-short-form|base|acc16,r16|none|none",
+        "2D|6.1 XCHG|6-32|90+r XCHG accumulator, r16|xchg|reg_acc|16|32,64|144|-1|102|0|0|-1|-1|0|-1|none|prefer-accumulator-short-form|base|r16,acc16|none|none",
+        "2D|6.1 XCHG|6-32|90+r XCHG accumulator, r32|xchg|acc_reg|32|32,64|144|-1|0|0|0|-1|-1|1|-1|none|prefer-accumulator-short-form|base|acc32,r32|none|none",
+        "2D|6.1 XCHG|6-32|90+r XCHG accumulator, r32|xchg|reg_acc|32|32,64|144|-1|0|0|0|-1|-1|0|-1|none|prefer-accumulator-short-form|base|r32,acc32|none|none",
+        "2D|6.1 XCHG|6-32|REX.W + 90+r XCHG accumulator, r64|xchg|acc_reg|64|64|144|-1|0|1|0|-1|-1|1|-1|none|prefer-accumulator-short-form|base|acc64,r64|none|none",
+        "2D|6.1 XCHG|6-32|REX.W + 90+r XCHG accumulator, r64|xchg|reg_acc|64|64|144|-1|0|1|0|-1|-1|0|-1|none|prefer-accumulator-short-form|base|r64,acc64|none|none",
     ]
 }
