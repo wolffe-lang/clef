@@ -158,6 +158,7 @@ pub fn choose(
                 family == "dec" ||
                 family == "div" ||
                 family == "neg" ||
+                family == "not" ||
                 family == "rdrand" ||
                 family == "ltr" ||
                 family == "setb" {
@@ -246,10 +247,11 @@ pub fn choose(
                         }
                     } else if family != "test" &&
                         family != "bt" &&
+                        family != "btc" && family != "btr" && family != "bts" &&
                         bits > 8 &&
                         short_imm(values, known, 0, bits) {
                         role = "imm8_rm"
-                    } else if family != "bt" && ops[1].kind == "register" && ops[1].reg.code == 0 {
+                    } else if family != "bt" && family != "btc" && family != "btr" && family != "bts" && ops[1].kind == "register" && ops[1].reg.code == 0 {
                         role = "imm_acc"
                     } else {
                         role = "imm_rm"

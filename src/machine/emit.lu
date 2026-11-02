@@ -3,7 +3,7 @@ use eval
 use x86table
 
 /// Instruction emission refusals; the caller adds source origin and the table citation.
-pub error Errors = {bad_operands, encoding_range, unknown_form, invalid_table}
+pub error Errors = {bad_operands, encoding_range, unknown_form, invalid_table, invalid_lock_prefix}
 
 /// A field awaiting section layout and symbol-binding policy. Bias is set after emission.
 pub struct Fixup {
@@ -221,14 +221,30 @@ pub fn emit(
     if mode == 32 && (rex != 0 || force_rex) { return bad_operands }
     if high8 && (rex != 0 || force_rex) { return bad_operands }
     if node.prefixes.len > 0 {
-        if node.prefixes.len != 1 || node.prefixes[0] != "rep" { return bad_operands }
-        if form.family != "movsb" &&
-            form.family != "movsq" &&
-            form.family != "stosb" &&
-            form.family != "stosq" {
-            return bad_operands
+        var locked = false
+        for prefix in node.prefixes { locked = locked || prefix == "lock" }
+        if locked {
+            // Intel SDM vol.2A LOCK p.3-621; the row identifies the writable r/m field.
+            if node.prefixes.len != 1 ||
+                form.allowed_prefixes != "lock-memory-destination" ||
+                form.rm_operand < 0 {
+                return invalid_lock_prefix
+            }
+            let destination = ops[form.rm_operand]
+            if destination.kind != "memory" && destination.kind != "expression" {
+                return invalid_lock_prefix
+            }
+            (mut out.data).push(240 as byte)
+        } else {
+            if node.prefixes.len != 1 || node.prefixes[0] != "rep" { return bad_operands }
+            if form.family != "movsb" &&
+                form.family != "movsq" &&
+                form.family != "stosb" &&
+                form.family != "stosq" {
+                return bad_operands
+            }
+            (mut out.data).push(243 as byte)
         }
-        (mut out.data).push(243 as byte)
     }
     if mem.address32 { (mut out.data).push(103 as byte) }
     if form.prefix != 0 { (mut out.data).push(form.prefix as byte) }

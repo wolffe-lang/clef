@@ -80,6 +80,8 @@ XORQ_ROWS = [
     ('xorq $1,item(%rip)\n.data\nitem: .quad 0', '4883350000000001'),
     ('xorq external(%rip),%rax', '48330500000000'),
     ('xorq $external,%rax', '483500000000'),
+    ('lock xorq %rax,(%rcx)', 'f0483101'),
+    ('lock xorq $1,(%rcx)', 'f048833101'),
 ]
 
 A = {64: None, 32: None}      # the oracle refuses in both modes
@@ -106,7 +108,7 @@ REFUSALS = [
     ('xorq %rax,%rax', 'unknown_form', {32: None}),
     ('xorq $0x80000000,%rax', 'encoding_range', W),
     ('xorq $0x100000000,%rcx', 'encoding_range', W),
-    ('lock xorq %rax,%rcx', 'bad_operands', W), ('xorq %eax,%rax', 'bad_operands', W),
+    ('lock xorq %rax,%rcx', 'invalid_lock_prefix', W), ('xorq %eax,%rax', 'bad_operands', W),
     ('xorq %rax,%eax', 'bad_operands', W), ('xorq %ax,%ax', 'bad_operands', W),
     ('xorq %rax', 'bad_operands', W), ('xorq', 'bad_operands', W),
     ('xorq (%rax),(%rcx)', 'bad_operands', W), ('xorq %ah,%rax', 'bad_operands', W),
@@ -131,9 +133,6 @@ REFUSALS = [
     ('out %dx', 'implicit_operand_size out', {64: 'ef', 32: 'ef'}),
     ('out (%dx)', 'implicit_operand_size out', {64: 'ef', 32: 'ef'}),
     ('out $0x60', 'implicit_operand_size out', {64: 'e760', 32: 'e760'}),
-    # Named: LOCK is outside clef's dialect for every family (emit takes only REP).
-    ('lock xorq %rax,(%rcx)', 'bad_operands', {64: 'f0483101'}),
-    ('lock xorq $1,(%rcx)', 'bad_operands', {64: 'f048833101'}),
 ]
 
 

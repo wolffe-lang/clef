@@ -9,6 +9,7 @@ use x86table
 fn encode(text: str, mode: int) -> machine.Encoded ! {
     Syntax(lex.Failure),
     bad_operands,
+    invalid_lock_prefix,
     encoding_range,
     unknown_form,
     invalid_table,
@@ -41,6 +42,7 @@ fn encode(text: str, mode: int) -> machine.Encoded ! {
 fn main() -> int ! {
     Syntax(lex.Failure),
     bad_operands,
+    invalid_lock_prefix,
     encoding_range,
     unknown_form,
     invalid_table,
