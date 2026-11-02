@@ -5,9 +5,9 @@
   "counts": {
     "census_spellings": 112,
     "census_forms": 189,
-    "encoding_rows": 312,
+    "encoding_rows": 390,
     "forms_with_candidates": 191,
-    "aliases": 117,
+    "aliases": 180,
     "forms_outside_census": 2
   },
   "forms": [
