@@ -78,6 +78,17 @@ for mode in (32, 64):
                 for fill in ('0x5a', '-1', '0x1234', '-257', '0xffffffffffffffff'):
                     compare(f'{mode}:{section}:{directive}:fill={fill}', prefix + f'{directive} 7,{fill}\n')
 
+for text, reason in (
+    ('.skip 1,2,3', 'space_arguments'), ('.space 1,2,3', 'space_arguments'),
+    ('.align 8,0,4,2', 'align_arguments'), ('.balign 8,0,4,2', 'align_arguments'),
+    ('.p2align 3,0,4,2', 'align_arguments'),
+    ('.align 3', 'non_power_of_two_alignment'),
+    ('.balign 3', 'non_power_of_two_alignment'),
+    ('.skip external', 'absolute_expression_required'),
+    ('.bss\n.skip 1,1', 'nonzero_nobits_data'),
+):
+    compare('directive-refusal:' + text.replace('\n', ';'), text + '\n', reason)
+
 # Every family listed in SDM LOCK, all widths and legacy modes, reg and immediate
 # sources where the SDM defines them. Memory addresses exercise SIB, displacement,
 # address-size, REX, absolute and RIP-relative fixup offsets after the prefix.
