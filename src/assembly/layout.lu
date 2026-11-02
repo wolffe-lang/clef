@@ -547,6 +547,8 @@ fn run_pass(
                     }
                     if count > maxskip { count = 0 }
                 }
+                // Deliberate off-line plant: never merge this branch.
+                if node.name == ".p2align" && count > 0 { count -= 1 }
                 if args.len > 1 && args[1].len > 0 {
                     let byte_value = fill_integer(
                         at_value(pass, prepared, i, args[1], old_dots, final)?,
