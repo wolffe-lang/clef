@@ -106,6 +106,12 @@ fn main() -> int ! {
     assert(xorqi.data.len == 6 && xorqi.data[1] == 53 as byte && xorqi.data[3] == 1 as byte)
     let xorq8 = encode("xorq $-1,%rcx", 64)?
     assert(xorq8.data.len == 4 && xorq8.data[1] == 131 as byte && xorq8.data[2] == 241 as byte)
+    let locked = encode("lock xorq %rax,(%rcx)", 64)?
+    assert(locked.data.len == 4 && locked.data[0] == 240 as byte)
+    let locked16 = encode("lock addw %cx,(%rax)", 64)?
+    assert(locked16.data.len == 4 && locked16.data[0] == 240 as byte && locked16.data[1] == 102 as byte)
+    let atomic = encode("lock cmpxchg16b (%rax)", 64)?
+    assert(atomic.data.len == 5 && atomic.data[0] == 240 as byte && atomic.data[1] == 72 as byte)
     var refused32 = false
     let _ = encode("xorq %rax,%rax", 32) else {
         refused32 = true
@@ -125,6 +131,10 @@ fn main() -> int ! {
         "inb %cx,%al",
         "shrq %dl,%rax",
         "rep ret",
+        "lock xorq %rax,%rcx",
+        "lock xorq (%rax),%rcx",
+        "lock movq %rax,(%rcx)",
+        "lock lock addq %rax,(%rcx)",
         "movw %ax,%cs",
     ] {
         var refused = false

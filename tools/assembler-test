@@ -66,4 +66,6 @@ print(f'assembler: {passed}/{len(rows)} x86 census sources exact and determinist
 for table in ('.symtab','.strtab','.shstrtab'):
     measured=[r['table_distance'][table] for r in rows if 'table_distance' in r]
     print(f'tables {table}: {sum(r["byte_identical"] for r in measured)}/{len(measured)} byte-identical; {sum(r["unequal_positions"] for r in measured)} unequal positions',flush=True)
-raise SystemExit(0 if passed==43 and len(rows)==43 else 1)
+if passed != 43 or len(rows) != 43:
+    raise SystemExit(1)
+subprocess.run([str(ROOT/'tools/directives-test')], check=True)
