@@ -1,0 +1,132 @@
+#!/usr/bin/env python3
+"""as02d: GNU as black-box directives, SDM LOCK forms, and pinned PAX roster.
+
+Called by assembler-test on both CI tiers. Compare raw sections and RELA tuples,
+structural symbols, objdump -dr (file header normalized), and determinism.
+No assembler source or opcode database is used. SDM 325383-086US LOCK 3-621.
+"""
+import hashlib
+import json
+import pathlib
+import subprocess
+from elf import ELF, differences
+
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+OUT = ROOT / 'target/evidence/directives'
+OUT.mkdir(parents=True, exist_ok=True)
+CLEF = ROOT / 'target/clef'
+rows = []
+
+
+def run(argv):
+    return subprocess.run(list(map(str, argv)), capture_output=True, text=True, timeout=60)
+
+
+def disassembly(path):
+    p = run(['objdump', '-dr', path])
+    assert p.returncode == 0, p.stderr
+    return '\n'.join(p.stdout.splitlines()[3:])
+
+
+def compare(name, source, refusal=None):
+    stem = OUT / f'{len(rows):04d}'
+    src, gas_o, ours_o, again = [stem.with_suffix(s) for s in ('.S', '.gas.o', '.clef.o', '.again.o')]
+    src.write_text(source)
+    gas_o.unlink(missing_ok=True)
+    ours_o.write_bytes(b'unchanged')
+    gas = run(['as', '--64', src, '-o', gas_o])
+    ours = run([CLEF, '--64', src, '-o', ours_o])
+    row = {'name': name, 'gas_status': gas.returncode, 'clef_status': ours.returncode,
+           'gas_stderr': gas.stderr, 'clef_stderr': ours.stderr}
+    if refusal:
+        row['pass'] = (gas.returncode != 0 and ours.returncode == 1
+                       and refusal in ours.stderr and ours_o.read_bytes() == b'unchanged')
+    else:
+        row['differences'] = (differences(ELF(gas_o), ELF(ours_o))
+                              if gas.returncode == ours.returncode == 0 else ['unassembled'])
+        row['objdump_equal'] = (disassembly(gas_o) == disassembly(ours_o)
+                               if gas.returncode == ours.returncode == 0 else False)
+        twice = run([CLEF, '--64', src, '-o', again])
+        row['deterministic'] = twice.returncode == 0 and again.read_bytes() == ours_o.read_bytes()
+        row['pass'] = (not row['differences'] and row['objdump_equal'] and row['deterministic'])
+    rows.append(row)
+    if not row['pass']:
+        print('FAIL', json.dumps(row), flush=True)
+
+
+# Explicit, independently named plant witness before the generated matrix.
+compare('p2align-off-by-one', '.data\n.byte 1\n.p2align 4,0x5a\n.byte 2\n')
+for mode in (32, 64):
+    for section in ('.text', '.data', '.bss'):
+        prefix = f'.code{mode}\n{section}\n'
+        raw = '.zero 1\n' if section == '.bss' else '.byte 1\n'
+        for directive in ('.align', '.balign', '.p2align'):
+            value = 4 if directive == '.p2align' else 16
+            for args in (str(value), f'{value},0', f'{value},,14', f'{value},,15',
+                         f'{value},,0', f'{value},0,14', f'{value},0,15', '0', '', ',0'):
+                compare(f'{mode}:{section}:{directive} {args}', prefix + raw + directive + ' ' + args + '\n')
+            if section != '.bss':
+                for fill in ('0x5a', '-1', '0x1234', '-257'):
+                    compare(f'{mode}:{section}:{directive}:fill={fill}',
+                            prefix + raw + f'{directive} {value},{fill}\n')
+                compare(f'{mode}:{section}:{directive}:labels-relocs', prefix +
+                        f'jmp after\n{raw}{directive} {value}\nafter: .quad external\n.long after-.\n')
+        for directive in ('.skip', '.space'):
+            for args in ('0', '1', '7', '16,0'):
+                compare(f'{mode}:{section}:{directive} {args}', prefix + directive + ' ' + args + '\n')
+            if section != '.bss':
+                for fill in ('0x5a', '-1', '0x1234', '-257'):
+                    compare(f'{mode}:{section}:{directive}:fill={fill}', prefix + f'{directive} 7,{fill}\n')
+
+# Every family listed in SDM LOCK, all widths and legacy modes, reg and immediate
+# sources where the SDM defines them. Memory addresses exercise SIB, displacement,
+# address-size, REX, absolute and RIP-relative fixup offsets after the prefix.
+suffixes = {8: ('b', '%cl'), 16: ('w', '%cx'), 32: ('l', '%ecx'), 64: ('q', '%rcx')}
+alu = ('adc', 'add', 'and', 'or', 'sbb', 'sub', 'xor')
+unary = ('dec', 'inc', 'neg', 'not')
+for mode in (32, 64):
+    widths = (8, 16, 32) if mode == 32 else (8, 16, 32, 64)
+    mem = '8(%eax,%edx,4)' if mode == 32 else '8(%r12,%r9,4)'
+    for bits in widths:
+        suffix, reg = suffixes[bits]
+        for family in alu:
+            for source in (reg, '$1', '$127', '$128', '$-1'):
+                compare(f'lock-{mode}-{family}{suffix}-{source}',
+                        f'.code{mode}\nlock {family}{suffix} {source},{mem}\n')
+        for family in unary:
+            compare(f'lock-{mode}-{family}{suffix}', f'.code{mode}\nlock {family}{suffix} {mem}\n')
+        for family in ('cmpxchg', 'xadd', 'xchg'):
+            compare(f'lock-{mode}-{family}{suffix}', f'.code{mode}\nlock {family}{suffix} {reg},{mem}\n')
+        for family in alu + unary + ('cmpxchg', 'xadd', 'xchg'):
+            operands = reg if family in unary else reg + ',' + reg
+            compare(f'lock-register-refused-{mode}-{family}{suffix}',
+                    f'.code{mode}\nlock {family}{suffix} {operands}\n', 'invalid_lock_prefix')
+        if bits != 8:
+            for family in ('btc', 'btr', 'bts'):
+                for source in (reg, '$3', '$255'):
+                    compare(f'lock-{mode}-{family}{suffix}-{source}',
+                            f'.code{mode}\nlock {family}{suffix} {source},{mem}\n')
+    compare(f'lock-{mode}-cmpxchg8b', f'.code{mode}\nlock cmpxchg8b {mem}\n')
+compare('lock-cmpxchg16b', 'lock cmpxchg16b 16(%r12)\n')
+for text in ('lock xorq %rax,item(%rip)\n.data\nitem: .quad 0',
+             'lock addq $external,item(%rip)\n.data\nitem: .quad 0',
+             'lock xaddb %sil,(%eax)', 'lock xchgq (%rax),%rcx',
+             'lock addw %r9w,(%eax)', 'lock notq external'):
+    compare(text.splitlines()[0], text + '\n')
+for text in ('lock movq %rax,(%rcx)', 'lock cmpq %rax,(%rcx)', 'lock testq %rax,(%rcx)',
+             'lock btl $1,(%rcx)', 'lock shlq $1,(%rcx)', 'lock xorq (%rcx),%rax',
+             'lock rep addq %rax,(%rcx)', 'rep lock addq %rax,(%rcx)',
+             'lock lock addq %rax,(%rcx)', 'lock nop', 'lock ret'):
+    compare(text, text + '\n', 'invalid_lock_prefix')
+
+manifest = json.loads((ROOT / 'tests/directives/sources.json').read_text())
+assert len(manifest['files']) == 30
+for entry in manifest['files']:
+    src = ROOT / 'tests/directives/pax' / entry['path']
+    assert hashlib.sha256(src.read_bytes()).hexdigest() == entry['sha256'], entry['path']
+    compare('pax:' + entry['path'], src.read_text(), 'unknown_mnemonic frobnicate' if entry['refusal'] else None)
+(OUT / 'rows.json').write_text(json.dumps(rows, indent=2) + '\n')
+pax = [r for r in rows if r['name'].startswith('pax:')]
+print(f"directives: {sum(r['pass'] for r in rows)}/{len(rows)} rows; "
+      f"pax: {sum(r['pass'] for r in pax)}/{len(pax)} paths (29 objects + 1 deliberate refusal)", flush=True)
+raise SystemExit(0 if all(r['pass'] for r in rows) else 1)

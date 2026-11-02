@@ -24,6 +24,15 @@ fn main() -> int {
         "macro.S",
     ) else { return 1 }
     assert(macro.bytes[64] == 106 as byte && macro.bytes[65] == 2 as byte)
+    for pair in [
+        [".data\n.skip 3,90\n.align 8,7\n.byte 1\n", ".data\n.space 3,90\n.balign 8,7\n.byte 1\n"],
+        [".data\n.byte 1\n.p2align 4,90,14\n", ".data\n.byte 1\n.balign 16,90,14\n"],
+        [".bss\n.skip 3\n.align 16\n", ".bss\n.space 3\n.balign 16\n"],
+    ] {
+        let left = assembly.assemble(pair[0], "aliases.S") else { return 1 }
+        let right = assembly.assemble(pair[1], "aliases.S") else { return 1 }
+        assert(equal(left.bytes, right.bytes))
+    }
     let note = assembly.assemble_options(source, "one.S", true) else { return 1 }
     assert(note.bytes.len > a.bytes.len)
     for bad in [".set A,B+1\n.set B,A+1\n", ".bss\n.byte 1\n", "jmp 8b\n"] {
