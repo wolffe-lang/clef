@@ -16,10 +16,11 @@ The output file is not opened until the entire source and object have succeeded.
 
 ## Encoding data
 
-`src/x86table/rows.lu` contains 312 declarative descriptors, each transcribed from
-an individual Intel SDM opcode row. `aliases.lu` explicitly maps 117 spellings to
-canonical families and width hints: the census's 112 and five word-port spellings
-(`in`, `inw`, `out`, `outw`, `xorq`). `format.lu` validates rows and provides
+`src/x86table/rows.lu` contains 397 declarative descriptors, each transcribed from
+an individual Intel SDM opcode row. `aliases.lu` explicitly maps 180 spellings to
+canonical families and width hints: the census's 112, five word-port spellings
+(`in`, `inw`, `out`, `outw`, `xorq`), and 63 spellings exposing every SDM LOCK
+family and legal width. `format.lu` validates rows and provides
 cached lookup by family, role, operand width and code mode.
 
 The pipe-separated columns are:
@@ -45,7 +46,7 @@ No `66` or REX.W prefix is inferred merely from the logical width: LTR, segment
 moves, control-register moves and stack instructions have different rules.
 
 `tools/table-test` generates a source witness for every descriptor in every
-admitted mode: **530/530 byte comparisons**, covering **312/312 rows**. The full
+admitted mode: **675/675 byte comparisons**, covering **397/397 rows**. The full
 assembler gate independently measures **189/189 census forms** through all
 recorded sites in 43 exact source comparisons. A structural candidate in
 `census-map.json` is not, by itself, a passing differential.
@@ -96,18 +97,57 @@ normalizes the spellings the pinned GNU as also accepts, as measured in
 Two spellings GNU as accepts are refused by name. A 32- or 64-bit register as
 the port is `port_register`; gas encodes `inw %edx,%ax` as `66 ed`, but the SDM's
 operand is DX. A bare one-operand form, such as `in %dx`, has nothing to size it
-and is `implicit_operand_size`; gas warns and takes long. The `lock` prefix is
-outside the dialect for every family.
+and is `implicit_operand_size`; gas warns and takes long.
 
 `xorq` selects the existing REX.W XOR rows (vol.2D 6.1 XOR p.6-40, REX.W from
 vol.2A 2.2.1). They are 64-bit only, so `.code32` refuses it as `unknown_form`.
 
-`tools/ports-test` holds 126 row-by-mode encodings, each byte-identical to the
-pinned GNU as and to the measured bytes. It also holds 113 named refusals, 36 of
+`tools/ports-test` holds 128 row-by-mode encodings, each byte-identical to the
+pinned GNU as and to the measured bytes. It also holds 111 named refusals, 34 of
 them spellings gas accepts, and PAX `boot/io.S` at pax `eb6592de` from
 `tests/ports/`, with its sha256 pinned. Each form a fixture adds to the census
 appears in `census-map.json` with its `origin`. The map's `aliases` and
 `forms_outside_census` counts are checked against the table.
+
+## Padding aliases and LOCK
+
+On x86 ELF, `.align` and `.balign` specify a byte boundary; `.p2align` specifies
+its base-two exponent. An omitted alignment operand is zero (no effective
+alignment). `.skip` and `.space` emit the requested number of bytes. Fill takes
+the low byte of an absolute expression; an omitted spacing fill is zero. An
+omitted alignment fill chooses code NOPs or data zeros. Padding in NOBITS
+sections changes only logical size; GNU as ignores a nonzero padding fill there,
+and clef does too. Ordinary nonzero `.byte` data in NOBITS is still refused.
+
+An optional third alignment operand limits padding: if a positive limit is
+smaller than the required padding, alignment is not performed. GNU as 2.42
+measures zero max-skip as unlimited, even though a literal reading of the
+manual's limit wording suggests otherwise. Both cases are explicit rows.
+Non-power-of-two byte alignments, negative counts and implementation-size limits
+remain named refusals. `.global` is normalized to `.globl`, including the ELF
+binding policy; it is needed by PAX's filesystem helper.
+
+Intel SDM 325383-086US vol.2A LOCK p.3-621 lists ADC, ADD, AND, BTC, BTR, BTS,
+CMPXCHG, CMPXCHG8B, CMPXCHG16B, DEC, INC, NEG, NOT, OR, SBB, SUB, XADD, XCHG
+and XOR. All legal operand widths have rows. A LOCK prefix requires the row's
+`lock-memory-destination` permission and a memory operand in its writable r/m
+field. Register-only forms, memory-source arithmetic, unrelated instructions,
+duplicate LOCK and REP/LOCK combinations are `invalid_lock_prefix`.
+
+GNU as's canonical prefix order is address-size, operand-size, LOCK/REP, REX,
+opcode. This is a serialization policy, not a claim that other architectural
+prefix orders are invalid. Explicit LOCK is retained on XCHG's memory forms,
+which already lock implicitly. Unlocked accumulator XCHG uses its short opcode;
+EAX,EAX in long mode retains `87 c0` to preserve zero-extension, while RAX,RAX
+is the single-byte `90` identity.
+
+`tools/directives-test`, reached by `tools/assembler-test` on both CI tiers,
+checks 943 controls, including every assembly path at pax `3e28a8bc`. Its 29
+valid sources match GNU as in raw sections, relocations, structural symbols and
+`objdump -dr`; every output is deterministic. The 30th path deliberately uses
+`frobnicate`, and both assemblers must refuse it without replacing the output.
+The fixture manifest pins each source hash. `--only-p2align` exposes the named
+`p2align-off-by-one` raw-data witness for a local planted-break record.
 
 ## Expressions and symbol algebra
 

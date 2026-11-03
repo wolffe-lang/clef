@@ -9,7 +9,7 @@ pub struct Alias {
 }
 
 /// The pinned census's 112 spellings, including identity mappings, and as02c's five word-port
-/// spellings (in, inw, out, outw, xorq; pax eb6592de boot/io.S needs inw and outw).
+/// spellings, plus 63 spellings covering every SDM LOCK family and legal width.
 pub fn aliases() -> List[Alias] {
     [
         Alias {

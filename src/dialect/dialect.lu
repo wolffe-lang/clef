@@ -221,14 +221,14 @@ fn named(names: List[str], s: str) -> bool {
     false
 }
 
-/// Accepted census spellings and as02c's word ports (in inw out outw xorq); the encoder
-/// separately validates mnemonic × operand forms.
+/// Census spellings, word ports and every SDM LOCK family; the encoder separately
+/// validates mnemonic × operand forms.
 pub fn mnemonics() -> List[str] {
     "add addb addl addq and andb andl andq btl call callq clac cld cli cmpb cmpl cmpq cmpw cpuid decl decq divl divq fnstcw fxrstor64 fxsave64 hlt imulq in inb incl incq inl int3 invlpg inw iretq ja jae jb jc je jle jmp jne jns jnz js jz lea leal leaq lgdt lidt ljmp lretq ltr mov movabs movabsq movb movdqu movl movq movsb movslq movsq movw movzbl movzwl negq nop orl orq out outb outl outw pause pop popq push pushfq pushq rdmsr rdrand rdtsc ret setc shl shll shlq shrl shrq stac sti stmxcsr stosb stosq sub subl subq syscall sysretq test testb testl testq ud2 wrmsr xgetbv xor xorl xorq xrstor64 xsave64 xsetbv cmp adc adcb adcw adcl adcq addw andw btc btcw btcl btcq btr btrw btrl btrq bts btsw btsl btsq cmpxchg cmpxchgb cmpxchgw cmpxchgl cmpxchgq dec decb decw inc incb incw neg negb negw negl not notb notw notl notq or orb orw sbb sbbb sbbw sbbl sbbq subb subw xadd xaddb xaddw xaddl xaddq xchg xchgb xchgw xchgl xchgq xorb xorw cmpxchg8b cmpxchg16b".
         words()
 }
 
-/// The 23 census directives, plus .space (GNU as's .zero counterpart).
+/// Census directives, spacing/alignment aliases; .global normalizes to .globl in head.
 pub fn directives() -> List[str] {
     ".ascii .asciz .balign .bss .byte .code32 .code64 .data .endm .endr .globl .irp .long .macro .p2align .quad .section .set .size .text .type .word .zero .space .skip .align".
         words()
