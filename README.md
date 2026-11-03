@@ -105,9 +105,10 @@ rejects unsupported section/relocation features such as COMDAT and TLS.
 | `notes/as01/` | Measured evidence and lane-local kernel integration controls |
 | `notes/as02c/` | The word-port spelling measurement and the PAX source sweep |
 
-CI runs every assembler gate in `tier pr`. `tier full` adds the independent
-exhaustive oracle-corpus job and runs on trunk, nightly, dispatches and explicitly
-labelled full-matrix pull requests. Kernel/QEMU evidence is retained separately
+Unlabelled PRs run one cheap job. The `ci` or `full-matrix` label runs the full
+set: every assembler gate and the independent exhaustive oracle-corpus job.
+Trunk pushes run it only on cross-cutting paths; nightly and default dispatch
+still run the full set. Kernel/QEMU evidence is retained separately
 under `notes/as01/kernel/`; it is not silently claimed as a GitHub CI job.
 
 ## Licence
