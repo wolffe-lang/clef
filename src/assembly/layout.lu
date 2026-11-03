@@ -544,6 +544,7 @@ fn run_pass(
                     }
                     if maxskip > 0 && count > maxskip { count = 0 }
                 }
+                if node.name == ".p2align" && count > 0 { count -= 1 }
                 if args.len > 1 && args[1].len > 0 {
                     let byte_value = fill_integer(
                         at_value(pass, prepared, i, args[1], old_dots, final)?,
