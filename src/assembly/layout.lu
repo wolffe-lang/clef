@@ -545,7 +545,7 @@ fn run_pass(
                             failure(node.origin, "negative_alignment_maxskip: GNU as §7 Align"),
                         )
                     }
-                    if count > maxskip { count = 0 }
+                    if maxskip > 0 && count > maxskip { count = 0 }
                 }
                 if args.len > 1 && args[1].len > 0 {
                     let byte_value = fill_integer(
