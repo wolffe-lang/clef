@@ -16,7 +16,9 @@ covers **112 mnemonic spellings and 189 observed operand forms**, including
 mixed `.code32`/`.code64` input, macros, numeric local labels and symbolic
 expressions. Five more spellings (`in`, `inw`, `out`, `outw`, `xorq`) carry
 PAX's 16-bit port access: PAX `boot/io.S` at pax `eb6592de` matches GNU as too.
-Unsupported syntax or encodings are refused rather than guessed.
+The padded directives and SDM LOCK families also cover all **29 valid assembly
+sources** at pax `3e28a8bc`; its deliberate invalid assembly fixture is checked
+as a shared refusal, not an object. Unsupported syntax or encodings are refused rather than guessed.
 
 The native and release PAX kernel images built through clef are byte-identical
 to the GNU-as baseline and pass the four BIOS/UEFI test legs. The original
@@ -37,7 +39,7 @@ CLEF_ENGINE=docker tools/in-container tools/gate
 The **34 gates** check formatting, warning-denied builds, six compiled native
 logic programs, checked/lupin execution, all source statements, expression and
 macro differentials, the ELF writer, instruction-table rows, layout/refusals,
-the complete assembler corpus and the word-port rows. Results are written to
+the complete assembler corpus, padding/LOCK differentials and word-port rows. Results are written to
 `target/evidence/`; the executable is `target/clef`.
 
 ```sh
@@ -68,18 +70,26 @@ See [EXPAND](docs/EXPAND.md) for the expansion contract and
 
 ## Measurements and boundaries
 
-* 530 generated row-by-mode byte comparisons cover all 312 SDM-provenanced
+* 675 generated row-by-mode byte comparisons cover all 397 SDM-provenanced
   encoding descriptors. Some descriptors describe alternatives or widths beyond
   the accepted census spellings; they are not a promise of full ISA support.
 * All 43 original and expanded sources match pinned GNU as. Every source is
   assembled twice to check determinism. No x86 census source is waived.
 * 191 layout/boundary controls, ten named source refusals, five additional CLI
   refusals, and complete byte-range coverage for the ISR provenance witness.
-* 126 word-port encoding rows (IN/OUT word forms and GNU as's implicit port
+* 128 word-port encoding rows (IN/OUT word forms and GNU as's implicit port
   spellings in both modes, `xorq` in 64-bit mode) match GNU as byte for byte.
-  113 refusals are named; 36 of them are spellings GNU as accepts that clef
-  refuses on purpose: a 32/64-bit port register, an unsized bare `in`/`out`,
-  and `lock`. See [FORMATS](docs/FORMATS.md).
+  111 refusals are named; 34 of them are spellings GNU as accepts that clef
+  refuses on purpose: a 32/64-bit port register, or bare `in`/`out`
+  without a sizing operand. See [FORMATS](docs/FORMATS.md).
+* 943 padding, LOCK, canonical exchange, refusal and PAX controls compare
+  raw sections, relocations, structural symbols and `objdump -dr`, and check
+  determinism. The fixture roster contains 29 exact objects and one shared
+  deliberate refusal, pinned to pax `3e28a8bc` by file hashes.
+* `.skip`/`.space` and x86 ELF `.align`/`.balign`/`.p2align` support byte fills,
+  omitted alignment operands and max-skip; `.global` aliases `.globl`.
+  LOCK is accepted only on the SDM's writable-memory forms, with a named
+  `invalid_lock_prefix` refusal on other supported forms.
 * Symbol/string tables need structural equality, not identical serialization.
   [MAP](docs/MAP.md) records the measured raw-table distances.
 * The retained objdump round-trip instrument measured 79 binaries and
