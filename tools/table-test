@@ -28,7 +28,7 @@ for index,row in enumerate(rows):
                 if role in {'imm8','imm8_rm','imm8_rm_reg','shift1'}:value=1
                 elif role in {'imm_rm','imm_acc','imm_rm_reg','imm'} and bits>8:value=256
                 if family in {'mov','movabs'} and bits==64 and role=='imm_reg':value=0x123456789abcdef
-                if family=='bt':value=3
+                if family in {'bt','btc','btr','bts'}:value=3
                 operands.append('$'+str(value))
             elif p=='relative':operands.append('.+2' if role=='relative8' else '.+4096')
             elif p=='cl':operands.append('%cl')

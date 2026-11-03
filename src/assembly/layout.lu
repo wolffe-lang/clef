@@ -112,9 +112,7 @@ fn fill(mut pass: Pass, count: int, byte_value: int, origin: lex.Origin) -> () !
         return Assembly(failure(origin, "invalid_space_size_or_fill: GNU as §7 Space"))
     }
     if pass.sections[pass.current].kind == 8 {
-        if byte_value & 255 != 0 && count > 0 {
-            return Assembly(failure(origin, "nonzero_nobits_data: ELF gABI Sections"))
-        }
+        // GNU as ignores padding fill values in NOBITS; ordinary .byte data still refuses.
         pass.sections[pass.current].size += count
         return
     }

@@ -398,5 +398,6 @@ pub fn source() -> List[str] {
         "2D|6.1 XCHG|6-32|90+r XCHG accumulator, r32|xchg|reg_acc|32|32,64|144|-1|0|0|0|-1|-1|0|-1|none|prefer-accumulator-short-form|base|r32,acc32|none|none",
         "2D|6.1 XCHG|6-32|REX.W + 90+r XCHG accumulator, r64|xchg|acc_reg|64|64|144|-1|0|1|0|-1|-1|1|-1|none|prefer-accumulator-short-form|base|acc64,r64|none|none",
         "2D|6.1 XCHG|6-32|REX.W + 90+r XCHG accumulator, r64|xchg|reg_acc|64|64|144|-1|0|1|0|-1|-1|0|-1|none|prefer-accumulator-short-form|base|r64,acc64|none|none",
+        "2B|4.3 NOP|4-167|NP 90; XCHG RAX,RAX identity|xchg|self|64|64|144|-1|0|0|0|-1|-1|-1|-1|none|omit-redundant-REX-for-RAX-identity|base|acc64,acc64|none|none",
     ]
 }

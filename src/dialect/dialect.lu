@@ -348,6 +348,7 @@ pub fn head(row: lex.Statement) -> Node ! {Syntax(lex.Failure)} {
     node.arguments = lex.split_operands(s) else {
         return Syntax(fail(row.origin, "bad_operands: GNU as §6; i386 Memory References"))
     }
+    if node.name == ".global" { node.name = ".globl" }
     node.kind = if node.name.starts_with(".") then "directive" else "instruction"
     node
 }

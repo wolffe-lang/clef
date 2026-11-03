@@ -220,6 +220,7 @@ pub fn emit(
     }
     if mode == 32 && (rex != 0 || force_rex) { return bad_operands }
     if high8 && (rex != 0 || force_rex) { return bad_operands }
+    var explicit_prefix = 0
     if node.prefixes.len > 0 {
         var locked = false
         for prefix in node.prefixes { locked = locked || prefix == "lock" }
@@ -233,7 +234,7 @@ pub fn emit(
             if ops[form.rm_operand].kind != "memory" && ops[form.rm_operand].kind != "expression" {
                 return invalid_lock_prefix
             }
-            (mut out.data).push(240 as byte)
+            explicit_prefix = 240
         } else {
             if node.prefixes.len != 1 || node.prefixes[0] != "rep" { return bad_operands }
             if form.family != "movsb" &&
@@ -242,11 +243,12 @@ pub fn emit(
                 form.family != "stosq" {
                 return bad_operands
             }
-            (mut out.data).push(243 as byte)
+            explicit_prefix = 243
         }
     }
     if mem.address32 { (mut out.data).push(103 as byte) }
     if form.prefix != 0 { (mut out.data).push(form.prefix as byte) }
+    if explicit_prefix != 0 { (mut out.data).push(explicit_prefix as byte) }
     if rex != 0 || force_rex { (mut out.data).push((64 + rex) as byte) }
     for i in 0..form.opcode.len {
         var b = form.opcode[i]
