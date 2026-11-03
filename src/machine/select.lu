@@ -171,8 +171,11 @@ pub fn choose(
                 } else {
                     "rm"
                 }
-            } else if family == "xchg" && ops.len == 2 && bits > 8 &&
-                ops[0].kind == "register" && ops[1].kind == "register" &&
+            } else if family == "xchg" &&
+                ops.len == 2 &&
+                bits > 8 &&
+                ops[0].kind == "register" &&
+                ops[1].kind == "register" &&
                 (ops[0].reg.code == 0 || ops[1].reg.code == 0) &&
                 !(bits == 32 && mode == 64 && ops[0].reg.code == 0 && ops[1].reg.code == 0) {
                 // GNU as retains 87 C0 for EAX,EAX in long mode: 90 would not clear upper RAX.
@@ -253,11 +256,18 @@ pub fn choose(
                         }
                     } else if family != "test" &&
                         family != "bt" &&
-                        family != "btc" && family != "btr" && family != "bts" &&
+                        family != "btc" &&
+                        family != "btr" &&
+                        family != "bts" &&
                         bits > 8 &&
                         short_imm(values, known, 0, bits) {
                         role = "imm8_rm"
-                    } else if family != "bt" && family != "btc" && family != "btr" && family != "bts" && ops[1].kind == "register" && ops[1].reg.code == 0 {
+                    } else if family != "bt" &&
+                        family != "btc" &&
+                        family != "btr" &&
+                        family != "bts" &&
+                        ops[1].kind == "register" &&
+                        ops[1].reg.code == 0 {
                         role = "imm_acc"
                     } else {
                         role = "imm_rm"

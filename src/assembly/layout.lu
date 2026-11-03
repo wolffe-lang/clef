@@ -108,8 +108,7 @@ fn add_bytes(mut pass: Pass, bytes: List[byte], origin: lex.Origin) -> () ! Erro
 }
 
 fn fill(mut pass: Pass, count: int, byte_value: int, origin: lex.Origin) -> () ! Errors {
-    if count < 0 ||
-        count > 2147483647 - pass.sections[pass.current].size {
+    if count < 0 || count > 2147483647 - pass.sections[pass.current].size {
         return Assembly(failure(origin, "invalid_space_size_or_fill: GNU as §7 Space"))
     }
     if pass.sections[pass.current].kind == 8 {

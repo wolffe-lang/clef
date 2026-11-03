@@ -111,7 +111,11 @@ fn main() -> int ! {
     let locked = encode("lock xorq %rax,(%rcx)", 64)?
     assert(locked.data.len == 4 && locked.data[0] == 240 as byte)
     let locked16 = encode("lock addw %cx,(%rax)", 64)?
-    assert(locked16.data.len == 4 && locked16.data[0] == 240 as byte && locked16.data[1] == 102 as byte)
+    assert(
+        locked16.data.len == 4 &&
+            locked16.data[0] == 240 as byte &&
+            locked16.data[1] == 102 as byte,
+    )
     let atomic = encode("lock cmpxchg16b (%rax)", 64)?
     assert(atomic.data.len == 5 && atomic.data[0] == 240 as byte && atomic.data[1] == 72 as byte)
     var refused32 = false
