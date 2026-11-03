@@ -230,8 +230,8 @@ pub fn emit(
                 form.rm_operand < 0 {
                 return invalid_lock_prefix
             }
-            let destination = ops[form.rm_operand]
-            if destination.kind != "memory" && destination.kind != "expression" {
+            if ops[form.rm_operand].kind != "memory" &&
+                ops[form.rm_operand].kind != "expression" {
                 return invalid_lock_prefix
             }
             (mut out.data).push(240 as byte)
