@@ -9,6 +9,7 @@ import hashlib
 import json
 import pathlib
 import subprocess
+import sys
 from elf import ELF, differences
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -51,11 +52,14 @@ def compare(name, source, refusal=None):
         row['pass'] = (not row['differences'] and row['objdump_equal'] and row['deterministic'])
     rows.append(row)
     if not row['pass']:
-        print('FAIL', json.dumps(row), flush=True)
+        print('FAIL', name, json.dumps(row), flush=True)
 
 
 # Explicit, independently named plant witness before the generated matrix.
 compare('p2align-off-by-one', '.data\n.byte 1\n.p2align 4,0x5a\n.byte 2\n')
+if sys.argv[1:] == ['--only-p2align']:
+    (OUT / 'plant-row.json').write_text(json.dumps(rows[0], indent=2) + '\n')
+    raise SystemExit(0 if rows[0]['pass'] else 1)
 for mode in (32, 64):
     for section in ('.text', '.data', '.bss'):
         prefix = f'.code{mode}\n{section}\n'
