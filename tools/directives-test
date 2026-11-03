@@ -85,9 +85,11 @@ for text, reason in (
     ('.align 3', 'non_power_of_two_alignment'),
     ('.balign 3', 'non_power_of_two_alignment'),
     ('.skip external', 'absolute_expression_required'),
-    ('.bss\n.skip 1,1', 'nonzero_nobits_data'),
 ):
     compare('directive-refusal:' + text.replace('\n', ';'), text + '\n', reason)
+
+compare('bss-nonzero-fill-ignored', '.bss\n.skip 1,1\n')
+compare('global-alias', '.global exported\nexported: ret\n')
 
 # Every family listed in SDM LOCK, all widths and legacy modes, reg and immediate
 # sources where the SDM defines them. Memory addresses exercise SIB, displacement,
