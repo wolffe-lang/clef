@@ -9,6 +9,7 @@ import argparse
 import hashlib
 import json
 import pathlib
+import re
 import runpy
 import subprocess
 from elf import ELF, differences
@@ -33,7 +34,8 @@ def run(argv):
     return subprocess.run(list(map(str, argv)), capture_output=True, text=True, timeout=60)
 
 
-def compare(name, source, group='boundary', refusal=None):
+def compare(name, source, group='boundary', refusal=None, deviation=None):
+    assert not (refusal and deviation)
     stem = OUT / str(len(rows))
     src, gas_o, ours_o, again = [stem.with_suffix(s) for s in ('.s', '.gas.o', '.clef.o', '.again.o')]
     src.write_text(source)
@@ -44,7 +46,18 @@ def compare(name, source, group='boundary', refusal=None):
     ours = run([ROOT / 'target/clef', '--64', src, '-o', ours_o])
     row = {'name': name, 'group': group, 'source': source, 'gas_status': gas.returncode,
            'clef_status': ours.returncode, 'gas_stderr': gas.stderr, 'clef_stderr': ours.stderr}
-    if refusal:
+    if deviation:
+        # R-as02e-1: a documented GNU-as acceptance is NOT a shared refusal.
+        # Parse the entire reason, so a changed diagnostic or accidental acceptance fails.
+        reason = re.search(r', reason: (.*?) \}\)\n?\Z', ours.stderr, re.S)
+        row['deviation'] = deviation
+        row['actual_reason'] = reason.group(1) if reason else None
+        row['pass'] = (gas.returncode == 0 and gas_o.is_file() and ours.returncode == 1
+                       and row['actual_reason'] == deviation
+                       and ours_o.read_bytes() == b'unchanged')
+        if gas.returncode == 0:
+            row['gas'] = ELF(gas_o).normalized()
+    elif refusal:
         row['pass'] = (gas.returncode != 0 and ours.returncode == 1 and refusal in ours.stderr
                        and ours_o.read_bytes() == b'unchanged')
     else:
@@ -115,8 +128,10 @@ if not args.census_only and not args.plant_only:
             for src in ('external(%rip)', '8(%r12,%r13,4)'):
                 compare(f'{mnemonic}-{src}', f'{mnemonic} {src},{dest}\n', 'extension')
     for text in ('movsbw %sil,%r9w', 'movsbl %ah,%eax', 'movzbq %r12b,%r9', 'movswq %r12w,%r9',
-                 'movzbw %bpl,%r9w', 'movzwq %r12w,%r9', 'testw $external,external(%rip)'):
-        compare(text, text + '\n', 'extension' if text.startswith('mov') else 'test')
+                 'movzbw %bpl,%r9w', 'movzwq %r12w,%r9'):
+        compare(text, text + '\n', 'extension')
+    compare('testw $external,external(%rip)', 'testw $external,external(%rip)\n', 'test',
+            deviation='unsupported_narrow_relocation: x86-64 psABI §4.4')
     for text in ('movsbq %ah,%rax', 'movzbw %ah,%r9w', 'movswq %al,%rax', 'movzlq %eax,%rax',
                  'imulb %al,%cl', 'testw %eax,%ax', 'cbtw %ax', 'cwtl %ax', 'cltq %rax',
                  'cwtd %ax', 'cltd %eax', 'cqto %rax'):
@@ -176,5 +191,5 @@ syscall
 for group in sorted({r['group'] for r in rows}):
     selected = [r for r in rows if r['group'] == group]
     print(f"compiler-forms {group}: {sum(r['pass'] for r in selected)}/{len(selected)}", flush=True)
-print(f"compiler-forms: {sum(r['pass'] for r in rows)}/{len(rows)} exact deterministic comparisons or shared named refusals", flush=True)
+print(f"compiler-forms: {sum(r['pass'] for r in rows)}/{len(rows)} exact deterministic comparisons, shared refusals or named deviations", flush=True)
 raise SystemExit(0 if all(r['pass'] for r in rows) else 1)
