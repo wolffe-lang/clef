@@ -39,7 +39,8 @@ CLEF_ENGINE=docker tools/in-container tools/gate
 The **34 gates** check formatting, warning-denied builds, six compiled native
 logic programs, checked/lupin execution, all source statements, expression and
 macro differentials, the ELF writer, instruction-table rows, layout/refusals,
-the complete assembler corpus, padding/LOCK differentials and word-port rows. Results are written to
+the complete assembler corpus, padding/LOCK differentials, word-port rows and
+fenrir's compiler instruction envelope. Results are written to
 `target/evidence/`; the executable is `target/clef`.
 
 ```sh
@@ -70,9 +71,13 @@ See [EXPAND](docs/EXPAND.md) for the expansion contract and
 
 ## Measurements and boundaries
 
-* 675 generated row-by-mode byte comparisons cover all 397 SDM-provenanced
+* 886 generated row-by-mode byte comparisons cover all 517 SDM-provenanced
   encoding descriptors. Some descriptors describe alternatives or widths beyond
   the accepted census spellings; they are not a promise of full ISA support.
+* Fenrir's pinned 640-form integer census covers flag-condition jumps, SETcc,
+  CMOVcc, multiply/divide, extending moves, shifts, TEST and accumulator sign
+  extension. Its differential also checks addressing, illegal operands,
+  determinism and a linked integer executable. See `census/fenrir-forms/`.
 * All 43 original and expanded sources match pinned GNU as. Every source is
   assembled twice to check determinism. No x86 census source is waived.
 * 191 layout/boundary controls, ten named source refusals, five additional CLI
