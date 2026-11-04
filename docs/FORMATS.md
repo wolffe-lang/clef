@@ -16,11 +16,11 @@ The output file is not opened until the entire source and object have succeeded.
 
 ## Encoding data
 
-`src/x86table/rows.lu` contains 397 declarative descriptors, each transcribed from
-an individual Intel SDM opcode row. `aliases.lu` explicitly maps 180 spellings to
-canonical families and width hints: the census's 112, five word-port spellings
-(`in`, `inw`, `out`, `outw`, `xorq`), and 63 spellings exposing every SDM LOCK
-family and legal width. `format.lu` validates rows and provides
+`src/x86table/rows.lu` contains 517 declarative descriptors, each transcribed from
+an individual Intel SDM opcode row. `aliases.lu` explicitly maps 355 spellings to
+canonical families and width hints: the original census, word-port and LOCK
+spellings, plus the compiler's integer instruction envelope. `format.lu`
+validates rows and provides
 cached lookup by family, role, operand width and code mode.
 
 The pipe-separated columns are:
@@ -46,9 +46,9 @@ No `66` or REX.W prefix is inferred merely from the logical width: LTR, segment
 moves, control-register moves and stack instructions have different rules.
 
 `tools/table-test` generates a source witness for every descriptor in every
-admitted mode: **675/675 byte comparisons**, covering **397/397 rows**. The full
-assembler gate independently measures **189/189 census forms** through all
-recorded sites in 43 exact source comparisons. A structural candidate in
+admitted mode: 886 row-by-mode comparisons cover the 517 descriptors. The full
+assembler gate independently measures the original 189 census forms through all
+recorded sites in 43 source comparisons. A structural candidate in
 `census-map.json` is not, by itself, a passing differential.
 
 The old ten-form proof remains in `src/table/` and `src/encode/` as a small,
@@ -79,6 +79,37 @@ The baseline is pinned GNU as 2.42, not simply the shortest legal encoding:
   more maximum-length NOPs. Data alignment uses zeros unless a fill is explicit.
   `notes/as01/layout/gas-padding.json` records 510 black-box controls. The SDM
   NOP table supplies the underlying instruction forms; gas supplies this policy.
+
+## Compiler integer forms
+
+`census/fenrir-forms/` pins the 640-form generator by SHA256 and retains one
+source per form plus a combined source. `tools/compiler-forms-test`, called by
+`tools/assembler-test`, checks that regeneration is unchanged, compares every
+object's sections, relocations and structural symbols with GNU as, and repeats
+clef for identical bytes. Extra rows exercise byte registers, addressing,
+branch distances, illegal operands and a linked integer program.
+
+The table uses Intel SDM 325383-086US opcode tables, not an opcode database:
+
+| Family | Volume, entry and printed page | Opcode rows |
+|---|---|---|
+| Flag-condition jumps, all 30 condition spellings | 2A 3.3 Jcc, 3-558..3-561 | `70+cc` rel8, `0F 80+cc` rel32 |
+| SETcc, all condition aliases | 2B 4.3 SETcc, 4-619..4-621 | `0F 90+cc`, ModRM.reg zero |
+| CMOVcc word/long/quad, all condition aliases | 2A 3.3 CMOVcc, 3-175..3-177 | `0F 40+cc /r` |
+| MUL, one-operand IMUL, DIV, IDIV | 2B 4.3 MUL 4-148; 2A 3.3 IMUL 3-511, DIV 3-331, IDIV 3-508 | `F6/F7 /4,/5,/6,/7` |
+| Two-operand IMUL | 2A 3.3 IMUL, 3-511..3-512 | `0F AF /r`; immediate three-operand rows remain `6B/69` |
+| MOVSX, MOVZX, MOVSXD | 2B 4.3 MOVSX/MOVSXD 4-128, MOVZX 4-138 | `0F BE/BF`, `0F B6/B7`, `63` |
+| SHL, SHR, SAR, every width | 2B 4.3 SAL/SAR/SHL/SHR, 4-600..4-601 | `D0/D1`, `D2/D3`, `C0/C1`, extensions 4/5/7 |
+| TEST word | 2B 4.3 TEST, 4-713 | `85`, `A9`, `F7 /0`, operand-size override |
+| Accumulator sign extension | 2A 3.3 CBW/CWDE/CDQE 3-156, CWD/CDQ/CQO 3-324 | `98`, `99`, operand-size override or REX.W |
+
+GNU as manual 9.16.4.1 supplies the AT&T `cbtw`, `cwtl`, `cltq`, `cwtd`,
+`cltd`, `cqto` and extending-move names. Source width is independent of
+destination width for extending moves. There is no byte CMOV or two-operand
+byte IMUL, and unsigned long-to-quad widening uses MOV long, not `movzlq`.
+SETcc accepts the REX-only byte registers and extended byte registers; the
+shared encoder enforces the high-byte/REX exclusion. Flag-condition branches
+use the existing same-section relaxation and cross-section relocation policy.
 
 ## Port operands and the word ports
 
