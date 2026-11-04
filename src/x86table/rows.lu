@@ -513,5 +513,11 @@ pub fn source() -> List[str] {
         "2B|4.3 SAL/SAR/SHL/SHR|4-600..4-601|REX.W + D1 /7 SAR r/m64,1|sar|shift1|64|64|209|7|0|1|0|-1|1|-1|-1|known-exact1|known-exact1-before-imm8|base|imm,rm64|none|none",
         "2B|4.3 SAL/SAR/SHL/SHR|4-600..4-601|REX.W + D3 /7 SAR r/m64,CL|sar|shift_cl|64|64|211|7|0|1|0|-1|1|-1|-1|cl0|known-exact1-before-imm8|base|cl,rm64|none|none",
         "2B|4.3 SAL/SAR/SHL/SHR|4-600..4-601|REX.W + C1 /4 ib SHL r/m64,imm8|sar|shift_imm|64|64|193|7|0|1|1|-1|1|-1|0|unsigned8|known-exact1-before-imm8|base|imm,rm64|bits|none",
+        "2A|3.3 CBW/CWDE/CDQE|3-156|98 CBW/CWDE/CDQE operand-size 16|cbtw|fixed|0|32,64|152|-1|102|0|0|-1|-1|-1|-1|none|unique-role|base|none|none|none",
+        "2A|3.3 CBW/CWDE/CDQE|3-156|98 CBW/CWDE/CDQE operand-size 32|cwtl|fixed|0|32,64|152|-1|0|0|0|-1|-1|-1|-1|none|unique-role|base|none|none|none",
+        "2A|3.3 CBW/CWDE/CDQE|3-156|98 CBW/CWDE/CDQE operand-size 64|cltq|fixed|0|64|152|-1|0|1|0|-1|-1|-1|-1|none|unique-role|base|none|none|none",
+        "2A|3.3 CWD/CDQ/CQO|3-324|99 CWD/CDQ/CQO operand-size 16|cwtd|fixed|0|32,64|153|-1|102|0|0|-1|-1|-1|-1|none|unique-role|base|none|none|none",
+        "2A|3.3 CWD/CDQ/CQO|3-324|99 CWD/CDQ/CQO operand-size 32|cltd|fixed|0|32,64|153|-1|0|0|0|-1|-1|-1|-1|none|unique-role|base|none|none|none",
+        "2A|3.3 CWD/CDQ/CQO|3-324|99 CWD/CDQ/CQO operand-size 64|cqto|fixed|0|64|153|-1|0|1|0|-1|-1|-1|-1|none|unique-role|base|none|none|none",
     ]
 }
