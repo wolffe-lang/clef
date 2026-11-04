@@ -157,6 +157,8 @@ pub fn choose(
             } else if family == "inc" ||
                 family == "dec" ||
                 family == "div" ||
+                family == "idiv" ||
+                family == "mul" ||
                 family == "neg" ||
                 family == "not" ||
                 family == "rdrand" ||
@@ -187,8 +189,15 @@ pub fn choose(
                     "reg_acc"
                 }
             } else if family == "imul" {
-                if ops.len != 3 { return bad_operands }
-                role = if short_imm(values, known, 0, bits) then "imm8_rm_reg" else "imm_rm_reg"
+                if ops.len == 1 {
+                    role = "rm"
+                } else if ops.len == 2 {
+                    role = "rm_reg"
+                } else if ops.len == 3 {
+                    role = if short_imm(values, known, 0, bits) then "imm8_rm_reg" else "imm_rm_reg"
+                } else {
+                    return bad_operands
+                }
             } else if family == "shl" || family == "shr" {
                 if ops.len != 2 { return bad_operands }
                 if ops[0].kind == "register" {
