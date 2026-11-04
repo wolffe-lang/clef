@@ -6,7 +6,7 @@ use lex
 use machine
 use x86table
 
-fn encode(text: str, mode: int) -> machine.Encoded ! {
+fn encode(forms: List[x86table.Form], text: str, mode: int) -> machine.Encoded ! {
     Syntax(lex.Failure),
     bad_operands,
     invalid_lock_prefix,
@@ -34,7 +34,6 @@ fn encode(text: str, mode: int) -> machine.Encoded ! {
         (mut known).push(value.known)
         (mut values).push(value)
     }
-    let forms = x86table.load_all()?
     let form = machine.choose(forms, node, mode, values, known, false)?
     machine.emit(form, node, mode, values, known)?
 }
@@ -54,69 +53,71 @@ fn main() -> int ! {
     expression_depth,
     cyclic_set,
 } {
-    let mov = encode("movq $4096,%rsp", 64)?
+    // Cache descriptors once: checked-machine witnesses must not reparse the table per instruction.
+    let forms = x86table.load_all()?
+    let mov = encode(forms, "movq $4096,%rsp", 64)?
     assert(
         mov.data.len == 7 &&
             mov.data[0] == 72 as byte &&
             mov.data[1] == 199 as byte &&
             mov.data[2] == 196 as byte,
     )
-    let lea = encode("leaq 8(%rsi,%rdi,8),%rdx", 64)?
+    let lea = encode(forms, "leaq 8(%rsi,%rdi,8),%rdx", 64)?
     assert(lea.data.len == 5 && lea.data[3] == 254 as byte && lea.data[4] == 8 as byte)
-    let low8 = encode("movb %dil,(%rax)", 64)?
+    let low8 = encode(forms, "movb %dil,(%rax)", 64)?
     assert(low8.data.len == 3 && low8.data[0] == 64 as byte)
-    let control = encode("movq %cr0,%rax", 64)?
+    let control = encode(forms, "movq %cr0,%rax", 64)?
     assert(control.data.len == 3 && control.data[0] == 15 as byte && control.data[1] == 32 as byte)
-    let abs32 = encode("movl %eax,label", 32)?
+    let abs32 = encode(forms, "movl %eax,label", 32)?
     assert(
         abs32.data.len == 5 &&
             abs32.data[0] == 163 as byte &&
             abs32.fixups.len == 1 &&
             abs32.fixups[0].offset == 1,
     )
-    let inc32 = encode("incl %ecx", 32)?
+    let inc32 = encode(forms, "incl %ecx", 32)?
     assert(inc32.data.len == 1 && inc32.data[0] == 65 as byte)
-    let near = encode("call external", 64)?
+    let near = encode(forms, "call external", 64)?
     assert(near.data.len == 5 && near.fixups[0].bias == 4 && near.fixups[0].branch)
-    let rip = encode("cmpb $1,data(%rip)", 64)?
+    let rip = encode(forms, "cmpb $1,data(%rip)", 64)?
     assert(rip.data.len == 7 && rip.fixups[0].bias == 5 && rip.fixups[0].offset == 2)
-    let cmp32 = encode("cmpl $0xffffffff,%eax", 64)?
+    let cmp32 = encode(forms, "cmpl $0xffffffff,%eax", 64)?
     assert(cmp32.data.len == 3 && cmp32.data[0] == 131 as byte && cmp32.data[2] == 255 as byte)
-    let mov64 = encode("movq $0xffffffffffffffff,%rax", 64)?
+    let mov64 = encode(forms, "movq $0xffffffffffffffff,%rax", 64)?
     assert(mov64.data.len == 7 && mov64.data[1] == 199 as byte)
-    let xmm = encode("movdqu %xmm15,(%r12)", 64)?
+    let xmm = encode(forms, "movdqu %xmm15,(%r12)", 64)?
     assert(xmm.data.len == 6 && xmm.data[0] == 243 as byte && xmm.data[1] == 69 as byte)
     // as02c: SDM vol.2A IN/vol.2B OUT 16-bit rows carry 66H (vol.2A 2.1.1); XOR's REX.W rows.
     for mode in [64, 32] {
-        let inw = encode("inw %dx,%ax", mode)?
+        let inw = encode(forms, "inw %dx,%ax", mode)?
         assert(inw.data.len == 2 && inw.data[0] == 102 as byte && inw.data[1] == 237 as byte)
-        let inwp = encode("inw $0x60", mode)?
+        let inwp = encode(forms, "inw $0x60", mode)?
         assert(inwp.data.len == 3 && inwp.data[0] == 102 as byte && inwp.data[1] == 229 as byte)
-        let outw = encode("outw %ax,(%dx)", mode)?
+        let outw = encode(forms, "outw %ax,(%dx)", mode)?
         assert(outw.data.len == 2 && outw.data[0] == 102 as byte && outw.data[1] == 239 as byte)
-        let outwp = encode("outw %ax,$0x60", mode)?
+        let outwp = encode(forms, "outw %ax,$0x60", mode)?
         assert(outwp.data.len == 3 && outwp.data[1] == 231 as byte && outwp.data[2] == 96 as byte)
-        let bare = encode("out %al,%dx", mode)?
+        let bare = encode(forms, "out %al,%dx", mode)?
         assert(bare.data.len == 1 && bare.data[0] == 238 as byte)
     }
-    let xorq = encode("xorq %rax,%rax", 64)?
+    let xorq = encode(forms, "xorq %rax,%rax", 64)?
     assert(xorq.data.len == 3 && xorq.data[0] == 72 as byte && xorq.data[1] == 49 as byte)
     assert(xorq.data[2] == 192 as byte)
-    let xorqm = encode("xorq 8(%rsp),%rax", 64)?
+    let xorqm = encode(forms, "xorq 8(%rsp),%rax", 64)?
     assert(xorqm.data.len == 5 && xorqm.data[1] == 51 as byte && xorqm.data[4] == 8 as byte)
-    let xorqi = encode("xorq $256,%rax", 64)?
+    let xorqi = encode(forms, "xorq $256,%rax", 64)?
     assert(xorqi.data.len == 6 && xorqi.data[1] == 53 as byte && xorqi.data[3] == 1 as byte)
-    let xorq8 = encode("xorq $-1,%rcx", 64)?
+    let xorq8 = encode(forms, "xorq $-1,%rcx", 64)?
     assert(xorq8.data.len == 4 && xorq8.data[1] == 131 as byte && xorq8.data[2] == 241 as byte)
-    let locked = encode("lock xorq %rax,(%rcx)", 64)?
+    let locked = encode(forms, "lock xorq %rax,(%rcx)", 64)?
     assert(locked.data.len == 4 && locked.data[0] == 240 as byte)
-    let locked16 = encode("lock addw %cx,(%rax)", 64)?
+    let locked16 = encode(forms, "lock addw %cx,(%rax)", 64)?
     assert(
         locked16.data.len == 4 &&
             locked16.data[0] == 102 as byte &&
             locked16.data[1] == 240 as byte,
     )
-    let atomic = encode("lock cmpxchg16b (%rax)", 64)?
+    let atomic = encode(forms, "lock cmpxchg16b (%rax)", 64)?
     assert(atomic.data.len == 5 && atomic.data[0] == 240 as byte && atomic.data[1] == 72 as byte)
     // Intel SDM condition opcode tables: canonical nibbles 0..15, three encodings.
     let conditions = [
@@ -139,39 +140,39 @@ fn main() -> int ! {
     ]
     for i in 0..conditions.len {
         let cc = conditions[i]
-        let set = encode("set{cc} %dil", 64)?
+        let set = encode(forms, "set{cc} %dil", 64)?
         assert(set.data.len == 4 && set.data[0] == 64 as byte)
         assert(set.data[1] == 15 as byte && set.data[2] == (144 + i) as byte)
-        let cmov = encode("cmov{cc}q %r12,%r9", 64)?
+        let cmov = encode(forms, "cmov{cc}q %r12,%r9", 64)?
         assert(cmov.data.len == 4 && cmov.data[0] == 77 as byte)
         assert(cmov.data[1] == 15 as byte && cmov.data[2] == (64 + i) as byte)
-        let branch = encode("j{cc} external", 64)?
+        let branch = encode(forms, "j{cc} external", 64)?
         assert(branch.data.len == 6 && branch.data[0] == 15 as byte)
         assert(branch.data[1] == (128 + i) as byte && branch.fixups[0].width == 4)
     }
-    let imul1 = encode("imulb %cl", 64)?
+    let imul1 = encode(forms, "imulb %cl", 64)?
     assert(imul1.data.len == 2 && imul1.data[0] == 246 as byte && imul1.data[1] == 233 as byte)
-    let imul2 = encode("imulw %cx,%ax", 64)?
+    let imul2 = encode(forms, "imulw %cx,%ax", 64)?
     assert(imul2.data.len == 4 && imul2.data[0] == 102 as byte && imul2.data[2] == 175 as byte)
-    let mul = encode("mulq %rcx", 64)?
+    let mul = encode(forms, "mulq %rcx", 64)?
     assert(mul.data.len == 3 && mul.data[0] == 72 as byte && mul.data[2] == 225 as byte)
-    let idiv = encode("idivl %ecx", 64)?
+    let idiv = encode(forms, "idivl %ecx", 64)?
     assert(idiv.data.len == 2 && idiv.data[0] == 247 as byte && idiv.data[1] == 249 as byte)
-    let sx = encode("movsbw %sil,%ax", 64)?
+    let sx = encode(forms, "movsbw %sil,%ax", 64)?
     assert(sx.data.len == 5 && sx.data[0] == 102 as byte && sx.data[1] == 64 as byte)
     assert(sx.data[3] == 190 as byte)
-    let zx = encode("movzwq %r12w,%r9", 64)?
+    let zx = encode(forms, "movzwq %r12w,%r9", 64)?
     assert(zx.data.len == 4 && zx.data[0] == 77 as byte && zx.data[2] == 183 as byte)
-    let sar = encode("sarb $1,%al", 64)?
+    let sar = encode(forms, "sarb $1,%al", 64)?
     assert(sar.data.len == 2 && sar.data[0] == 208 as byte && sar.data[1] == 248 as byte)
-    let test = encode("testw $7,%ax", 64)?
+    let test = encode(forms, "testw $7,%ax", 64)?
     assert(test.data.len == 4 && test.data[0] == 102 as byte && test.data[1] == 169 as byte)
-    let cbtw = encode("cbtw", 64)?
+    let cbtw = encode(forms, "cbtw", 64)?
     assert(cbtw.data.len == 2 && cbtw.data[0] == 102 as byte && cbtw.data[1] == 152 as byte)
-    let cqto = encode("cqto", 64)?
+    let cqto = encode(forms, "cqto", 64)?
     assert(cqto.data.len == 2 && cqto.data[0] == 72 as byte && cqto.data[1] == 153 as byte)
     var refused32 = false
-    let _ = encode("xorq %rax,%rax", 32) else {
+    let _ = encode(forms, "xorq %rax,%rax", 32) else {
         refused32 = true
         machine.Encoded { data: [], fixups: [] }
     }
@@ -196,7 +197,10 @@ fn main() -> int ! {
         "movw %ax,%cs",
     ] {
         var refused = false
-        let _ = encode(text, 64) else { refused = true; machine.Encoded { data: [], fixups: [] } }
+        let _ = encode(forms, text, 64) else {
+            refused = true
+            machine.Encoded { data: [], fixups: [] }
+        }
         assert(refused)
     }
     print(
