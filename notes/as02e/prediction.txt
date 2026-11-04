@@ -1,0 +1,20 @@
+Prediction before implementation
+
+Linux clef at 0ef3d84a will reproduce fenrir's instruction census: 238 accepted,
+402 refused, each with the same normalized diagnostic as the Mac probe.
+Every census form should be legal in GNU as. New families should reuse existing
+ModRM, SIB, immediate and branch-relaxation logic through SDM-provenanced rows.
+All condition aliases share the Intel condition nibble. SETcc needs bare REX for
+sil/dil/spl/bpl and REX.B for r8b-r15b; no high byte register may coexist with REX.
+IMUL needs separate one-, two- and three-operand selection. Extending moves size
+the source independently of the destination. TEST word and shift word forms
+need 66; byte shifts need D0/D2/C0, not D1/D3/C1. Accumulator sign extensions use
+98/99 with 66 or REX.W as appropriate.
+
+Rows: first reproduce and retain each refused family by form ID on Linux, then
+compare each of 640 single forms and the combined census with pinned GNU as,
+including section bytes and relocation tuples, and repeat output for determinism.
+Supplement with all byte SETcc registers, address fixups, branch distance limits,
+width and illegal-operand refusals. Existing gates, all 43 census sources, PAX's
+29 valid sources and muzzle must remain byte-identical. A condition-nibble plant
+will fail its named differential. No clean-room forbidden input will be read.
