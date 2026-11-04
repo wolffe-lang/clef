@@ -501,5 +501,17 @@ pub fn source() -> List[str] {
         "2B|4.3 MOVZX|4-138|0F B6 /r MOVZX r16,r/m8|movzx|rm8_reg|16|32,64|15,182|-1|102|0|0|1|0|-1|-1|none|unique-role|base|rm8,r16|none|none",
         "2B|4.3 MOVZX|4-138|0F B6 /r MOVZX r64,r/m8|movzx|rm8_reg|64|64|15,182|-1|0|1|0|1|0|-1|-1|none|unique-role|base|rm8,r64|none|none",
         "2B|4.3 MOVZX|4-138|0F B7 /r MOVZX r64,r/m16|movzx|rm16_reg|64|64|15,183|-1|0|1|0|1|0|-1|-1|none|unique-role|base|rm16,r64|none|none",
+        "2B|4.3 SAL/SAR/SHL/SHR|4-600|D0 /7 SAR r/m8,1|sar|shift1|8|32,64|208|7|0|0|0|-1|1|-1|-1|known-exact1|known-exact1-before-imm8|base|imm,rm8|none|none",
+        "2B|4.3 SAL/SAR/SHL/SHR|4-600..4-601|D2 /7 SAR r/m8,CL|sar|shift_cl|8|32,64|210|7|0|0|0|-1|1|-1|-1|cl0|known-exact1-before-imm8|base|cl,rm8|none|none",
+        "2B|4.3 SAL/SAR/SHL/SHR|4-600..4-601|C0 /4 ib SHL r/m8,imm8|sar|shift_imm|8|32,64|192|7|0|0|1|-1|1|-1|0|unsigned8|known-exact1-before-imm8|base|imm,rm8|bits|none",
+        "2B|4.3 SAL/SAR/SHL/SHR|4-600|D1 /7 SAR r/m16,1|sar|shift1|16|32,64|209|7|102|0|0|-1|1|-1|-1|known-exact1|known-exact1-before-imm8|base|imm,rm16|none|none",
+        "2B|4.3 SAL/SAR/SHL/SHR|4-600..4-601|D3 /7 SAR r/m16,CL|sar|shift_cl|16|32,64|211|7|102|0|0|-1|1|-1|-1|cl0|known-exact1-before-imm8|base|cl,rm16|none|none",
+        "2B|4.3 SAL/SAR/SHL/SHR|4-600..4-601|C1 /4 ib SHL r/m16,imm8|sar|shift_imm|16|32,64|193|7|102|0|1|-1|1|-1|0|unsigned8|known-exact1-before-imm8|base|imm,rm16|bits|none",
+        "2B|4.3 SAL/SAR/SHL/SHR|4-600|D1 /7 SAR r/m32,1|sar|shift1|32|32,64|209|7|0|0|0|-1|1|-1|-1|known-exact1|known-exact1-before-imm8|base|imm,rm32|none|none",
+        "2B|4.3 SAL/SAR/SHL/SHR|4-600..4-601|D3 /7 SAR r/m32,CL|sar|shift_cl|32|32,64|211|7|0|0|0|-1|1|-1|-1|cl0|known-exact1-before-imm8|base|cl,rm32|none|none",
+        "2B|4.3 SAL/SAR/SHL/SHR|4-600..4-601|C1 /4 ib SHL r/m32,imm8|sar|shift_imm|32|32,64|193|7|0|0|1|-1|1|-1|0|unsigned8|known-exact1-before-imm8|base|imm,rm32|bits|none",
+        "2B|4.3 SAL/SAR/SHL/SHR|4-600..4-601|REX.W + D1 /7 SAR r/m64,1|sar|shift1|64|64|209|7|0|1|0|-1|1|-1|-1|known-exact1|known-exact1-before-imm8|base|imm,rm64|none|none",
+        "2B|4.3 SAL/SAR/SHL/SHR|4-600..4-601|REX.W + D3 /7 SAR r/m64,CL|sar|shift_cl|64|64|211|7|0|1|0|-1|1|-1|-1|cl0|known-exact1-before-imm8|base|cl,rm64|none|none",
+        "2B|4.3 SAL/SAR/SHL/SHR|4-600..4-601|REX.W + C1 /4 ib SHL r/m64,imm8|sar|shift_imm|64|64|193|7|0|1|1|-1|1|-1|0|unsigned8|known-exact1-before-imm8|base|imm,rm64|bits|none",
     ]
 }

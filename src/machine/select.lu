@@ -198,7 +198,7 @@ pub fn choose(
                 } else {
                     return bad_operands
                 }
-            } else if family == "shl" || family == "shr" {
+            } else if family == "shl" || family == "shr" || family == "sar" {
                 if ops.len != 2 { return bad_operands }
                 if ops[0].kind == "register" {
                     role = "shift_cl"
