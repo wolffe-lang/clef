@@ -5,9 +5,9 @@
   "counts": {
     "census_spellings": 112,
     "census_forms": 189,
-    "encoding_rows": 397,
+    "encoding_rows": 517,
     "forms_with_candidates": 191,
-    "aliases": 180,
+    "aliases": 355,
     "forms_outside_census": 2
   },
   "forms": [
@@ -7032,5 +7032,12 @@
         "xsetbv"
       ]
     }
-  ]
+  ],
+  "compiler_census": {
+    "path": "census/fenrir-forms/forms.json",
+    "forms": 640,
+    "generator_sha256": "d43b34de409cd074e0b321e396a1b80d61236dba0e1f3ab4d217c03e31cd4376",
+    "gate": "tools/compiler-forms-test",
+    "status": "declarative envelope; measured differential records live under target/evidence/compiler-forms"
+  }
 }
