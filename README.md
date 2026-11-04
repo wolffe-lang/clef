@@ -77,7 +77,10 @@ See [EXPAND](docs/EXPAND.md) for the expansion contract and
 * Fenrir's pinned 640-form integer census covers flag-condition jumps, SETcc,
   CMOVcc, multiply/divide, extending moves, shifts, TEST and accumulator sign
   extension. Its differential also checks addressing, illegal operands,
-  determinism and a linked integer executable. See `census/fenrir-forms/`.
+  determinism and a linked integer executable. One extra symbolic 16-bit
+  immediate is an explicitly checked GNU-as/clef deviation: clef retains its
+  named narrow-relocation refusal. No census form needs that deviation.
+  See `census/fenrir-forms/` and [FORMATS](docs/FORMATS.md).
 * All 43 original and expanded sources match pinned GNU as. Every source is
   assembled twice to check determinism. No x86 census source is waived.
 * 191 layout/boundary controls, ten named source refusals, five additional CLI
