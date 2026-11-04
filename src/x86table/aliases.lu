@@ -8,8 +8,8 @@ pub struct Alias {
     citation: str,
 }
 
-/// The pinned census's 112 spellings, including identity mappings, and as02c's five word-port
-/// spellings, plus 63 spellings covering every SDM LOCK family and legal width.
+/// Explicit spellings for the original census, word ports, every SDM LOCK family,
+/// and the compiler's integer instruction envelope, including condition aliases.
 pub fn aliases() -> List[Alias] {
     [
         Alias {
