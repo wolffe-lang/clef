@@ -241,7 +241,12 @@ Section symbols have empty ELF names but use section names for internal lookup.
 Symbol/string ordering and string suffix sharing are not copied from gas.
 
 The census uses relocation types 1 (`64`), 2 (`PC32`), 4 (`PLT32`) and 10 (`32`).
-The writer also handles 11 (`32S`) for signed address/immediate forms. Local
+The writer also handles 11 (`32S`) for signed address/immediate forms. Symbolic
+16-bit fields remain `unsupported_narrow_relocation: x86-64 psABI §4.4`;
+`R_X86_64_16` (type 12) is not supported. The compiler differential names
+`testw $external,external(%rip)` as a deliberate deviation: GNU as accepts it,
+while clef must refuse for that exact reason without replacing output. No form
+in the 640-form compiler census needs this deviation. Local
 defined references use section symbols plus addends where gas does; global and
 undefined references retain their names. PC-relative addends include all bytes
 from the field to instruction end, not an unconditional -4.
