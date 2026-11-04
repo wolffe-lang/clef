@@ -34,6 +34,23 @@ def run(argv):
     return subprocess.run(list(map(str, argv)), capture_output=True, text=True, timeout=60)
 
 
+def exact_deviation(gas_status, clef_status, reason, expected, unchanged, gas_object):
+    return (gas_status == 0 and gas_object and clef_status == 1
+            and reason == expected and unchanged)
+
+
+# Guard regressions: acceptance, a different/extended reason, an oracle refusal,
+# clobbered output or a missing oracle object must never become a passing deviation.
+expected_reason = 'unsupported_narrow_relocation: x86-64 psABI §4.4'
+assert exact_deviation(0, 1, expected_reason, expected_reason, True, True)
+for bad in ((0, 0, expected_reason, True, True),
+            (0, 1, 'bad_operands', True, True),
+            (0, 1, expected_reason + ' changed', True, True),
+            (0, 1, None, True, True), (1, 1, expected_reason, True, True),
+            (0, 1, expected_reason, False, True), (0, 1, expected_reason, True, False)):
+    assert not exact_deviation(bad[0], bad[1], bad[2], expected_reason, bad[3], bad[4])
+
+
 def compare(name, source, group='boundary', refusal=None, deviation=None):
     assert not (refusal and deviation)
     stem = OUT / str(len(rows))
@@ -52,9 +69,8 @@ def compare(name, source, group='boundary', refusal=None, deviation=None):
         reason = re.search(r', reason: (.*?) \}\)\n?\Z', ours.stderr, re.S)
         row['deviation'] = deviation
         row['actual_reason'] = reason.group(1) if reason else None
-        row['pass'] = (gas.returncode == 0 and gas_o.is_file() and ours.returncode == 1
-                       and row['actual_reason'] == deviation
-                       and ours_o.read_bytes() == b'unchanged')
+        row['pass'] = exact_deviation(gas.returncode, ours.returncode, row['actual_reason'],
+                                      deviation, ours_o.read_bytes() == b'unchanged', gas_o.is_file())
         if gas.returncode == 0:
             row['gas'] = ELF(gas_o).normalized()
     elif refusal:
