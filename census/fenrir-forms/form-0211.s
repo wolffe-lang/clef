@@ -1,0 +1,3 @@
+.text
+idivl %ecx
+.Ltarget:

@@ -1,0 +1,3845 @@
+{
+  "generator_sha256": "d43b34de409cd074e0b321e396a1b80d61236dba0e1f3ab4d217c03e31cd4376",
+  "forms": [
+    {
+      "id": "form-0000",
+      "group": "move",
+      "sample": "movb %al, %cl",
+      "sdm": "2B MOV: 88/89, 8A/8B, B0/B8, C6/C7"
+    },
+    {
+      "id": "form-0001",
+      "group": "move",
+      "sample": "movb -16(%rbp), %al",
+      "sdm": "2B MOV: 88/89, 8A/8B, B0/B8, C6/C7"
+    },
+    {
+      "id": "form-0002",
+      "group": "move",
+      "sample": "movb %al, -16(%rbp)",
+      "sdm": "2B MOV: 88/89, 8A/8B, B0/B8, C6/C7"
+    },
+    {
+      "id": "form-0003",
+      "group": "move",
+      "sample": "movb $7, %al",
+      "sdm": "2B MOV: 88/89, 8A/8B, B0/B8, C6/C7"
+    },
+    {
+      "id": "form-0004",
+      "group": "move",
+      "sample": "movb $7, -16(%rbp)",
+      "sdm": "2B MOV: 88/89, 8A/8B, B0/B8, C6/C7"
+    },
+    {
+      "id": "form-0005",
+      "group": "integer",
+      "sample": "addb %al, %cl",
+      "sdm": "2A ADD: 00-05, 80/81/83 /0"
+    },
+    {
+      "id": "form-0006",
+      "group": "integer",
+      "sample": "addb -16(%rbp), %al",
+      "sdm": "2A ADD: 00-05, 80/81/83 /0"
+    },
+    {
+      "id": "form-0007",
+      "group": "integer",
+      "sample": "addb %al, -16(%rbp)",
+      "sdm": "2A ADD: 00-05, 80/81/83 /0"
+    },
+    {
+      "id": "form-0008",
+      "group": "integer",
+      "sample": "addb $7, %al",
+      "sdm": "2A ADD: 00-05, 80/81/83 /0"
+    },
+    {
+      "id": "form-0009",
+      "group": "integer",
+      "sample": "addb $7, -16(%rbp)",
+      "sdm": "2A ADD: 00-05, 80/81/83 /0"
+    },
+    {
+      "id": "form-0010",
+      "group": "integer",
+      "sample": "subb %al, %cl",
+      "sdm": "2B SUB: 28-2D, 80/81/83 /5"
+    },
+    {
+      "id": "form-0011",
+      "group": "integer",
+      "sample": "subb -16(%rbp), %al",
+      "sdm": "2B SUB: 28-2D, 80/81/83 /5"
+    },
+    {
+      "id": "form-0012",
+      "group": "integer",
+      "sample": "subb %al, -16(%rbp)",
+      "sdm": "2B SUB: 28-2D, 80/81/83 /5"
+    },
+    {
+      "id": "form-0013",
+      "group": "integer",
+      "sample": "subb $7, %al",
+      "sdm": "2B SUB: 28-2D, 80/81/83 /5"
+    },
+    {
+      "id": "form-0014",
+      "group": "integer",
+      "sample": "subb $7, -16(%rbp)",
+      "sdm": "2B SUB: 28-2D, 80/81/83 /5"
+    },
+    {
+      "id": "form-0015",
+      "group": "integer",
+      "sample": "andb %al, %cl",
+      "sdm": "2A AND: 20-25, 80/81/83 /4"
+    },
+    {
+      "id": "form-0016",
+      "group": "integer",
+      "sample": "andb -16(%rbp), %al",
+      "sdm": "2A AND: 20-25, 80/81/83 /4"
+    },
+    {
+      "id": "form-0017",
+      "group": "integer",
+      "sample": "andb %al, -16(%rbp)",
+      "sdm": "2A AND: 20-25, 80/81/83 /4"
+    },
+    {
+      "id": "form-0018",
+      "group": "integer",
+      "sample": "andb $7, %al",
+      "sdm": "2A AND: 20-25, 80/81/83 /4"
+    },
+    {
+      "id": "form-0019",
+      "group": "integer",
+      "sample": "andb $7, -16(%rbp)",
+      "sdm": "2A AND: 20-25, 80/81/83 /4"
+    },
+    {
+      "id": "form-0020",
+      "group": "integer",
+      "sample": "orb %al, %cl",
+      "sdm": "2B OR: 08-0D, 80/81/83 /1"
+    },
+    {
+      "id": "form-0021",
+      "group": "integer",
+      "sample": "orb -16(%rbp), %al",
+      "sdm": "2B OR: 08-0D, 80/81/83 /1"
+    },
+    {
+      "id": "form-0022",
+      "group": "integer",
+      "sample": "orb %al, -16(%rbp)",
+      "sdm": "2B OR: 08-0D, 80/81/83 /1"
+    },
+    {
+      "id": "form-0023",
+      "group": "integer",
+      "sample": "orb $7, %al",
+      "sdm": "2B OR: 08-0D, 80/81/83 /1"
+    },
+    {
+      "id": "form-0024",
+      "group": "integer",
+      "sample": "orb $7, -16(%rbp)",
+      "sdm": "2B OR: 08-0D, 80/81/83 /1"
+    },
+    {
+      "id": "form-0025",
+      "group": "integer",
+      "sample": "xorb %al, %cl",
+      "sdm": "2D XOR: 30-35, 80/81/83 /6"
+    },
+    {
+      "id": "form-0026",
+      "group": "integer",
+      "sample": "xorb -16(%rbp), %al",
+      "sdm": "2D XOR: 30-35, 80/81/83 /6"
+    },
+    {
+      "id": "form-0027",
+      "group": "integer",
+      "sample": "xorb %al, -16(%rbp)",
+      "sdm": "2D XOR: 30-35, 80/81/83 /6"
+    },
+    {
+      "id": "form-0028",
+      "group": "integer",
+      "sample": "xorb $7, %al",
+      "sdm": "2D XOR: 30-35, 80/81/83 /6"
+    },
+    {
+      "id": "form-0029",
+      "group": "integer",
+      "sample": "xorb $7, -16(%rbp)",
+      "sdm": "2D XOR: 30-35, 80/81/83 /6"
+    },
+    {
+      "id": "form-0030",
+      "group": "integer",
+      "sample": "cmpb %al, %cl",
+      "sdm": "2A CMP: 38-3D, 80/81/83 /7"
+    },
+    {
+      "id": "form-0031",
+      "group": "integer",
+      "sample": "cmpb -16(%rbp), %al",
+      "sdm": "2A CMP: 38-3D, 80/81/83 /7"
+    },
+    {
+      "id": "form-0032",
+      "group": "integer",
+      "sample": "cmpb %al, -16(%rbp)",
+      "sdm": "2A CMP: 38-3D, 80/81/83 /7"
+    },
+    {
+      "id": "form-0033",
+      "group": "integer",
+      "sample": "cmpb $7, %al",
+      "sdm": "2A CMP: 38-3D, 80/81/83 /7"
+    },
+    {
+      "id": "form-0034",
+      "group": "integer",
+      "sample": "cmpb $7, -16(%rbp)",
+      "sdm": "2A CMP: 38-3D, 80/81/83 /7"
+    },
+    {
+      "id": "form-0035",
+      "group": "test",
+      "sample": "testb %al, %cl",
+      "sdm": "2B TEST: 84/85, A8/A9, F6/F7 /0"
+    },
+    {
+      "id": "form-0036",
+      "group": "test",
+      "sample": "testb %al, -16(%rbp)",
+      "sdm": "2B TEST: 84/85, A8/A9, F6/F7 /0"
+    },
+    {
+      "id": "form-0037",
+      "group": "test",
+      "sample": "testb $7, %al",
+      "sdm": "2B TEST: 84/85, A8/A9, F6/F7 /0"
+    },
+    {
+      "id": "form-0038",
+      "group": "test",
+      "sample": "testb $7, -16(%rbp)",
+      "sdm": "2B TEST: 84/85, A8/A9, F6/F7 /0"
+    },
+    {
+      "id": "form-0039",
+      "group": "unary",
+      "sample": "negb %al",
+      "sdm": "2B NEG: F6/F7 /3"
+    },
+    {
+      "id": "form-0040",
+      "group": "unary",
+      "sample": "negb -16(%rbp)",
+      "sdm": "2B NEG: F6/F7 /3"
+    },
+    {
+      "id": "form-0041",
+      "group": "unary",
+      "sample": "notb %al",
+      "sdm": "2B NOT: F6/F7 /2"
+    },
+    {
+      "id": "form-0042",
+      "group": "unary",
+      "sample": "notb -16(%rbp)",
+      "sdm": "2B NOT: F6/F7 /2"
+    },
+    {
+      "id": "form-0043",
+      "group": "shift",
+      "sample": "shlb $1, %al",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0044",
+      "group": "shift",
+      "sample": "shlb $1, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0045",
+      "group": "shift",
+      "sample": "shlb $7, %al",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0046",
+      "group": "shift",
+      "sample": "shlb $7, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0047",
+      "group": "shift",
+      "sample": "shlb %cl, %al",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0048",
+      "group": "shift",
+      "sample": "shlb %cl, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0049",
+      "group": "shift",
+      "sample": "sarb $1, %al",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0050",
+      "group": "shift",
+      "sample": "sarb $1, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0051",
+      "group": "shift",
+      "sample": "sarb $7, %al",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0052",
+      "group": "shift",
+      "sample": "sarb $7, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0053",
+      "group": "shift",
+      "sample": "sarb %cl, %al",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0054",
+      "group": "shift",
+      "sample": "sarb %cl, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0055",
+      "group": "shift",
+      "sample": "shrb $1, %al",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0056",
+      "group": "shift",
+      "sample": "shrb $1, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0057",
+      "group": "shift",
+      "sample": "shrb $7, %al",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0058",
+      "group": "shift",
+      "sample": "shrb $7, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0059",
+      "group": "shift",
+      "sample": "shrb %cl, %al",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0060",
+      "group": "shift",
+      "sample": "shrb %cl, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0061",
+      "group": "division",
+      "sample": "mulb %cl",
+      "sdm": "2B MUL: F6/F7 /4"
+    },
+    {
+      "id": "form-0062",
+      "group": "division",
+      "sample": "mulb -16(%rbp)",
+      "sdm": "2B MUL: F6/F7 /4"
+    },
+    {
+      "id": "form-0063",
+      "group": "division",
+      "sample": "imulb %cl",
+      "sdm": "2A IMUL: F6/F7 /5 (one operand)"
+    },
+    {
+      "id": "form-0064",
+      "group": "division",
+      "sample": "imulb -16(%rbp)",
+      "sdm": "2A IMUL: F6/F7 /5 (one operand)"
+    },
+    {
+      "id": "form-0065",
+      "group": "division",
+      "sample": "divb %cl",
+      "sdm": "2A DIV: F6/F7 /6"
+    },
+    {
+      "id": "form-0066",
+      "group": "division",
+      "sample": "divb -16(%rbp)",
+      "sdm": "2A DIV: F6/F7 /6"
+    },
+    {
+      "id": "form-0067",
+      "group": "division",
+      "sample": "idivb %cl",
+      "sdm": "2A IDIV: F6/F7 /7"
+    },
+    {
+      "id": "form-0068",
+      "group": "division",
+      "sample": "idivb -16(%rbp)",
+      "sdm": "2A IDIV: F6/F7 /7"
+    },
+    {
+      "id": "form-0069",
+      "group": "move",
+      "sample": "movw %ax, %cx",
+      "sdm": "2B MOV: 88/89, 8A/8B, B0/B8, C6/C7"
+    },
+    {
+      "id": "form-0070",
+      "group": "move",
+      "sample": "movw -16(%rbp), %ax",
+      "sdm": "2B MOV: 88/89, 8A/8B, B0/B8, C6/C7"
+    },
+    {
+      "id": "form-0071",
+      "group": "move",
+      "sample": "movw %ax, -16(%rbp)",
+      "sdm": "2B MOV: 88/89, 8A/8B, B0/B8, C6/C7"
+    },
+    {
+      "id": "form-0072",
+      "group": "move",
+      "sample": "movw $7, %ax",
+      "sdm": "2B MOV: 88/89, 8A/8B, B0/B8, C6/C7"
+    },
+    {
+      "id": "form-0073",
+      "group": "move",
+      "sample": "movw $7, -16(%rbp)",
+      "sdm": "2B MOV: 88/89, 8A/8B, B0/B8, C6/C7"
+    },
+    {
+      "id": "form-0074",
+      "group": "integer",
+      "sample": "addw %ax, %cx",
+      "sdm": "2A ADD: 00-05, 80/81/83 /0"
+    },
+    {
+      "id": "form-0075",
+      "group": "integer",
+      "sample": "addw -16(%rbp), %ax",
+      "sdm": "2A ADD: 00-05, 80/81/83 /0"
+    },
+    {
+      "id": "form-0076",
+      "group": "integer",
+      "sample": "addw %ax, -16(%rbp)",
+      "sdm": "2A ADD: 00-05, 80/81/83 /0"
+    },
+    {
+      "id": "form-0077",
+      "group": "integer",
+      "sample": "addw $7, %ax",
+      "sdm": "2A ADD: 00-05, 80/81/83 /0"
+    },
+    {
+      "id": "form-0078",
+      "group": "integer",
+      "sample": "addw $7, -16(%rbp)",
+      "sdm": "2A ADD: 00-05, 80/81/83 /0"
+    },
+    {
+      "id": "form-0079",
+      "group": "integer",
+      "sample": "subw %ax, %cx",
+      "sdm": "2B SUB: 28-2D, 80/81/83 /5"
+    },
+    {
+      "id": "form-0080",
+      "group": "integer",
+      "sample": "subw -16(%rbp), %ax",
+      "sdm": "2B SUB: 28-2D, 80/81/83 /5"
+    },
+    {
+      "id": "form-0081",
+      "group": "integer",
+      "sample": "subw %ax, -16(%rbp)",
+      "sdm": "2B SUB: 28-2D, 80/81/83 /5"
+    },
+    {
+      "id": "form-0082",
+      "group": "integer",
+      "sample": "subw $7, %ax",
+      "sdm": "2B SUB: 28-2D, 80/81/83 /5"
+    },
+    {
+      "id": "form-0083",
+      "group": "integer",
+      "sample": "subw $7, -16(%rbp)",
+      "sdm": "2B SUB: 28-2D, 80/81/83 /5"
+    },
+    {
+      "id": "form-0084",
+      "group": "integer",
+      "sample": "andw %ax, %cx",
+      "sdm": "2A AND: 20-25, 80/81/83 /4"
+    },
+    {
+      "id": "form-0085",
+      "group": "integer",
+      "sample": "andw -16(%rbp), %ax",
+      "sdm": "2A AND: 20-25, 80/81/83 /4"
+    },
+    {
+      "id": "form-0086",
+      "group": "integer",
+      "sample": "andw %ax, -16(%rbp)",
+      "sdm": "2A AND: 20-25, 80/81/83 /4"
+    },
+    {
+      "id": "form-0087",
+      "group": "integer",
+      "sample": "andw $7, %ax",
+      "sdm": "2A AND: 20-25, 80/81/83 /4"
+    },
+    {
+      "id": "form-0088",
+      "group": "integer",
+      "sample": "andw $7, -16(%rbp)",
+      "sdm": "2A AND: 20-25, 80/81/83 /4"
+    },
+    {
+      "id": "form-0089",
+      "group": "integer",
+      "sample": "orw %ax, %cx",
+      "sdm": "2B OR: 08-0D, 80/81/83 /1"
+    },
+    {
+      "id": "form-0090",
+      "group": "integer",
+      "sample": "orw -16(%rbp), %ax",
+      "sdm": "2B OR: 08-0D, 80/81/83 /1"
+    },
+    {
+      "id": "form-0091",
+      "group": "integer",
+      "sample": "orw %ax, -16(%rbp)",
+      "sdm": "2B OR: 08-0D, 80/81/83 /1"
+    },
+    {
+      "id": "form-0092",
+      "group": "integer",
+      "sample": "orw $7, %ax",
+      "sdm": "2B OR: 08-0D, 80/81/83 /1"
+    },
+    {
+      "id": "form-0093",
+      "group": "integer",
+      "sample": "orw $7, -16(%rbp)",
+      "sdm": "2B OR: 08-0D, 80/81/83 /1"
+    },
+    {
+      "id": "form-0094",
+      "group": "integer",
+      "sample": "xorw %ax, %cx",
+      "sdm": "2D XOR: 30-35, 80/81/83 /6"
+    },
+    {
+      "id": "form-0095",
+      "group": "integer",
+      "sample": "xorw -16(%rbp), %ax",
+      "sdm": "2D XOR: 30-35, 80/81/83 /6"
+    },
+    {
+      "id": "form-0096",
+      "group": "integer",
+      "sample": "xorw %ax, -16(%rbp)",
+      "sdm": "2D XOR: 30-35, 80/81/83 /6"
+    },
+    {
+      "id": "form-0097",
+      "group": "integer",
+      "sample": "xorw $7, %ax",
+      "sdm": "2D XOR: 30-35, 80/81/83 /6"
+    },
+    {
+      "id": "form-0098",
+      "group": "integer",
+      "sample": "xorw $7, -16(%rbp)",
+      "sdm": "2D XOR: 30-35, 80/81/83 /6"
+    },
+    {
+      "id": "form-0099",
+      "group": "integer",
+      "sample": "cmpw %ax, %cx",
+      "sdm": "2A CMP: 38-3D, 80/81/83 /7"
+    },
+    {
+      "id": "form-0100",
+      "group": "integer",
+      "sample": "cmpw -16(%rbp), %ax",
+      "sdm": "2A CMP: 38-3D, 80/81/83 /7"
+    },
+    {
+      "id": "form-0101",
+      "group": "integer",
+      "sample": "cmpw %ax, -16(%rbp)",
+      "sdm": "2A CMP: 38-3D, 80/81/83 /7"
+    },
+    {
+      "id": "form-0102",
+      "group": "integer",
+      "sample": "cmpw $7, %ax",
+      "sdm": "2A CMP: 38-3D, 80/81/83 /7"
+    },
+    {
+      "id": "form-0103",
+      "group": "integer",
+      "sample": "cmpw $7, -16(%rbp)",
+      "sdm": "2A CMP: 38-3D, 80/81/83 /7"
+    },
+    {
+      "id": "form-0104",
+      "group": "test",
+      "sample": "testw %ax, %cx",
+      "sdm": "2B TEST: 84/85, A8/A9, F6/F7 /0"
+    },
+    {
+      "id": "form-0105",
+      "group": "test",
+      "sample": "testw %ax, -16(%rbp)",
+      "sdm": "2B TEST: 84/85, A8/A9, F6/F7 /0"
+    },
+    {
+      "id": "form-0106",
+      "group": "test",
+      "sample": "testw $7, %ax",
+      "sdm": "2B TEST: 84/85, A8/A9, F6/F7 /0"
+    },
+    {
+      "id": "form-0107",
+      "group": "test",
+      "sample": "testw $7, -16(%rbp)",
+      "sdm": "2B TEST: 84/85, A8/A9, F6/F7 /0"
+    },
+    {
+      "id": "form-0108",
+      "group": "unary",
+      "sample": "negw %ax",
+      "sdm": "2B NEG: F6/F7 /3"
+    },
+    {
+      "id": "form-0109",
+      "group": "unary",
+      "sample": "negw -16(%rbp)",
+      "sdm": "2B NEG: F6/F7 /3"
+    },
+    {
+      "id": "form-0110",
+      "group": "unary",
+      "sample": "notw %ax",
+      "sdm": "2B NOT: F6/F7 /2"
+    },
+    {
+      "id": "form-0111",
+      "group": "unary",
+      "sample": "notw -16(%rbp)",
+      "sdm": "2B NOT: F6/F7 /2"
+    },
+    {
+      "id": "form-0112",
+      "group": "shift",
+      "sample": "shlw $1, %ax",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0113",
+      "group": "shift",
+      "sample": "shlw $1, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0114",
+      "group": "shift",
+      "sample": "shlw $7, %ax",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0115",
+      "group": "shift",
+      "sample": "shlw $7, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0116",
+      "group": "shift",
+      "sample": "shlw %cl, %ax",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0117",
+      "group": "shift",
+      "sample": "shlw %cl, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0118",
+      "group": "shift",
+      "sample": "sarw $1, %ax",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0119",
+      "group": "shift",
+      "sample": "sarw $1, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0120",
+      "group": "shift",
+      "sample": "sarw $7, %ax",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0121",
+      "group": "shift",
+      "sample": "sarw $7, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0122",
+      "group": "shift",
+      "sample": "sarw %cl, %ax",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0123",
+      "group": "shift",
+      "sample": "sarw %cl, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0124",
+      "group": "shift",
+      "sample": "shrw $1, %ax",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0125",
+      "group": "shift",
+      "sample": "shrw $1, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0126",
+      "group": "shift",
+      "sample": "shrw $7, %ax",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0127",
+      "group": "shift",
+      "sample": "shrw $7, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0128",
+      "group": "shift",
+      "sample": "shrw %cl, %ax",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0129",
+      "group": "shift",
+      "sample": "shrw %cl, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0130",
+      "group": "division",
+      "sample": "mulw %cx",
+      "sdm": "2B MUL: F6/F7 /4"
+    },
+    {
+      "id": "form-0131",
+      "group": "division",
+      "sample": "mulw -16(%rbp)",
+      "sdm": "2B MUL: F6/F7 /4"
+    },
+    {
+      "id": "form-0132",
+      "group": "division",
+      "sample": "imulw %cx",
+      "sdm": "2A IMUL: F6/F7 /5 (one operand)"
+    },
+    {
+      "id": "form-0133",
+      "group": "division",
+      "sample": "imulw -16(%rbp)",
+      "sdm": "2A IMUL: F6/F7 /5 (one operand)"
+    },
+    {
+      "id": "form-0134",
+      "group": "division",
+      "sample": "divw %cx",
+      "sdm": "2A DIV: F6/F7 /6"
+    },
+    {
+      "id": "form-0135",
+      "group": "division",
+      "sample": "divw -16(%rbp)",
+      "sdm": "2A DIV: F6/F7 /6"
+    },
+    {
+      "id": "form-0136",
+      "group": "division",
+      "sample": "idivw %cx",
+      "sdm": "2A IDIV: F6/F7 /7"
+    },
+    {
+      "id": "form-0137",
+      "group": "division",
+      "sample": "idivw -16(%rbp)",
+      "sdm": "2A IDIV: F6/F7 /7"
+    },
+    {
+      "id": "form-0138",
+      "group": "multiply",
+      "sample": "imulw %cx, %ax",
+      "sdm": "2A IMUL: 0F AF /r (two operand)"
+    },
+    {
+      "id": "form-0139",
+      "group": "multiply",
+      "sample": "imulw $7, %cx, %ax",
+      "sdm": "2A IMUL: 6B /r ib (three operand)"
+    },
+    {
+      "id": "form-0140",
+      "group": "multiply",
+      "sample": "imulw $1000, %cx, %ax",
+      "sdm": "2A IMUL: 69 /r iw/id (three operand)"
+    },
+    {
+      "id": "form-0141",
+      "group": "multiply",
+      "sample": "imulw -16(%rbp), %ax",
+      "sdm": "2A IMUL: 0F AF /r (two operand)"
+    },
+    {
+      "id": "form-0142",
+      "group": "multiply",
+      "sample": "imulw $7, -16(%rbp), %ax",
+      "sdm": "2A IMUL: 6B /r ib (three operand)"
+    },
+    {
+      "id": "form-0143",
+      "group": "multiply",
+      "sample": "imulw $1000, -16(%rbp), %ax",
+      "sdm": "2A IMUL: 69 /r iw/id (three operand)"
+    },
+    {
+      "id": "form-0144",
+      "group": "move",
+      "sample": "movl %eax, %ecx",
+      "sdm": "2B MOV: 88/89, 8A/8B, B0/B8, C6/C7"
+    },
+    {
+      "id": "form-0145",
+      "group": "move",
+      "sample": "movl -16(%rbp), %eax",
+      "sdm": "2B MOV: 88/89, 8A/8B, B0/B8, C6/C7"
+    },
+    {
+      "id": "form-0146",
+      "group": "move",
+      "sample": "movl %eax, -16(%rbp)",
+      "sdm": "2B MOV: 88/89, 8A/8B, B0/B8, C6/C7"
+    },
+    {
+      "id": "form-0147",
+      "group": "move",
+      "sample": "movl $7, %eax",
+      "sdm": "2B MOV: 88/89, 8A/8B, B0/B8, C6/C7"
+    },
+    {
+      "id": "form-0148",
+      "group": "move",
+      "sample": "movl $7, -16(%rbp)",
+      "sdm": "2B MOV: 88/89, 8A/8B, B0/B8, C6/C7"
+    },
+    {
+      "id": "form-0149",
+      "group": "integer",
+      "sample": "addl %eax, %ecx",
+      "sdm": "2A ADD: 00-05, 80/81/83 /0"
+    },
+    {
+      "id": "form-0150",
+      "group": "integer",
+      "sample": "addl -16(%rbp), %eax",
+      "sdm": "2A ADD: 00-05, 80/81/83 /0"
+    },
+    {
+      "id": "form-0151",
+      "group": "integer",
+      "sample": "addl %eax, -16(%rbp)",
+      "sdm": "2A ADD: 00-05, 80/81/83 /0"
+    },
+    {
+      "id": "form-0152",
+      "group": "integer",
+      "sample": "addl $7, %eax",
+      "sdm": "2A ADD: 00-05, 80/81/83 /0"
+    },
+    {
+      "id": "form-0153",
+      "group": "integer",
+      "sample": "addl $7, -16(%rbp)",
+      "sdm": "2A ADD: 00-05, 80/81/83 /0"
+    },
+    {
+      "id": "form-0154",
+      "group": "integer",
+      "sample": "subl %eax, %ecx",
+      "sdm": "2B SUB: 28-2D, 80/81/83 /5"
+    },
+    {
+      "id": "form-0155",
+      "group": "integer",
+      "sample": "subl -16(%rbp), %eax",
+      "sdm": "2B SUB: 28-2D, 80/81/83 /5"
+    },
+    {
+      "id": "form-0156",
+      "group": "integer",
+      "sample": "subl %eax, -16(%rbp)",
+      "sdm": "2B SUB: 28-2D, 80/81/83 /5"
+    },
+    {
+      "id": "form-0157",
+      "group": "integer",
+      "sample": "subl $7, %eax",
+      "sdm": "2B SUB: 28-2D, 80/81/83 /5"
+    },
+    {
+      "id": "form-0158",
+      "group": "integer",
+      "sample": "subl $7, -16(%rbp)",
+      "sdm": "2B SUB: 28-2D, 80/81/83 /5"
+    },
+    {
+      "id": "form-0159",
+      "group": "integer",
+      "sample": "andl %eax, %ecx",
+      "sdm": "2A AND: 20-25, 80/81/83 /4"
+    },
+    {
+      "id": "form-0160",
+      "group": "integer",
+      "sample": "andl -16(%rbp), %eax",
+      "sdm": "2A AND: 20-25, 80/81/83 /4"
+    },
+    {
+      "id": "form-0161",
+      "group": "integer",
+      "sample": "andl %eax, -16(%rbp)",
+      "sdm": "2A AND: 20-25, 80/81/83 /4"
+    },
+    {
+      "id": "form-0162",
+      "group": "integer",
+      "sample": "andl $7, %eax",
+      "sdm": "2A AND: 20-25, 80/81/83 /4"
+    },
+    {
+      "id": "form-0163",
+      "group": "integer",
+      "sample": "andl $7, -16(%rbp)",
+      "sdm": "2A AND: 20-25, 80/81/83 /4"
+    },
+    {
+      "id": "form-0164",
+      "group": "integer",
+      "sample": "orl %eax, %ecx",
+      "sdm": "2B OR: 08-0D, 80/81/83 /1"
+    },
+    {
+      "id": "form-0165",
+      "group": "integer",
+      "sample": "orl -16(%rbp), %eax",
+      "sdm": "2B OR: 08-0D, 80/81/83 /1"
+    },
+    {
+      "id": "form-0166",
+      "group": "integer",
+      "sample": "orl %eax, -16(%rbp)",
+      "sdm": "2B OR: 08-0D, 80/81/83 /1"
+    },
+    {
+      "id": "form-0167",
+      "group": "integer",
+      "sample": "orl $7, %eax",
+      "sdm": "2B OR: 08-0D, 80/81/83 /1"
+    },
+    {
+      "id": "form-0168",
+      "group": "integer",
+      "sample": "orl $7, -16(%rbp)",
+      "sdm": "2B OR: 08-0D, 80/81/83 /1"
+    },
+    {
+      "id": "form-0169",
+      "group": "integer",
+      "sample": "xorl %eax, %ecx",
+      "sdm": "2D XOR: 30-35, 80/81/83 /6"
+    },
+    {
+      "id": "form-0170",
+      "group": "integer",
+      "sample": "xorl -16(%rbp), %eax",
+      "sdm": "2D XOR: 30-35, 80/81/83 /6"
+    },
+    {
+      "id": "form-0171",
+      "group": "integer",
+      "sample": "xorl %eax, -16(%rbp)",
+      "sdm": "2D XOR: 30-35, 80/81/83 /6"
+    },
+    {
+      "id": "form-0172",
+      "group": "integer",
+      "sample": "xorl $7, %eax",
+      "sdm": "2D XOR: 30-35, 80/81/83 /6"
+    },
+    {
+      "id": "form-0173",
+      "group": "integer",
+      "sample": "xorl $7, -16(%rbp)",
+      "sdm": "2D XOR: 30-35, 80/81/83 /6"
+    },
+    {
+      "id": "form-0174",
+      "group": "integer",
+      "sample": "cmpl %eax, %ecx",
+      "sdm": "2A CMP: 38-3D, 80/81/83 /7"
+    },
+    {
+      "id": "form-0175",
+      "group": "integer",
+      "sample": "cmpl -16(%rbp), %eax",
+      "sdm": "2A CMP: 38-3D, 80/81/83 /7"
+    },
+    {
+      "id": "form-0176",
+      "group": "integer",
+      "sample": "cmpl %eax, -16(%rbp)",
+      "sdm": "2A CMP: 38-3D, 80/81/83 /7"
+    },
+    {
+      "id": "form-0177",
+      "group": "integer",
+      "sample": "cmpl $7, %eax",
+      "sdm": "2A CMP: 38-3D, 80/81/83 /7"
+    },
+    {
+      "id": "form-0178",
+      "group": "integer",
+      "sample": "cmpl $7, -16(%rbp)",
+      "sdm": "2A CMP: 38-3D, 80/81/83 /7"
+    },
+    {
+      "id": "form-0179",
+      "group": "test",
+      "sample": "testl %eax, %ecx",
+      "sdm": "2B TEST: 84/85, A8/A9, F6/F7 /0"
+    },
+    {
+      "id": "form-0180",
+      "group": "test",
+      "sample": "testl %eax, -16(%rbp)",
+      "sdm": "2B TEST: 84/85, A8/A9, F6/F7 /0"
+    },
+    {
+      "id": "form-0181",
+      "group": "test",
+      "sample": "testl $7, %eax",
+      "sdm": "2B TEST: 84/85, A8/A9, F6/F7 /0"
+    },
+    {
+      "id": "form-0182",
+      "group": "test",
+      "sample": "testl $7, -16(%rbp)",
+      "sdm": "2B TEST: 84/85, A8/A9, F6/F7 /0"
+    },
+    {
+      "id": "form-0183",
+      "group": "unary",
+      "sample": "negl %eax",
+      "sdm": "2B NEG: F6/F7 /3"
+    },
+    {
+      "id": "form-0184",
+      "group": "unary",
+      "sample": "negl -16(%rbp)",
+      "sdm": "2B NEG: F6/F7 /3"
+    },
+    {
+      "id": "form-0185",
+      "group": "unary",
+      "sample": "notl %eax",
+      "sdm": "2B NOT: F6/F7 /2"
+    },
+    {
+      "id": "form-0186",
+      "group": "unary",
+      "sample": "notl -16(%rbp)",
+      "sdm": "2B NOT: F6/F7 /2"
+    },
+    {
+      "id": "form-0187",
+      "group": "shift",
+      "sample": "shll $1, %eax",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0188",
+      "group": "shift",
+      "sample": "shll $1, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0189",
+      "group": "shift",
+      "sample": "shll $7, %eax",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0190",
+      "group": "shift",
+      "sample": "shll $7, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0191",
+      "group": "shift",
+      "sample": "shll %cl, %eax",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0192",
+      "group": "shift",
+      "sample": "shll %cl, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0193",
+      "group": "shift",
+      "sample": "sarl $1, %eax",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0194",
+      "group": "shift",
+      "sample": "sarl $1, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0195",
+      "group": "shift",
+      "sample": "sarl $7, %eax",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0196",
+      "group": "shift",
+      "sample": "sarl $7, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0197",
+      "group": "shift",
+      "sample": "sarl %cl, %eax",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0198",
+      "group": "shift",
+      "sample": "sarl %cl, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0199",
+      "group": "shift",
+      "sample": "shrl $1, %eax",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0200",
+      "group": "shift",
+      "sample": "shrl $1, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0201",
+      "group": "shift",
+      "sample": "shrl $7, %eax",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0202",
+      "group": "shift",
+      "sample": "shrl $7, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0203",
+      "group": "shift",
+      "sample": "shrl %cl, %eax",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0204",
+      "group": "shift",
+      "sample": "shrl %cl, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0205",
+      "group": "division",
+      "sample": "mull %ecx",
+      "sdm": "2B MUL: F6/F7 /4"
+    },
+    {
+      "id": "form-0206",
+      "group": "division",
+      "sample": "mull -16(%rbp)",
+      "sdm": "2B MUL: F6/F7 /4"
+    },
+    {
+      "id": "form-0207",
+      "group": "division",
+      "sample": "imull %ecx",
+      "sdm": "2A IMUL: F6/F7 /5 (one operand)"
+    },
+    {
+      "id": "form-0208",
+      "group": "division",
+      "sample": "imull -16(%rbp)",
+      "sdm": "2A IMUL: F6/F7 /5 (one operand)"
+    },
+    {
+      "id": "form-0209",
+      "group": "division",
+      "sample": "divl %ecx",
+      "sdm": "2A DIV: F6/F7 /6"
+    },
+    {
+      "id": "form-0210",
+      "group": "division",
+      "sample": "divl -16(%rbp)",
+      "sdm": "2A DIV: F6/F7 /6"
+    },
+    {
+      "id": "form-0211",
+      "group": "division",
+      "sample": "idivl %ecx",
+      "sdm": "2A IDIV: F6/F7 /7"
+    },
+    {
+      "id": "form-0212",
+      "group": "division",
+      "sample": "idivl -16(%rbp)",
+      "sdm": "2A IDIV: F6/F7 /7"
+    },
+    {
+      "id": "form-0213",
+      "group": "multiply",
+      "sample": "imull %ecx, %eax",
+      "sdm": "2A IMUL: 0F AF /r (two operand)"
+    },
+    {
+      "id": "form-0214",
+      "group": "multiply",
+      "sample": "imull $7, %ecx, %eax",
+      "sdm": "2A IMUL: 6B /r ib (three operand)"
+    },
+    {
+      "id": "form-0215",
+      "group": "multiply",
+      "sample": "imull $1000, %ecx, %eax",
+      "sdm": "2A IMUL: 69 /r iw/id (three operand)"
+    },
+    {
+      "id": "form-0216",
+      "group": "multiply",
+      "sample": "imull -16(%rbp), %eax",
+      "sdm": "2A IMUL: 0F AF /r (two operand)"
+    },
+    {
+      "id": "form-0217",
+      "group": "multiply",
+      "sample": "imull $7, -16(%rbp), %eax",
+      "sdm": "2A IMUL: 6B /r ib (three operand)"
+    },
+    {
+      "id": "form-0218",
+      "group": "multiply",
+      "sample": "imull $1000, -16(%rbp), %eax",
+      "sdm": "2A IMUL: 69 /r iw/id (three operand)"
+    },
+    {
+      "id": "form-0219",
+      "group": "move",
+      "sample": "movq %rax, %rcx",
+      "sdm": "2B MOV: 88/89, 8A/8B, B0/B8, C6/C7"
+    },
+    {
+      "id": "form-0220",
+      "group": "move",
+      "sample": "movq -16(%rbp), %rax",
+      "sdm": "2B MOV: 88/89, 8A/8B, B0/B8, C6/C7"
+    },
+    {
+      "id": "form-0221",
+      "group": "move",
+      "sample": "movq %rax, -16(%rbp)",
+      "sdm": "2B MOV: 88/89, 8A/8B, B0/B8, C6/C7"
+    },
+    {
+      "id": "form-0222",
+      "group": "move",
+      "sample": "movq $7, %rax",
+      "sdm": "2B MOV: 88/89, 8A/8B, B0/B8, C6/C7"
+    },
+    {
+      "id": "form-0223",
+      "group": "move",
+      "sample": "movq $7, -16(%rbp)",
+      "sdm": "2B MOV: 88/89, 8A/8B, B0/B8, C6/C7"
+    },
+    {
+      "id": "form-0224",
+      "group": "integer",
+      "sample": "addq %rax, %rcx",
+      "sdm": "2A ADD: 00-05, 80/81/83 /0"
+    },
+    {
+      "id": "form-0225",
+      "group": "integer",
+      "sample": "addq -16(%rbp), %rax",
+      "sdm": "2A ADD: 00-05, 80/81/83 /0"
+    },
+    {
+      "id": "form-0226",
+      "group": "integer",
+      "sample": "addq %rax, -16(%rbp)",
+      "sdm": "2A ADD: 00-05, 80/81/83 /0"
+    },
+    {
+      "id": "form-0227",
+      "group": "integer",
+      "sample": "addq $7, %rax",
+      "sdm": "2A ADD: 00-05, 80/81/83 /0"
+    },
+    {
+      "id": "form-0228",
+      "group": "integer",
+      "sample": "addq $7, -16(%rbp)",
+      "sdm": "2A ADD: 00-05, 80/81/83 /0"
+    },
+    {
+      "id": "form-0229",
+      "group": "integer",
+      "sample": "subq %rax, %rcx",
+      "sdm": "2B SUB: 28-2D, 80/81/83 /5"
+    },
+    {
+      "id": "form-0230",
+      "group": "integer",
+      "sample": "subq -16(%rbp), %rax",
+      "sdm": "2B SUB: 28-2D, 80/81/83 /5"
+    },
+    {
+      "id": "form-0231",
+      "group": "integer",
+      "sample": "subq %rax, -16(%rbp)",
+      "sdm": "2B SUB: 28-2D, 80/81/83 /5"
+    },
+    {
+      "id": "form-0232",
+      "group": "integer",
+      "sample": "subq $7, %rax",
+      "sdm": "2B SUB: 28-2D, 80/81/83 /5"
+    },
+    {
+      "id": "form-0233",
+      "group": "integer",
+      "sample": "subq $7, -16(%rbp)",
+      "sdm": "2B SUB: 28-2D, 80/81/83 /5"
+    },
+    {
+      "id": "form-0234",
+      "group": "integer",
+      "sample": "andq %rax, %rcx",
+      "sdm": "2A AND: 20-25, 80/81/83 /4"
+    },
+    {
+      "id": "form-0235",
+      "group": "integer",
+      "sample": "andq -16(%rbp), %rax",
+      "sdm": "2A AND: 20-25, 80/81/83 /4"
+    },
+    {
+      "id": "form-0236",
+      "group": "integer",
+      "sample": "andq %rax, -16(%rbp)",
+      "sdm": "2A AND: 20-25, 80/81/83 /4"
+    },
+    {
+      "id": "form-0237",
+      "group": "integer",
+      "sample": "andq $7, %rax",
+      "sdm": "2A AND: 20-25, 80/81/83 /4"
+    },
+    {
+      "id": "form-0238",
+      "group": "integer",
+      "sample": "andq $7, -16(%rbp)",
+      "sdm": "2A AND: 20-25, 80/81/83 /4"
+    },
+    {
+      "id": "form-0239",
+      "group": "integer",
+      "sample": "orq %rax, %rcx",
+      "sdm": "2B OR: 08-0D, 80/81/83 /1"
+    },
+    {
+      "id": "form-0240",
+      "group": "integer",
+      "sample": "orq -16(%rbp), %rax",
+      "sdm": "2B OR: 08-0D, 80/81/83 /1"
+    },
+    {
+      "id": "form-0241",
+      "group": "integer",
+      "sample": "orq %rax, -16(%rbp)",
+      "sdm": "2B OR: 08-0D, 80/81/83 /1"
+    },
+    {
+      "id": "form-0242",
+      "group": "integer",
+      "sample": "orq $7, %rax",
+      "sdm": "2B OR: 08-0D, 80/81/83 /1"
+    },
+    {
+      "id": "form-0243",
+      "group": "integer",
+      "sample": "orq $7, -16(%rbp)",
+      "sdm": "2B OR: 08-0D, 80/81/83 /1"
+    },
+    {
+      "id": "form-0244",
+      "group": "integer",
+      "sample": "xorq %rax, %rcx",
+      "sdm": "2D XOR: 30-35, 80/81/83 /6"
+    },
+    {
+      "id": "form-0245",
+      "group": "integer",
+      "sample": "xorq -16(%rbp), %rax",
+      "sdm": "2D XOR: 30-35, 80/81/83 /6"
+    },
+    {
+      "id": "form-0246",
+      "group": "integer",
+      "sample": "xorq %rax, -16(%rbp)",
+      "sdm": "2D XOR: 30-35, 80/81/83 /6"
+    },
+    {
+      "id": "form-0247",
+      "group": "integer",
+      "sample": "xorq $7, %rax",
+      "sdm": "2D XOR: 30-35, 80/81/83 /6"
+    },
+    {
+      "id": "form-0248",
+      "group": "integer",
+      "sample": "xorq $7, -16(%rbp)",
+      "sdm": "2D XOR: 30-35, 80/81/83 /6"
+    },
+    {
+      "id": "form-0249",
+      "group": "integer",
+      "sample": "cmpq %rax, %rcx",
+      "sdm": "2A CMP: 38-3D, 80/81/83 /7"
+    },
+    {
+      "id": "form-0250",
+      "group": "integer",
+      "sample": "cmpq -16(%rbp), %rax",
+      "sdm": "2A CMP: 38-3D, 80/81/83 /7"
+    },
+    {
+      "id": "form-0251",
+      "group": "integer",
+      "sample": "cmpq %rax, -16(%rbp)",
+      "sdm": "2A CMP: 38-3D, 80/81/83 /7"
+    },
+    {
+      "id": "form-0252",
+      "group": "integer",
+      "sample": "cmpq $7, %rax",
+      "sdm": "2A CMP: 38-3D, 80/81/83 /7"
+    },
+    {
+      "id": "form-0253",
+      "group": "integer",
+      "sample": "cmpq $7, -16(%rbp)",
+      "sdm": "2A CMP: 38-3D, 80/81/83 /7"
+    },
+    {
+      "id": "form-0254",
+      "group": "test",
+      "sample": "testq %rax, %rcx",
+      "sdm": "2B TEST: 84/85, A8/A9, F6/F7 /0"
+    },
+    {
+      "id": "form-0255",
+      "group": "test",
+      "sample": "testq %rax, -16(%rbp)",
+      "sdm": "2B TEST: 84/85, A8/A9, F6/F7 /0"
+    },
+    {
+      "id": "form-0256",
+      "group": "test",
+      "sample": "testq $7, %rax",
+      "sdm": "2B TEST: 84/85, A8/A9, F6/F7 /0"
+    },
+    {
+      "id": "form-0257",
+      "group": "test",
+      "sample": "testq $7, -16(%rbp)",
+      "sdm": "2B TEST: 84/85, A8/A9, F6/F7 /0"
+    },
+    {
+      "id": "form-0258",
+      "group": "unary",
+      "sample": "negq %rax",
+      "sdm": "2B NEG: F6/F7 /3"
+    },
+    {
+      "id": "form-0259",
+      "group": "unary",
+      "sample": "negq -16(%rbp)",
+      "sdm": "2B NEG: F6/F7 /3"
+    },
+    {
+      "id": "form-0260",
+      "group": "unary",
+      "sample": "notq %rax",
+      "sdm": "2B NOT: F6/F7 /2"
+    },
+    {
+      "id": "form-0261",
+      "group": "unary",
+      "sample": "notq -16(%rbp)",
+      "sdm": "2B NOT: F6/F7 /2"
+    },
+    {
+      "id": "form-0262",
+      "group": "shift",
+      "sample": "shlq $1, %rax",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0263",
+      "group": "shift",
+      "sample": "shlq $1, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0264",
+      "group": "shift",
+      "sample": "shlq $7, %rax",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0265",
+      "group": "shift",
+      "sample": "shlq $7, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0266",
+      "group": "shift",
+      "sample": "shlq %cl, %rax",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0267",
+      "group": "shift",
+      "sample": "shlq %cl, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0268",
+      "group": "shift",
+      "sample": "sarq $1, %rax",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0269",
+      "group": "shift",
+      "sample": "sarq $1, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0270",
+      "group": "shift",
+      "sample": "sarq $7, %rax",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0271",
+      "group": "shift",
+      "sample": "sarq $7, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0272",
+      "group": "shift",
+      "sample": "sarq %cl, %rax",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0273",
+      "group": "shift",
+      "sample": "sarq %cl, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0274",
+      "group": "shift",
+      "sample": "shrq $1, %rax",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0275",
+      "group": "shift",
+      "sample": "shrq $1, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0276",
+      "group": "shift",
+      "sample": "shrq $7, %rax",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0277",
+      "group": "shift",
+      "sample": "shrq $7, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0278",
+      "group": "shift",
+      "sample": "shrq %cl, %rax",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0279",
+      "group": "shift",
+      "sample": "shrq %cl, -16(%rbp)",
+      "sdm": "2B SAL/SAR/SHL/SHR: D0/D1, D2/D3, C0/C1 /4,/5,/7"
+    },
+    {
+      "id": "form-0280",
+      "group": "division",
+      "sample": "mulq %rcx",
+      "sdm": "2B MUL: F6/F7 /4"
+    },
+    {
+      "id": "form-0281",
+      "group": "division",
+      "sample": "mulq -16(%rbp)",
+      "sdm": "2B MUL: F6/F7 /4"
+    },
+    {
+      "id": "form-0282",
+      "group": "division",
+      "sample": "imulq %rcx",
+      "sdm": "2A IMUL: F6/F7 /5 (one operand)"
+    },
+    {
+      "id": "form-0283",
+      "group": "division",
+      "sample": "imulq -16(%rbp)",
+      "sdm": "2A IMUL: F6/F7 /5 (one operand)"
+    },
+    {
+      "id": "form-0284",
+      "group": "division",
+      "sample": "divq %rcx",
+      "sdm": "2A DIV: F6/F7 /6"
+    },
+    {
+      "id": "form-0285",
+      "group": "division",
+      "sample": "divq -16(%rbp)",
+      "sdm": "2A DIV: F6/F7 /6"
+    },
+    {
+      "id": "form-0286",
+      "group": "division",
+      "sample": "idivq %rcx",
+      "sdm": "2A IDIV: F6/F7 /7"
+    },
+    {
+      "id": "form-0287",
+      "group": "division",
+      "sample": "idivq -16(%rbp)",
+      "sdm": "2A IDIV: F6/F7 /7"
+    },
+    {
+      "id": "form-0288",
+      "group": "multiply",
+      "sample": "imulq %rcx, %rax",
+      "sdm": "2A IMUL: 0F AF /r (two operand)"
+    },
+    {
+      "id": "form-0289",
+      "group": "multiply",
+      "sample": "imulq $7, %rcx, %rax",
+      "sdm": "2A IMUL: 6B /r ib (three operand)"
+    },
+    {
+      "id": "form-0290",
+      "group": "multiply",
+      "sample": "imulq $1000, %rcx, %rax",
+      "sdm": "2A IMUL: 69 /r iw/id (three operand)"
+    },
+    {
+      "id": "form-0291",
+      "group": "multiply",
+      "sample": "imulq -16(%rbp), %rax",
+      "sdm": "2A IMUL: 0F AF /r (two operand)"
+    },
+    {
+      "id": "form-0292",
+      "group": "multiply",
+      "sample": "imulq $7, -16(%rbp), %rax",
+      "sdm": "2A IMUL: 6B /r ib (three operand)"
+    },
+    {
+      "id": "form-0293",
+      "group": "multiply",
+      "sample": "imulq $1000, -16(%rbp), %rax",
+      "sdm": "2A IMUL: 69 /r iw/id (three operand)"
+    },
+    {
+      "id": "form-0294",
+      "group": "branch",
+      "sample": "ja .Ltarget",
+      "sdm": "2A Jcc: 70+cc rel8 / 0F 80+cc rel32"
+    },
+    {
+      "id": "form-0295",
+      "group": "set-condition",
+      "sample": "seta %al",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0296",
+      "group": "set-condition",
+      "sample": "seta %r8b",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0297",
+      "group": "set-condition",
+      "sample": "seta -16(%rbp)",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0298",
+      "group": "conditional-move",
+      "sample": "cmovaw %cx, %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0299",
+      "group": "conditional-move",
+      "sample": "cmovaw -16(%rbp), %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0300",
+      "group": "conditional-move",
+      "sample": "cmoval %ecx, %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0301",
+      "group": "conditional-move",
+      "sample": "cmoval -16(%rbp), %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0302",
+      "group": "conditional-move",
+      "sample": "cmovaq %rcx, %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0303",
+      "group": "conditional-move",
+      "sample": "cmovaq -16(%rbp), %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0304",
+      "group": "branch",
+      "sample": "jae .Ltarget",
+      "sdm": "2A Jcc: 70+cc rel8 / 0F 80+cc rel32"
+    },
+    {
+      "id": "form-0305",
+      "group": "set-condition",
+      "sample": "setae %al",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0306",
+      "group": "set-condition",
+      "sample": "setae %r8b",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0307",
+      "group": "set-condition",
+      "sample": "setae -16(%rbp)",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0308",
+      "group": "conditional-move",
+      "sample": "cmovaew %cx, %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0309",
+      "group": "conditional-move",
+      "sample": "cmovaew -16(%rbp), %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0310",
+      "group": "conditional-move",
+      "sample": "cmovael %ecx, %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0311",
+      "group": "conditional-move",
+      "sample": "cmovael -16(%rbp), %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0312",
+      "group": "conditional-move",
+      "sample": "cmovaeq %rcx, %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0313",
+      "group": "conditional-move",
+      "sample": "cmovaeq -16(%rbp), %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0314",
+      "group": "branch",
+      "sample": "jb .Ltarget",
+      "sdm": "2A Jcc: 70+cc rel8 / 0F 80+cc rel32"
+    },
+    {
+      "id": "form-0315",
+      "group": "set-condition",
+      "sample": "setb %al",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0316",
+      "group": "set-condition",
+      "sample": "setb %r8b",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0317",
+      "group": "set-condition",
+      "sample": "setb -16(%rbp)",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0318",
+      "group": "conditional-move",
+      "sample": "cmovbw %cx, %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0319",
+      "group": "conditional-move",
+      "sample": "cmovbw -16(%rbp), %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0320",
+      "group": "conditional-move",
+      "sample": "cmovbl %ecx, %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0321",
+      "group": "conditional-move",
+      "sample": "cmovbl -16(%rbp), %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0322",
+      "group": "conditional-move",
+      "sample": "cmovbq %rcx, %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0323",
+      "group": "conditional-move",
+      "sample": "cmovbq -16(%rbp), %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0324",
+      "group": "branch",
+      "sample": "jbe .Ltarget",
+      "sdm": "2A Jcc: 70+cc rel8 / 0F 80+cc rel32"
+    },
+    {
+      "id": "form-0325",
+      "group": "set-condition",
+      "sample": "setbe %al",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0326",
+      "group": "set-condition",
+      "sample": "setbe %r8b",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0327",
+      "group": "set-condition",
+      "sample": "setbe -16(%rbp)",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0328",
+      "group": "conditional-move",
+      "sample": "cmovbew %cx, %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0329",
+      "group": "conditional-move",
+      "sample": "cmovbew -16(%rbp), %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0330",
+      "group": "conditional-move",
+      "sample": "cmovbel %ecx, %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0331",
+      "group": "conditional-move",
+      "sample": "cmovbel -16(%rbp), %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0332",
+      "group": "conditional-move",
+      "sample": "cmovbeq %rcx, %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0333",
+      "group": "conditional-move",
+      "sample": "cmovbeq -16(%rbp), %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0334",
+      "group": "branch",
+      "sample": "jc .Ltarget",
+      "sdm": "2A Jcc: 70+cc rel8 / 0F 80+cc rel32"
+    },
+    {
+      "id": "form-0335",
+      "group": "set-condition",
+      "sample": "setc %al",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0336",
+      "group": "set-condition",
+      "sample": "setc %r8b",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0337",
+      "group": "set-condition",
+      "sample": "setc -16(%rbp)",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0338",
+      "group": "conditional-move",
+      "sample": "cmovcw %cx, %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0339",
+      "group": "conditional-move",
+      "sample": "cmovcw -16(%rbp), %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0340",
+      "group": "conditional-move",
+      "sample": "cmovcl %ecx, %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0341",
+      "group": "conditional-move",
+      "sample": "cmovcl -16(%rbp), %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0342",
+      "group": "conditional-move",
+      "sample": "cmovcq %rcx, %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0343",
+      "group": "conditional-move",
+      "sample": "cmovcq -16(%rbp), %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0344",
+      "group": "branch",
+      "sample": "je .Ltarget",
+      "sdm": "2A Jcc: 70+cc rel8 / 0F 80+cc rel32"
+    },
+    {
+      "id": "form-0345",
+      "group": "set-condition",
+      "sample": "sete %al",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0346",
+      "group": "set-condition",
+      "sample": "sete %r8b",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0347",
+      "group": "set-condition",
+      "sample": "sete -16(%rbp)",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0348",
+      "group": "conditional-move",
+      "sample": "cmovew %cx, %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0349",
+      "group": "conditional-move",
+      "sample": "cmovew -16(%rbp), %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0350",
+      "group": "conditional-move",
+      "sample": "cmovel %ecx, %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0351",
+      "group": "conditional-move",
+      "sample": "cmovel -16(%rbp), %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0352",
+      "group": "conditional-move",
+      "sample": "cmoveq %rcx, %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0353",
+      "group": "conditional-move",
+      "sample": "cmoveq -16(%rbp), %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0354",
+      "group": "branch",
+      "sample": "jg .Ltarget",
+      "sdm": "2A Jcc: 70+cc rel8 / 0F 80+cc rel32"
+    },
+    {
+      "id": "form-0355",
+      "group": "set-condition",
+      "sample": "setg %al",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0356",
+      "group": "set-condition",
+      "sample": "setg %r8b",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0357",
+      "group": "set-condition",
+      "sample": "setg -16(%rbp)",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0358",
+      "group": "conditional-move",
+      "sample": "cmovgw %cx, %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0359",
+      "group": "conditional-move",
+      "sample": "cmovgw -16(%rbp), %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0360",
+      "group": "conditional-move",
+      "sample": "cmovgl %ecx, %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0361",
+      "group": "conditional-move",
+      "sample": "cmovgl -16(%rbp), %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0362",
+      "group": "conditional-move",
+      "sample": "cmovgq %rcx, %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0363",
+      "group": "conditional-move",
+      "sample": "cmovgq -16(%rbp), %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0364",
+      "group": "branch",
+      "sample": "jge .Ltarget",
+      "sdm": "2A Jcc: 70+cc rel8 / 0F 80+cc rel32"
+    },
+    {
+      "id": "form-0365",
+      "group": "set-condition",
+      "sample": "setge %al",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0366",
+      "group": "set-condition",
+      "sample": "setge %r8b",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0367",
+      "group": "set-condition",
+      "sample": "setge -16(%rbp)",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0368",
+      "group": "conditional-move",
+      "sample": "cmovgew %cx, %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0369",
+      "group": "conditional-move",
+      "sample": "cmovgew -16(%rbp), %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0370",
+      "group": "conditional-move",
+      "sample": "cmovgel %ecx, %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0371",
+      "group": "conditional-move",
+      "sample": "cmovgel -16(%rbp), %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0372",
+      "group": "conditional-move",
+      "sample": "cmovgeq %rcx, %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0373",
+      "group": "conditional-move",
+      "sample": "cmovgeq -16(%rbp), %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0374",
+      "group": "branch",
+      "sample": "jl .Ltarget",
+      "sdm": "2A Jcc: 70+cc rel8 / 0F 80+cc rel32"
+    },
+    {
+      "id": "form-0375",
+      "group": "set-condition",
+      "sample": "setl %al",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0376",
+      "group": "set-condition",
+      "sample": "setl %r8b",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0377",
+      "group": "set-condition",
+      "sample": "setl -16(%rbp)",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0378",
+      "group": "conditional-move",
+      "sample": "cmovlw %cx, %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0379",
+      "group": "conditional-move",
+      "sample": "cmovlw -16(%rbp), %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0380",
+      "group": "conditional-move",
+      "sample": "cmovll %ecx, %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0381",
+      "group": "conditional-move",
+      "sample": "cmovll -16(%rbp), %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0382",
+      "group": "conditional-move",
+      "sample": "cmovlq %rcx, %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0383",
+      "group": "conditional-move",
+      "sample": "cmovlq -16(%rbp), %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0384",
+      "group": "branch",
+      "sample": "jle .Ltarget",
+      "sdm": "2A Jcc: 70+cc rel8 / 0F 80+cc rel32"
+    },
+    {
+      "id": "form-0385",
+      "group": "set-condition",
+      "sample": "setle %al",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0386",
+      "group": "set-condition",
+      "sample": "setle %r8b",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0387",
+      "group": "set-condition",
+      "sample": "setle -16(%rbp)",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0388",
+      "group": "conditional-move",
+      "sample": "cmovlew %cx, %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0389",
+      "group": "conditional-move",
+      "sample": "cmovlew -16(%rbp), %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0390",
+      "group": "conditional-move",
+      "sample": "cmovlel %ecx, %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0391",
+      "group": "conditional-move",
+      "sample": "cmovlel -16(%rbp), %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0392",
+      "group": "conditional-move",
+      "sample": "cmovleq %rcx, %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0393",
+      "group": "conditional-move",
+      "sample": "cmovleq -16(%rbp), %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0394",
+      "group": "branch",
+      "sample": "jna .Ltarget",
+      "sdm": "2A Jcc: 70+cc rel8 / 0F 80+cc rel32"
+    },
+    {
+      "id": "form-0395",
+      "group": "set-condition",
+      "sample": "setna %al",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0396",
+      "group": "set-condition",
+      "sample": "setna %r8b",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0397",
+      "group": "set-condition",
+      "sample": "setna -16(%rbp)",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0398",
+      "group": "conditional-move",
+      "sample": "cmovnaw %cx, %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0399",
+      "group": "conditional-move",
+      "sample": "cmovnaw -16(%rbp), %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0400",
+      "group": "conditional-move",
+      "sample": "cmovnal %ecx, %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0401",
+      "group": "conditional-move",
+      "sample": "cmovnal -16(%rbp), %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0402",
+      "group": "conditional-move",
+      "sample": "cmovnaq %rcx, %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0403",
+      "group": "conditional-move",
+      "sample": "cmovnaq -16(%rbp), %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0404",
+      "group": "branch",
+      "sample": "jnae .Ltarget",
+      "sdm": "2A Jcc: 70+cc rel8 / 0F 80+cc rel32"
+    },
+    {
+      "id": "form-0405",
+      "group": "set-condition",
+      "sample": "setnae %al",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0406",
+      "group": "set-condition",
+      "sample": "setnae %r8b",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0407",
+      "group": "set-condition",
+      "sample": "setnae -16(%rbp)",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0408",
+      "group": "conditional-move",
+      "sample": "cmovnaew %cx, %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0409",
+      "group": "conditional-move",
+      "sample": "cmovnaew -16(%rbp), %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0410",
+      "group": "conditional-move",
+      "sample": "cmovnael %ecx, %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0411",
+      "group": "conditional-move",
+      "sample": "cmovnael -16(%rbp), %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0412",
+      "group": "conditional-move",
+      "sample": "cmovnaeq %rcx, %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0413",
+      "group": "conditional-move",
+      "sample": "cmovnaeq -16(%rbp), %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0414",
+      "group": "branch",
+      "sample": "jnb .Ltarget",
+      "sdm": "2A Jcc: 70+cc rel8 / 0F 80+cc rel32"
+    },
+    {
+      "id": "form-0415",
+      "group": "set-condition",
+      "sample": "setnb %al",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0416",
+      "group": "set-condition",
+      "sample": "setnb %r8b",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0417",
+      "group": "set-condition",
+      "sample": "setnb -16(%rbp)",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0418",
+      "group": "conditional-move",
+      "sample": "cmovnbw %cx, %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0419",
+      "group": "conditional-move",
+      "sample": "cmovnbw -16(%rbp), %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0420",
+      "group": "conditional-move",
+      "sample": "cmovnbl %ecx, %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0421",
+      "group": "conditional-move",
+      "sample": "cmovnbl -16(%rbp), %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0422",
+      "group": "conditional-move",
+      "sample": "cmovnbq %rcx, %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0423",
+      "group": "conditional-move",
+      "sample": "cmovnbq -16(%rbp), %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0424",
+      "group": "branch",
+      "sample": "jnbe .Ltarget",
+      "sdm": "2A Jcc: 70+cc rel8 / 0F 80+cc rel32"
+    },
+    {
+      "id": "form-0425",
+      "group": "set-condition",
+      "sample": "setnbe %al",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0426",
+      "group": "set-condition",
+      "sample": "setnbe %r8b",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0427",
+      "group": "set-condition",
+      "sample": "setnbe -16(%rbp)",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0428",
+      "group": "conditional-move",
+      "sample": "cmovnbew %cx, %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0429",
+      "group": "conditional-move",
+      "sample": "cmovnbew -16(%rbp), %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0430",
+      "group": "conditional-move",
+      "sample": "cmovnbel %ecx, %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0431",
+      "group": "conditional-move",
+      "sample": "cmovnbel -16(%rbp), %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0432",
+      "group": "conditional-move",
+      "sample": "cmovnbeq %rcx, %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0433",
+      "group": "conditional-move",
+      "sample": "cmovnbeq -16(%rbp), %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0434",
+      "group": "branch",
+      "sample": "jnc .Ltarget",
+      "sdm": "2A Jcc: 70+cc rel8 / 0F 80+cc rel32"
+    },
+    {
+      "id": "form-0435",
+      "group": "set-condition",
+      "sample": "setnc %al",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0436",
+      "group": "set-condition",
+      "sample": "setnc %r8b",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0437",
+      "group": "set-condition",
+      "sample": "setnc -16(%rbp)",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0438",
+      "group": "conditional-move",
+      "sample": "cmovncw %cx, %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0439",
+      "group": "conditional-move",
+      "sample": "cmovncw -16(%rbp), %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0440",
+      "group": "conditional-move",
+      "sample": "cmovncl %ecx, %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0441",
+      "group": "conditional-move",
+      "sample": "cmovncl -16(%rbp), %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0442",
+      "group": "conditional-move",
+      "sample": "cmovncq %rcx, %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0443",
+      "group": "conditional-move",
+      "sample": "cmovncq -16(%rbp), %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0444",
+      "group": "branch",
+      "sample": "jne .Ltarget",
+      "sdm": "2A Jcc: 70+cc rel8 / 0F 80+cc rel32"
+    },
+    {
+      "id": "form-0445",
+      "group": "set-condition",
+      "sample": "setne %al",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0446",
+      "group": "set-condition",
+      "sample": "setne %r8b",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0447",
+      "group": "set-condition",
+      "sample": "setne -16(%rbp)",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0448",
+      "group": "conditional-move",
+      "sample": "cmovnew %cx, %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0449",
+      "group": "conditional-move",
+      "sample": "cmovnew -16(%rbp), %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0450",
+      "group": "conditional-move",
+      "sample": "cmovnel %ecx, %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0451",
+      "group": "conditional-move",
+      "sample": "cmovnel -16(%rbp), %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0452",
+      "group": "conditional-move",
+      "sample": "cmovneq %rcx, %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0453",
+      "group": "conditional-move",
+      "sample": "cmovneq -16(%rbp), %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0454",
+      "group": "branch",
+      "sample": "jng .Ltarget",
+      "sdm": "2A Jcc: 70+cc rel8 / 0F 80+cc rel32"
+    },
+    {
+      "id": "form-0455",
+      "group": "set-condition",
+      "sample": "setng %al",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0456",
+      "group": "set-condition",
+      "sample": "setng %r8b",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0457",
+      "group": "set-condition",
+      "sample": "setng -16(%rbp)",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0458",
+      "group": "conditional-move",
+      "sample": "cmovngw %cx, %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0459",
+      "group": "conditional-move",
+      "sample": "cmovngw -16(%rbp), %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0460",
+      "group": "conditional-move",
+      "sample": "cmovngl %ecx, %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0461",
+      "group": "conditional-move",
+      "sample": "cmovngl -16(%rbp), %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0462",
+      "group": "conditional-move",
+      "sample": "cmovngq %rcx, %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0463",
+      "group": "conditional-move",
+      "sample": "cmovngq -16(%rbp), %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0464",
+      "group": "branch",
+      "sample": "jnge .Ltarget",
+      "sdm": "2A Jcc: 70+cc rel8 / 0F 80+cc rel32"
+    },
+    {
+      "id": "form-0465",
+      "group": "set-condition",
+      "sample": "setnge %al",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0466",
+      "group": "set-condition",
+      "sample": "setnge %r8b",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0467",
+      "group": "set-condition",
+      "sample": "setnge -16(%rbp)",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0468",
+      "group": "conditional-move",
+      "sample": "cmovngew %cx, %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0469",
+      "group": "conditional-move",
+      "sample": "cmovngew -16(%rbp), %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0470",
+      "group": "conditional-move",
+      "sample": "cmovngel %ecx, %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0471",
+      "group": "conditional-move",
+      "sample": "cmovngel -16(%rbp), %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0472",
+      "group": "conditional-move",
+      "sample": "cmovngeq %rcx, %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0473",
+      "group": "conditional-move",
+      "sample": "cmovngeq -16(%rbp), %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0474",
+      "group": "branch",
+      "sample": "jnl .Ltarget",
+      "sdm": "2A Jcc: 70+cc rel8 / 0F 80+cc rel32"
+    },
+    {
+      "id": "form-0475",
+      "group": "set-condition",
+      "sample": "setnl %al",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0476",
+      "group": "set-condition",
+      "sample": "setnl %r8b",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0477",
+      "group": "set-condition",
+      "sample": "setnl -16(%rbp)",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0478",
+      "group": "conditional-move",
+      "sample": "cmovnlw %cx, %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0479",
+      "group": "conditional-move",
+      "sample": "cmovnlw -16(%rbp), %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0480",
+      "group": "conditional-move",
+      "sample": "cmovnll %ecx, %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0481",
+      "group": "conditional-move",
+      "sample": "cmovnll -16(%rbp), %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0482",
+      "group": "conditional-move",
+      "sample": "cmovnlq %rcx, %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0483",
+      "group": "conditional-move",
+      "sample": "cmovnlq -16(%rbp), %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0484",
+      "group": "branch",
+      "sample": "jnle .Ltarget",
+      "sdm": "2A Jcc: 70+cc rel8 / 0F 80+cc rel32"
+    },
+    {
+      "id": "form-0485",
+      "group": "set-condition",
+      "sample": "setnle %al",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0486",
+      "group": "set-condition",
+      "sample": "setnle %r8b",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0487",
+      "group": "set-condition",
+      "sample": "setnle -16(%rbp)",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0488",
+      "group": "conditional-move",
+      "sample": "cmovnlew %cx, %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0489",
+      "group": "conditional-move",
+      "sample": "cmovnlew -16(%rbp), %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0490",
+      "group": "conditional-move",
+      "sample": "cmovnlel %ecx, %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0491",
+      "group": "conditional-move",
+      "sample": "cmovnlel -16(%rbp), %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0492",
+      "group": "conditional-move",
+      "sample": "cmovnleq %rcx, %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0493",
+      "group": "conditional-move",
+      "sample": "cmovnleq -16(%rbp), %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0494",
+      "group": "branch",
+      "sample": "jno .Ltarget",
+      "sdm": "2A Jcc: 70+cc rel8 / 0F 80+cc rel32"
+    },
+    {
+      "id": "form-0495",
+      "group": "set-condition",
+      "sample": "setno %al",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0496",
+      "group": "set-condition",
+      "sample": "setno %r8b",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0497",
+      "group": "set-condition",
+      "sample": "setno -16(%rbp)",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0498",
+      "group": "conditional-move",
+      "sample": "cmovnow %cx, %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0499",
+      "group": "conditional-move",
+      "sample": "cmovnow -16(%rbp), %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0500",
+      "group": "conditional-move",
+      "sample": "cmovnol %ecx, %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0501",
+      "group": "conditional-move",
+      "sample": "cmovnol -16(%rbp), %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0502",
+      "group": "conditional-move",
+      "sample": "cmovnoq %rcx, %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0503",
+      "group": "conditional-move",
+      "sample": "cmovnoq -16(%rbp), %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0504",
+      "group": "branch",
+      "sample": "jnp .Ltarget",
+      "sdm": "2A Jcc: 70+cc rel8 / 0F 80+cc rel32"
+    },
+    {
+      "id": "form-0505",
+      "group": "set-condition",
+      "sample": "setnp %al",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0506",
+      "group": "set-condition",
+      "sample": "setnp %r8b",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0507",
+      "group": "set-condition",
+      "sample": "setnp -16(%rbp)",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0508",
+      "group": "conditional-move",
+      "sample": "cmovnpw %cx, %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0509",
+      "group": "conditional-move",
+      "sample": "cmovnpw -16(%rbp), %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0510",
+      "group": "conditional-move",
+      "sample": "cmovnpl %ecx, %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0511",
+      "group": "conditional-move",
+      "sample": "cmovnpl -16(%rbp), %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0512",
+      "group": "conditional-move",
+      "sample": "cmovnpq %rcx, %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0513",
+      "group": "conditional-move",
+      "sample": "cmovnpq -16(%rbp), %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0514",
+      "group": "branch",
+      "sample": "jns .Ltarget",
+      "sdm": "2A Jcc: 70+cc rel8 / 0F 80+cc rel32"
+    },
+    {
+      "id": "form-0515",
+      "group": "set-condition",
+      "sample": "setns %al",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0516",
+      "group": "set-condition",
+      "sample": "setns %r8b",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0517",
+      "group": "set-condition",
+      "sample": "setns -16(%rbp)",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0518",
+      "group": "conditional-move",
+      "sample": "cmovnsw %cx, %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0519",
+      "group": "conditional-move",
+      "sample": "cmovnsw -16(%rbp), %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0520",
+      "group": "conditional-move",
+      "sample": "cmovnsl %ecx, %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0521",
+      "group": "conditional-move",
+      "sample": "cmovnsl -16(%rbp), %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0522",
+      "group": "conditional-move",
+      "sample": "cmovnsq %rcx, %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0523",
+      "group": "conditional-move",
+      "sample": "cmovnsq -16(%rbp), %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0524",
+      "group": "branch",
+      "sample": "jnz .Ltarget",
+      "sdm": "2A Jcc: 70+cc rel8 / 0F 80+cc rel32"
+    },
+    {
+      "id": "form-0525",
+      "group": "set-condition",
+      "sample": "setnz %al",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0526",
+      "group": "set-condition",
+      "sample": "setnz %r8b",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0527",
+      "group": "set-condition",
+      "sample": "setnz -16(%rbp)",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0528",
+      "group": "conditional-move",
+      "sample": "cmovnzw %cx, %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0529",
+      "group": "conditional-move",
+      "sample": "cmovnzw -16(%rbp), %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0530",
+      "group": "conditional-move",
+      "sample": "cmovnzl %ecx, %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0531",
+      "group": "conditional-move",
+      "sample": "cmovnzl -16(%rbp), %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0532",
+      "group": "conditional-move",
+      "sample": "cmovnzq %rcx, %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0533",
+      "group": "conditional-move",
+      "sample": "cmovnzq -16(%rbp), %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0534",
+      "group": "branch",
+      "sample": "jo .Ltarget",
+      "sdm": "2A Jcc: 70+cc rel8 / 0F 80+cc rel32"
+    },
+    {
+      "id": "form-0535",
+      "group": "set-condition",
+      "sample": "seto %al",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0536",
+      "group": "set-condition",
+      "sample": "seto %r8b",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0537",
+      "group": "set-condition",
+      "sample": "seto -16(%rbp)",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0538",
+      "group": "conditional-move",
+      "sample": "cmovow %cx, %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0539",
+      "group": "conditional-move",
+      "sample": "cmovow -16(%rbp), %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0540",
+      "group": "conditional-move",
+      "sample": "cmovol %ecx, %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0541",
+      "group": "conditional-move",
+      "sample": "cmovol -16(%rbp), %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0542",
+      "group": "conditional-move",
+      "sample": "cmovoq %rcx, %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0543",
+      "group": "conditional-move",
+      "sample": "cmovoq -16(%rbp), %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0544",
+      "group": "branch",
+      "sample": "jp .Ltarget",
+      "sdm": "2A Jcc: 70+cc rel8 / 0F 80+cc rel32"
+    },
+    {
+      "id": "form-0545",
+      "group": "set-condition",
+      "sample": "setp %al",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0546",
+      "group": "set-condition",
+      "sample": "setp %r8b",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0547",
+      "group": "set-condition",
+      "sample": "setp -16(%rbp)",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0548",
+      "group": "conditional-move",
+      "sample": "cmovpw %cx, %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0549",
+      "group": "conditional-move",
+      "sample": "cmovpw -16(%rbp), %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0550",
+      "group": "conditional-move",
+      "sample": "cmovpl %ecx, %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0551",
+      "group": "conditional-move",
+      "sample": "cmovpl -16(%rbp), %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0552",
+      "group": "conditional-move",
+      "sample": "cmovpq %rcx, %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0553",
+      "group": "conditional-move",
+      "sample": "cmovpq -16(%rbp), %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0554",
+      "group": "branch",
+      "sample": "jpe .Ltarget",
+      "sdm": "2A Jcc: 70+cc rel8 / 0F 80+cc rel32"
+    },
+    {
+      "id": "form-0555",
+      "group": "set-condition",
+      "sample": "setpe %al",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0556",
+      "group": "set-condition",
+      "sample": "setpe %r8b",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0557",
+      "group": "set-condition",
+      "sample": "setpe -16(%rbp)",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0558",
+      "group": "conditional-move",
+      "sample": "cmovpew %cx, %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0559",
+      "group": "conditional-move",
+      "sample": "cmovpew -16(%rbp), %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0560",
+      "group": "conditional-move",
+      "sample": "cmovpel %ecx, %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0561",
+      "group": "conditional-move",
+      "sample": "cmovpel -16(%rbp), %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0562",
+      "group": "conditional-move",
+      "sample": "cmovpeq %rcx, %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0563",
+      "group": "conditional-move",
+      "sample": "cmovpeq -16(%rbp), %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0564",
+      "group": "branch",
+      "sample": "jpo .Ltarget",
+      "sdm": "2A Jcc: 70+cc rel8 / 0F 80+cc rel32"
+    },
+    {
+      "id": "form-0565",
+      "group": "set-condition",
+      "sample": "setpo %al",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0566",
+      "group": "set-condition",
+      "sample": "setpo %r8b",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0567",
+      "group": "set-condition",
+      "sample": "setpo -16(%rbp)",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0568",
+      "group": "conditional-move",
+      "sample": "cmovpow %cx, %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0569",
+      "group": "conditional-move",
+      "sample": "cmovpow -16(%rbp), %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0570",
+      "group": "conditional-move",
+      "sample": "cmovpol %ecx, %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0571",
+      "group": "conditional-move",
+      "sample": "cmovpol -16(%rbp), %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0572",
+      "group": "conditional-move",
+      "sample": "cmovpoq %rcx, %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0573",
+      "group": "conditional-move",
+      "sample": "cmovpoq -16(%rbp), %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0574",
+      "group": "branch",
+      "sample": "js .Ltarget",
+      "sdm": "2A Jcc: 70+cc rel8 / 0F 80+cc rel32"
+    },
+    {
+      "id": "form-0575",
+      "group": "set-condition",
+      "sample": "sets %al",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0576",
+      "group": "set-condition",
+      "sample": "sets %r8b",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0577",
+      "group": "set-condition",
+      "sample": "sets -16(%rbp)",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0578",
+      "group": "conditional-move",
+      "sample": "cmovsw %cx, %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0579",
+      "group": "conditional-move",
+      "sample": "cmovsw -16(%rbp), %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0580",
+      "group": "conditional-move",
+      "sample": "cmovsl %ecx, %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0581",
+      "group": "conditional-move",
+      "sample": "cmovsl -16(%rbp), %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0582",
+      "group": "conditional-move",
+      "sample": "cmovsq %rcx, %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0583",
+      "group": "conditional-move",
+      "sample": "cmovsq -16(%rbp), %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0584",
+      "group": "branch",
+      "sample": "jz .Ltarget",
+      "sdm": "2A Jcc: 70+cc rel8 / 0F 80+cc rel32"
+    },
+    {
+      "id": "form-0585",
+      "group": "set-condition",
+      "sample": "setz %al",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0586",
+      "group": "set-condition",
+      "sample": "setz %r8b",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0587",
+      "group": "set-condition",
+      "sample": "setz -16(%rbp)",
+      "sdm": "2B SETcc: 0F 90+cc /0"
+    },
+    {
+      "id": "form-0588",
+      "group": "conditional-move",
+      "sample": "cmovzw %cx, %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0589",
+      "group": "conditional-move",
+      "sample": "cmovzw -16(%rbp), %ax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0590",
+      "group": "conditional-move",
+      "sample": "cmovzl %ecx, %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0591",
+      "group": "conditional-move",
+      "sample": "cmovzl -16(%rbp), %eax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0592",
+      "group": "conditional-move",
+      "sample": "cmovzq %rcx, %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0593",
+      "group": "conditional-move",
+      "sample": "cmovzq -16(%rbp), %rax",
+      "sdm": "2A CMOVcc: 0F 40+cc /r"
+    },
+    {
+      "id": "form-0594",
+      "group": "extension",
+      "sample": "movsbw %cl, %ax",
+      "sdm": "2B MOVSX/MOVSXD: 0F BE/BF, 63; MOVZX: 0F B6/B7"
+    },
+    {
+      "id": "form-0595",
+      "group": "extension",
+      "sample": "movsbw -16(%rbp), %ax",
+      "sdm": "2B MOVSX/MOVSXD: 0F BE/BF, 63; MOVZX: 0F B6/B7"
+    },
+    {
+      "id": "form-0596",
+      "group": "extension",
+      "sample": "movsbl %cl, %eax",
+      "sdm": "2B MOVSX/MOVSXD: 0F BE/BF, 63; MOVZX: 0F B6/B7"
+    },
+    {
+      "id": "form-0597",
+      "group": "extension",
+      "sample": "movsbl -16(%rbp), %eax",
+      "sdm": "2B MOVSX/MOVSXD: 0F BE/BF, 63; MOVZX: 0F B6/B7"
+    },
+    {
+      "id": "form-0598",
+      "group": "extension",
+      "sample": "movsbq %cl, %rax",
+      "sdm": "2B MOVSX/MOVSXD: 0F BE/BF, 63; MOVZX: 0F B6/B7"
+    },
+    {
+      "id": "form-0599",
+      "group": "extension",
+      "sample": "movsbq -16(%rbp), %rax",
+      "sdm": "2B MOVSX/MOVSXD: 0F BE/BF, 63; MOVZX: 0F B6/B7"
+    },
+    {
+      "id": "form-0600",
+      "group": "extension",
+      "sample": "movswl %cx, %eax",
+      "sdm": "2B MOVSX/MOVSXD: 0F BE/BF, 63; MOVZX: 0F B6/B7"
+    },
+    {
+      "id": "form-0601",
+      "group": "extension",
+      "sample": "movswl -16(%rbp), %eax",
+      "sdm": "2B MOVSX/MOVSXD: 0F BE/BF, 63; MOVZX: 0F B6/B7"
+    },
+    {
+      "id": "form-0602",
+      "group": "extension",
+      "sample": "movswq %cx, %rax",
+      "sdm": "2B MOVSX/MOVSXD: 0F BE/BF, 63; MOVZX: 0F B6/B7"
+    },
+    {
+      "id": "form-0603",
+      "group": "extension",
+      "sample": "movswq -16(%rbp), %rax",
+      "sdm": "2B MOVSX/MOVSXD: 0F BE/BF, 63; MOVZX: 0F B6/B7"
+    },
+    {
+      "id": "form-0604",
+      "group": "extension",
+      "sample": "movslq %ecx, %rax",
+      "sdm": "2B MOVSX/MOVSXD: 0F BE/BF, 63; MOVZX: 0F B6/B7"
+    },
+    {
+      "id": "form-0605",
+      "group": "extension",
+      "sample": "movslq -16(%rbp), %rax",
+      "sdm": "2B MOVSX/MOVSXD: 0F BE/BF, 63; MOVZX: 0F B6/B7"
+    },
+    {
+      "id": "form-0606",
+      "group": "extension",
+      "sample": "movzbw %cl, %ax",
+      "sdm": "2B MOVSX/MOVSXD: 0F BE/BF, 63; MOVZX: 0F B6/B7"
+    },
+    {
+      "id": "form-0607",
+      "group": "extension",
+      "sample": "movzbw -16(%rbp), %ax",
+      "sdm": "2B MOVSX/MOVSXD: 0F BE/BF, 63; MOVZX: 0F B6/B7"
+    },
+    {
+      "id": "form-0608",
+      "group": "extension",
+      "sample": "movzbl %cl, %eax",
+      "sdm": "2B MOVSX/MOVSXD: 0F BE/BF, 63; MOVZX: 0F B6/B7"
+    },
+    {
+      "id": "form-0609",
+      "group": "extension",
+      "sample": "movzbl -16(%rbp), %eax",
+      "sdm": "2B MOVSX/MOVSXD: 0F BE/BF, 63; MOVZX: 0F B6/B7"
+    },
+    {
+      "id": "form-0610",
+      "group": "extension",
+      "sample": "movzbq %cl, %rax",
+      "sdm": "2B MOVSX/MOVSXD: 0F BE/BF, 63; MOVZX: 0F B6/B7"
+    },
+    {
+      "id": "form-0611",
+      "group": "extension",
+      "sample": "movzbq -16(%rbp), %rax",
+      "sdm": "2B MOVSX/MOVSXD: 0F BE/BF, 63; MOVZX: 0F B6/B7"
+    },
+    {
+      "id": "form-0612",
+      "group": "extension",
+      "sample": "movzwl %cx, %eax",
+      "sdm": "2B MOVSX/MOVSXD: 0F BE/BF, 63; MOVZX: 0F B6/B7"
+    },
+    {
+      "id": "form-0613",
+      "group": "extension",
+      "sample": "movzwl -16(%rbp), %eax",
+      "sdm": "2B MOVSX/MOVSXD: 0F BE/BF, 63; MOVZX: 0F B6/B7"
+    },
+    {
+      "id": "form-0614",
+      "group": "extension",
+      "sample": "movzwq %cx, %rax",
+      "sdm": "2B MOVSX/MOVSXD: 0F BE/BF, 63; MOVZX: 0F B6/B7"
+    },
+    {
+      "id": "form-0615",
+      "group": "extension",
+      "sample": "movzwq -16(%rbp), %rax",
+      "sdm": "2B MOVSX/MOVSXD: 0F BE/BF, 63; MOVZX: 0F B6/B7"
+    },
+    {
+      "id": "form-0616",
+      "group": "sign-extend-accumulator",
+      "sample": "cbtw",
+      "sdm": "2A CBW/CWDE/CDQE and CWD/CDQ/CQO: 98, 99"
+    },
+    {
+      "id": "form-0617",
+      "group": "sign-extend-accumulator",
+      "sample": "cwtl",
+      "sdm": "2A CBW/CWDE/CDQE and CWD/CDQ/CQO: 98, 99"
+    },
+    {
+      "id": "form-0618",
+      "group": "sign-extend-accumulator",
+      "sample": "cltq",
+      "sdm": "2A CBW/CWDE/CDQE and CWD/CDQ/CQO: 98, 99"
+    },
+    {
+      "id": "form-0619",
+      "group": "sign-extend-accumulator",
+      "sample": "cwtd",
+      "sdm": "2A CBW/CWDE/CDQE and CWD/CDQ/CQO: 98, 99"
+    },
+    {
+      "id": "form-0620",
+      "group": "sign-extend-accumulator",
+      "sample": "cltd",
+      "sdm": "2A CBW/CWDE/CDQE and CWD/CDQ/CQO: 98, 99"
+    },
+    {
+      "id": "form-0621",
+      "group": "sign-extend-accumulator",
+      "sample": "cqto",
+      "sdm": "2A CBW/CWDE/CDQE and CWD/CDQ/CQO: 98, 99"
+    },
+    {
+      "id": "form-0622",
+      "group": "control-address",
+      "sample": "movabsq $9223372036854775807, %rax",
+      "sdm": "2B MOV: REX.W B8+rd imm64"
+    },
+    {
+      "id": "form-0623",
+      "group": "control-address",
+      "sample": "movabsq $-9223372036854775808, %r10",
+      "sdm": "2B MOV: REX.W B8+rd imm64"
+    },
+    {
+      "id": "form-0624",
+      "group": "control-address",
+      "sample": "movq %r8, %r9",
+      "sdm": "2B MOV: REX 89 /r"
+    },
+    {
+      "id": "form-0625",
+      "group": "control-address",
+      "sample": "movq 16(%rdi,%rsi,8), %rax",
+      "sdm": "2B MOV: 8B /r; 2A 2.1 ModRM/SIB"
+    },
+    {
+      "id": "form-0626",
+      "group": "control-address",
+      "sample": "movq %rax, 16(%rdi,%rsi,8)",
+      "sdm": "2B MOV: 89 /r; 2A 2.1 ModRM/SIB"
+    },
+    {
+      "id": "form-0627",
+      "group": "control-address",
+      "sample": "leaq .Ltarget(%rip), %rsi",
+      "sdm": "2A LEA: 8D /r; 2A 2.2 RIP-relative"
+    },
+    {
+      "id": "form-0628",
+      "group": "control-address",
+      "sample": "leaq -16(%rbp), %rdi",
+      "sdm": "2A LEA: 8D /r"
+    },
+    {
+      "id": "form-0629",
+      "group": "control-address",
+      "sample": "leaq 16(%rdi,%rsi,8), %rax",
+      "sdm": "2A LEA: 8D /r; 2A 2.1 ModRM/SIB"
+    },
+    {
+      "id": "form-0630",
+      "group": "control-address",
+      "sample": "pushq %rbp",
+      "sdm": "2B PUSH: 50+rd"
+    },
+    {
+      "id": "form-0631",
+      "group": "control-address",
+      "sample": "popq %rbp",
+      "sdm": "2B POP: 58+rd"
+    },
+    {
+      "id": "form-0632",
+      "group": "control-address",
+      "sample": "call external_function",
+      "sdm": "2A CALL: E8 rel32"
+    },
+    {
+      "id": "form-0633",
+      "group": "control-address",
+      "sample": "call *%rax",
+      "sdm": "2A CALL: FF /2"
+    },
+    {
+      "id": "form-0634",
+      "group": "control-address",
+      "sample": "call *-16(%rbp)",
+      "sdm": "2A CALL: FF /2"
+    },
+    {
+      "id": "form-0635",
+      "group": "control-address",
+      "sample": "jmp .Ltarget",
+      "sdm": "2A JMP: EB rel8 / E9 rel32"
+    },
+    {
+      "id": "form-0636",
+      "group": "control-address",
+      "sample": "jmp *%rax",
+      "sdm": "2A JMP: FF /4"
+    },
+    {
+      "id": "form-0637",
+      "group": "control-address",
+      "sample": "jmp *-16(%rbp)",
+      "sdm": "2A JMP: FF /4"
+    },
+    {
+      "id": "form-0638",
+      "group": "control-address",
+      "sample": "ret",
+      "sdm": "2B RET: C3"
+    },
+    {
+      "id": "form-0639",
+      "group": "control-address",
+      "sample": "ud2",
+      "sdm": "2B UD2: 0F 0B"
+    }
+  ]
+}

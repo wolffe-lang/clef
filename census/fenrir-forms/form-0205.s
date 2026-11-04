@@ -1,0 +1,3 @@
+.text
+mull %ecx
+.Ltarget:

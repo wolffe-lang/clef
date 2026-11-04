@@ -69,3 +69,5 @@ for table in ('.symtab','.strtab','.shstrtab'):
 if passed != 43 or len(rows) != 43:
     raise SystemExit(1)
 subprocess.run([str(ROOT/'tools/directives-test')], check=True)
+
+subprocess.run([str(ROOT/"tools/compiler-forms-test")], check=True)

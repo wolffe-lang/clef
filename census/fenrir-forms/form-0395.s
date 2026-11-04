@@ -1,0 +1,3 @@
+.text
+setna %al
+.Ltarget:

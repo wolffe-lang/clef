@@ -1,0 +1,3 @@
+.text
+jno .Ltarget
+.Ltarget:

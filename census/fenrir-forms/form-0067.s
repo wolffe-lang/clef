@@ -1,0 +1,3 @@
+.text
+idivb %cl
+.Ltarget:

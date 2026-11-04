@@ -1,0 +1,3 @@
+.text
+notw %ax
+.Ltarget:

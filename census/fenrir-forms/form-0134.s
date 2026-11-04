@@ -1,0 +1,3 @@
+.text
+divw %cx
+.Ltarget:

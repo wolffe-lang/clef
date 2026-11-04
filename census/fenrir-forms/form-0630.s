@@ -1,0 +1,3 @@
+.text
+pushq %rbp
+.Ltarget:

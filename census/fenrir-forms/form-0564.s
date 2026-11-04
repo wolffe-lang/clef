@@ -1,0 +1,3 @@
+.text
+jpo .Ltarget
+.Ltarget:

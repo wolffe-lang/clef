@@ -1,0 +1,3 @@
+.text
+jae .Ltarget
+.Ltarget:

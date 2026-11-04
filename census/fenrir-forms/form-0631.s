@@ -1,0 +1,3 @@
+.text
+popq %rbp
+.Ltarget:

@@ -1,0 +1,3 @@
+.text
+jmp *%rax
+.Ltarget:

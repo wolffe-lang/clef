@@ -1,0 +1,3 @@
+.text
+jpe .Ltarget
+.Ltarget:

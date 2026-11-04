@@ -1,0 +1,3 @@
+.text
+js .Ltarget
+.Ltarget:

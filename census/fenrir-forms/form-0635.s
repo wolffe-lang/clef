@@ -1,0 +1,3 @@
+.text
+jmp .Ltarget
+.Ltarget:

@@ -1,0 +1,3 @@
+.text
+call *%rax
+.Ltarget:

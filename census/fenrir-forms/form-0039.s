@@ -1,0 +1,3 @@
+.text
+negb %al
+.Ltarget:

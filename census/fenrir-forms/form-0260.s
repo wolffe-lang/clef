@@ -1,0 +1,3 @@
+.text
+notq %rax
+.Ltarget:

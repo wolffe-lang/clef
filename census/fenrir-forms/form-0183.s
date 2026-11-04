@@ -1,0 +1,3 @@
+.text
+negl %eax
+.Ltarget:

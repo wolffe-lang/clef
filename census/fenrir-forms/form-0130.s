@@ -1,0 +1,3 @@
+.text
+mulw %cx
+.Ltarget:

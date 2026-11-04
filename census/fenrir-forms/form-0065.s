@@ -1,0 +1,3 @@
+.text
+divb %cl
+.Ltarget:

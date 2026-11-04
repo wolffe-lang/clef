@@ -1,0 +1,3 @@
+.text
+idivq %rcx
+.Ltarget:

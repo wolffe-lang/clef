@@ -1,0 +1,3 @@
+.text
+imull %ecx
+.Ltarget:

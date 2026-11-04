@@ -1,0 +1,3 @@
+.text
+imulb %cl
+.Ltarget:

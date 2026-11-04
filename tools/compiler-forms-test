@@ -1,0 +1,130 @@
+#!/usr/bin/env python3
+"""Fenrir's pinned integer envelope and SDM family boundary differentials.
+
+Only official SDM documentation supplies encodings. GNU as is a binary oracle.
+Every success compares sections, relocations and structural symbols and repeats
+clef for deterministic object bytes; every refusal preserves a sentinel output.
+"""
+import argparse
+import hashlib
+import json
+import pathlib
+import runpy
+import subprocess
+from elf import ELF, differences
+
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+CENSUS = ROOT / 'census/fenrir-forms'
+OUT = ROOT / 'target/evidence/compiler-forms'
+OUT.mkdir(parents=True, exist_ok=True)
+parser = argparse.ArgumentParser()
+parser.add_argument('--census-only', action='store_true')
+parser.add_argument('--plant-only', action='store_true')
+args = parser.parse_args()
+manifest = json.loads((CENSUS / 'forms.json').read_text())
+generator = CENSUS / 'x86_forms.py'
+assert hashlib.sha256(generator.read_bytes()).hexdigest() == manifest['generator_sha256']
+forms = runpy.run_path(str(generator))['forms']()
+assert forms == manifest['forms'] and len(forms) == 640
+rows = []
+
+
+def run(argv):
+    return subprocess.run(list(map(str, argv)), capture_output=True, text=True, timeout=60)
+
+
+def compare(name, source, group='boundary', refusal=None):
+    stem = OUT / str(len(rows))
+    src, gas_o, ours_o, again = [stem.with_suffix(s) for s in ('.s', '.gas.o', '.clef.o', '.again.o')]
+    src.write_text(source)
+    gas_o.unlink(missing_ok=True)
+    ours_o.write_bytes(b'unchanged')
+    again.unlink(missing_ok=True)
+    gas = run(['as', '--64', src, '-o', gas_o])
+    ours = run([ROOT / 'target/clef', '--64', src, '-o', ours_o])
+    row = {'name': name, 'group': group, 'source': source, 'gas_status': gas.returncode,
+           'clef_status': ours.returncode, 'gas_stderr': gas.stderr, 'clef_stderr': ours.stderr}
+    if refusal:
+        row['pass'] = (gas.returncode != 0 and ours.returncode == 1 and refusal in ours.stderr
+                       and ours_o.read_bytes() == b'unchanged')
+    else:
+        row['differences'] = (differences(ELF(gas_o), ELF(ours_o))
+                              if gas.returncode == ours.returncode == 0 else ['unassembled'])
+        if gas.returncode == ours.returncode == 0:
+            row['gas'] = ELF(gas_o).normalized()
+            row['clef'] = ELF(ours_o).normalized()
+        twice = run([ROOT / 'target/clef', '--64', src, '-o', again])
+        row['deterministic'] = (twice.returncode == 0 and again.read_bytes() == ours_o.read_bytes())
+        row['pass'] = not row['differences'] and row['deterministic']
+    rows.append(row)
+    if not row['pass']:
+        print('FAIL', name, json.dumps(row), flush=True)
+
+
+if args.plant_only:
+    compare('cmovl-condition-nibble', '.text\ncmovll %ecx,%eax\n', 'conditional-move')
+else:
+    combined = ['.text']
+    for form in forms:
+        source = '.text\n' + form['sample'] + '\n.Ltarget:\n'
+        assert (CENSUS / (form['id'] + '.s')).read_text() == source
+        compare(form['id'], source, form['group'])
+        label = '.Ltarget_' + form['id'].replace('-', '_')
+        combined += ['# ' + form['id'] + ' ' + form['group'], form['sample'].replace('.Ltarget', label), label + ':']
+    assert (CENSUS / 'fenrir-forms.s').read_text() == '\n'.join(combined) + '\n'
+    compare('combined-640', '\n'.join(combined) + '\n', 'combined')
+
+if not args.census_only and not args.plant_only:
+    conditions = 'a ae b be c e g ge l le na nae nb nbe nc ne ng nge nl nle no np ns nz o p pe po s z'.split()
+    byte_regs = ['al', 'cl', 'dl', 'bl', 'ah', 'ch', 'dh', 'bh', 'sil', 'dil', 'spl', 'bpl'] + [f'r{i}b' for i in range(8, 16)]
+    for cc in conditions:
+        for reg in byte_regs:
+            compare(f'set{cc}-{reg}', f'set{cc} %{reg}\n', 'set-condition')
+        for mem in ('8(%r12,%r9,4)', 'external(%rip)', 'external', '8(%eax,%ecx,4)'):
+            compare(f'set{cc}-{mem}', f'set{cc} {mem}\n', 'set-condition')
+        for suffix, reg in (('w', '%r9w'), ('l', '%r9d'), ('q', '%r9')):
+            for src in ({'w': '%r12w', 'l': '%r12d', 'q': '%r12'}[suffix], '8(%r12,%r13,4)', 'external(%rip)', 'external'):
+                compare(f'cmov{cc}{suffix}-{src}', f'cmov{cc}{suffix} {src},{reg}\n', 'conditional-move')
+        for distance in (0, 126, 127, 128, 129, 256):
+            compare(f'j{cc}-forward-{distance}', f'j{cc} target\n.zero {distance}\ntarget:\n', 'branch')
+            compare(f'j{cc}-backward-{distance}', f'target:\n.zero {distance}\nj{cc} target\n', 'branch')
+        compare(f'j{cc}-external', f'j{cc} external\n', 'branch')
+        compare(f'j{cc}-cross-section', f'j{cc} target\n.data\ntarget:\n', 'branch')
+        compare(f'j{cc}-global', f'.globl target\nj{cc} target\ntarget:\n', 'branch')
+        for text in (f'cmov{cc}b %al,%cl', f'cmov{cc}q %eax,%rax', f'cmov{cc}q %rax,(%rcx)', f'set{cc} %eax', f'set{cc} $1', f'j{cc} *%rax'):
+            compare('illegal-' + text, text + '\n', refusal='SDM')
+    for suffix, reg in (('b', '%r9b'), ('w', '%r9w'), ('l', '%r9d'), ('q', '%r9')):
+        for family in ('mul', 'imul', 'div', 'idiv'):
+            for src in (reg, '8(%r12,%r13,4)', 'external(%rip)', 'external'):
+                compare(f'{family}{suffix}-{src}', f'{family}{suffix} {src}\n', 'division')
+            compare(f'{family}{suffix}-immediate-refused', f'{family}{suffix} $1\n', refusal='SDM')
+        for family in ('sar', 'shl', 'shr'):
+            for count in ('$0', '$1', '$7', '$255', '%cl'):
+                for dest in (reg, '8(%r12,%r13,4)', 'external(%rip)'):
+                    compare(f'{family}{suffix}-{count}-{dest}', f'{family}{suffix} {count},{dest}\n', 'shift')
+            compare(f'{family}{suffix}-wrong-count', f'{family}{suffix} %dl,{reg}\n', refusal='SDM')
+        if suffix != 'b':
+            for src in (reg, '8(%r12,%r13,4)', 'external(%rip)'):
+                compare(f'imul{suffix}-two-{src}', f'imul{suffix} {src},{reg}\n', 'multiply')
+                for immediate in (-129, -128, 127, 128, 1000):
+                    compare(f'imul{suffix}-{immediate}-{src}', f'imul{suffix} ${immediate},{src},{reg}\n', 'multiply')
+    for form in forms:
+        if form['group'] == 'extension':
+            mnemonic, operands = form['sample'].split(' ', 1)
+            dest = operands.split(', ')[1]
+            for src in ('external(%rip)', '8(%r12,%r13,4)'):
+                compare(f'{mnemonic}-{src}', f'{mnemonic} {src},{dest}\n', 'extension')
+    for text in ('movsbw %sil,%r9w', 'movsbl %ah,%eax', 'movzbq %r12b,%r9', 'movswq %r12w,%r9',
+                 'movzbw %bpl,%r9w', 'movzwq %r12w,%r9', 'testw $external,external(%rip)'):
+        compare(text, text + '\n', 'extension' if text.startswith('mov') else 'test')
+    for text in ('movsbq %ah,%rax', 'movzbw %ah,%r9w', 'movswq %al,%rax', 'movzlq %eax,%rax',
+                 'imulb %al,%cl', 'testw %eax,%ax', 'cbtw %ax', 'cwtl %ax', 'cltq %rax',
+                 'cwtd %ax', 'cltd %eax', 'cqto %rax'):
+        compare('illegal-' + text, text + '\n', refusal='SDM')
+
+(OUT / 'rows.json').write_text(json.dumps(rows, indent=2) + '\n')
+for group in sorted({r['group'] for r in rows}):
+    selected = [r for r in rows if r['group'] == group]
+    print(f"compiler-forms {group}: {sum(r['pass'] for r in selected)}/{len(selected)}", flush=True)
+print(f"compiler-forms: {sum(r['pass'] for r in rows)}/{len(rows)} exact deterministic comparisons or shared named refusals", flush=True)
+raise SystemExit(0 if all(r['pass'] for r in rows) else 1)

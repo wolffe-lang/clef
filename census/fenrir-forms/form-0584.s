@@ -1,0 +1,3 @@
+.text
+jz .Ltarget
+.Ltarget:
