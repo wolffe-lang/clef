@@ -15,10 +15,11 @@ for index,row in enumerate(rows):
         register={8:'%cl',16:'%cx',32:'%ecx',64:'%rcx',128:'%xmm1'}
         acc={8:'%al',16:'%ax',32:'%eax',64:'%rax'}
         mnemonic=family
-        if family in {'adc','sbb','btc','btr','bts','not','cmpxchg','xadd','xchg','add','and','or','sub','xor','cmp','test','mov','lea','inc','dec','neg','div','imul','shl','shr','bt','push','pop','in','out','nop'} and bits:
+        if (family.startswith('cmov') or family in {'adc','sbb','btc','btr','bts','not','cmpxchg','xadd','xchg','add','and','or','sub','xor','cmp','test','mov','lea','inc','dec','neg','mul','div','idiv','imul','shl','shr','sar','bt','push','pop','in','out','nop'}) and bits:
             mnemonic+=suffix[bits]
         if family=='movabs':mnemonic='movabsq'
-        if family=='movzx':mnemonic='movzbl' if role=='rm8_reg' else 'movzwl'
+        if family in {'movsx','movzx'}:
+            mnemonic=('movs' if family=='movsx' else 'movz')+('b' if role=='rm8_reg' else 'w')+suffix[bits]
         if family=='movsxd':mnemonic='movslq'
         if family=='setb':mnemonic='setb'
         operands=[]

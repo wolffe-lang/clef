@@ -118,6 +118,58 @@ fn main() -> int ! {
     )
     let atomic = encode("lock cmpxchg16b (%rax)", 64)?
     assert(atomic.data.len == 5 && atomic.data[0] == 240 as byte && atomic.data[1] == 72 as byte)
+    // Intel SDM condition opcode tables: canonical nibbles 0..15, three encodings.
+    let conditions = [
+        "o",
+        "no",
+        "b",
+        "ae",
+        "e",
+        "ne",
+        "be",
+        "a",
+        "s",
+        "ns",
+        "p",
+        "np",
+        "l",
+        "ge",
+        "le",
+        "g",
+    ]
+    for i in 0..conditions.len {
+        let cc = conditions[i]
+        let set = encode("set{cc} %dil", 64)?
+        assert(set.data.len == 4 && set.data[0] == 64 as byte)
+        assert(set.data[1] == 15 as byte && set.data[2] == (144 + i) as byte)
+        let cmov = encode("cmov{cc}q %r12,%r9", 64)?
+        assert(cmov.data.len == 4 && cmov.data[0] == 77 as byte)
+        assert(cmov.data[1] == 15 as byte && cmov.data[2] == (64 + i) as byte)
+        let branch = encode("j{cc} external", 64)?
+        assert(branch.data.len == 6 && branch.data[0] == 15 as byte)
+        assert(branch.data[1] == (128 + i) as byte && branch.fixups[0].width == 4)
+    }
+    let imul1 = encode("imulb %cl", 64)?
+    assert(imul1.data.len == 2 && imul1.data[0] == 246 as byte && imul1.data[1] == 233 as byte)
+    let imul2 = encode("imulw %cx,%ax", 64)?
+    assert(imul2.data.len == 4 && imul2.data[0] == 102 as byte && imul2.data[2] == 175 as byte)
+    let mul = encode("mulq %rcx", 64)?
+    assert(mul.data.len == 3 && mul.data[0] == 72 as byte && mul.data[2] == 225 as byte)
+    let idiv = encode("idivl %ecx", 64)?
+    assert(idiv.data.len == 2 && idiv.data[0] == 247 as byte && idiv.data[1] == 249 as byte)
+    let sx = encode("movsbw %sil,%ax", 64)?
+    assert(sx.data.len == 5 && sx.data[0] == 102 as byte && sx.data[1] == 64 as byte)
+    assert(sx.data[3] == 190 as byte)
+    let zx = encode("movzwq %r12w,%r9", 64)?
+    assert(zx.data.len == 4 && zx.data[0] == 77 as byte && zx.data[2] == 183 as byte)
+    let sar = encode("sarb $1,%al", 64)?
+    assert(sar.data.len == 2 && sar.data[0] == 208 as byte && sar.data[1] == 248 as byte)
+    let test = encode("testw $7,%ax", 64)?
+    assert(test.data.len == 4 && test.data[0] == 102 as byte && test.data[1] == 169 as byte)
+    let cbtw = encode("cbtw", 64)?
+    assert(cbtw.data.len == 2 && cbtw.data[0] == 102 as byte && cbtw.data[1] == 152 as byte)
+    let cqto = encode("cqto", 64)?
+    assert(cqto.data.len == 2 && cqto.data[0] == 72 as byte && cqto.data[1] == 153 as byte)
     var refused32 = false
     let _ = encode("xorq %rax,%rax", 32) else {
         refused32 = true
