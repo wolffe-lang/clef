@@ -17,7 +17,7 @@ The output file is not opened until the entire source and object have succeeded.
 ## Encoding data
 
 `src/x86table/rows.lu` contains 517 declarative descriptors, each transcribed from
-an individual Intel SDM opcode row. `aliases.lu` explicitly maps 355 spellings to
+an individual Intel SDM opcode row. `aliases.lu` explicitly maps 354 spellings to
 canonical families and width hints: the original census, word-port and LOCK
 spellings, plus the compiler's integer instruction envelope. `format.lu`
 validates rows and provides

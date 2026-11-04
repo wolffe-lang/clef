@@ -23,7 +23,7 @@ is expected to be accepted by GNU as. The original corpus must not regress.
 - `5bb3241`: arithmetic right shifts, byte/word SHL and SHR, and TEST word.
 - `cffd8ac`: all six AT&T accumulator sign-extension spellings.
 - `0eb5c8b`, `21e7930`: descriptor witnesses, machine-logic assertions and
-  the declarative census index: 517 descriptors, 355 spellings, 886 descriptor
+  the declarative census index: 517 descriptors, 354 spellings, 886 descriptor
   by mode witnesses. The original source census is retained unchanged.
 - `62a762c`: linked integer-code execution, without a C runtime.
 - `f4e2802`, `6b51c39`: encoding documentation and README counts.
