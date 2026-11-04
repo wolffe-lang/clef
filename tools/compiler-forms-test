@@ -122,6 +122,56 @@ if not args.census_only and not args.plant_only:
                  'cwtd %ax', 'cltd %eax', 'cqto %rax'):
         compare('illegal-' + text, text + '\n', refusal='SDM')
 
+    # End-to-end compiler-shaped integer code, linked without a C runtime.
+    compare('integer-executable', '''.text
+.globl _start
+.type _start,@function
+_start:
+movq $-37,%rax
+cqto
+movq $5,%rcx
+idivq %rcx
+imulq %rcx,%rax
+addq $37,%rax
+cmpq $2,%rax
+jne failed
+movq $-8,%r8
+sarq $2,%r8
+cmpq %rdx,%r8
+setne %dil
+movzbl %dil,%edi
+testw %di,%di
+jne failed
+movq $42,%rax
+movq $99,%rcx
+cmpq $0,%r8
+cmovlq %rcx,%rax
+cmpq $99,%rax
+jne failed
+xorl %edi,%edi
+jmp done
+failed:
+movl $1,%edi
+done:
+movl $60,%eax
+syscall
+.size _start,.-_start
+.section .note.GNU-stack,"",@progbits
+''', 'end-to-end')
+    stem = OUT / str(len(rows) - 1)
+    executable_ok = rows[-1]['pass']
+    for producer in ('gas', 'clef'):
+        obj = stem.with_suffix('.' + producer + '.o')
+        exe = stem.with_suffix('.' + producer + '.elf')
+        if executable_ok:
+            linked = run(['ld', '--build-id=none', '-e', '_start', obj, '-o', exe])
+            ran = run([exe]) if linked.returncode == 0 else None
+            executable_ok = (ran is not None and ran.returncode == 0 and not ran.stdout and not ran.stderr)
+    rows[-1]['executable_pass'] = executable_ok
+    rows[-1]['pass'] = rows[-1]['pass'] and executable_ok
+    if not executable_ok:
+        print('FAIL integer-executable link or execution', flush=True)
+
 (OUT / 'rows.json').write_text(json.dumps(rows, indent=2) + '\n')
 for group in sorted({r['group'] for r in rows}):
     selected = [r for r in rows if r['group'] == group]
