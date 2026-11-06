@@ -1,0 +1,92 @@
+Prediction before implementation (2026-11-06)
+
+Why trunk does not converge
+---------------------------
+Trunk decides every direct jump afresh in each pass. A backward target is read
+at its address in the current pass. A forward target is read at its address
+from the previous pass, with no allowance for growth earlier in the current
+pass. A jump can shrink as well as grow, and a forward jump starts long in the
+first pass because its target is still unknown.
+
+In the issue's file the two jumps that flip are line 129 `jmp .Lf1_b7` and line
+131 `jmp .Lf1_b8`. They are adjacent forward jumps, and each is 126 bytes from
+its target when both are short. A trace of trunk's passes shows the pair
+alternating as (long, short), (short, long), (long, short) from pass 2 on:
+
+- When line 129 shrinks, line 131 starts 3 bytes earlier, but its target keeps
+  the address from the pass where line 129 was long. It reads 129 and grows.
+- In the next pass, line 129's target is 3 bytes further out, because line 131
+  grew, so line 129 reads 129 and grows. Line 131 now starts 3 bytes later
+  against a target from the pass where line 129 was short. It reads 123 and
+  shrinks.
+
+The layout repeats with period 2. It never matches the previous pass, so trunk
+hits the 64-pass cap and refuses with `layout_nonconvergent`. GNU as keeps both
+jumps short (`eb 7e`, `eb 7e`), and every other jump matches trunk's last two
+passes.
+
+The rule GNU as follows, read from its bytes
+--------------------------------------------
+This was measured on the pinned GNU as 2.42 as a black box. Its objects were
+read back jump by jump, over 1,184 generated cases (random programs with 2 to
+24 jumps, alignment, max-skip alignment, far jumps, cross-section and external
+jumps) and 22 hand probes. Of the candidate rules simulated on the same cases,
+only the one below reproduced every case.
+
+1. Every direct `jmp` or `jcc` whose target is in the same section starts in
+   its short form. A jump to another section or to an undefined symbol is long
+   from the first layout.
+2. Passes run in source order. A jump that has grown never shrinks.
+3. A short jump grows when its rel8 displacement, measured from the end of the
+   short form, falls outside -128..127. The target address it uses depends on
+   where the target is:
+   - **Backward** (defined earlier): its address in the current pass.
+   - **Forward**: its address in the previous pass, plus the distance the jump
+     itself has moved since then.
+   - **Forward, across an alignment**: if a padding alignment directive in the
+     same section lies between the jump and its target, the target is taken at
+     its previous-pass address, unmoved. A padding directive is a `.p2align`,
+     `.balign` or `.align` of 2 bytes or more, max-skip and explicit-fill forms
+     included. `.p2align 0` and an alignment in another section do not count.
+     This holds even when the padding is too short to absorb the move.
+4. Passes stop when one changes nothing. Every pass before that grows at least
+   one jump, so the relaxation passes are bounded by the number of relaxable
+   jumps plus one.
+
+The cases that separate the discarded rules are kept as rows:
+- Deciding every jump from the previous pass alone grows a jump that the
+  earlier growth in the same pass would have let stay short.
+- Growing only the first misfit and laying out again keeps one jump short that
+  GNU as grows.
+- Laying out the rest of the section exactly grows a jump across an alignment
+  that GNU as keeps short.
+- A forward target read without the jump's own move (trunk's estimate) grows a
+  jump that GNU as keeps short.
+- Adding the move across an alignment grows jumps that GNU as keeps short.
+- Two consistent layouts exist for a pair of jumps that span each other (both
+  short, or both long). GNU as picks both short. Trunk picks both long.
+
+Rows and the fix
+----------------
+- The issue's file (its `.rodata` path string replaced by a neutral string of
+  the same length) is predicted red on trunk with `layout_nonconvergent`, and
+  green after.
+- The generated family (chains, rings, nested loops at the 127/128 boundary,
+  alignment between jumps, forward and backward targets, and the separating
+  cases above) is predicted red on trunk: some cases with
+  `layout_nonconvergent`, and some with different bytes where trunk keeps a
+  jump long that GNU as keeps short. All are predicted byte-identical after
+  the fix.
+- The bound row's largest case (a cascade of 200 jumps, each growing only after
+  the next one has) needs about 200 passes. Trunk refuses it at the 64-pass
+  cap. After the fix, the case finishes within the number of its relaxable
+  jumps plus four passes: discovery, the short start, the growth passes and the
+  final pass.
+- The fix is in `src/assembly/layout.lu` alone. It adds a discovery pass, the
+  all-short start, the monotone rule above and a cap of 64 plus the number of
+  relaxable jumps. Alignment, max-skip, fill and expression handling stay as
+  they are.
+- Every existing row is predicted unchanged: the 43 census sources, the 2741
+  compiler controls and the 640 census forms. On every file where trunk
+  converged it already matched GNU as, and the new rule reaches the same
+  layout there.
