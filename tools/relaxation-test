@@ -100,7 +100,7 @@ assert len(issue_text.splitlines()) == 260
 cases = {c['name']: c for c in relaxation.family()}
 if args.plant_only:
     compare('issue-21', 'issue', issue_text)
-    for name in ('pair-124', 'two-fixed-points-zero', 'alignment-hides-the-move-zero'):
+    for name in ('pair-124', 'two-fixed-points-zero', 'alignment-hides-the-move-zero', 'grown-never-shrinks-zero'):
         case(cases[name])
 else:
     compare('issue-21', 'issue', issue_text)
