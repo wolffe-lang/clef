@@ -36,11 +36,11 @@ CLEF_ENGINE=docker tools/in-container tools/gate
 # CLEF_ENGINE=podman is the default.
 ```
 
-The **34 gates** check formatting, warning-denied builds, six compiled native
+The **35 gates** check formatting, warning-denied builds, six compiled native
 logic programs, checked/lupin execution, all source statements, expression and
 macro differentials, the ELF writer, instruction-table rows, layout/refusals,
-the complete assembler corpus, padding/LOCK differentials, word-port rows and
-fenrir's compiler instruction envelope. Results are written to
+mutually dependent jump relaxation, the complete assembler corpus, padding/LOCK
+differentials, word-port rows and fenrir's compiler instruction envelope. Results are written to
 `target/evidence/`; the executable is `target/clef`.
 
 ```sh
@@ -85,6 +85,13 @@ See [EXPAND](docs/EXPAND.md) for the expansion contract and
   assembled twice to check determinism. No x86 census source is waived.
 * 191 layout/boundary controls, ten named source refusals, five additional CLI
   refusals, and complete byte-range coverage for the ISR provenance witness.
+* 1,330 relaxation rows for mutually dependent direct jumps match GNU as byte for
+  byte: fenrir's nested-loop file from clef#21, chains, rings, nested loops at the
+  127/128-byte boundary, alignment between jumps, cross-section and external
+  jumps, and 500 random programs. Each generated case also checks the documented
+  rule against GNU as's own short and long choices. The largest case, 202 jumps
+  that grow one per pass, finishes in 204 passes, within its bound of 206. See
+  [FORMATS](docs/FORMATS.md).
 * 128 word-port encoding rows (IN/OUT word forms and GNU as's implicit port
   spellings in both modes, `xorq` in 64-bit mode) match GNU as byte for byte.
   111 refusals are named; 34 of them are spellings GNU as accepts that clef
