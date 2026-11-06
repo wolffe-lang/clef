@@ -10,6 +10,7 @@ import argparse
 import hashlib
 import json
 import pathlib
+import re
 import subprocess
 import sys
 
@@ -73,7 +74,19 @@ def compare(name, group, source, items=None, bound=None):
     row['pass'] = ok
     rows.append(row)
     if not ok:
-        reason = row['clef_stderr'] or ('model' if row.get('model') is False else 'bytes')
+        refusal = re.search(r'reason: ([^:]+):', row['clef_stderr'])
+        if gas.returncode:
+            reason = 'gas refused'
+        elif refusal:
+            reason = refusal.group(1)
+        elif ours.returncode:
+            reason = f'clef exit {ours.returncode}'
+        elif row.get('differences') or not row.get('deterministic'):
+            reason = 'bytes differ from GNU as' if row.get('differences') else 'nondeterministic'
+        elif row.get('model') is False:
+            reason = f"model long {row['model_long']} but GNU as long {row['gas_long']}"
+        else:
+            reason = f"{row.get('passes')} passes over the bound {bound}"
         print(f'FAIL {name} {reason}', flush=True)
 
 
