@@ -775,7 +775,7 @@ pub fn assemble_options(text: str, file: str, with_provenance: bool) -> Result !
     for node in prepared.nodes { if relaxable(node) { branches += 1 } }
     var count = 2
     var stable = false
-    while count < 64 + branches {
+    while count < 64 {
         var next = run_pass(
             prepared,
             forms,
