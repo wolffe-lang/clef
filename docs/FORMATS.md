@@ -67,6 +67,21 @@ The baseline is pinned GNU as 2.42, not simply the shortest legal encoding:
 * Same-section jumps, including global targets, relax to rel8 where possible.
   Calls to global/undefined symbols retain their relocation semantics. Layout
   is iterated with section switching and alignment included.
+* Relaxation follows the rule read from pinned GNU as's bytes (clef#21). A first
+  pass finds each label's section. Every same-section `jmp` and `jcc` then
+  starts short; a jump to another section or an undefined symbol is long from
+  the start. Passes run in source order, and a jump grows to rel32 when its rel8
+  displacement from the end of the short form no longer fits. A grown jump
+  never shrinks, so mutually dependent jumps reach one fixed point: the least
+  one when no alignment intervenes. A backward target is read at its address in
+  the current pass. A forward target is read at its previous-pass address, moved
+  by as much as the jump itself has moved since that pass. When a padding
+  alignment in the same section (`.p2align`, `.balign` or `.align` of two bytes
+  or more, max-skip and fill forms included) lies between them, the target is
+  read unmoved, even where the padding cannot absorb the move. `.p2align 0` does
+  not count. `tools/relaxation.py` states the rule as a model. `tools/relaxation-test`
+  checks it and clef's bytes against GNU as on the issue's file and 1,329
+  generated cases.
 * `.code32` changes instruction/address defaults inside ELF64; it does not
   change ELF class or machine. The mixed-mode fixture retains gas's `_32`
   indexed-address and `PC32` cross-section choices, not clang's alternatives.
@@ -213,7 +228,8 @@ appropriate first definition. Each location counter is tied to its definition
 site, and selection-time availability is distinct from the final numeric value.
 
 Limits are explicit: 100,000 expanded statements, macro depth 32, expression
-depth 128, `.set` dependency depth 256 and 64 layout passes. Serialized objects
+depth 128, `.set` dependency depth 256, and 64 layout passes plus one per
+relaxable jump (growth alone ends relaxation). Serialized objects
 are limited to 64 MiB; section counters are bounded by 2,147,483,647 bytes.
 Unsupported macro defaults, keyword/variadic arguments and unsupported directives
 are refused. These are implementation boundaries, not GNU as completeness claims.
