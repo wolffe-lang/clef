@@ -1,0 +1,110 @@
+#!/usr/bin/env python3
+"""Mutually dependent direct jumps: layout reaches GNU as's fixed point (clef#21).
+
+GNU as is a binary oracle. Every row compares sections, relocations and structural
+symbols with the pinned GNU as and repeats clef for deterministic bytes. Each
+generated case also checks the rule documented in tools/relaxation.py against
+GNU as's own choice of short and long forms, read back from its bytes.
+"""
+import argparse
+import hashlib
+import json
+import pathlib
+import subprocess
+import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from elf import ELF, differences  # noqa: E402
+import relaxation  # noqa: E402
+
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+OUT = ROOT / 'target/evidence/relaxation'
+OUT.mkdir(parents=True, exist_ok=True)
+ISSUE = ROOT / 'census/relaxation/issue-21.s'
+ISSUE_SHA256 = '3aab27d9777b2474014ccccc2300c944cb4222d3bcebdd6c5a7855d55607e3bd'
+parser = argparse.ArgumentParser()
+parser.add_argument('--plant-only', action='store_true')
+args = parser.parse_args()
+rows = []
+
+
+def run(argv):
+    return subprocess.run(list(map(str, argv)), capture_output=True, text=True, timeout=120)
+
+
+def text_of(path):
+    return bytes.fromhex(next(s for s in ELF(path).normalized()['sections'] if s[0] == '.text')[-1])
+
+
+def compare(name, group, source, items=None, bound=None):
+    stem = OUT / name
+    src, gas_o, ours_o, again = [stem.with_suffix(s) for s in ('.s', '.gas.o', '.clef.o', '.again.o')]
+    src.write_text(source)
+    for path in (gas_o, ours_o, again):
+        path.unlink(missing_ok=True)
+    gas = run(['as', '--64', src, '-o', gas_o])
+    ours = run([ROOT / 'target/clef', '--64', src, '-o', ours_o])
+    row = {'name': name, 'group': group, 'gas_status': gas.returncode, 'clef_status': ours.returncode,
+           'gas_stderr': gas.stderr, 'clef_stderr': ours.stderr.strip()}
+    ok = gas.returncode == 0 and ours.returncode == 0
+    if ok:
+        row['differences'] = differences(ELF(gas_o), ELF(ours_o))
+        twice = run([ROOT / 'target/clef', '--64', src, '-o', again])
+        row['deterministic'] = twice.returncode == 0 and again.read_bytes() == ours_o.read_bytes()
+        ok = not row['differences'] and row['deterministic']
+    if items is not None and gas.returncode == 0:
+        gas_longs = sorted(relaxation.read_longs(items, text_of(gas_o)))
+        model_longs = sorted(relaxation.relax(items)[0])
+        row['gas_long'] = gas_longs
+        row['model_long'] = model_longs
+        if ours.returncode == 0:
+            try:
+                row['clef_long'] = sorted(relaxation.read_longs(items, text_of(ours_o)))
+            except (ValueError, IndexError) as e:
+                row['clef_long'] = str(e)
+        row['model'] = gas_longs == model_longs
+        ok = ok and row['model']
+    if bound is not None and ok:
+        probe = run([ROOT / 'target/assembly-cli', src, stem.with_suffix('.probe.o')])
+        passes = int(probe.stdout.split('\n', 1)[0].split()[1]) if probe.returncode == 0 else None
+        row['passes'] = passes
+        row['pass_bound'] = bound
+        ok = passes is not None and passes <= bound
+    row['pass'] = ok
+    rows.append(row)
+    if not ok:
+        reason = row['clef_stderr'] or ('model' if row.get('model') is False else 'bytes')
+        print(f'FAIL {name} {reason}', flush=True)
+
+
+def case(c):
+    compare(c['name'], c['group'], relaxation.render(c), c['items'])
+
+
+issue_text = ISSUE.read_text()
+assert hashlib.sha256(issue_text.encode()).hexdigest() == ISSUE_SHA256, 'issue-21.s changed'
+assert len(issue_text.splitlines()) == 260
+cases = {c['name']: c for c in relaxation.family()}
+if args.plant_only:
+    compare('issue-21', 'issue', issue_text)
+    for name in ('pair-124', 'two-fixed-points-zero', 'alignment-hides-the-move-zero'):
+        case(cases[name])
+else:
+    compare('issue-21', 'issue', issue_text)
+    for c in cases.values():
+        case(c)
+    big = relaxation.bound_case()
+    relaxable = sum(relaxation.is_jump(it) for it in big['items'])
+    # Discovery, the all-short start, at most relaxable+1 growth passes, and the final pass.
+    compare(big['name'], 'bound', relaxation.render(big), big['items'], bound=relaxable + 4)
+
+(OUT / 'rows.json').write_text(json.dumps(rows, indent=1) + '\n')
+for group in sorted({r['group'] for r in rows}):
+    selected = [r for r in rows if r['group'] == group]
+    print(f"relaxation {group}: {sum(r['pass'] for r in selected)}/{len(selected)}", flush=True)
+bounds = [r for r in rows if 'pass_bound' in r]
+for r in bounds:
+    print(f"relaxation bound: {r['name']} took {r.get('passes')} passes, bound {r['pass_bound']}", flush=True)
+print(f"relaxation: {sum(r['pass'] for r in rows)}/{len(rows)} rows byte-identical to GNU as, "
+      "deterministic, and on the measured rule", flush=True)
+raise SystemExit(0 if all(r['pass'] for r in rows) else 1)
