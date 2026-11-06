@@ -33,6 +33,28 @@ fn main() -> int {
         let right = assembly.assemble(pair[1], "aliases.S") else { return 1 }
         assert(equal(left.bytes, right.bytes))
     }
+    // clef#21: two adjacent forward jumps, each 126 bytes out, stay short (GNU as: eb 7e, eb 7e).
+    let adjacent = assembly.assemble(
+        "jmp .Lp1\njmp .Lp2\n.zero 124\n.Lp1:\n.zero 2\n.Lp2:\nret\n",
+        "adjacent.S",
+    ) else { return 1 }
+    assert(
+        adjacent.bytes[64] == 235 as byte &&
+            adjacent.bytes[65] == 126 as byte &&
+            adjacent.bytes[66] == 235 as byte &&
+            adjacent.bytes[67] == 126 as byte,
+    )
+    // Both short and both long are consistent here; GNU as starts short and keeps both short.
+    let spanning = assembly.assemble(
+        "Y:\n.zero 63\njmp X\n.zero 60\njmp Y\n.zero 64\nX:\nret\n",
+        "spanning.S",
+    ) else { return 1 }
+    assert(
+        spanning.bytes[127] == 235 as byte &&
+            spanning.bytes[128] == 126 as byte &&
+            spanning.bytes[189] == 235 as byte &&
+            spanning.bytes[190] == 129 as byte,
+    )
     let note = assembly.assemble_options(source, "one.S", true) else { return 1 }
     assert(note.bytes.len > a.bytes.len)
     for bad in [".set A,B+1\n.set B,A+1\n", ".bss\n.byte 1\n", "jmp 8b\n"] {
@@ -44,7 +66,7 @@ fn main() -> int {
         assert(refused)
     }
     print(
-        "assembly: layout, numeric locals, set/macro values, deterministic ELF, provenance and refusals pass",
+        "assembly: layout, mutually dependent jumps, numeric locals, set/macro values, deterministic ELF, provenance and refusals pass",
     )
     0
 }
