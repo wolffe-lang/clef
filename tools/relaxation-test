@@ -98,18 +98,16 @@ issue_text = ISSUE.read_text()
 assert hashlib.sha256(issue_text.encode()).hexdigest() == ISSUE_SHA256, 'issue-21.s changed'
 assert len(issue_text.splitlines()) == 260
 cases = {c['name']: c for c in relaxation.family()}
-if args.plant_only:
-    compare('issue-21', 'issue', issue_text)
-    for name in ('pair-124', 'two-fixed-points-zero', 'alignment-hides-the-move-zero', 'grown-never-shrinks-zero'):
-        case(cases[name])
-else:
-    compare('issue-21', 'issue', issue_text)
-    for c in cases.values():
+# The convergence rows a plant run checks: the issue, the separating witnesses and the bound.
+PLANT_ROWS = ('pair-124', 'two-fixed-points-zero', 'alignment-hides-the-move-zero', 'grown-never-shrinks-zero')
+compare('issue-21', 'issue', issue_text)
+for c in cases.values():
+    if not args.plant_only or c['name'] in PLANT_ROWS:
         case(c)
-    big = relaxation.bound_case()
-    relaxable = sum(relaxation.is_jump(it) for it in big['items'])
-    # Discovery, the all-short start, at most relaxable+1 growth passes, and the final pass.
-    compare(big['name'], 'bound', relaxation.render(big), big['items'], bound=relaxable + 4)
+big = relaxation.bound_case()
+relaxable = sum(relaxation.is_jump(it) for it in big['items'])
+# Discovery, the all-short start, at most relaxable+1 growth passes, and the final pass.
+compare(big['name'], 'bound', relaxation.render(big), big['items'], bound=relaxable + 4)
 
 (OUT / 'rows.json').write_text(json.dumps(rows, indent=1) + '\n')
 for group in sorted({r['group'] for r in rows}):
