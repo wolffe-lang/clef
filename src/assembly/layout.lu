@@ -25,6 +25,9 @@ struct Pass {
     dots: List[eval.Value],
     lengths: List[int],
     selected: List[List[bool]],
+    wide: List[bool],
+    aligns: List[int],
+    align_counts: Map[str, int],
     relocations: List[object.Relocation],
     forms: List[str],
     ranges: List[Range],
@@ -334,6 +337,47 @@ fn align_code(mut pass: Pass, count: int, origin: lex.Origin) -> () ! Errors {
     if count > 0 { pass.raw_tail[pass.current] = false }
 }
 
+// Relaxation stages of one pass: find the sections, start every jump short, then grow only.
+const DISCOVER: int = 0
+
+const START_SHORT: int = 1
+
+const GROW: int = 2
+
+/// A direct branch whose rel8 and rel32 forms are both candidates (SDM vol.2 JMP, Jcc).
+fn relaxable(node: dialect.Node) -> bool {
+    node.kind == "instruction" &&
+        node.name.starts_with("j") &&
+        node.name != "ljmp" &&
+        node.operands.len == 1 &&
+        !node.operands[0].indirect
+}
+
+/// Whether a short branch's rel8 holds the target, by the rule read from pinned GNU as.
+/// Backward targets use this pass's address. A forward target uses the previous pass's address
+/// moved by as much as the branch itself has moved, unless a padding alignment in this section
+/// lies between them; then the previous address stands unmoved.
+fn short_fits(
+    prepared: Prepared,
+    i: int,
+    target: int,
+    start: int,
+    name: str,
+    old_dots: List[eval.Value],
+    old_aligns: List[int],
+) -> bool {
+    var estimate = target
+    let ordinal = prepared.label_order[name] else -1
+    if ordinal > i && ordinal < old_aligns.len && i < old_dots.len {
+        if old_aligns[ordinal] == old_aligns[i] {
+            let before = eval.signed(old_dots[i].number) else 0
+            estimate += start - before
+        }
+    }
+    let delta = estimate - start - 2
+    delta >= -128 && delta <= 127
+}
+
 fn run_pass(
     prepared: Prepared,
     forms: List[x86table.Form],
@@ -341,9 +385,12 @@ fn run_pass(
     old_lengths: List[int],
     old_selected: List[List[bool]],
     old_dots: List[eval.Value],
-    first: bool,
+    old_wide: List[bool],
+    old_aligns: List[int],
+    stage: int,
     final: bool,
 ) -> Pass ! Errors {
+    let first = stage == DISCOVER
     var pass = Pass {
         sections: [
             empty_section(".text", 1, 6),
@@ -360,6 +407,9 @@ fn run_pass(
         dots: [],
         lengths: [],
         selected: [],
+        wide: [],
+        aligns: [],
+        align_counts: Map[str, int](),
         relocations: [],
         forms: [],
         ranges: [],
@@ -374,6 +424,8 @@ fn run_pass(
         let current = pass.current
         let dot = eval.section_value(section, "", start)
         (mut pass.dots).push(copy dot)
+        (mut pass.aligns).push(pass.align_counts[section] else 0)
+        var wide = false
         var set_value = eval.absolute(0)
         var selected = List[bool]()
         for label in node.labels { pass.symbols[label] = eval.section_value(section, label, start) }
@@ -390,23 +442,27 @@ fn run_pass(
             }
             if !first { selected = copy old_selected[i] }
             var short = false
-            if node.name.starts_with("j") &&
-                node.name != "ljmp" &&
-                node.operands.len == 1 &&
-                !node.operands[0].indirect &&
-                values[0].section == section {
+            let branch = relaxable(node)
+            if branch && values[0].section == section {
                 let target = eval.signed(values[0].number) else {
                     return Assembly(
                         failure(node.origin, "relative_overflow: SDM branch displacement"),
                     )
                 }
-                var delta = target - start - 2
-                let ordinal = prepared.label_order[values[0].name] else -1
-                if ordinal > i && i < old_lengths.len && old_lengths[i] > 2 {
-                    delta -= old_lengths[i] - 2
+                if stage == START_SHORT {
+                    short = true
+                } else if stage == GROW {
+                    // A branch that has grown keeps its rel32 form: growth alone ends the layout.
+                    let grown = i < old_wide.len && old_wide[i]
+                    short = !grown &&
+                        short_fits(prepared, i, target, start, values[0].name, old_dots, old_aligns)
+                } else {
+                    // Discovery: forward labels are still unknown, so only backward ones are short.
+                    let delta = target - start - 2
+                    short = delta >= -128 && delta <= 127
                 }
-                short = delta >= -128 && delta <= 127
             }
+            wide = branch && !short
             let form = machine.choose(forms, node, pass.mode, values, selected, short) else |e| {
                 return Assembly(
                     failure(node.origin, "{e}: {node.name}; SDM vol.2 instruction encoding table"),
@@ -527,6 +583,9 @@ fn run_pass(
                         failure(node.origin, "non_power_of_two_alignment: ELF gABI Sections"),
                     )
                 }
+                if alignment > 1 {
+                    pass.align_counts[section] = (pass.align_counts[section] else 0) + 1
+                }
                 if alignment > pass.sections[pass.current].align {
                     pass.sections[pass.current].align = alignment
                 }
@@ -564,6 +623,7 @@ fn run_pass(
         let length = if pass.current == current then pass.sections[current].size - start else 0
         (mut pass.lengths).push(length)
         (mut pass.selected).push(selected)
+        (mut pass.wide).push(wide)
         (mut pass.set_values).push(set_value)
         if length > 0 && pass.sections[current].kind != 8 {
             (mut pass.ranges).push(Range {
@@ -686,10 +746,36 @@ pub fn assemble_options(text: str, file: str, with_provenance: bool) -> Result !
             ),
         )
     }
-    var previous = run_pass(prepared, forms, Map[str, eval.Value](), [], [], [], true, false)?
-    var count = 1
+    let discovered = run_pass(
+        prepared,
+        forms,
+        Map[str, eval.Value](),
+        [],
+        [],
+        [],
+        [],
+        [],
+        DISCOVER,
+        false,
+    )?
+    var previous = run_pass(
+        prepared,
+        forms,
+        discovered.symbols,
+        discovered.lengths,
+        discovered.selected,
+        discovered.dots,
+        discovered.wide,
+        discovered.aligns,
+        START_SHORT,
+        false,
+    )?
+    // Every growth pass but the last grows a branch, so the branches bound the passes.
+    var branches = 0
+    for node in prepared.nodes { if relaxable(node) { branches += 1 } }
+    var count = 2
     var stable = false
-    while count < 64 {
+    while count < 64 + branches {
         var next = run_pass(
             prepared,
             forms,
@@ -697,7 +783,9 @@ pub fn assemble_options(text: str, file: str, with_provenance: bool) -> Result !
             previous.lengths,
             previous.selected,
             previous.dots,
-            false,
+            previous.wide,
+            discovered.aligns,
+            GROW,
             false,
         )?
         count += 1
@@ -720,7 +808,9 @@ pub fn assemble_options(text: str, file: str, with_provenance: bool) -> Result !
         previous.lengths,
         previous.selected,
         previous.dots,
-        false,
+        previous.wide,
+        discovered.aligns,
+        GROW,
         true,
     )?
     let symbols = output_symbols(prepared, final)
