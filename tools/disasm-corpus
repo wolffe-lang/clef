@@ -40,7 +40,7 @@ def one(b,path):
 members=[(b,path) for b,path in corpus_members(manifest,root) if not only or b['paths'][0].split('/')[-1] in only or b['paths'][0] in only]
 report={'objdump':'objdump -d --no-show-raw-insn --wide','normalization':'symbolic <decoration> removed; blank runs collapsed','jobs':jobs,'binaries':[]}
 red=0
-with concurrent.futures.ProcessPoolExecutor(max_workers=max(1,jobs)) as pool:
+with concurrent.futures.ThreadPoolExecutor(max_workers=max(1,jobs)) as pool:
     for row in pool.map(one,*zip(*members)) if members else []:
         names=row['differences']
         if not row['agree']:red+=1;print(f'FAIL disasm-corpus:{row["name"]} status={row["clef_status"]} {dict(collections.Counter(names).most_common(4))} {row["stderr"]}',flush=True)

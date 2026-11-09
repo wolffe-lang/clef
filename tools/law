@@ -50,7 +50,7 @@ def one(b,path):
 members=[(b,path) for b,path in corpus_members(manifest,root) if not only or b['paths'][0].split('/')[-1] in only or b['paths'][0] in only]
 report={'law':'assemble(disassemble(bytes)) == bytes, clef both sides, chunks of %d instructions'%CHUNK,'jobs':jobs,'twice':twice,'binaries':[],'classes':{}}
 classes=collections.Counter();escapes=collections.Counter();red=0;identical=True
-with concurrent.futures.ProcessPoolExecutor(max_workers=max(1,jobs)) as pool:
+with concurrent.futures.ThreadPoolExecutor(max_workers=max(1,jobs)) as pool:
     for row in pool.map(one,*zip(*members)) if members else []:
         for k,v in row['classes'].items():classes[k]+=v
         for s in row['sections'].values():
