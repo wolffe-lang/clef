@@ -14,7 +14,8 @@ pub struct Options {
 /// `--address=N`: decimal or 0x-hexadecimal load address of a raw byte stream.
 fn parse_address(text: str) -> int ! {usage} {
     if text.starts_with("0x") || text.starts_with("0X") {
-        var v = 0
+        // A 64-bit address above 2^63 (the kernel's half) is held as its two's complement.
+        var v: u64 = 0
         if text.len == 2 || text.len > 18 { return usage }
         for b in text[2..].bytes() {
             let c = b as int
@@ -27,9 +28,10 @@ fn parse_address(text: str) -> int ! {usage} {
             } else {
                 return usage
             }
-            v = v * 16 + digit
+            v = v * 16 + digit as u64
         }
-        return v
+        if v >= 9223372036854775808 { return -((!v + 1) as int) }
+        return v as int
     }
     text.to_int() else { return usage }
 }

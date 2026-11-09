@@ -56,7 +56,9 @@ fn field(
     signed32: bool,
 ) -> () ! Errors {
     if width < 1 || width > 8 { return invalid_table }
-    if value.section == "ABS" && !pcrel {
+    // A numeric RIP-relative displacement is the literal field, as GNU as reads `0(%rip)`
+    // (i386 Memory References); only a branch's absolute number is refused as a target.
+    if value.section == "ABS" && !(pcrel && branch) {
         if !field_fits(value.number, width) { return encoding_range }
         little(mut out.data, value.number, width)
     } else {

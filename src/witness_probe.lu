@@ -1,0 +1,103 @@
+//! member: false
+
+use decode
+use x86table
+
+fn canon(s: str) -> str {
+    var out = ""
+    var space = false
+    var i = 0
+    while i < s.len {
+        let c = s.bytes()[i] as int
+        if c == 9 || c == 32 { space = true } else {
+            if space && out.len > 0 { out += " " }
+            space = false
+            out += s[i..i + 1]
+        }
+        i += 1
+    }
+    out
+}
+
+fn hexbytes(h: str) -> List[byte] {
+    var out = List[byte]()
+    var i = 0
+    while i + 1 < h.len {
+        let a = digit(h.bytes()[i] as int)
+        let b = digit(h.bytes()[i + 1] as int)
+        (mut out).push((a * 16 + b) as byte)
+        i += 2
+    }
+    out
+}
+
+fn digit(c: int) -> int {
+    if c >= 48 && c <= 57 { return c - 48 }
+    if c >= 97 && c <= 102 { return c - 87 }
+    0
+}
+
+fn main() -> int {
+    let forms = x86table.load_all() else { return 1 }
+    let idx = decode.index(forms)
+    var red = 0
+    var n = 0
+    var escaped = 0
+    let modes = [
+        "64",
+    ]
+    let hexes = [
+        "b8a20000000f054c8d25f20f00004c8d2df10f000048833c24007422488b7c24084885ff74184989fc8a0784c0740c48ffc73c2f75f34989fcebee4989fdba674523014c89e84c29e04883f808751748b8706f7765726f6666493904247507badcfe2143eb2748833c24017620ba2301efcd488b4c241080392d751180790170750b807902007505badcfe2143b8a9000000bfaddee1febe691912284531d20f054989c649f7deb801000000bf020000004c89e64c89ea4c29e20f05b801000000bf02000000488d35390f0000ba020000000f05488d35620f0000ba0e0000004983fe01750c488d351b0f0000ba180000004983fe16750c488d35210f0000ba110000004983fe0e750c488d35200f0000ba0c000000b801000000bf020000000f05b8e7000000bf010000000f05f4",
+    ]
+    let expecteds = [
+        "mov $0xa2,%eax§syscall§lea 0xff2(%rip),%r12 # 0x402000§lea 0xff1(%rip),%r13 # 0x402006§cmpq $0x0,(%rsp)§je 0x40103e§mov 0x8(%rsp),%rdi§test %rdi,%rdi§je 0x40103e§mov %rdi,%r12§mov (%rdi),%al§test %al,%al§je 0x40103b§inc %rdi§cmp $0x2f,%al§jne 0x401029§mov %rdi,%r12§jmp 0x401029§mov %rdi,%r13§mov $0x1234567,%edx§mov %r13,%rax§sub %r12,%rax§cmp $0x8,%rax§jne 0x401066§movabs $0x66666f7265776f70,%rax§cmp %rax,(%r12)§jne 0x401066§mov $0x4321fedc,%edx§jmp 0x40108d§cmpq $0x1,(%rsp)§jbe 0x40108d§mov $0xcdef0123,%edx§mov 0x10(%rsp),%rcx§cmpb $0x2d,(%rcx)§jne 0x40108d§cmpb $0x70,0x1(%rcx)§jne 0x40108d§cmpb $0x0,0x2(%rcx)§jne 0x40108d§mov $0x4321fedc,%edx§mov $0xa9,%eax§mov $0xfee1dead,%edi§mov $0x28121969,%esi§xor %r10d,%r10d§syscall§mov %rax,%r14§neg %r14§mov $0x1,%eax§mov $0x2,%edi§mov %r12,%rsi§mov %r13,%rdx§sub %r12,%rdx§syscall§mov $0x1,%eax§mov $0x2,%edi§lea 0xf39(%rip),%rsi # 0x402006§mov $0x2,%edx§syscall§lea 0xf62(%rip),%rsi # 0x40203d§mov $0xe,%edx§cmp $0x1,%r14§jne 0x4010f2§lea 0xf1b(%rip),%rsi # 0x402008§mov $0x18,%edx§cmp $0x16,%r14§jne 0x401104§lea 0xf21(%rip),%rsi # 0x402020§mov $0x11,%edx§cmp $0xe,%r14§jne 0x401116§lea 0xf20(%rip),%rsi # 0x402031§mov $0xc,%edx§mov $0x1,%eax§mov $0x2,%edi§syscall§mov $0xe7,%eax§mov $0x1,%edi§syscall§hlt",
+    ]
+    let sources = [
+        "poweroff.text[0:303] at 0x401000",
+    ]
+    let bases = [
+        4198400,
+    ]
+    for i in 0..modes.len {
+        n += 1
+        let mode_text = modes[i]
+        let hex_text = hexes[i]
+        let expected = expecteds[i]
+        let source = sources[i]
+        let base = bases[i]
+        let mode = mode_text.to_int() else 64
+        let bytes = hexbytes(hex_text)
+        var at = 0
+        var text = ""
+        var rt = ""
+        var lines = 0
+        while at < bytes.len {
+            let d = decode.decode(idx, bytes, at, mode, base)
+            let line = decode.text(d, base)
+            let colon = line.find(":\t") else 0
+            text += (if text.len == 0 then "" else "§") + canon(line[colon + 2..])
+            let r = decode.roundtrip(idx, bytes, d, mode)
+            if r.contains(".byte") { escaped += 1; print("ESCAPED {source} | {r}") }
+            rt += r
+            lines += 1
+            at += if d.length > 0 then d.length else 1
+        }
+        if text != expected {
+            red += 1
+            if expected.len < 400 { print("RED {source} | od: {expected} | clef: {text}") } else {
+                print("RED {source}: {lines} lines decoded; texts differ")
+                let a = expected.split("\n")
+                let b = text.split("\n")
+                var shown = 0
+                var k = 0
+                while k < a.len && k < b.len && shown < 12 {
+                    if a[k] != b[k] { shown += 1; print("  od: {a[k]}   clef: {b[k]}") }
+                    k += 1
+                }
+                print("  lines: od {a.len}, clef {b.len}")
+            }
+        }
+    }
+    print("witnesses: {n} rows, {red} text red, {escaped} round-trip escapes")
+    0
+}
