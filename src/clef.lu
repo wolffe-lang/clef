@@ -95,18 +95,24 @@ fn disassemble(opts: front.Options, bytes: List[byte]) -> int {
         }
         var at = 0
         while at < s.bytes.len {
+            // Decode and render inside a region; only the finished line is copied out.
+            var line = ""
+            var length = 1
             region one {
                 let d = decode.decode(idx, s.bytes, at, mode, s.address)
                 if opts.roundtrip {
-                    emit(mut o, decode.roundtrip(idx, s.bytes, d, mode)) else { return 1 }
+                    line = copy decode.roundtrip(idx, s.bytes, d, mode)
                 } else {
-                    emit(mut o, decode.text(d, s.address)) else { return 1 }
+                    var text = decode.text(d, s.address)
                     if opts.expand {
-                        for line in decode.expand(idx, d) { emit(mut o, line) else { return 1 } }
+                        for extra in decode.expand(idx, d) { text += "\n" + extra }
                     }
+                    line = copy text
                 }
-                at += if d.length > 0 then d.length else 1
+                if d.length > 0 { length = d.length }
             }
+            emit(mut o, line) else { return 1 }
+            at += length
         }
     }
     flush(mut o) else { return 1 }

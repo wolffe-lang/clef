@@ -59,7 +59,7 @@ pub fn index(forms: List[x86table.Form]) -> Index {
     var widths = Map[str, int]()
     var seen = Map[str, bool]()
     for i in 0..forms.len {
-        let f = forms[i]
+        let f = copy forms[i]
         let k = key_of(f.opcode, f.opcode_operand >= 0)
         var ids = by[k] else List[int]()
         (mut ids).push(i)
@@ -72,7 +72,7 @@ pub fn index(forms: List[x86table.Form]) -> Index {
             }
         }
     }
-    Index { forms: forms, by_key: by, widths: widths }
+    Index { forms: copy forms, by_key: by, widths: widths }
 }
 
 fn legacy_prefix(b: int) -> bool {
@@ -274,12 +274,14 @@ pub fn decode(idx: Index, bytes: List[byte], offset: int, mode: int, address: in
     // the +r group of the last byte.
     var candidates = List[int]()
     for k in [key_of(opcode, false), key_of(opcode, true)] {
-        for id in idx.by_key[k] else List[int]() { (mut candidates).push(id) }
+        for id in copy idx.by_key[k] else List[int]() { (mut candidates).push(id) }
     }
     if modrm >= 0 && opcode.len < 3 {
         var longer = copy opcode
         (mut longer).push(modrm)
-        for id in idx.by_key[key_of(longer, false)] else List[int]() { (mut candidates).push(id) }
+        for id in copy idx.by_key[key_of(longer, false)] else List[int]() {
+            (mut candidates).push(id)
+        }
     }
     var best = -1
     var best_score = -1
