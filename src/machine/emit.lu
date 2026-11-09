@@ -295,9 +295,10 @@ pub fn emit(
         if repeat == 242 && form.allowed_prefixes != "repz" { return bad_operands }
         explicit_prefix = repeat
     }
-    // Emission order: the row's implied prefixes in GNU as's order (address size, operand size
-    // or mandatory prefix, segment), then LOCK/REP, then explicit prefix words in source order,
-    // then REX, which must immediately precede the opcode (SDM vol.2A 2.2.1).
+    // Emission order: the row's implied address-size and operand-size or mandatory prefix, then
+    // the explicit prefix words in source order, then LOCK/REP, then an operand's segment
+    // override, then REX, which must immediately precede the opcode (SDM vol.2A 2.2.1). The
+    // order is the one the compilers' bytes show (data16 runs before %fs:, 66 before cs).
     if mem.address32 { (mut out.data).push(103 as byte) }
     if form.prefix > 255 {
         (mut out.data).push((form.prefix / 256) as byte)
@@ -305,9 +306,9 @@ pub fn emit(
     } else if form.prefix != 0 {
         (mut out.data).push(form.prefix as byte)
     }
-    if mem.segment != 0 { (mut out.data).push(mem.segment as byte) }
-    if explicit_prefix != 0 { (mut out.data).push(explicit_prefix as byte) }
     for b in explicit { (mut out.data).push(b as byte) }
+    if explicit_prefix != 0 { (mut out.data).push(explicit_prefix as byte) }
+    if mem.segment != 0 { (mut out.data).push(mem.segment as byte) }
     if rex != 0 || force_rex { (mut out.data).push((64 + rex) as byte) }
     for i in 0..form.opcode.len {
         var b = form.opcode[i]

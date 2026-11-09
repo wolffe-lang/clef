@@ -657,7 +657,8 @@ fn classify_refusal(
         }
         let map = if b0 == 197 then 1 else bytes[at] as int % 32
         let op = bytes[at + payload] as int
-        var n = address_length(bytes, at + payload + 1)
+        // VZEROUPPER/VZEROALL (map 1, 77) carry no ModRM (SDM vol.2D Table A-3).
+        var n = if map == 1 && op == 119 then 0 else address_length(bytes, at + payload + 1)
         if n < 0 { n = 0 }
         let imm = if map == 3 then 1 else if map == 1 then sse_imm([15, op]) else 0
         return refuse(

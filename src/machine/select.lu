@@ -276,7 +276,7 @@ pub fn choose(
                 if ops[0].kind == "register" {
                     role = "reg"
                 } else if ops[0].kind == "immediate" && family == "push" {
-                    role = if short_imm(values, known, 0, bits) then "imm8" else "imm"
+                    role = if !no_imm8 && short_imm(values, known, 0, bits) then "imm8" else "imm"
                 } else {
                     role = "rm"
                 }

@@ -446,7 +446,9 @@ pub fn roundtrip(idx: Index, bytes: List[byte], d: Decoded, mode: int) -> str {
         (mut words).push("{{load}}")
     }
     if f.role == "reg_rm" && fl.modbits == 3 && f.family == "xchg" { (mut words).push("{{store}}") }
-    if (f.role == "imm_rm" || f.role == "imm_acc") && d.imm_width > 1 && f.bits > 8 {
+    if (f.role == "imm_rm" || f.role == "imm_acc" || f.role == "imm" && f.family == "push") &&
+        d.imm_width > 1 &&
+        f.bits > 8 {
         let v = signed_of(d.imm, d.imm_width * 8)
         if v >= -128 && v <= 127 && f.family != "mov" && f.family != "test" {
             (mut words).push("{{noimm8s}}")
