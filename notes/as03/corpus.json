@@ -1,0 +1,3748 @@
+{
+ "schema": 1,
+ "corpus_of_record": {
+  "iso": "pax-dev-ca13ce2c.iso",
+  "pax_commit": "ca13ce2c",
+  "built": "2026-11-08",
+  "sha256": "b93ab87f78a43010d15c4b655e07a8f7b668d41805c8e9d79bd123d9f130e39f",
+  "members": "boot/pax and every ELF64 x86-64 regular file in boot/initramfs.cpio, by digest; symlinks and non-ELF files excluded"
+ },
+ "baseline_iso": {
+  "iso": "pax-dev.iso (as00/as01 baseline)",
+  "sha256": "02f979bedf5520661f8a5e5623f1f9a7f5cb18b2b1d8c936b3d51f8c0336d4d9",
+  "binaries": 79,
+  "instruction_lines": 32510475,
+  "bad_lines": 943,
+  "role": "comparability with census/roundtrip.json; its kernel has 943 objdump (bad) lines"
+ },
+ "oracle": {
+  "objdump": "GNU objdump (GNU Binutils for Ubuntu) 2.42",
+  "package": "binutils 2.42-4ubuntu2.10 (ci/oracle-lock.json)",
+  "objdump_sha256": "325c4205a4c658a9d1e1ebc469ae55975a2b897a3d3c1e79d9b158612d37f745",
+  "command": "objdump -d --no-show-raw-insn --wide"
+ },
+ "classes": {
+  "gp": "general-purpose integer, one-byte map and 0F map legacy encodings",
+  "system": "system/privileged and CET/TSX/XSAVE forms (SDM vol.2 system entries)",
+  "sse": "legacy-prefix SSE..SSE4.2 (66/F2/F3 0F ..., 0F 38, 0F 3A)",
+  "x87": "D8-DF escapes",
+  "bmi": "VEX-encoded general-purpose (BMI1/BMI2)",
+  "avx": "VEX/EVEX vector and AVX-512 mask forms",
+  "bad": "objdump (bad)"
+ },
+ "distinct_binaries": 139,
+ "org_built": 133,
+ "external": 6,
+ "totals": {
+  "all": {
+   "gp": 45395055,
+   "system": 170037,
+   "avx": 637932,
+   "bmi": 12288,
+   "sse": 2431601,
+   "x87": 7744
+  },
+  "org_built": {
+   "gp": 35254807,
+   "system": 168264,
+   "avx": 629421,
+   "bmi": 11632,
+   "sse": 2156931,
+   "x87": 6360
+  },
+  "external": {
+   "avx": 8511,
+   "bmi": 656,
+   "gp": 10140248,
+   "sse": 274670,
+   "system": 1773,
+   "x87": 1384
+  }
+ },
+ "external_rule": "cc, ld.lld, limine and crt1.o/crti.o/crtn.o are shipped on the ISO but not built by the org: measured, never part of the law's 100%",
+ "binaries": [
+  {
+   "sha256": "306d7f99c6cbb24e7cd27593de258112f8eb802a78b6e53a7946ae2f007790de",
+   "paths": [
+    "boot/pax",
+    "initramfs/boot/pax"
+   ],
+   "size": 2808488,
+   "instruction_lines": 408943,
+   "external": false,
+   "classes": {
+    "gp": 408877,
+    "system": 66
+   },
+   "executable_sections": {
+    ".text": 408943
+   }
+  },
+  {
+   "sha256": "c54c034b098bf14861bd2a8354af8c2c70ea59cf42deb40c6c3e6761737ce6f1",
+   "paths": [
+    "initramfs/bin/["
+   ],
+   "size": 1154488,
+   "instruction_lines": 216264,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 199587,
+    "sse": 10698,
+    "system": 1216,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 216183
+   }
+  },
+  {
+   "sha256": "4f3f56f97f3a5eecaa3008d2a2475a21a4651d8ed95e6f477147c0e255a0b4ba",
+   "paths": [
+    "initramfs/bin/arch"
+   ],
+   "size": 1147320,
+   "instruction_lines": 214397,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 197709,
+    "sse": 10709,
+    "system": 1216,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 214316
+   }
+  },
+  {
+   "sha256": "fb82459177a298f33df33285da523c677495022e6b37eafd27ab287a06e53270",
+   "paths": [
+    "initramfs/bin/as"
+   ],
+   "size": 785416,
+   "instruction_lines": 124005,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 110618,
+    "sse": 7424,
+    "system": 1191,
+    "x87": 44
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".plt": 66,
+    ".text": 123927
+   }
+  },
+  {
+   "sha256": "adeee2871b902eec715330ba71ddd8bfb898d47bcc62ff6af19fbefff115f6f5",
+   "paths": [
+    "initramfs/bin/aspen"
+   ],
+   "size": 1958552,
+   "instruction_lines": 382595,
+   "external": false,
+   "classes": {
+    "avx": 5891,
+    "bmi": 98,
+    "gp": 356865,
+    "sse": 17868,
+    "system": 1775,
+    "x87": 98
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 87,
+    ".text": 382496
+   }
+  },
+  {
+   "sha256": "44a5d1a67b6bfbfea5c82b08389a879e51bfa036bf03cc7a6ebd55aa102effa7",
+   "paths": [
+    "initramfs/bin/b2sum"
+   ],
+   "size": 1222104,
+   "instruction_lines": 229902,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 213154,
+    "sse": 10769,
+    "system": 1216,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 229821
+   }
+  },
+  {
+   "sha256": "5431c7e6b34117219d36a33c02da0edc09a3c92b75cbe485026aaa7f2a37a882",
+   "paths": [
+    "initramfs/bin/base32"
+   ],
+   "size": 1166360,
+   "instruction_lines": 218582,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 201927,
+    "sse": 10678,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 218501
+   }
+  },
+  {
+   "sha256": "b8e8ef27a9730eff7114d281977045f5f962d6bf50c846b4e5a06126d29c354c",
+   "paths": [
+    "initramfs/bin/base64"
+   ],
+   "size": 1166360,
+   "instruction_lines": 218590,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 201935,
+    "sse": 10678,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 218509
+   }
+  },
+  {
+   "sha256": "5f707b4935b16bd0fea8a4db192e413e637868acffdd03e19276c5a21b43618e",
+   "paths": [
+    "initramfs/bin/basename"
+   ],
+   "size": 1143128,
+   "instruction_lines": 213450,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 196840,
+    "sse": 10633,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 213369
+   }
+  },
+  {
+   "sha256": "bb0f968a4e6f5262df5edf5fde18a5c63cf01a63a4cf13fedf56039a8754ab7e",
+   "paths": [
+    "initramfs/bin/basenc"
+   ],
+   "size": 1172888,
+   "instruction_lines": 219864,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 203209,
+    "sse": 10678,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 219783
+   }
+  },
+  {
+   "sha256": "530f88be0cd8a9743775dec1d1ecea7141668c245e178244fa3bbe7566637142",
+   "paths": [
+    "initramfs/bin/burrow-keygen"
+   ],
+   "size": 15480088,
+   "instruction_lines": 230280,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 212977,
+    "sse": 11324,
+    "system": 1216,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 230199
+   }
+  },
+  {
+   "sha256": "ae1931818e08d628d1be1156dd0cb19551030bd19754c03058d924b549773deb",
+   "paths": [
+    "initramfs/bin/cat"
+   ],
+   "size": 1182552,
+   "instruction_lines": 221586,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 204844,
+    "sse": 10754,
+    "system": 1225,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 221505
+   }
+  },
+  {
+   "sha256": "17d5d18c274b609088bc4fd42395be507d99e640eefaa0c344b3ffc8175038e8",
+   "paths": [
+    "initramfs/bin/chcon"
+   ],
+   "size": 1151288,
+   "instruction_lines": 214894,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 198242,
+    "sse": 10675,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 214813
+   }
+  },
+  {
+   "sha256": "04c7a0365000cc2950cdcd7235c8836a1ca72ed0e4c543c7dd12704c87ae8aae",
+   "paths": [
+    "initramfs/bin/chgrp"
+   ],
+   "size": 1185656,
+   "instruction_lines": 222234,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 205474,
+    "sse": 10780,
+    "system": 1217,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 222153
+   }
+  },
+  {
+   "sha256": "fb096fcc2866dcda4f47de157c7194cc11fee08b37fde26bcb9d23059a831a60",
+   "paths": [
+    "initramfs/bin/chmod"
+   ],
+   "size": 1183032,
+   "instruction_lines": 221487,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 204744,
+    "sse": 10761,
+    "system": 1219,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 221406
+   }
+  },
+  {
+   "sha256": "665b8741c88633f3da8adfc57b792088bbb36cc88d037bbfac65777297acf5ee",
+   "paths": [
+    "initramfs/bin/chown"
+   ],
+   "size": 1185656,
+   "instruction_lines": 222239,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 205479,
+    "sse": 10780,
+    "system": 1217,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 222158
+   }
+  },
+  {
+   "sha256": "e67089cbef2b98e1b461fd80990cdb9387d0744ce151a3c284fe055d81fc1d3c",
+   "paths": [
+    "initramfs/bin/chroot"
+   ],
+   "size": 1139288,
+   "instruction_lines": 212610,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 196000,
+    "sse": 10633,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 212529
+   }
+  },
+  {
+   "sha256": "32d87f0da97b9564211b83cd049dc8ad6a3230786a9ac6536ef5b23b64879d5f",
+   "paths": [
+    "initramfs/bin/cksum"
+   ],
+   "size": 1222040,
+   "instruction_lines": 229841,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 213093,
+    "sse": 10769,
+    "system": 1216,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 229760
+   }
+  },
+  {
+   "sha256": "955a81e0ef5531c3cb18f32a7956bfff1c4184f1eb07cf5a8dfad8051c48a0d5",
+   "paths": [
+    "initramfs/bin/comm"
+   ],
+   "size": 1166712,
+   "instruction_lines": 218398,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 201751,
+    "sse": 10670,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 218317
+   }
+  },
+  {
+   "sha256": "f5bf35d1c6bb68166b456d65c3133388ca5caf92a4880f3bac781879c224707f",
+   "paths": [
+    "initramfs/bin/cp"
+   ],
+   "size": 1261944,
+   "instruction_lines": 237876,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 220975,
+    "sse": 10894,
+    "system": 1244,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 237795
+   }
+  },
+  {
+   "sha256": "971360a55ee87680d438deb8b8b2df0d704002deb039e24b3c492324e0c5f175",
+   "paths": [
+    "initramfs/bin/csplit"
+   ],
+   "size": 1233816,
+   "instruction_lines": 231460,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 214403,
+    "sse": 11076,
+    "system": 1218,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 231379
+   }
+  },
+  {
+   "sha256": "ffbdba11c64b9b59b9c1db42c657ece5f70cb7bc970b5a79714ace57c7f14498",
+   "paths": [
+    "initramfs/bin/cut"
+   ],
+   "size": 1187288,
+   "instruction_lines": 221788,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 205089,
+    "sse": 10722,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 221707
+   }
+  },
+  {
+   "sha256": "59d83b3ae6f0450fda057f7783dfee6c386ae4d7a642c84a79da22b013470def",
+   "paths": [
+    "initramfs/bin/date"
+   ],
+   "size": 1255672,
+   "instruction_lines": 236105,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 218882,
+    "sse": 11244,
+    "system": 1216,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 236024
+   }
+  },
+  {
+   "sha256": "a620c980891256dffef01c28cd4bf844c88791d5d7ebdb3cd8ffb38fc610eab2",
+   "paths": [
+    "initramfs/bin/dd"
+   ],
+   "size": 1515704,
+   "instruction_lines": 291591,
+   "external": false,
+   "classes": {
+    "avx": 5891,
+    "bmi": 98,
+    "gp": 269792,
+    "sse": 14197,
+    "system": 1515,
+    "x87": 98
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 87,
+    ".text": 291492
+   }
+  },
+  {
+   "sha256": "cce71ff36ab2c016a754ee96f277dfadba8f92ffb07b9795a3d05e266ea62a21",
+   "paths": [
+    "initramfs/bin/den"
+   ],
+   "size": 17943000,
+   "instruction_lines": 747599,
+   "external": false,
+   "classes": {
+    "avx": 5891,
+    "bmi": 98,
+    "gp": 712903,
+    "sse": 26747,
+    "system": 1862,
+    "x87": 98
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 87,
+    ".text": 747500
+   }
+  },
+  {
+   "sha256": "ea38fafa4486c4ddc4266ce49962ee11868672c922f8b955e7248c3ec2f06230",
+   "paths": [
+    "initramfs/bin/dir",
+    "initramfs/bin/ls",
+    "initramfs/bin/vdir"
+   ],
+   "size": 1322520,
+   "instruction_lines": 249945,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 232761,
+    "sse": 11204,
+    "system": 1217,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 249864
+   }
+  },
+  {
+   "sha256": "83b751ddc49b106aa4702761cf6bf3a6bf8dc7a2dc2aed1349a7180886efc90f",
+   "paths": [
+    "initramfs/bin/dircolors"
+   ],
+   "size": 1165496,
+   "instruction_lines": 217513,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 200802,
+    "sse": 10734,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 217432
+   }
+  },
+  {
+   "sha256": "d6cd99dc0ca193cad683053f6862f6c843b9db49921816c0cf5f2698dc6390f5",
+   "paths": [
+    "initramfs/bin/dirname"
+   ],
+   "size": 1140888,
+   "instruction_lines": 212963,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 196353,
+    "sse": 10633,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 212882
+   }
+  },
+  {
+   "sha256": "84b386402e5d5d731adfba089a28cddd005add0125a733402be4ee3ab54f2eb0",
+   "paths": [
+    "initramfs/bin/du"
+   ],
+   "size": 1203480,
+   "instruction_lines": 226537,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 209655,
+    "sse": 10904,
+    "system": 1215,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 226456
+   }
+  },
+  {
+   "sha256": "14d88116a2987065e71fd90332384805605b26b9679804271330b4c2e92ab004",
+   "paths": [
+    "initramfs/bin/echo"
+   ],
+   "size": 1137752,
+   "instruction_lines": 212303,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 195689,
+    "sse": 10637,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 212222
+   }
+  },
+  {
+   "sha256": "256da4a67685b8e5c8ef957933b7ed7e151498313febc8c29d49675581f4ccd4",
+   "paths": [
+    "initramfs/bin/env"
+   ],
+   "size": 1231288,
+   "instruction_lines": 231614,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 214320,
+    "sse": 11297,
+    "system": 1234,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 231533
+   }
+  },
+  {
+   "sha256": "e7d9a02e8db72ddd255e0dbc9d5443d9eca2ca0dbf8cfce7e9efd0de387af632",
+   "paths": [
+    "initramfs/bin/expand"
+   ],
+   "size": 1179224,
+   "instruction_lines": 220113,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 203422,
+    "sse": 10714,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 220032
+   }
+  },
+  {
+   "sha256": "015ae1f50e692b2a19a52ed3dc07a6d6f3f0e55cb496d91fc4f813ce177cca67",
+   "paths": [
+    "initramfs/bin/expr"
+   ],
+   "size": 1181304,
+   "instruction_lines": 221427,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 204461,
+    "sse": 10989,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 221346
+   }
+  },
+  {
+   "sha256": "de439520a5167c953bc539ca9e308dd69ded5241f92e487263a2e8b683033e6c",
+   "paths": [
+    "initramfs/bin/factor"
+   ],
+   "size": 1168408,
+   "instruction_lines": 219211,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 202554,
+    "sse": 10680,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 219130
+   }
+  },
+  {
+   "sha256": "2c2b87a9f903c240e628d26050d90563203479dc305b8118596c7bda5504baf9",
+   "paths": [
+    "initramfs/bin/false"
+   ],
+   "size": 1129144,
+   "instruction_lines": 210384,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 193774,
+    "sse": 10633,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 210303
+   }
+  },
+  {
+   "sha256": "644dd76bfefa8710067778fb710312144fd86dc24f8eaa111f4c815c41e30bd7",
+   "paths": [
+    "initramfs/bin/fmt"
+   ],
+   "size": 1174776,
+   "instruction_lines": 220334,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 203613,
+    "sse": 10742,
+    "system": 1216,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 220253
+   }
+  },
+  {
+   "sha256": "ef84cd59b7e8d7411c7b77901d53589fefc452ff8d53c128407e5aaba5f71531",
+   "paths": [
+    "initramfs/bin/fold"
+   ],
+   "size": 1179864,
+   "instruction_lines": 220197,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 203516,
+    "sse": 10704,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 220116
+   }
+  },
+  {
+   "sha256": "0d54696102ad2337100f6016ce984d6ee78a634c7d449f16be9ab12899bcba83",
+   "paths": [
+    "initramfs/bin/groups"
+   ],
+   "size": 1153720,
+   "instruction_lines": 215999,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 199366,
+    "sse": 10656,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 215918
+   }
+  },
+  {
+   "sha256": "f133c8a86f427bbc0659707efbddc87fa5382bc91a6bcf41819f277b457dd90f",
+   "paths": [
+    "initramfs/bin/head"
+   ],
+   "size": 1181144,
+   "instruction_lines": 221727,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 205031,
+    "sse": 10716,
+    "system": 1217,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 221646
+   }
+  },
+  {
+   "sha256": "10f0c96b0d90782ccd3768d90e52b114255824f256a8b59268e5d2c8a358f676",
+   "paths": [
+    "initramfs/bin/hostid"
+   ],
+   "size": 1167864,
+   "instruction_lines": 217793,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 201108,
+    "sse": 10708,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 217712
+   }
+  },
+  {
+   "sha256": "02e807a3b0f89c1fcf5e30b1c8c6ff8b268b41629a1d2b33d2b2130063aa08a5",
+   "paths": [
+    "initramfs/bin/hostname"
+   ],
+   "size": 1146904,
+   "instruction_lines": 214317,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 197688,
+    "sse": 10652,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 214236
+   }
+  },
+  {
+   "sha256": "83cd0788fa011b173d52b88b3505d2ae496006c281e801d40c16f07cea2bf232",
+   "paths": [
+    "initramfs/bin/id"
+   ],
+   "size": 1161336,
+   "instruction_lines": 217581,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 200948,
+    "sse": 10656,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 217500
+   }
+  },
+  {
+   "sha256": "0a943a54e734554dd919bd5a87b8c0706393d79effb4c08619ed27f9344b935a",
+   "paths": [
+    "initramfs/bin/install"
+   ],
+   "size": 1229496,
+   "instruction_lines": 231823,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 214869,
+    "sse": 10951,
+    "system": 1240,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 231742
+   }
+  },
+  {
+   "sha256": "344e1fae6114be2d790c733fb7c7ae871ce231de11281f4465d6761034baa7d2",
+   "paths": [
+    "initramfs/bin/join"
+   ],
+   "size": 1179704,
+   "instruction_lines": 221392,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 204673,
+    "sse": 10742,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 221311
+   }
+  },
+  {
+   "sha256": "202d047ae157a880c1e193e83216c12af5295227e0cea83e30345a03b25c9915",
+   "paths": [
+    "initramfs/bin/kill"
+   ],
+   "size": 1168920,
+   "instruction_lines": 218325,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 201381,
+    "sse": 10955,
+    "system": 1226,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 218244
+   }
+  },
+  {
+   "sha256": "7188f877f0c4c2ba6aaa8d779a9ca5fe99bdda30a7e0a7c8d2d043a5aa148a81",
+   "paths": [
+    "initramfs/bin/limine"
+   ],
+   "size": 913792,
+   "instruction_lines": 128686,
+   "external": true,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 115264,
+    "sse": 7441,
+    "system": 1209,
+    "x87": 44
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".plt": 66,
+    ".text": 128608
+   }
+  },
+  {
+   "sha256": "a59e8e1d7d7c1adf9809dbd3ad4f9a576136652ff28c69c3caad4757b798fc4f",
+   "paths": [
+    "initramfs/bin/link"
+   ],
+   "size": 1152376,
+   "instruction_lines": 215359,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 198627,
+    "sse": 10751,
+    "system": 1218,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 215278
+   }
+  },
+  {
+   "sha256": "705466da9c48eb8a3448e0f74a5ec03ff0458cae5ac278134ced7787c9d25783",
+   "paths": [
+    "initramfs/bin/ln"
+   ],
+   "size": 1203352,
+   "instruction_lines": 226185,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 209409,
+    "sse": 10790,
+    "system": 1223,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 226104
+   }
+  },
+  {
+   "sha256": "98cb3869a2392721590962345bb4dc298dc97ed8dafb16507216a634ee0e7e7a",
+   "paths": [
+    "initramfs/bin/lobo"
+   ],
+   "size": 3000920,
+   "instruction_lines": 587687,
+   "external": false,
+   "classes": {
+    "avx": 5891,
+    "bmi": 98,
+    "gp": 556447,
+    "sse": 23277,
+    "system": 1876,
+    "x87": 98
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 87,
+    ".text": 587588
+   }
+  },
+  {
+   "sha256": "4aa68359aa61be9b94a3e85bfa144015dcd3c47618c762e1685ca9954fc387a9",
+   "paths": [
+    "initramfs/bin/login"
+   ],
+   "size": 1533816,
+   "instruction_lines": 297197,
+   "external": false,
+   "classes": {
+    "avx": 5891,
+    "bmi": 98,
+    "gp": 275104,
+    "sse": 14468,
+    "system": 1538,
+    "x87": 98
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 87,
+    ".text": 297098
+   }
+  },
+  {
+   "sha256": "884e3aa071f6cd24bd57ce87e5175f681249f7fbce30a9cdf212f03f6df7e089",
+   "paths": [
+    "initramfs/bin/logname"
+   ],
+   "size": 1153560,
+   "instruction_lines": 215924,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 199291,
+    "sse": 10656,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 215843
+   }
+  },
+  {
+   "sha256": "f0e0cc20cdf614c8616de70162bac93cb32f509c98996af88e9a762d0ff74dfd",
+   "paths": [
+    "initramfs/bin/lope"
+   ],
+   "size": 1744952,
+   "instruction_lines": 338517,
+   "external": false,
+   "classes": {
+    "avx": 5891,
+    "bmi": 98,
+    "gp": 315270,
+    "sse": 15381,
+    "system": 1779,
+    "x87": 98
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 87,
+    ".text": 338418
+   }
+  },
+  {
+   "sha256": "ddbc0a387fd58d8184b9a7d26c84b3cebada456572f73dcd195b6bb875697e05",
+   "paths": [
+    "initramfs/bin/lupin"
+   ],
+   "size": 7890040,
+   "instruction_lines": 1156250,
+   "external": false,
+   "classes": {
+    "avx": 282,
+    "gp": 1083604,
+    "sse": 71819,
+    "system": 442,
+    "x87": 103
+   },
+   "executable_sections": {
+    ".fini": 3,
+    ".init": 3,
+    ".text": 1156244
+   }
+  },
+  {
+   "sha256": "dd17d41d71b2d8999ec563dfd720a9d268296cc3361f5db12baddd6339e6fd35",
+   "paths": [
+    "initramfs/bin/md5sum"
+   ],
+   "size": 1221976,
+   "instruction_lines": 229846,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 213098,
+    "sse": 10769,
+    "system": 1216,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 229765
+   }
+  },
+  {
+   "sha256": "3d1b5c1828b7476766543a8f1047f0ba31697d795fc9f3e7a75e45a26f97e3c7",
+   "paths": [
+    "initramfs/bin/mkdir"
+   ],
+   "size": 1161624,
+   "instruction_lines": 217212,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 200485,
+    "sse": 10744,
+    "system": 1220,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 217131
+   }
+  },
+  {
+   "sha256": "452d5bfa424dff44bc67db124d38c2dc1bec35326c9bc1115b57bfea41c0a427",
+   "paths": [
+    "initramfs/bin/mkfifo"
+   ],
+   "size": 1150424,
+   "instruction_lines": 215005,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 198346,
+    "sse": 10676,
+    "system": 1220,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 214924
+   }
+  },
+  {
+   "sha256": "df8a134594c37a70fb2a68d96727e7f8b3a9ecbc65cd2277cb26cd79f48011e4",
+   "paths": [
+    "initramfs/bin/mknod"
+   ],
+   "size": 1151256,
+   "instruction_lines": 215176,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 198513,
+    "sse": 10680,
+    "system": 1220,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 215095
+   }
+  },
+  {
+   "sha256": "621b89a13859289944f636a5ac4d4a189cf52662b745448fa83c59eb029a6227",
+   "paths": [
+    "initramfs/bin/mktemp"
+   ],
+   "size": 1160632,
+   "instruction_lines": 216970,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 200280,
+    "sse": 10708,
+    "system": 1219,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 216889
+   }
+  },
+  {
+   "sha256": "e27fda30dd2fde93a69a4c7d881dc9ba4bea3a161d2a92f4447496b1b090202e",
+   "paths": [
+    "initramfs/bin/mv"
+   ],
+   "size": 1195800,
+   "instruction_lines": 224356,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 207588,
+    "sse": 10788,
+    "system": 1217,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 224275
+   }
+  },
+  {
+   "sha256": "5118049dcae976e9cf4d8e7b7404b318213e8e5981603ea62f87d040dfa6c759",
+   "paths": [
+    "initramfs/bin/nice"
+   ],
+   "size": 1191768,
+   "instruction_lines": 224343,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 207453,
+    "sse": 10905,
+    "system": 1222,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 224262
+   }
+  },
+  {
+   "sha256": "05dd4361e106de93a5ae05847fac6f02099e4e3d49aa01dd0e1056b48849e463",
+   "paths": [
+    "initramfs/bin/nl"
+   ],
+   "size": 1185912,
+   "instruction_lines": 222129,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 205212,
+    "sse": 10940,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 222048
+   }
+  },
+  {
+   "sha256": "021ace106a68045e4306a858b0ca53e2370a0f75040caa1cc9ebb24d65878afb",
+   "paths": [
+    "initramfs/bin/nohup"
+   ],
+   "size": 1190936,
+   "instruction_lines": 223826,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 206927,
+    "sse": 10909,
+    "system": 1227,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 223745
+   }
+  },
+  {
+   "sha256": "34bf59d9c16a6aff8464681c3c2206a0fcbab07a22fa5ba13357b6ab7869925d",
+   "paths": [
+    "initramfs/bin/nproc"
+   ],
+   "size": 1174616,
+   "instruction_lines": 220358,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 203487,
+    "sse": 10891,
+    "system": 1217,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 220277
+   }
+  },
+  {
+   "sha256": "86ff3211addf917faa6ebb652ada278b961719d3527537d499e5e7ffddedae2b",
+   "paths": [
+    "initramfs/bin/numfmt"
+   ],
+   "size": 1217944,
+   "instruction_lines": 229818,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 212881,
+    "sse": 10958,
+    "system": 1216,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 229737
+   }
+  },
+  {
+   "sha256": "27b992e5cde0580edbde501b40844f01f8bfc7db374b6683114641e75ba2c059",
+   "paths": [
+    "initramfs/bin/od"
+   ],
+   "size": 1215352,
+   "instruction_lines": 229466,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 212678,
+    "sse": 10809,
+    "system": 1216,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 229385
+   }
+  },
+  {
+   "sha256": "44144d70242d399ca207d0e68106c8460a0586fcfb7140dc2f95968681194b10",
+   "paths": [
+    "initramfs/bin/passwd"
+   ],
+   "size": 1517144,
+   "instruction_lines": 292829,
+   "external": false,
+   "classes": {
+    "avx": 5891,
+    "bmi": 98,
+    "gp": 270851,
+    "sse": 14370,
+    "system": 1521,
+    "x87": 98
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 87,
+    ".text": 292730
+   }
+  },
+  {
+   "sha256": "1fa86b424448b86292ea6a841f8ba739f56537ed0186a323e65a7c9149b71642",
+   "paths": [
+    "initramfs/bin/paste"
+   ],
+   "size": 1167480,
+   "instruction_lines": 218526,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 201846,
+    "sse": 10703,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 218445
+   }
+  },
+  {
+   "sha256": "d3fe637b1680150c3a3b023298a8671cfb6bfd45affa4c5d5368ea34f0fea7c7",
+   "paths": [
+    "initramfs/bin/pathchk"
+   ],
+   "size": 1151832,
+   "instruction_lines": 215332,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 198678,
+    "sse": 10677,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 215251
+   }
+  },
+  {
+   "sha256": "a7532e1ae1910cc3b92baf66a78428d539c02ec61c8aa9ad203a5b0305b55ef6",
+   "paths": [
+    "initramfs/bin/pax-install"
+   ],
+   "size": 15444784,
+   "instruction_lines": 363839,
+   "external": false,
+   "classes": {
+    "avx": 5891,
+    "bmi": 98,
+    "gp": 340252,
+    "sse": 15702,
+    "system": 1800,
+    "x87": 96
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 87,
+    ".text": 363740
+   }
+  },
+  {
+   "sha256": "7bbd1a5a7871d1c5d89ac51727f06787ec339077eba1f49daf24cae63aca13df",
+   "paths": [
+    "initramfs/bin/paxext2"
+   ],
+   "size": 15018808,
+   "instruction_lines": 286579,
+   "external": false,
+   "classes": {
+    "avx": 5891,
+    "bmi": 98,
+    "gp": 265027,
+    "sse": 13969,
+    "system": 1498,
+    "x87": 96
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 87,
+    ".text": 286480
+   }
+  },
+  {
+   "sha256": "a502c164a084cddafea7868152437cfe3fcdb2bcfa62162eab7bb8775b5ff34a",
+   "paths": [
+    "initramfs/bin/paxfat"
+   ],
+   "size": 15035184,
+   "instruction_lines": 288779,
+   "external": false,
+   "classes": {
+    "avx": 5891,
+    "bmi": 98,
+    "gp": 267208,
+    "sse": 13989,
+    "system": 1497,
+    "x87": 96
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 87,
+    ".text": 288680
+   }
+  },
+  {
+   "sha256": "c12d95dbe8a2c94f19c99b2b719d6640a5a56efc1982f274e47843d1043c1bfd",
+   "paths": [
+    "initramfs/bin/paxgpt"
+   ],
+   "size": 15008312,
+   "instruction_lines": 283571,
+   "external": false,
+   "classes": {
+    "avx": 5891,
+    "bmi": 98,
+    "gp": 262047,
+    "sse": 13942,
+    "system": 1497,
+    "x87": 96
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 87,
+    ".text": 283472
+   }
+  },
+  {
+   "sha256": "2275599ef3fcb1f857246b2b87639bb64f93b3b70f7e33216ff90eebaf31d068",
+   "paths": [
+    "initramfs/bin/pelt",
+    "initramfs/bin/sh"
+   ],
+   "size": 2604024,
+   "instruction_lines": 502232,
+   "external": false,
+   "classes": {
+    "avx": 5891,
+    "bmi": 98,
+    "gp": 459862,
+    "sse": 34474,
+    "system": 1809,
+    "x87": 98
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 87,
+    ".text": 502133
+   }
+  },
+  {
+   "sha256": "908e55ba5a2ecbdc4a5c6b0efdcd30fbb28b1edb067e58a06088b25d911a687c",
+   "paths": [
+    "initramfs/bin/pinky"
+   ],
+   "size": 1225496,
+   "instruction_lines": 229771,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 212739,
+    "sse": 11053,
+    "system": 1216,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 229690
+   }
+  },
+  {
+   "sha256": "f2622c08cd6e9e8d0550556f46654544c4c3629f0a4b959f66fce50bed160c4a",
+   "paths": [
+    "initramfs/bin/play"
+   ],
+   "size": 1375896,
+   "instruction_lines": 261947,
+   "external": false,
+   "classes": {
+    "avx": 5575,
+    "bmi": 95,
+    "gp": 241560,
+    "sse": 13350,
+    "system": 1275,
+    "x87": 92
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 72,
+    ".text": 261863
+   }
+  },
+  {
+   "sha256": "daa4bd71b6e2c7521e1d69a8c00b4a57b08dd5aecf2e80db46fd995d29707dfa",
+   "paths": [
+    "initramfs/bin/poweroff",
+    "initramfs/bin/reboot"
+   ],
+   "size": 9232,
+   "instruction_lines": 79,
+   "external": false,
+   "classes": {
+    "gp": 72,
+    "system": 7
+   },
+   "executable_sections": {
+    ".text": 79
+   }
+  },
+  {
+   "sha256": "ea45edb8e1ed07faa4e9d2c297a87a493c90fe23c7acb642aadedef126f430df",
+   "paths": [
+    "initramfs/bin/pr"
+   ],
+   "size": 1230104,
+   "instruction_lines": 232077,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 215099,
+    "sse": 11001,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 231996
+   }
+  },
+  {
+   "sha256": "d41cd0ace52d2e797193b862e30b20fe5e19004408c44848291da95c0cf99a9b",
+   "paths": [
+    "initramfs/bin/printenv"
+   ],
+   "size": 1152760,
+   "instruction_lines": 215789,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 199089,
+    "sse": 10723,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 215708
+   }
+  },
+  {
+   "sha256": "df767d901b146923b13fa9f37769d1149f963e54291a650dcf6b77ee36b5e929",
+   "paths": [
+    "initramfs/bin/printf"
+   ],
+   "size": 1204184,
+   "instruction_lines": 226355,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 209613,
+    "sse": 10765,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 226274
+   }
+  },
+  {
+   "sha256": "97176c1f03a927124017a64b4fb9860124041c60d924dc1b7e1c1b6ec68b896a",
+   "paths": [
+    "initramfs/bin/ptx"
+   ],
+   "size": 1227384,
+   "instruction_lines": 231589,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 214507,
+    "sse": 11105,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 231508
+   }
+  },
+  {
+   "sha256": "d5989ca612400d515844b4eb5944fadc184fa1083c6a5075f95eb7b74e6eb5c9",
+   "paths": [
+    "initramfs/bin/pwd"
+   ],
+   "size": 1160600,
+   "instruction_lines": 217185,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 200488,
+    "sse": 10719,
+    "system": 1215,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 217104
+   }
+  },
+  {
+   "sha256": "151fa64fc3ce6415614f1a22c51c8a8f0ea479a22553f06af55979031ab9744f",
+   "paths": [
+    "initramfs/bin/readlink"
+   ],
+   "size": 1156024,
+   "instruction_lines": 215879,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 199223,
+    "sse": 10679,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 215798
+   }
+  },
+  {
+   "sha256": "2f76e1b07d1afbeff6c3661767adb858576c49ae7aa3b6abe95f01c11563f043",
+   "paths": [
+    "initramfs/bin/realpath"
+   ],
+   "size": 1163384,
+   "instruction_lines": 217767,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 201081,
+    "sse": 10709,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 217686
+   }
+  },
+  {
+   "sha256": "f58a0c4fa33c39713f3d5e6ded0cff772c72473f64d7bd2a6d46826ca7dae494",
+   "paths": [
+    "initramfs/bin/rm"
+   ],
+   "size": 1190968,
+   "instruction_lines": 223507,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 206763,
+    "sse": 10760,
+    "system": 1221,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 223426
+   }
+  },
+  {
+   "sha256": "1c38f04b4072aa13b5e15d42b7927b3a984e8bef93f33f79fc4822f494e946a4",
+   "paths": [
+    "initramfs/bin/rmdir"
+   ],
+   "size": 1157688,
+   "instruction_lines": 216278,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 199592,
+    "sse": 10702,
+    "system": 1221,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 216197
+   }
+  },
+  {
+   "sha256": "0ea763691d2e86861c727ee9e559d3a5672791426f59f9194572ccd50c08a097",
+   "paths": [
+    "initramfs/bin/runcon"
+   ],
+   "size": 1144056,
+   "instruction_lines": 213648,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 197015,
+    "sse": 10656,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 213567
+   }
+  },
+  {
+   "sha256": "b9fb6390f6dadb883159592c77d7610544842a99b778ce7325c40c56aa6f5652",
+   "paths": [
+    "initramfs/bin/scent"
+   ],
+   "size": 15450928,
+   "instruction_lines": 252951,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 235307,
+    "sse": 11666,
+    "system": 1215,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 252870
+   }
+  },
+  {
+   "sha256": "e63186819283d56035f377c9af69600306fcadc1366eae05f8e0c30c2088ea64",
+   "paths": [
+    "initramfs/bin/seq"
+   ],
+   "size": 1169688,
+   "instruction_lines": 219486,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 202827,
+    "sse": 10682,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 219405
+   }
+  },
+  {
+   "sha256": "3939def566ee1b1781baaca05c6a20b90cf4c30e103f1fe747c3e06e0e79c727",
+   "paths": [
+    "initramfs/bin/sha1sum"
+   ],
+   "size": 1221976,
+   "instruction_lines": 229843,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 213095,
+    "sse": 10769,
+    "system": 1216,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 229762
+   }
+  },
+  {
+   "sha256": "8101e311c2dee1ef34b20d7f7abefa6f868bef87323a1f1920b088f57658b25e",
+   "paths": [
+    "initramfs/bin/sha224sum"
+   ],
+   "size": 1222040,
+   "instruction_lines": 229847,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 213099,
+    "sse": 10769,
+    "system": 1216,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 229766
+   }
+  },
+  {
+   "sha256": "1d904398f6b83df32019bcee48f7feb5def6b974f344e8fd502fb50e3d46848a",
+   "paths": [
+    "initramfs/bin/sha256sum"
+   ],
+   "size": 1222040,
+   "instruction_lines": 229846,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 213098,
+    "sse": 10769,
+    "system": 1216,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 229765
+   }
+  },
+  {
+   "sha256": "4ada80397c1b61abc36e66936e152f5ee884aece9ad52da3c2cc6ac0eb217657",
+   "paths": [
+    "initramfs/bin/sha384sum"
+   ],
+   "size": 1222040,
+   "instruction_lines": 229847,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 213099,
+    "sse": 10769,
+    "system": 1216,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 229766
+   }
+  },
+  {
+   "sha256": "d6f245685c6e684e3a53533b8ce0529bdde6fc90f1e8eceaa73a103eeb6b7843",
+   "paths": [
+    "initramfs/bin/sha512sum"
+   ],
+   "size": 1222040,
+   "instruction_lines": 229842,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 213094,
+    "sse": 10769,
+    "system": 1216,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 229761
+   }
+  },
+  {
+   "sha256": "7d09123349323e2a6177fd75400356d008c455383183b449f6f51322a682ce8b",
+   "paths": [
+    "initramfs/bin/shred"
+   ],
+   "size": 1474680,
+   "instruction_lines": 283067,
+   "external": false,
+   "classes": {
+    "avx": 5891,
+    "bmi": 98,
+    "gp": 261516,
+    "sse": 13960,
+    "system": 1505,
+    "x87": 97
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 87,
+    ".text": 282968
+   }
+  },
+  {
+   "sha256": "da79edaf03ff8dfdbe39179029aaf3c749bb2969ffef6cc4ce4a2e18b8508816",
+   "paths": [
+    "initramfs/bin/shuf"
+   ],
+   "size": 1175384,
+   "instruction_lines": 220545,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 203803,
+    "sse": 10760,
+    "system": 1219,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 220464
+   }
+  },
+  {
+   "sha256": "920f89a77c61303707dbf5081e9d3144bc647fbe5955829b2c128ffa5956b71c",
+   "paths": [
+    "initramfs/bin/sleep"
+   ],
+   "size": 1451704,
+   "instruction_lines": 278473,
+   "external": false,
+   "classes": {
+    "avx": 5891,
+    "bmi": 98,
+    "gp": 256735,
+    "sse": 14144,
+    "system": 1507,
+    "x87": 98
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 87,
+    ".text": 278374
+   }
+  },
+  {
+   "sha256": "5a6b2a5bb11118e56207146aff2f06379051158846025b1e5bf3180ea73c3962",
+   "paths": [
+    "initramfs/bin/sniff"
+   ],
+   "size": 1866488,
+   "instruction_lines": 352346,
+   "external": false,
+   "classes": {
+    "avx": 5891,
+    "bmi": 98,
+    "gp": 325017,
+    "sse": 19701,
+    "system": 1600,
+    "x87": 39
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 84,
+    ".text": 352250
+   }
+  },
+  {
+   "sha256": "fa33e894d515dff197dee1ff74a60305eebf0d20e029bdcd0b70514d41e88875",
+   "paths": [
+    "initramfs/bin/sort"
+   ],
+   "size": 1222200,
+   "instruction_lines": 229774,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 213066,
+    "sse": 10726,
+    "system": 1219,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 229693
+   }
+  },
+  {
+   "sha256": "6afdafe70f70e9feb4eb019f0bc37aa0c22844e2325bf85b28f7c678d7ba923e",
+   "paths": [
+    "initramfs/bin/split"
+   ],
+   "size": 1479256,
+   "instruction_lines": 285044,
+   "external": false,
+   "classes": {
+    "avx": 5891,
+    "bmi": 98,
+    "gp": 263447,
+    "sse": 13881,
+    "system": 1687,
+    "x87": 40
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 84,
+    ".text": 284948
+   }
+  },
+  {
+   "sha256": "945156b49ce8c61876a71c12d74d8ddc1b38c522f0d611811a5a30c1d6466561",
+   "paths": [
+    "initramfs/bin/ssh"
+   ],
+   "size": 16349600,
+   "instruction_lines": 384507,
+   "external": false,
+   "classes": {
+    "avx": 5891,
+    "bmi": 98,
+    "gp": 360248,
+    "sse": 16402,
+    "system": 1770,
+    "x87": 98
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 87,
+    ".text": 384408
+   }
+  },
+  {
+   "sha256": "262e6ea14ca1e140e95aa23ea4fc5458703d605393049c942e57ca25bd354601",
+   "paths": [
+    "initramfs/bin/stat"
+   ],
+   "size": 1199544,
+   "instruction_lines": 225563,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 208625,
+    "sse": 10961,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 225482
+   }
+  },
+  {
+   "sha256": "8d7d78f857f9a97433050a9cf889e1213850446d7466fbaab1b390be4c1de145",
+   "paths": [
+    "initramfs/bin/stdbuf"
+   ],
+   "size": 1188536,
+   "instruction_lines": 223599,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 206750,
+    "sse": 10862,
+    "system": 1224,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 223518
+   }
+  },
+  {
+   "sha256": "5587c239cd905d32e178d596b541e61dae86ddc67e9f69470b7b8a42a327b0d1",
+   "paths": [
+    "initramfs/bin/stty"
+   ],
+   "size": 1155192,
+   "instruction_lines": 216002,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 199293,
+    "sse": 10727,
+    "system": 1219,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 215921
+   }
+  },
+  {
+   "sha256": "e3c8acf0b0e78cc86b7410a573991625f6f2715d840dc7d042ba877f1e0e265c",
+   "paths": [
+    "initramfs/bin/su"
+   ],
+   "size": 1537368,
+   "instruction_lines": 297842,
+   "external": false,
+   "classes": {
+    "avx": 5891,
+    "bmi": 98,
+    "gp": 275737,
+    "sse": 14487,
+    "system": 1531,
+    "x87": 98
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 87,
+    ".text": 297743
+   }
+  },
+  {
+   "sha256": "2f07e44f8caa4047d56ea4ca43d2f7c00f2747d497fd97b60e95e7b32592d71a",
+   "paths": [
+    "initramfs/bin/sudo"
+   ],
+   "size": 1626616,
+   "instruction_lines": 316232,
+   "external": false,
+   "classes": {
+    "avx": 5891,
+    "bmi": 98,
+    "gp": 293903,
+    "sse": 14698,
+    "system": 1544,
+    "x87": 98
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 87,
+    ".text": 316133
+   }
+  },
+  {
+   "sha256": "54751dbab63c4a1397c9607b93c9a556d22a1bd090efc8118c63b8f84afce638",
+   "paths": [
+    "initramfs/bin/sum"
+   ],
+   "size": 1222040,
+   "instruction_lines": 229913,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 213165,
+    "sse": 10769,
+    "system": 1216,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 229832
+   }
+  },
+  {
+   "sha256": "424a38ee27255e8d855e9c7e416f44406ea19494d892d9bc6e6a6e0dc0b406ec",
+   "paths": [
+    "initramfs/bin/sync"
+   ],
+   "size": 1445560,
+   "instruction_lines": 276850,
+   "external": false,
+   "classes": {
+    "avx": 5891,
+    "bmi": 98,
+    "gp": 255344,
+    "sse": 13924,
+    "system": 1496,
+    "x87": 97
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 87,
+    ".text": 276751
+   }
+  },
+  {
+   "sha256": "28de6a593be029acda5802510f15a39c7c48b39d531330ef7abe95f9a5cca70a",
+   "paths": [
+    "initramfs/bin/tac"
+   ],
+   "size": 1165880,
+   "instruction_lines": 218362,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 201632,
+    "sse": 10753,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 218281
+   }
+  },
+  {
+   "sha256": "2245a9e12cf8fae07c22fec43d228c94d2ce06bf8e68df3fa515b69adae00f90",
+   "paths": [
+    "initramfs/bin/tail"
+   ],
+   "size": 1494200,
+   "instruction_lines": 287487,
+   "external": false,
+   "classes": {
+    "avx": 5891,
+    "bmi": 98,
+    "gp": 265783,
+    "sse": 14107,
+    "system": 1510,
+    "x87": 98
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 87,
+    ".text": 287388
+   }
+  },
+  {
+   "sha256": "fb0be3eda74b2f4c1bb80f8cf43e07b9cc34a96857539f1b176142d9d2b3175a",
+   "paths": [
+    "initramfs/bin/tee"
+   ],
+   "size": 1164696,
+   "instruction_lines": 217983,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 201328,
+    "sse": 10678,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 217902
+   }
+  },
+  {
+   "sha256": "4d6a5e6bbdac10514d949f357790c98b3ca7cede5057617c6e5a5791cfcfc825",
+   "paths": [
+    "initramfs/bin/test"
+   ],
+   "size": 1154488,
+   "instruction_lines": 216264,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 199587,
+    "sse": 10698,
+    "system": 1216,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 216183
+   }
+  },
+  {
+   "sha256": "845b7a48774acfb39d54f929778f01793dccded47f8f872f41e7251e4fd4ac64",
+   "paths": [
+    "initramfs/bin/timeout"
+   ],
+   "size": 1681944,
+   "instruction_lines": 327547,
+   "external": false,
+   "classes": {
+    "avx": 5891,
+    "bmi": 98,
+    "gp": 304122,
+    "sse": 15545,
+    "system": 1793,
+    "x87": 98
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 87,
+    ".text": 327448
+   }
+  },
+  {
+   "sha256": "d9d503b6bb172f0b2255fd51a2e9e93ba9ad06a1a5cd16a0d13311fc7cc5c267",
+   "paths": [
+    "initramfs/bin/touch"
+   ],
+   "size": 1221336,
+   "instruction_lines": 228782,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 211693,
+    "sse": 11108,
+    "system": 1218,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 228701
+   }
+  },
+  {
+   "sha256": "683a94a9e895986f36fbe82134f5ad59d2470a6e924a34167abc41db5b2a38c8",
+   "paths": [
+    "initramfs/bin/tr"
+   ],
+   "size": 1175000,
+   "instruction_lines": 219990,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 203305,
+    "sse": 10708,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 219909
+   }
+  },
+  {
+   "sha256": "6a5052d429720b73ab0afd2829e7919f1f5cd75edfaad2e3ed990c0380e25b1b",
+   "paths": [
+    "initramfs/bin/true"
+   ],
+   "size": 1129144,
+   "instruction_lines": 210385,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 193775,
+    "sse": 10633,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 210304
+   }
+  },
+  {
+   "sha256": "94a0cec275f6a2c8c61c5221b3b878ec2692dbf46a115732224fc55a122d5647",
+   "paths": [
+    "initramfs/bin/truncate"
+   ],
+   "size": 1161336,
+   "instruction_lines": 217127,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 200462,
+    "sse": 10686,
+    "system": 1216,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 217046
+   }
+  },
+  {
+   "sha256": "520010824d436e455c3fc705347c56a2b2546f66df728d0c9c795c5974a02874",
+   "paths": [
+    "initramfs/bin/tsort"
+   ],
+   "size": 1167032,
+   "instruction_lines": 218821,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 202171,
+    "sse": 10673,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 218740
+   }
+  },
+  {
+   "sha256": "99533e2078c54fe342ce485c955498d51fed4049ac1bfe9ca4177f86ae2e7ddb",
+   "paths": [
+    "initramfs/bin/tty"
+   ],
+   "size": 1146104,
+   "instruction_lines": 214091,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 197477,
+    "sse": 10637,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 214010
+   }
+  },
+  {
+   "sha256": "81dcb0e1196818c55c37123540a6d29f192980290e5b0f35e2452b1255ba803a",
+   "paths": [
+    "initramfs/bin/uname"
+   ],
+   "size": 1153592,
+   "instruction_lines": 215581,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 198874,
+    "sse": 10728,
+    "system": 1216,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 215500
+   }
+  },
+  {
+   "sha256": "6e5ebce99dba15390e060db20dbd183b7f20ae616433c8a0fd1ac4b2f34c6471",
+   "paths": [
+    "initramfs/bin/unexpand"
+   ],
+   "size": 1181528,
+   "instruction_lines": 220579,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 203875,
+    "sse": 10727,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 220498
+   }
+  },
+  {
+   "sha256": "d4b666b1ef95d9c296cc3a05e3d5cafc0d9f9cdbfd597c5e791173e6ca901677",
+   "paths": [
+    "initramfs/bin/uniq"
+   ],
+   "size": 1176920,
+   "instruction_lines": 220370,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 203704,
+    "sse": 10689,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 220289
+   }
+  },
+  {
+   "sha256": "d1ce50c03063041d0e8fed3c449a4975429674ca475f9e45ea43a25aec6b126e",
+   "paths": [
+    "initramfs/bin/unlink"
+   ],
+   "size": 1148152,
+   "instruction_lines": 214421,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 197767,
+    "sse": 10675,
+    "system": 1216,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 214340
+   }
+  },
+  {
+   "sha256": "fa5f77b01e425747cfb2c774d19d6f88ff924ab9288da0c020dae118150c3acc",
+   "paths": [
+    "initramfs/bin/uptime"
+   ],
+   "size": 1221816,
+   "instruction_lines": 229135,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 212197,
+    "sse": 10959,
+    "system": 1216,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 229054
+   }
+  },
+  {
+   "sha256": "5b5c81fbb0e214a330ea22a45cb6a8f463b595358b31da678972de084e64808c",
+   "paths": [
+    "initramfs/bin/users"
+   ],
+   "size": 1160728,
+   "instruction_lines": 217230,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 200515,
+    "sse": 10736,
+    "system": 1216,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 217149
+   }
+  },
+  {
+   "sha256": "b165a4ff06ac5038ad187a64184cd8baf53e9488fe57d7127b9307ccbc7d095a",
+   "paths": [
+    "initramfs/bin/wc"
+   ],
+   "size": 1199608,
+   "instruction_lines": 224421,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 207655,
+    "sse": 10786,
+    "system": 1217,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 224340
+   }
+  },
+  {
+   "sha256": "a1d5d421b8103b97abf0a8265063afdacef5fb31251a577c43ed6a1b75d4b183",
+   "paths": [
+    "initramfs/bin/who"
+   ],
+   "size": 1229144,
+   "instruction_lines": 230313,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 213363,
+    "sse": 10971,
+    "system": 1216,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 230232
+   }
+  },
+  {
+   "sha256": "4e482ed4091bab3250601f752158632fd10a8b8c2fd21c714359bf573d557a52",
+   "paths": [
+    "initramfs/bin/whoami"
+   ],
+   "size": 1149336,
+   "instruction_lines": 215004,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 198371,
+    "sse": 10656,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 214923
+   }
+  },
+  {
+   "sha256": "115dd641e408aaa6454f91432ba3934499afc472a4bd391280ed01127aca5d98",
+   "paths": [
+    "initramfs/bin/yes"
+   ],
+   "size": 1140568,
+   "instruction_lines": 212950,
+   "external": false,
+   "classes": {
+    "avx": 4639,
+    "bmi": 89,
+    "gp": 196340,
+    "sse": 10633,
+    "system": 1214,
+    "x87": 35
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 69,
+    ".text": 212869
+   }
+  },
+  {
+   "sha256": "64546236818d3da44b11c29910f0f8ce31cd9682697ebddd8b1bc2e0a021f2ed",
+   "paths": [
+    "initramfs/bin/yew"
+   ],
+   "size": 11724920,
+   "instruction_lines": 1758104,
+   "external": false,
+   "classes": {
+    "avx": 5891,
+    "bmi": 98,
+    "gp": 1368092,
+    "sse": 382101,
+    "system": 1824,
+    "x87": 98
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 87,
+    ".text": 1758005
+   }
+  },
+  {
+   "sha256": "8056dfd4a24af117d70b99721615ea475df74bf04955d22546b32bb04db1045f",
+   "paths": [
+    "initramfs/home/pax/Games/cub/cub",
+    "initramfs/usr/share/pax-install/games/cub"
+   ],
+   "size": 17023984,
+   "instruction_lines": 614535,
+   "external": false,
+   "classes": {
+    "avx": 5891,
+    "bmi": 98,
+    "gp": 557008,
+    "sse": 49598,
+    "system": 1844,
+    "x87": 96
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 87,
+    ".text": 614436
+   }
+  },
+  {
+   "sha256": "19c63c04a4486a0727e543b4824e1e219f60ac2f467925986cbbcc25e7340cd7",
+   "paths": [
+    "initramfs/home/pax/Games/pack/pack",
+    "initramfs/usr/share/pax-install/games/pack"
+   ],
+   "size": 15413192,
+   "instruction_lines": 354108,
+   "external": false,
+   "classes": {
+    "avx": 5891,
+    "bmi": 98,
+    "gp": 327339,
+    "sse": 19123,
+    "system": 1561,
+    "x87": 96
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 87,
+    ".text": 354009
+   }
+  },
+  {
+   "sha256": "2871df7d4b3cdf53db1dad5e38ab7ba95f0f9a38295831173e2a06f523257bf8",
+   "paths": [
+    "initramfs/home/pax/Games/trail/trail",
+    "initramfs/usr/share/pax-install/games/trail"
+   ],
+   "size": 15319376,
+   "instruction_lines": 337568,
+   "external": false,
+   "classes": {
+    "avx": 5891,
+    "bmi": 98,
+    "gp": 313655,
+    "sse": 16267,
+    "system": 1561,
+    "x87": 96
+   },
+   "executable_sections": {
+    ".fini": 4,
+    ".init": 8,
+    ".iplt": 87,
+    ".text": 337469
+   }
+  },
+  {
+   "sha256": "3161aea27abb8beeb669cc6499fa9dc162014b69eecc6fb0d169eed5def25b11",
+   "paths": [
+    "initramfs/usr/bin/cc"
+   ],
+   "size": 499760,
+   "instruction_lines": 94886,
+   "external": true,
+   "classes": {
+    "gp": 91538,
+    "sse": 3056,
+    "system": 189,
+    "x87": 103
+   },
+   "executable_sections": {
+    ".fini": 3,
+    ".init": 3,
+    ".text": 94880
+   }
+  },
+  {
+   "sha256": "9fa7191f0e22887486cd52bbc95f261ad0be71a6ab29f1c1cc13322a34d4ca4a",
+   "paths": [
+    "initramfs/usr/bin/ld.lld"
+   ],
+   "size": 68594984,
+   "instruction_lines": 10203652,
+   "external": true,
+   "classes": {
+    "avx": 3872,
+    "bmi": 567,
+    "gp": 9933428,
+    "sse": 264173,
+    "system": 375,
+    "x87": 1237
+   },
+   "executable_sections": {
+    ".fini": 3,
+    ".init": 3,
+    ".text": 10203646
+   }
+  },
+  {
+   "sha256": "8ea550b894ff7ed853778fd3f758981bc0a2a0ab99a43ed559cf5a6f701a3fe9",
+   "paths": [
+    "initramfs/usr/bin/wolf"
+   ],
+   "size": 16966256,
+   "instruction_lines": 3136132,
+   "external": false,
+   "classes": {
+    "avx": 1859,
+    "gp": 2988796,
+    "sse": 144637,
+    "system": 737,
+    "x87": 103
+   },
+   "executable_sections": {
+    ".fini": 3,
+    ".init": 3,
+    ".text": 3136126
+   }
+  },
+  {
+   "sha256": "11850e700e6873323b312e7e2737f9560f6659f032347f9aacddecaefdfd0c3b",
+   "paths": [
+    "initramfs/usr/bin/wolf-cimport-worker"
+   ],
+   "size": 618688,
+   "instruction_lines": 121446,
+   "external": false,
+   "classes": {
+    "gp": 116988,
+    "sse": 4189,
+    "system": 166,
+    "x87": 103
+   },
+   "executable_sections": {
+    ".fini": 3,
+    ".init": 3,
+    ".text": 121440
+   }
+  },
+  {
+   "sha256": "51dba24287eb9b1e74f3c7cb8ea5464491d3a4ba54c016722f149179d08f90f6",
+   "paths": [
+    "initramfs/usr/lib/wolf-musl/crt1.o"
+   ],
+   "size": 5560,
+   "instruction_lines": 12,
+   "external": true,
+   "classes": {
+    "gp": 12
+   },
+   "executable_sections": {
+    ".text": 5,
+    ".text._start_c": 7
+   }
+  },
+  {
+   "sha256": "5cbc84c78a23cdddda0db8cdcd5ec3b5a15b6b555510bd97e4c5a0334aca7b49",
+   "paths": [
+    "initramfs/usr/lib/wolf-musl/crti.o"
+   ],
+   "size": 2816,
+   "instruction_lines": 2,
+   "external": true,
+   "classes": {
+    "gp": 2
+   },
+   "executable_sections": {
+    ".fini": 1,
+    ".init": 1
+   }
+  },
+  {
+   "sha256": "d884ee5f9120490b98bb43496f88983ee379a0d2ebf027574fcca7eae9aaa1e7",
+   "paths": [
+    "initramfs/usr/lib/wolf-musl/crtn.o"
+   ],
+   "size": 2760,
+   "instruction_lines": 4,
+   "external": true,
+   "classes": {
+    "gp": 4
+   },
+   "executable_sections": {
+    ".fini": 2,
+    ".init": 2
+   }
+  }
+ ],
+ "objdump_mnemonics_newest_iso": {
+  "mov": 15086046,
+  "lea": 2945176,
+  "cmp": 2731382,
+  "call": 2307812,
+  "je": 2113913,
+  "jmp": 1987910,
+  "test": 1843360,
+  "add": 1608543,
+  "int3": 1601707,
+  "jne": 1575859,
+  "pop": 1339871,
+  "push": 1208490,
+  "xor": 1151739,
+  "movups": 935957,
+  "sub": 929316,
+  "movzbl": 667980,
+  "and": 596381,
+  "movq": 544849,
+  "nopl": 536818,
+  "ret": 534897,
+  "shl": 470882,
+  "nopw": 442981,
+  "movaps": 408979,
+  "jae": 392080,
+  "or": 336703,
+  "shr": 334867,
+  "ja": 325384,
+  "jb": 324098,
+  "cmpb": 278360,
+  "inc": 258378,
+  "jbe": 245287,
+  "movdqa": 239402,
+  "movl": 188947,
+  "movb": 177122,
+  "movzwl": 150048,
+  "cmpq": 146489,
+  "endbr64": 139561,
+  "movabs": 127395,
+  "xchg": 126669,
+  "movdqu": 107730,
+  "nop": 107407,
+  "cmpl": 104355,
+  "pcmpeqb": 101477,
+  "vpcmpeqb": 93767,
+  "dec": 92208,
+  "testb": 90038,
+  "jle": 86477,
+  "movslq": 86382,
+  "cmove": 85340,
+  "seta": 84929,
+  "imul": 82557,
+  "pmovmskb": 82344,
+  "vmovdqu": 81802,
+  "jg": 79981,
+  "cmovb": 77130,
+  "cmovne": 75989,
+  "js": 72387,
+  "paddb": 67655,
+  "vpmovmskb": 65900,
+  "movw": 62994,
+  "neg": 61504,
+  "pxor": 58423,
+  "vmovdqu64": 52843,
+  "sete": 52268,
+  "setb": 50978,
+  "cmovae": 50552,
+  "tzcnt": 46163,
+  "sar": 42816,
+  "pcmpgtb": 40613,
+  "ud2": 40338,
+  "setne": 39324,
+  "vpaddb": 38182,
+  "not": 38168,
+  "jo": 38101,
+  "xorps": 36667,
+  "bsf": 36081,
+  "palignr": 35355,
+  "kmovd": 34687,
+  "jns": 34673,
+  "pandn": 33905,
+  "psrldq": 33116,
+  "vzeroupper": 30725,
+  "vpandn": 30097,
+  "psubb": 29646,
+  "vmovdqa": 28199,
+  "cmpxchg": 28177,
+  "pslldq": 26180,
+  "jge": 25907,
+  "leave": 24167,
+  "vmovups": 23462,
+  "jl": 23128,
+  "por": 23096,
+  "movd": 22760,
+  "sbb": 22757,
+  "adc": 22465,
+  "pcmpistri": 21963,
+  "syscall": 20812,
+  "punpcklqdq": 19512,
+  "orq": 19160,
+  "pshufd": 19131,
+  "vpminub": 19077,
+  "prefetcht0": 18716,
+  "bt": 18523,
+  "cltq": 18459,
+  "div": 18242,
+  "cmpw": 18011,
+  "vmovdqa64": 17591,
+  "cmova": 17144,
+  "vpcmpeqd": 16740,
+  "bsr": 15993,
+  "incq": 15857,
+  "pand": 15473,
+  "vpcmpgtb": 15272,
+  "addq": 15149,
+  "decq": 14550,
+  "mul": 14202,
+  "vmovntdq": 13500,
+  "incl": 13279,
+  "pcmpeqd": 13271,
+  "movsbq": 13225,
+  "setae": 13147,
+  "movsbl": 12943,
+  "paddq": 12519,
+  "vptestmb": 12022,
+  "rol": 11935,
+  "punpcklbw": 11234,
+  "movntps": 10800,
+  "cmovns": 10735,
+  "pminub": 10516,
+  "cmovbe": 10372,
+  "andl": 10291,
+  "movsd": 10251,
+  "vmovd": 10087,
+  "bswap": 10043,
+  "vptestnmb": 9965,
+  "andq": 9843,
+  "orl": 9786,
+  "shrd": 9224,
+  "pshuflw": 9008,
+  "prefetcht1": 8654,
+  "addl": 8408,
+  "testl": 8366,
+  "cmovs": 8261,
+  "decl": 7865,
+  "vpand": 7710,
+  "vpcmpltub": 7636,
+  "vpsubb": 7636,
+  "orb": 7488,
+  "vmovq": 7246,
+  "movsb": 6605,
+  "ror": 6438,
+  "cmovg": 6360,
+  "subl": 6230,
+  "vpxor": 6219,
+  "vpor": 6189,
+  "cpuid": 5757,
+  "vpxorq": 5689,
+  "setg": 5228,
+  "paddd": 4973,
+  "movswl": 4706,
+  "cmovl": 4426,
+  "jno": 4159,
+  "movhps": 4015,
+  "setbe": 3971,
+  "setle": 3857,
+  "movswq": 3728,
+  "setge": 3602,
+  "cmovge": 3406,
+  "vpbroadcastb": 3398,
+  "andb": 3376,
+  "stos": 3274,
+  "movapd": 3258,
+  "blsmsk": 3240,
+  "movntdq": 3240,
+  "psrlq": 3151,
+  "idiv": 3142,
+  "bts": 3080,
+  "movsq": 3029,
+  "movss": 3029,
+  "punpckldq": 2988,
+  "vzeroall": 2956,
+  "xtest": 2956,
+  "shrx": 2931,
+  "xadd": 2712,
+  "ucomisd": 2708,
+  "kortestd": 2625,
+  "sarx": 2430,
+  "vpternlogd": 2388,
+  "shld": 2380,
+  "vpminud": 2295,
+  "cqto": 2242,
+  "setns": 2223,
+  "movbe": 2160,
+  "bzhi": 2139,
+  "seto": 2064,
+  "incsspq": 2042,
+  "punpcklwd": 2022,
+  "fldt": 2012,
+  "sets": 1977,
+  "cmovle": 1947,
+  "kmovq": 1890,
+  "sfence": 1890,
+  "vpcmpneqb": 1755,
+  "pause": 1753,
+  "pextrw": 1701,
+  "punpckhqdq": 1682,
+  "psubq": 1597,
+  "setl": 1590,
+  "shlx": 1578,
+  "vpaddd": 1460,
+  "movupd": 1423,
+  "vpbroadcastd": 1412,
+  "hlt": 1383,
+  "vptestnmd": 1350,
+  "psrld": 1327,
+  "rdsspq": 1250,
+  "pminud": 1215,
+  "vpcmpnequb": 1215,
+  "psrlw": 1209,
+  "jp": 1160,
+  "movlpd": 1155,
+  "pmuludq": 1148,
+  "xorpd": 1141,
+  "mulq": 1136,
+  "andw": 1132,
+  "mulsd": 1111,
+  "addsd": 1088,
+  "pslld": 1076,
+  "fstp": 1048,
+  "fstpt": 1044,
+  "pcmpgtd": 1010,
+  "pshufb": 1005,
+  "vmovdqu8": 945,
+  "pmaxub": 914,
+  "movhpd": 912,
+  "punpckhdq": 827,
+  "shufpd": 779,
+  "movlps": 736,
+  "cltd": 700,
+  "kortestq": 675,
+  "movmskps": 636,
+  "subq": 596,
+  "vmovaps": 570,
+  "divq": 569,
+  "movhlps": 562,
+  "shrq": 559,
+  "cmovo": 527,
+  "fxch": 503,
+  "psubd": 501,
+  "vpxord": 498,
+  "movmskpd": 496,
+  "vprord": 488,
+  "shufps": 487,
+  "vpshufb": 485,
+  "subsd": 443,
+  "fucomip": 438,
+  "incb": 437,
+  "cvtsi2ss": 436,
+  "andpd": 433,
+  "fnstcw": 415,
+  "fnstsw": 408,
+  "fxam": 405,
+  "psadbw": 401,
+  "btr": 373,
+  "subpd": 369,
+  "divsd": 356,
+  "decw": 353,
+  "fld": 349,
+  "pinsrw": 340,
+  "testq": 333,
+  "unpckhpd": 315,
+  "movlhps": 295,
+  "testw": 285,
+  "subw": 272,
+  "fabs": 271,
+  "andn": 270,
+  "blsr": 270,
+  "jrcxz": 270,
+  "vpcmpneqd": 270,
+  "xrstor": 270,
+  "addss": 269,
+  "fldz": 266,
+  "cvttss2si": 253,
+  "ucomiss": 250,
+  "divl": 249,
+  "fucomi": 244,
+  "pshufhw": 242,
+  "vpslld": 242,
+  "vpsrld": 241,
+  "mulss": 238,
+  "punpckhwd": 237,
+  "pcmpgtw": 236,
+  "addpd": 207,
+  "punpckhbw": 198,
+  "shlq": 194,
+  "flds": 188,
+  "fmulp": 188,
+  "orw": 186,
+  "divss": 183,
+  "movsl": 180,
+  "packuswb": 168,
+  "unpcklps": 167,
+  "incw": 158,
+  "decb": 156,
+  "cwtl": 154,
+  "xorb": 153,
+  "xgetbv": 147,
+  "cld": 146,
+  "btl": 146,
+  "std": 144,
+  "rdtsc": 141,
+  "negl": 141,
+  "addb": 140,
+  "sbbl": 139,
+  "vbroadcastss": 139,
+  "shll": 137,
+  "fxrstor": 135,
+  "fxsave": 135,
+  "kord": 135,
+  "kxnorq": 135,
+  "rstorssp": 135,
+  "saveprevssp": 135,
+  "xabort": 135,
+  "xbegin": 135,
+  "xend": 135,
+  "xsave": 135,
+  "xsavec": 135,
+  "vpshufd": 128,
+  "subss": 126,
+  "cvtsi2sd": 122,
+  "psubusb": 116,
+  "fchs": 112,
+  "divpd": 112,
+  "vshufps": 111,
+  "vpaddq": 103,
+  "btsq": 98,
+  "unpcklpd": 96,
+  "psllq": 92,
+  "jnp": 83,
+  "orpd": 78,
+  "psrad": 77,
+  "andps": 76,
+  "cvttsd2si": 75,
+  "orps": 75,
+  "andnpd": 72,
+  "cmpltsd": 60,
+  "idivl": 59,
+  "fmul": 53,
+  "vinsertf128": 53,
+  "vbroadcasti128": 46,
+  "faddp": 42,
+  "vpmovzxbq": 42,
+  "packssdw": 41,
+  "fld1": 39,
+  "fldcw": 38,
+  "cvtss2sd": 38,
+  "cvtsd2ss": 36,
+  "adcq": 35,
+  "maxss": 35,
+  "btq": 34,
+  "cvtsi2sdq": 34,
+  "imulq": 34,
+  "psllw": 33,
+  "vpunpcklqdq": 32,
+  "adcl": 31,
+  "vextracti128": 29,
+  "cli": 28,
+  "stmxcsr": 28,
+  "btsl": 28,
+  "packsswb": 28,
+  "andnps": 28,
+  "vpblendd": 27,
+  "vmovdqa32": 27,
+  "vmovdqu32": 26,
+  "vpunpckhdq": 25,
+  "addw": 25,
+  "vpunpckldq": 23,
+  "rdmsr": 22,
+  "ldmxcsr": 22,
+  "vpinsrd": 21,
+  "vpbroadcastq": 20,
+  "vperm2f128": 20,
+  "vpunpckhqdq": 20,
+  "vunpckhpd": 20,
+  "vunpcklpd": 20,
+  "cmovnp": 19,
+  "fadd": 19,
+  "vblendps": 18,
+  "negq": 17,
+  "pinsrd": 17,
+  "vinserti64x4": 17,
+  "fsubrp": 16,
+  "idivq": 16,
+  "notq": 16,
+  "minsd": 16,
+  "cvtsi2sdl": 16,
+  "pblendw": 16,
+  "vshufi32x4": 16,
+  "cmovno": 15,
+  "out": 14,
+  "setnp": 14,
+  "fmuls": 14,
+  "vpermt2d": 14,
+  "fildll": 13,
+  "setp": 13,
+  "pcmpeqw": 13,
+  "unpckhps": 13,
+  "comisd": 12,
+  "vinserti32x4": 12,
+  "vunpckhps": 12,
+  "vunpcklps": 12,
+  "fildl": 11,
+  "fldl": 11,
+  "sarq": 11,
+  "xorq": 10,
+  "maxsd": 10,
+  "vinserti128": 10,
+  "pclmullqlqdq": 10,
+  "rolw": 9,
+  "in": 8,
+  "pushf": 8,
+  "fldenv": 8,
+  "cmpeqsd": 8,
+  "cmpneqsd": 8,
+  "cmpltpd": 8,
+  "insertps": 8,
+  "pclmulhqhqdq": 8,
+  "vperm2i128": 8,
+  "fnstenv": 7,
+  "movzbq": 7,
+  "sti": 6,
+  "fwait": 6,
+  "fsub": 6,
+  "vpsadbw": 6,
+  "blendps": 6,
+  "cmovp": 5,
+  "fistpl": 5,
+  "fistpll": 5,
+  "pmullw": 5,
+  "psubw": 5,
+  "setno": 5,
+  "iretq": 4,
+  "lidt": 4,
+  "wrmsr": 4,
+  "pmulhuw": 4,
+  "vpackuswb": 4,
+  "cmplesd": 4,
+  "cwtd": 4,
+  "addps": 4,
+  "kmovw": 4,
+  "lzcnt": 4,
+  "mulpd": 4,
+  "vblendvps": 4,
+  "vextracti32x4": 4,
+  "vpblendmd": 4,
+  "vpermq": 4,
+  "sbbq": 4,
+  "btrq": 3,
+  "cmpneqpd": 3,
+  "cmpnltpd": 3,
+  "cvtsi2ssl": 3,
+  "cvttpd2dq": 3,
+  "faddl": 3,
+  "fstpl": 3,
+  "fstps": 3,
+  "shrl": 3,
+  "sqrtsd": 3,
+  "vbroadcasti32x4": 3,
+  "vpcmpltud": 3,
+  "mull": 3,
+  "clac": 2,
+  "fxrstor64": 2,
+  "fxsave64": 2,
+  "invlpg": 2,
+  "lgdt": 2,
+  "lretq": 2,
+  "ltr": 2,
+  "rdrand": 2,
+  "shlb": 2,
+  "stac": 2,
+  "sysretq": 2,
+  "xrstor64": 2,
+  "xsave64": 2,
+  "xsetbv": 2,
+  "paddw": 2,
+  "vpackusdw": 2,
+  "vpmovzxdq": 2,
+  "vpsrlw": 2,
+  "cmpnltsd": 2,
+  "cmplepd": 2,
+  "blendvps": 2,
+  "cmpneqps": 2,
+  "cmpneqss": 2,
+  "cvttps2dq": 2,
+  "fsubp": 2,
+  "negw": 2,
+  "shrw": 2,
+  "subb": 2,
+  "vpcmpgtd": 2,
+  "vpermi2d": 2,
+  "vpsubd": 2,
+  "cmpeqss": 2,
+  "negb": 1,
+  "mulw": 1,
+  "cmpnlepd": 1,
+  "divw": 1,
+  "fcomi": 1,
+  "fcomip": 1,
+  "fdivrp": 1,
+  "fnclex": 1,
+  "fprem": 1,
+  "knotw": 1,
+  "notb": 1,
+  "notl": 1,
+  "movsldup": 1,
+  "pclmulhqlqdq": 1,
+  "pclmullqhqdq": 1,
+  "pextrd": 1,
+  "sqrtss": 1,
+  "vpblendw": 1,
+  "vpmovsxdq": 1,
+  "vpsrad": 1
+ }
+}
