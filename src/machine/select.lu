@@ -232,6 +232,37 @@ pub fn choose(
             bits = ops[0].reg.bits
         }
     }
+    // Far transfers by any spelling: `ljmp *mem` is the indirect row, `lcall $sel,$off` the pointer row.
+    if family == "ljmp" || family == "lcall" {
+        if ops.len == 1 && ops[0].indirect {
+            role = "indirect"
+            bits = 0
+        } else if ops.len == 2 && ops[0].kind == "immediate" && ops[1].kind == "immediate" {
+            role = "far"
+            bits = 32
+        }
+    }
+    // In 32-bit code GNU as moves the accumulator to or from a known absolute address with the
+    // one-byte A0-A3 forms (SDM vol.2B 4.3 MOV), shorter than ModRM with a disp32.
+    if family == "mov" && mode == 32 && ops.len == 2 {
+        if ops[0].kind == "expression" &&
+            ops[0].segment == "" &&
+            known[0] &&
+            accumulator_reg(ops[1]) {
+            role = "moffs_acc"
+            bits = ops[1].reg.bits
+        } else if ops[1].kind == "expression" &&
+            ops[1].segment == "" &&
+            known[1] &&
+            accumulator_reg(ops[0]) {
+            role = "acc_moffs"
+            bits = ops[0].reg.bits
+        }
+    }
+    if family == "lret" && role == "select" {
+        role = if ops.len == 0 then "fixed" else "imm"
+        bits = 0
+    }
     if role == "select" {
         if family == "call" || family == "jmp" || family.starts_with("j") && family != "ljmp" {
             if ops.len != 1 { return bad_operands }
@@ -302,6 +333,7 @@ pub fn choose(
                 family == "neg" ||
                 family == "not" ||
                 family == "rdrand" ||
+                family == "rdseed" ||
                 family == "ltr" ||
                 family == "setb" {
                 if ops.len != 1 { return bad_operands }
@@ -466,9 +498,41 @@ pub fn choose(
         }
         role = has_reg_rm.role
     }
-    let form = x86table.lookup_in(forms, family, role, bits, mode)?
+    let form = x86table.lookup_in(forms, family, role, bits, mode) else {
+        sole_width(forms, family, role, bits, mode)?
+    }
     validate(form, node, values, known)?
     form
+}
+
+fn accumulator_reg(op: dialect.Operand) -> bool {
+    op.kind == "register" && op.reg.family == "gpr" && op.reg.code == 0 && op.reg.bits <= 32
+}
+
+fn has_form(forms: List[x86table.Form], family: str, role: str, bits: int, mode: int) -> bool {
+    let f = x86table.lookup_in(forms, family, role, bits, mode) else { return false }
+    f.bits == bits
+}
+
+/// A spelling without a width of its own (`ldmxcsr (%rax)`) takes the one width its family's rows have.
+fn sole_width(
+    forms: List[x86table.Form],
+    family: str,
+    role: str,
+    bits: int,
+    mode: int,
+) -> x86table.Form ! Errors {
+    if bits != 0 { return unknown_form }
+    var found = 0
+    var width = 0
+    for w in [8, 16, 32, 64] {
+        if has_form(forms, family, role, w, mode) {
+            found += 1
+            width = w
+        }
+    }
+    if found != 1 { return unknown_form }
+    x86table.lookup_in(forms, family, role, width, mode)?
 }
 
 /// Validate and emit an explicit table row for generated two-direction table witnesses.
