@@ -302,6 +302,81 @@ This is the source-side counterpart to ligature's `.note.wolf.link`: a future
 consumer can connect linked ranges to assembly origins. No cross-repository
 consumer or manifest change is included here.
 
+## The decoder
+
+`src/decode/` reads the same rows the encoder emits from. `decode.index` indexes
+every descriptor by its opcode bytes (a `+r` row by its group of eight), and
+`decode.decode` reads one instruction from a byte stream by SDM vol.2A chapter 2:
+legacy prefixes (§2.1.1, kept in order, repeats included), REX in 64-bit mode
+(§2.2.1; a REX not immediately before the opcode is the one-byte refusal
+`rex_misplaced`), the opcode (`0F`, `0F 38` and `0F 3A` escapes), ModRM, SIB and
+displacement (§2.1.5, Tables 2-2, 2-3 and 2-5; `mod=00 rm=101` is RIP-relative
+in 64-bit mode), and the row's immediate. The row is chosen from the candidates
+for those bytes by mode, ModRM extension, the register or memory form its r/m
+pattern admits, and the prefixes it consumes: a row that consumes an operand-size
+or mandatory prefix or REX.W beats one that leaves it unused, so `66 90` is
+`xchg %ax,%ax` while `90` is `nop`. Rows marked `decode-alias` (the implicit
+string spellings) are never chosen for text; they remain assembler spellings.
+
+A byte that selects no row is one refusal, printed as `(bad)` with its name and
+SDM reason and spelled `.byte` in round-trip source. Reserved cells are
+`invalid_opcode` (Table A-2/A-3 blanks), `invalid_in_64bit` (i64 cells),
+`reserved_modrm` (Table A-6 blanks) and `length_over_15` (§2.3.11). The classes
+this change does not decode are named apart: `out_of_scope:x87` (D8–DF, consumed
+to their ModRM form's length so the stream stays in step), `out_of_scope:sse`
+(the SSE cells of Table A-3 and the `0F 38`/`0F 3A` maps, with their ModRM and
+`ib` lengths), `out_of_scope:vex` (C4/C5) and `out_of_scope:evex` (62), each one
+byte in 64-bit mode.
+
+### objdump's spelling
+
+`clef --disassemble FILE` prints every `SHF_EXECINSTR` section as the pinned
+objdump 2.42 does with `-d --no-show-raw-insn --wide`: `address:<tab>text`, a
+`# target` comment on RIP-relative operands, absolute branch targets, prefix
+words for prefixes the row does not consume (`data16`, `addr32`, `cs`/`ds`/…,
+`lock`, `rep`/`repz`/`repnz`, `bnd`, `notrack`, `rex.W…`). The mnemonic is the
+row's family; a size suffix is added only when no register operand sizes the
+instruction and the family has rows of more than one width, and never for the
+default width of `push`/`pop`/`call`/`jmp`. Extending moves and CRC32 name their
+source width (`movzbl`, `crc32b`). Immediates print at the operand width after
+sign extension (`$0xfffffffffffffff0`). In 64-bit mode only `%fs:`/`%gs:` reach
+an operand; the other segment prefixes have no effect there and stay words
+(`cs nopw 0x0(%rax,%rax,1)`). `--code32` decodes as `.code32` and `--raw
+--address=N` reads a flat byte stream at address N. `--expand` adds, under each
+instruction, the field view: prefixes, REX bits, the opcode with the row's SDM
+volume, section, page and opcode row, ModRM/SIB fields, displacement and
+immediate.
+
+### The round-trip source and the law
+
+`--roundtrip` prints GNU as source that clef assembles back to the same bytes.
+Every encoding choice GNU as would make differently is forced by a device of the
+GNU as manual (9.16.4.1 pseudo prefixes, 9.16.6 prefix words, 9.16.7 `%riz`):
+`{disp32}` for a 32-bit displacement that fits 8 bits and for a `rel32` jump
+whose target fits `rel8`, `{disp8}` for an explicit zero displacement, `{load}`
+for a register-register MOV/ALU form in the `8B` direction, `{noimm8s}` for a
+wide immediate that fits `imm8`, `rex.W…`/`rex` for REX bits the row does not
+use, and the prefix words above for every unconsumed prefix byte. Branch targets
+are `.+N` from the instruction's own address, so no label is needed. The
+renderer then assembles its own line through `machine.choose` and
+`machine.emit`; a line that does not reproduce the bytes is printed as `.byte`
+with the reason (`unforced: <mnemonic>`), so the source is byte-exact by
+construction and every such escape is counted by name in the law's report rather
+than hidden. The assembler accepts the same devices: the dialect takes the pseudo
+prefixes and prefix words on the instruction's line, segment overrides on memory
+and absolute operands (`%fs:0x28`), `%riz`/`%eiz` as a SIB-forcing index, and
+`%cr0`–`%cr8`, `%db0`–`%db7`. Explicit `repz`/`repnz`/`bnd`/`data16`/`addr32`
+and segment words are emitted as the bytes they name, after the row's own
+prefixes and before REX.
+
+`tools/disasm-test` reads every table row's witness back (GNU as's bytes to
+objdump's text, and the round-trip source to the same bytes). `tools/disasm-corpus`
+and `tools/law` run the same two measurements over the digest-checked corpus of
+`notes/as03/corpus.json`, per binary and per executable section, naming every
+difference; they `SKIP` loudly where the corpus is not staged (`CLEF_CORPUS`).
+`tools/law --twice` also requires the disassembly to be byte-identical across two
+runs.
+
 ## Differential normalization
 
 `tools/differ A.o B.o` exits 0 for agreement, 1 for a semantic mismatch and 2
