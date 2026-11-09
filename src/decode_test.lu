@@ -1,0 +1,48 @@
+//! member: false
+
+use decode
+use x86table
+
+fn equal_bytes(a: List[byte], b: List[byte]) -> bool {
+    if a.len != b.len { return false }
+    for i in 0..a.len { if a[i] != b[i] { return false } }
+    true
+}
+
+fn main() -> int {
+    let forms = x86table.load_all() else { return 1 }
+    let idx = decode.index(forms)
+    // 48 89 e5: MOV r/m64, r64 (SDM vol.2B 4.3 MOV, REX.W + 89 /r) spelled mov %rsp,%rbp.
+    let a = decode.decode(idx, [72 as byte, 137 as byte, 229 as byte], 0, 64, 4096)
+    assert(a.length == 3 && a.refusal.len == 0 && a.mnemonic == "mov")
+    assert(a.operands.len == 2 && a.operands[0] == "%rsp" && a.operands[1] == "%rbp")
+    assert(decode.text(a, 4096) == "1000:\tmov    %rsp,%rbp")
+    // 66 90: XCHG AX, AX (the 16-bit 90+r row consumes the operand-size prefix); 90 alone is NOP.
+    let b = decode.decode(idx, [102 as byte, 144 as byte], 0, 64, 0)
+    assert(
+        b.mnemonic == "xchg" && b.operands.len == 2 && b.operands[0] == "%ax" && b.words.len == 0,
+    )
+    let n = decode.decode(idx, [144 as byte], 0, 64, 0)
+    assert(n.mnemonic == "nop" && n.operands.len == 0)
+    // eb fe: JMP rel8 to itself; the target is absolute text, the round-trip source `.+0`.
+    let bytes = [235 as byte, 254 as byte, 195 as byte]
+    let j = decode.decode(idx, bytes, 0, 64, 4096)
+    assert(j.mnemonic == "jmp" && j.operands[0] == "0x1000" && j.target == 4096)
+    assert(decode.roundtrip(idx, bytes, j, 64) == "jmp .+0")
+    let r = decode.decode(idx, bytes, 2, 64, 4096)
+    assert(r.mnemonic == "ret" && r.offset == 2 && r.length == 1)
+    // A reserved cell is one named byte, never a guess: 0F 0F.
+    let bad = decode.decode(idx, [15 as byte, 15 as byte], 0, 64, 0)
+    assert(bad.refusal == "invalid_opcode" && bad.length == 2)
+    // The round-trip renderer escapes what it cannot force.
+    assert(decode.roundtrip(idx, [15 as byte, 15 as byte], bad, 64).starts_with(".byte 0xf,0xf"))
+    // An out-of-scope x87 escape consumes its whole ModRM form: d8 c1 (FADD ST(0),ST(1), SDM
+    // vol.2D Table A-8) is two bytes, so the stream stays in step with objdump's.
+    let x87 = decode.decode(idx, [216 as byte, 193 as byte, 195 as byte], 0, 64, 0)
+    assert(x87.refusal == "out_of_scope:x87" && x87.length == 2)
+    // Determinism: the same bytes give the same text.
+    let again = decode.decode(idx, [72 as byte, 137 as byte, 229 as byte], 0, 64, 4096)
+    assert(decode.text(again, 4096) == decode.text(a, 4096))
+    assert(equal_bytes([1 as byte], [1 as byte]))
+    0
+}

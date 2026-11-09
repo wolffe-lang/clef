@@ -27,6 +27,8 @@ commands=[('planner',['python3','ci/tiers-test.py']),('format',[str(W),'fmt','--
  ('checked-machine',[str(W),'conform-run','src/machine_test.lu','--checked','--json']),
  ('lupin-machine',[str(L),'run','src/machine_test.lu']),
  ('checked-assembly',[str(W),'conform-run','src/assembly_test.lu','--checked','--json']),
+ ('checked-decode',[str(W),'conform-run','src/decode_test.lu','--checked','--json']),
+ ('lupin-decode',[str(L),'run','src/decode_test.lu']),
  ('lupin-assembly',[str(L),'run','src/assembly_test.lu']),
  ('table',['tools/table-test']),('layout',['tools/layout-test']),('relaxation',['tools/relaxation-test']),
  ('assembler',['tools/assembler-test']),
@@ -45,7 +47,7 @@ for name,argv in commands:
             record=json.loads(p.stdout)
             ok=ok and record.get('verdict')=='exit(0)' and record.get('phase_reached')=='run' and not record.get('warnings')
         except ValueError:ok=False
-    if name=='unit':ok=ok and '6 passed; 0 failed; 0 rejected; 0 unsupported' in p.stdout
+    if name=='unit':ok=ok and '7 passed; 0 failed; 0 rejected; 0 unsupported' in p.stdout
     results.append({'gate':name,'status':p.returncode,'pass':ok})
     print(f'GATE {name}: '+('PASS' if ok else 'FAIL'),flush=True)
 (out/'gates.json').write_text(json.dumps(results,indent=2)+'\n')
