@@ -196,6 +196,20 @@ pub fn choose(
             role = "string"
         }
     }
+    // objdump spells the implicit operands of MONITOR, MWAIT and XLAT (`monitor %rax,%ecx,%edx`,
+    // `xlat %ds:(%rbx)`): with operands written, the family's `operands` row is the one.
+    if role == "fixed" &&
+        ops.len > 0 &&
+        (family == "monitor" || family == "mwait" || family == "xlat") {
+        role = "operands"
+    }
+    // A register-only spelling without a width of its own (`rdsspq`, `incsspd`) takes its register's
+    // (SDM vol.2B 4.3 RDSSPD/RDSSPQ: the operand size is the register's).
+    if bits == 0 && (role == "rm" || role == "reg_rm" || role == "rm_reg") {
+        for op in ops {
+            if op.kind == "register" && op.reg.family == "gpr" { bits = op.reg.bits }
+        }
+    }
     if role == "fixed" &&
         ops.len == 1 &&
         ops[0].kind == "immediate" &&
