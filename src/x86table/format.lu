@@ -1,6 +1,7 @@
 // Intel SDM 325383-086US (December 2024), independently transcribed.
 // The table describes encodings, not host CPU availability or execution safety.
 // Prefix is COMPLETE operand-size/mandatory prefix: never infer 66 from bits.
+// 26354 and 26355 are the two-prefix forms 66 F2 and 66 F3 (a 16-bit TZCNT/LZCNT/POPCNT/CRC32).
 // REX.R/X/B are computed from operand roles; rex_w is the separate W policy.
 // Operand indices are AT&T order. -1 denotes an unused encoding field, not an error.
 
@@ -58,7 +59,12 @@ pub fn load(line: str) -> Form ! {invalid_table} {
         extension > 7 ||
         rex < 0 ||
         rex > 1 ||
-        prefix != 0 && prefix != 102 && prefix != 242 && prefix != 243 ||
+        prefix != 0 &&
+            prefix != 102 &&
+            prefix != 242 &&
+            prefix != 243 &&
+            prefix != 26354 &&
+            prefix != 26355 ||
         immediate < 0 ||
         immediate > 8 {
         return invalid_table
