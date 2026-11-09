@@ -9,21 +9,23 @@ pub struct Code {
     bytes: List[byte],
 }
 
+/// not_elf64_x86_64: the magic, class, data or machine is not ELF64 LE x86-64;
+/// malformed_elf: a header, table or string points outside the file.
 pub error ElfErrors = {not_elf64_x86_64, malformed_elf}
 
-fn u16(d: List[byte], at: int) -> int ! ElfErrors {
+fn read16(d: List[byte], at: int) -> int ! ElfErrors {
     if at + 2 > d.len { return malformed_elf }
     d[at] as int + d[at + 1] as int * 256
 }
 
-fn u32(d: List[byte], at: int) -> int ! ElfErrors {
+fn read32(d: List[byte], at: int) -> int ! ElfErrors {
     if at + 4 > d.len { return malformed_elf }
     var v = 0
     for i in 0..4 { v += d[at + i] as int << 8 * i }
     v
 }
 
-fn u64(d: List[byte], at: int) -> int ! ElfErrors {
+fn read64(d: List[byte], at: int) -> int ! ElfErrors {
     if at + 8 > d.len { return malformed_elf }
     var v = 0
     for i in 0..8 {
@@ -51,27 +53,27 @@ pub fn executable_sections(d: List[byte]) -> List[Code] ! ElfErrors {
         d[3] != 70 as byte {
         return not_elf64_x86_64
     }
-    if d[4] != 2 as byte || d[5] != 1 as byte || u16(d, 18)? != 62 { return not_elf64_x86_64 }
-    let shoff = u64(d, 40)?
-    let shentsize = u16(d, 58)?
-    let shnum = u16(d, 60)?
-    let shstrndx = u16(d, 62)?
+    if d[4] != 2 as byte || d[5] != 1 as byte || read16(d, 18)? != 62 { return not_elf64_x86_64 }
+    let shoff = read64(d, 40)?
+    let shentsize = read16(d, 58)?
+    let shnum = read16(d, 60)?
+    let shstrndx = read16(d, 62)?
     if shentsize != 64 || shnum == 0 || shstrndx >= shnum { return malformed_elf }
     let names_header = shoff + shstrndx * 64
-    let names_offset = u64(d, names_header + 24)?
-    let names_size = u64(d, names_header + 32)?
+    let names_offset = read64(d, names_header + 24)?
+    let names_size = read64(d, names_header + 32)?
     if names_offset + names_size > d.len { return malformed_elf }
     var table = List[byte]()
     for i in names_offset..names_offset + names_size { (mut table).push(d[i]) }
     var out = List[Code]()
     for i in 0..shnum {
         let h = shoff + i * 64
-        let name_index = u32(d, h)?
-        let kind = u32(d, h + 4)?
-        let flags = u64(d, h + 8)?
-        let address = u64(d, h + 16)?
-        let offset = u64(d, h + 24)?
-        let size = u64(d, h + 32)?
+        let name_index = read32(d, h)?
+        let kind = read32(d, h + 4)?
+        let flags = read64(d, h + 8)?
+        let address = read64(d, h + 16)?
+        let offset = read64(d, h + 24)?
+        let size = read64(d, h + 32)?
         if flags / 4 % 2 != 1 || kind == 8 || size == 0 { continue }
         if offset + size > d.len { return malformed_elf }
         var bytes = List[byte]()

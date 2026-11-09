@@ -9,10 +9,6 @@
 // AT&T text (docs/FORMATS.md, "The decoder"), and the round-trip renderer spells the GNU as
 // source that clef assembles back to the same bytes, every encoding choice forced by a GNU as
 // pseudo prefix or prefix word and checked against the bytes before it is printed.
-use dialect
-use eval
-use lex
-use machine
 use x86table
 
 /// Decoding refusals are rows in the output, not errors: the stream always advances.
