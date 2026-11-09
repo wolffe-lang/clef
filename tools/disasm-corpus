@@ -2,7 +2,8 @@
 """objdump agreement over the digest-checked corpus: clef's text against the pinned
 objdump's, per binary and per executable section, every difference named and counted.
 Needs CLEF_CORPUS=<extracted ISO root>; without it the step SKIPs loudly.
---jobs=N compares N binaries at once (default: the CPUs this process may use)."""
+--jobs=N compares N binaries at once (default: the CPUs this process may use); --mem=G caps
+every clef process at G GiB of address space (default 4)."""
 import collections,concurrent.futures,json,os,pathlib,re,sys,time
 from disasmlib import ROOT,corpus_root,corpus_members,objdump,clef_disassemble,parse,classify_line
 root=corpus_root()
@@ -12,6 +13,8 @@ manifest=ROOT/'notes/as03/corpus.json'
 out=ROOT/'target/evidence';out.mkdir(parents=True,exist_ok=True)
 only=set(a for a in sys.argv[1:] if not a.startswith('--'))
 jobs=int(next((a[7:] for a in sys.argv[1:] if a.startswith('--jobs=')),len(os.sched_getaffinity(0)) if hasattr(os,'sched_getaffinity') else 2))
+mem=next((a[6:] for a in sys.argv[1:] if a.startswith('--mem=')),None)
+if mem:os.environ['CLEF_MEM_GB']=mem
 def one(b,path):
     """One binary: objdump's lines against clef's at every address, differences named."""
     name=b['paths'][0].split('/')[-1]

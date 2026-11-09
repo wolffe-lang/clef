@@ -3,7 +3,8 @@
 digest-checked corpus, per binary, per executable section and per instruction class.
 Needs CLEF_CORPUS=<extracted ISO root>; without it the step SKIPs loudly.
 With --twice, every binary is disassembled twice and the texts must be identical.
---jobs=N runs N binaries at once (default: the CPUs this process may use)."""
+--jobs=N runs N binaries at once (default: the CPUs this process may use); --mem=G caps
+every clef process at G GiB of address space (default 4)."""
 import collections,concurrent.futures,json,os,pathlib,re,sys,time
 from disasmlib import ROOT,CLEF,corpus_root,corpus_members,clef_disassemble,executable_sections,assemble_chunks,classify_line,CHUNK
 root=corpus_root()
@@ -11,6 +12,8 @@ if root is None or not root.exists():
     print('SKIP law reason=corpus not staged (CLEF_CORPUS unset or missing); runs on the lane host',flush=True);raise SystemExit(0)
 args=[a for a in sys.argv[1:] if not a.startswith('--')];twice='--twice' in sys.argv
 jobs=int(next((a[7:] for a in sys.argv[1:] if a.startswith('--jobs=')),len(os.sched_getaffinity(0)) if hasattr(os,'sched_getaffinity') else 2))
+mem=next((a[6:] for a in sys.argv[1:] if a.startswith('--mem=')),None)
+if mem:os.environ['CLEF_MEM_GB']=mem
 manifest=ROOT/'notes/as03/corpus.json'
 out=ROOT/'target/evidence';work=out/'law';work.mkdir(parents=True,exist_ok=True)
 only=set(args)

@@ -36,9 +36,21 @@ def objdump(path,mode=64):
     if p.returncode:raise RuntimeError('objdump failed: '+p.stderr[:300])
     return parse(p.stdout)
 
+def memory_cap():
+    """A hard address-space cap for every clef process, CLEF_MEM_GB gibibytes (default 4); None where unsupported."""
+    try:
+        import resource
+    except ImportError:return None
+    limit=int(float(os.environ.get('CLEF_MEM_GB','4'))*2**30)
+    def cap():
+        for name in ('RLIMIT_AS','RLIMIT_DATA'):
+            try:resource.setrlimit(getattr(resource,name),(limit,limit));return
+            except (ValueError,OSError):continue  # macOS refuses RLIMIT_AS; the cap is a Linux guarantee
+    return cap
+
 def clef_disassemble(path,*extra,mode=64):
     flags=['--code32'] if mode==32 else []
-    p=subprocess.run([str(CLEF),'--disassemble',*flags,*extra,str(path)],capture_output=True,text=True,errors='replace')
+    p=subprocess.run([str(CLEF),'--disassemble',*flags,*extra,str(path)],capture_output=True,text=True,errors='replace',preexec_fn=memory_cap())
     return p.returncode,p.stdout,p.stderr
 
 def classify_line(text):
@@ -84,7 +96,7 @@ def assemble_chunks(source_lines,workdir,tag,mode=64):
     for i in range(0,len(source_lines),CHUNK):
         src=workdir/f'{tag}-{i//CHUNK}.S';obj=src.with_suffix('.o')
         src.write_text(f'.text\n.code{mode}\n'+'\n'.join(source_lines[i:i+CHUNK])+'\n')
-        p=subprocess.run([str(CLEF),'--64',str(src),'-o',str(obj)],capture_output=True,text=True)
+        p=subprocess.run([str(CLEF),'--64',str(src),'-o',str(obj)],capture_output=True,text=True,preexec_fn=memory_cap())
         if p.returncode or not obj.exists():
             diag.append(p.stderr.strip()[:300]);return None,diag
         e=ELF(obj)
