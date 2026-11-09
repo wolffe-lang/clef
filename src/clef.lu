@@ -70,7 +70,7 @@ fn disassemble(opts: front.Options, bytes: List[byte]) -> int {
     let idx = decode.index(forms)
     var sections = List[decode.Code]()
     if opts.raw {
-        (mut sections).push(decode.Code { name: ".raw", address: opts.address, bytes: bytes })
+        (mut sections).push(decode.Code { name: ".raw", address: opts.address, bytes: copy bytes })
     } else {
         sections = decode.executable_sections(bytes) else |e| {
             eprint("clef: {opts.input}: {e}")

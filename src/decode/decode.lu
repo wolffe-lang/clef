@@ -105,9 +105,9 @@ fn refuse(
     Decoded {
         offset: offset,
         length: length,
-        prefixes: prefixes,
+        prefixes: copy prefixes,
         rex: rex,
-        opcode: opcode,
+        opcode: copy opcode,
         modrm: -1,
         sib: -1,
         disp: 0,
@@ -159,7 +159,7 @@ fn modrm_of(b: int) -> ModRM {
 }
 
 /// Byte count of ModRM, SIB and displacement after a ModRM byte, or -1 if the stream ends.
-fn address_length(bytes: List[byte], at: int, mode: int, address32: bool) -> int {
+fn address_length(bytes: List[byte], at: int) -> int {
     if at >= bytes.len { return -1 }
     let m = modrm_of(bytes[at] as int)
     var n = 1
@@ -191,11 +191,6 @@ fn rm_kind(pattern: str) -> str {
     }
     if pattern.len > 0 { return "register" }
     ""
-}
-
-fn has(words: List[str], w: str) -> bool {
-    for x in words { if x == w { return true } }
-    false
 }
 
 /// Decode one instruction at offset; address is the stream's load address for branch targets.
@@ -294,7 +289,7 @@ pub fn decode(idx: Index, bytes: List[byte], offset: int, mode: int, address: in
     var best_score = -1
     var best_long = false
     for id in candidates {
-        let f = idx.forms[id]
+        let f = copy idx.forms[id]
         if !(f.modes == "32,64" || f.modes == "{mode}") { continue }
         if f.preference.contains("decode-alias") { continue }
         let long = f.opcode.len > opcode.len
@@ -332,7 +327,6 @@ pub fn decode(idx: Index, bytes: List[byte], offset: int, mode: int, address: in
             if rex == 0 || rex / 8 % 2 == 0 { continue }
             score += 1
         }
-        if f.role == "fixed" || f.role.starts_with("seg_") || f.role == "string" { score += 0 }
         // A row whose only operand is the fixed accumulator pair beats a +r row with r=0 (90: NOP).
         if score > best_score || score == best_score && long && !best_long {
             best = id
@@ -343,7 +337,7 @@ pub fn decode(idx: Index, bytes: List[byte], offset: int, mode: int, address: in
     if best < 0 {
         return classify_refusal(bytes, offset, at, prefixes, rex, opcode, modrm, mode, address32)
     }
-    let f = idx.forms[best]
+    let f = copy idx.forms[best]
     if f.opcode.len > opcode.len { (mut opcode).push(modrm); at += 1 }
     var d = refuse(offset, 0, prefixes, rex, opcode, "", "")
     d.row = best
@@ -497,7 +491,7 @@ pub fn decode(idx: Index, bytes: List[byte], offset: int, mode: int, address: in
             if consumed_rep == b {
                 consumed_rep = 0
             } else {
-                word = repeat_word(b, f, d)
+                word = repeat_word(b, f)
             }
         } else if b == 103 {
             if consumed67 { consumed67 = false } else { word = "addr32" }
@@ -518,7 +512,7 @@ pub fn decode(idx: Index, bytes: List[byte], offset: int, mode: int, address: in
     var j = words_rev.len - 1
     while j >= 0 { (mut words).push(words_rev[j]); j -= 1 }
     d.words = words
-    render(idx, f, mut d, mode, address, seg, consumed_seg_used(f, seg))
+    render(idx, f, mut d, mode, address, consumed_seg_used(f, seg))
     d
 }
 
@@ -598,7 +592,7 @@ fn uses_address_size(f: x86table.Form, d: Decoded) -> bool {
 
 /// objdump's word for an unconsumed F3/F2: rep on MOVS/STOS/LODS/INS/OUTS, repz/repnz on
 /// CMPS/SCAS, bnd (F2) on a branch, repz/repnz elsewhere.
-fn repeat_word(b: int, f: x86table.Form, d: Decoded) -> str {
+fn repeat_word(b: int, f: x86table.Form) -> str {
     let fam = f.family
     let stem = if fam.len > 4 then fam[0..4] else fam
     if b == 243 &&
@@ -636,7 +630,7 @@ fn classify_refusal(
     let one = prefixes.len + (if rex != 0 then 1 else 0) + 1
     if b0 >= 216 && b0 <= 223 {
         // x87 escape: ModRM, SIB and displacement decide the length; no immediates (Table A-7..A-22).
-        let n = address_length(bytes, at, mode, address32)
+        let n = address_length(bytes, at)
         let length = if n < 0 then at - offset else at - offset + n
         return refuse(
             offset,
@@ -673,7 +667,7 @@ fn classify_refusal(
     if b0 == 15 && opcode.len >= 2 {
         let b1 = opcode[1]
         if sse_cell(b1) || b1 == 56 || b1 == 58 {
-            var n = address_length(bytes, at, mode, address32)
+            var n = address_length(bytes, at)
             if b1 == 119 { n = 0 }
             let length = if n < 0 then at - offset else at - offset + n + sse_imm(opcode)
             return refuse(

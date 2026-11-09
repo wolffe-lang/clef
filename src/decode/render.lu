@@ -68,7 +68,7 @@ fn segment_register(code: int) -> str {
 }
 
 struct Fields {
-    mod: int,
+    modbits: int,
     reg: int,
     rm: int,
     scale: int,
@@ -98,7 +98,7 @@ fn fields(d: Decoded) -> Fields {
         rex_b: b,
     }
     if d.modrm >= 0 {
-        f.mod = d.modrm / 64
+        f.modbits = d.modrm / 64
         f.reg = d.modrm / 8 % 8
         f.rm = d.modrm % 8
     }
@@ -122,7 +122,7 @@ fn memory_text(d: Decoded, mode: int, seg: str, address: int, mut comment: str) 
     let abits = address_bits(d, mode)
     let prefix = if seg.len > 0 then "%{seg}:" else ""
     if d.sib < 0 {
-        if f.mod == 0 && f.rm == 5 {
+        if f.modbits == 0 && f.rm == 5 {
             if mode == 64 {
                 let target = (address + d.offset + d.length + d.disp) as u64
                 comment = "        # " + hex(target)
@@ -131,10 +131,10 @@ fn memory_text(d: Decoded, mode: int, seg: str, address: int, mut comment: str) 
             return prefix + hex(mask(d.disp as u64, 32))
         }
         let base = gpr(f.rm + 8 * f.rex_b, abits, true)
-        let disp = if f.mod == 0 then "" else hex_signed(d.disp)
+        let disp = if f.modbits == 0 then "" else hex_signed(d.disp)
         return prefix + disp + "(" + base + ")"
     }
-    let has_base = !(f.mod == 0 && f.base == 5)
+    let has_base = !(f.modbits == 0 && f.base == 5)
     let index_code = f.index + 8 * f.rex_x
     let has_index = index_code != 4
     var inner = ""
@@ -151,7 +151,7 @@ fn memory_text(d: Decoded, mode: int, seg: str, address: int, mut comment: str) 
     if !has_base {
         disp = hex_signed(d.disp)
         if !has_index { return prefix + hex(mask(d.disp as u64, 32)) }
-    } else if f.mod != 0 {
+    } else if f.modbits != 0 {
         disp = hex_signed(d.disp)
     }
     prefix + disp + "(" + inner + ")"
@@ -205,7 +205,7 @@ fn render(
         let is_opreg = f.opcode_operand == i
         if p.starts_with("indirect-") {
             let inner = p[9..]
-            if fl.mod == 3 {
+            if fl.modbits == 3 {
                 let width = if inner == "mem" then 64 else pattern_width(inner, "rm")
                 text = "*" + gpr(fl.rm + 8 * fl.rex_b, width, rex_present)
                 any_register = true
@@ -269,7 +269,7 @@ fn render(
             text = "%xmm{fl.reg + 8 * fl.rex_r}"
             any_register = true
         } else if p == "xmmrm128" {
-            if fl.mod == 3 {
+            if fl.modbits == 3 {
                 text = "%xmm{fl.rm + 8 * fl.rex_b}"
                 any_register = true
             } else {
@@ -281,7 +281,7 @@ fn render(
         } else if p == "mem" {
             text = memory_text(d, mode, used_seg, address, mut comment)
         } else if p.starts_with("rm") {
-            if fl.mod == 3 {
+            if fl.modbits == 3 {
                 var width = if p == "rmw16" {
                     (if fl.rex_w then 64 else if has_byte(d.prefixes, 102) then 16 else 32)
                 } else {
@@ -404,15 +404,15 @@ fn byte_line(bytes: List[byte], d: Decoded, note: str) -> str {
 /// encoder itself; a line the assembler cannot reproduce falls back to `.byte`, named.
 pub fn roundtrip(idx: Index, bytes: List[byte], d: Decoded, mode: int) -> str {
     if d.refusal.len > 0 { return byte_line(bytes, d, d.refusal) }
-    let f = idx.forms[d.row]
+    let f = copy idx.forms[d.row]
     let fl = fields(d)
     var words = List[str]()
     // Encoding choices GNU as would make differently, forced by its own pseudo prefixes.
-    if d.modrm >= 0 && fl.mod == 2 && d.disp >= -128 && d.disp <= 127 {
+    if d.modrm >= 0 && fl.modbits == 2 && d.disp >= -128 && d.disp <= 127 {
         (mut words).push("{{disp32}}")
     }
     if d.modrm >= 0 &&
-        fl.mod == 1 &&
+        fl.modbits == 1 &&
         d.disp == 0 &&
         (if d.sib >= 0 then fl.base != 5 else fl.rm != 5) {
         (mut words).push("{{disp8}}")
@@ -427,7 +427,7 @@ pub fn roundtrip(idx: Index, bytes: List[byte], d: Decoded, mode: int) -> str {
         if disp >= -128 + 3 && disp <= 127 + 3 { (mut words).push("{{disp32}}") }
     }
     if f.role == "rm_reg" &&
-        fl.mod == 3 &&
+        fl.modbits == 3 &&
         f.reg_operand >= 0 &&
         (
             f.family == "mov" ||
@@ -442,7 +442,7 @@ pub fn roundtrip(idx: Index, bytes: List[byte], d: Decoded, mode: int) -> str {
         ) {
         (mut words).push("{{load}}")
     }
-    if f.role == "reg_rm" && fl.mod == 3 && f.family == "xchg" { (mut words).push("{{store}}") }
+    if f.role == "reg_rm" && fl.modbits == 3 && f.family == "xchg" { (mut words).push("{{store}}") }
     if (f.role == "imm_rm" || f.role == "imm_acc") && d.imm_width > 1 && f.bits > 8 {
         let v = signed_of(d.imm, d.imm_width * 8)
         if v >= -128 && v <= 127 && f.family != "mov" && f.family != "test" {
@@ -531,7 +531,7 @@ fn verify(idx: Index, line: str, mode: int, bytes: List[byte], d: Decoded) -> bo
         (mut values).push(value)
         (mut known).push(true)
     }
-    let f = idx.forms[d.row]
+    let f = copy idx.forms[d.row]
     let short = f.role == "relative8"
     let form = machine.choose(idx.forms, node, mode, values, known, short) else { return false }
     var encoded = machine.emit(form, node, mode, values, known) else { return false }
@@ -570,7 +570,7 @@ pub fn expand(idx: Index, d: Decoded) -> List[str] {
     var o = "opcode="
     for i in 0..d.opcode.len { o += (if i == 0 then "" else " ") + hex(d.opcode[i] as u64) }
     if d.row >= 0 {
-        let f = idx.forms[d.row]
+        let f = copy idx.forms[d.row]
         o += " ({f.volume} {f.section} p.{f.page}: {f.citation})"
     } else {
         o += " refused: {d.refusal} ({d.reason})"
@@ -578,7 +578,7 @@ pub fn expand(idx: Index, d: Decoded) -> List[str] {
     (mut out).push("          " + o)
     if d.modrm >= 0 {
         let fl = fields(d)
-        var m = "modrm={hex(d.modrm as u64)} mod={fl.mod} reg={fl.reg} rm={fl.rm} (2A 2.1.5 Table 2-2)"
+        var m = "modrm={hex(d.modrm as u64)} mod={fl.modbits} reg={fl.reg} rm={fl.rm} (2A 2.1.5 Table 2-2)"
         if d.sib >= 0 {
             m += " sib={hex(d.sib as u64)} scale={fl.scale} index={fl.index} base={fl.base} (Table 2-3)"
         }
