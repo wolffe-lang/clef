@@ -2,8 +2,9 @@
 """The law: assemble(disassemble(bytes)) == bytes, clef on both sides, over the
 digest-checked corpus, per binary, per executable section and per instruction class.
 Needs CLEF_CORPUS=<extracted ISO root>; without it the step SKIPs loudly.
-With --twice, every binary is disassembled twice and the texts must be identical."""
-import collections,json,os,pathlib,re,sys,time
+With --twice, every binary is disassembled twice and the texts must be identical.
+--jobs=N runs N binaries at once (default: the CPUs this process may use)."""
+import collections,concurrent.futures,json,os,pathlib,re,sys,time
 from disasmlib import ROOT,CLEF,corpus_root,corpus_members,clef_disassemble,executable_sections,assemble_chunks,classify_line,CHUNK
 root=corpus_root()
 if root is None or not root.exists():
@@ -13,20 +14,18 @@ jobs=int(next((a[7:] for a in sys.argv[1:] if a.startswith('--jobs=')),len(os.sc
 manifest=ROOT/'notes/as03/corpus.json'
 out=ROOT/'target/evidence';work=out/'law';work.mkdir(parents=True,exist_ok=True)
 only=set(args)
-report={'law':'assemble(disassemble(bytes)) == bytes, clef both sides, chunks of %d instructions'%CHUNK,'binaries':[],'classes':{}}
-classes=collections.Counter();red=0;identical=True
-for b,path in corpus_members(manifest,root):
-    name=b['paths'][0].split('/')[-1]
-    if only and name not in only and b['paths'][0] not in only:continue
+def one(b,path):
+    """One binary: every executable section disassembled (twice with --twice), reassembled in chunks, compared byte for byte."""
+    name=b['paths'][0].split('/')[-1];tag=f'{name}-{b["sha256"][:8]}'
     t=time.monotonic()
-    row={'name':name,'path':b['paths'][0],'sha256':b['sha256'],'external':b['external'],'sections':{},'classes':{}}
+    row={'name':name,'path':b['paths'][0],'sha256':b['sha256'],'external':b['external'],'sections':{},'classes':{},'identical':True}
     ok=True
     for section,addr,data in executable_sections(path):
-        raw=work/f'{name}-{section.strip(".")}.bin';raw.write_bytes(data)
+        raw=work/f'{tag}-{section.strip(".")}.bin';raw.write_bytes(data)
         status,source,stderr=clef_disassemble(raw,'--raw','--roundtrip',f'--address={addr:#x}')
         if twice:
             status2,source2,_=clef_disassemble(raw,'--raw','--roundtrip',f'--address={addr:#x}')
-            if source2!=source:identical=False;print(f'FAIL law-determinism:{name}:{section}',flush=True)
+            if source2!=source:row['identical']=False
         sec={'bytes':len(data),'clef_status':status,'stderr':stderr.strip()[:200]}
         if status!=0:
             sec['verdict']='disassembler refused';ok=False
@@ -34,8 +33,10 @@ for b,path in corpus_members(manifest,root):
             lines=[l for l in source.splitlines() if l.strip()]
             counts=collections.Counter(classify_line(l) for l in lines)
             sec['instructions']=len(lines);sec['classes']=dict(counts)
+            escapes=collections.Counter(m.group(1) for l in lines if l.startswith('.byte') for m in [re.search(r'# ([^:]*)',l)] if m)
+            sec['escapes']=dict(escapes)
             for k,v in counts.items():row['classes'][k]=row['classes'].get(k,0)+v
-            rebuilt,diag=assemble_chunks(lines,work,f'{name}-{section.strip(".")}')
+            rebuilt,diag=assemble_chunks(lines,work,f'{tag}-{section.strip(".")}')
             sec['diagnostic']=diag
             if rebuilt is None:sec['verdict']='reassembly refused';ok=False
             elif rebuilt!=data:
@@ -44,14 +45,23 @@ for b,path in corpus_members(manifest,root):
             else:sec['verdict']='round-trips'
         row['sections'][section]=sec
         raw.unlink()
-    for k,v in row['classes'].items():classes[k]+=v
     row['secs']=round(time.monotonic()-t,1);row['law']=ok
-    if not ok:red+=1;print(f'FAIL law:{name} '+' '.join(f'{s}={v["verdict"]}' for s,v in row['sections'].items())+' '+row['sections'].get('.text',{}).get('stderr',''),flush=True)
-    else:print(f'  law:{name} round-trips {row["classes"]}',flush=True)
-    report['binaries'].append(row)
-report['classes']=dict(classes)
+    return row
+members=[(b,path) for b,path in corpus_members(manifest,root) if not only or b['paths'][0].split('/')[-1] in only or b['paths'][0] in only]
+report={'law':'assemble(disassemble(bytes)) == bytes, clef both sides, chunks of %d instructions'%CHUNK,'jobs':jobs,'twice':twice,'binaries':[],'classes':{}}
+classes=collections.Counter();escapes=collections.Counter();red=0;identical=True
+with concurrent.futures.ProcessPoolExecutor(max_workers=max(1,jobs)) as pool:
+    for row in pool.map(one,*zip(*members)) if members else []:
+        for k,v in row['classes'].items():classes[k]+=v
+        for s in row['sections'].values():
+            for k,v in s.get('escapes',{}).items():escapes[k]+=v
+        if not row['identical']:identical=False;print(f'FAIL law-determinism:{row["name"]}',flush=True)
+        if not row['law']:red+=1;print(f'FAIL law:{row["name"]} '+' '.join(f'{s}={v["verdict"]}' for s,v in row['sections'].items())+' '+row['sections'].get('.text',{}).get('stderr',''),flush=True)
+        else:print(f'  law:{row["name"]} round-trips {row["classes"]} {row["secs"]}s',flush=True)
+        report['binaries'].append(row)
+report['classes']=dict(classes);report['escapes']=dict(escapes)
 decoded=classes.get('decoded',0);total=sum(classes.values())
 report['decoded_share']=round(decoded/total,6) if total else None
 (out/'law.json').write_text(json.dumps(report,indent=1,sort_keys=True)+'\n')
-print(f'law: {len(report["binaries"])-red}/{len(report["binaries"])} binaries round-trip; classes {dict(classes)}; determinism {"identical" if identical else "DIFFERS"}',flush=True)
+print(f'law: {len(report["binaries"])-red}/{len(report["binaries"])} binaries round-trip; classes {dict(classes)}; escapes {dict(escapes)}; determinism {"identical" if identical else "DIFFERS"}',flush=True)
 raise SystemExit(1 if red or not identical else 0)

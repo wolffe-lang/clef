@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """objdump agreement over the digest-checked corpus: clef's text against the pinned
 objdump's, per binary and per executable section, every difference named and counted.
-Needs CLEF_CORPUS=<extracted ISO root>; without it the step SKIPs loudly."""
-import collections,json,os,pathlib,re,sys,time
+Needs CLEF_CORPUS=<extracted ISO root>; without it the step SKIPs loudly.
+--jobs=N compares N binaries at once (default: the CPUs this process may use)."""
+import collections,concurrent.futures,json,os,pathlib,re,sys,time
 from disasmlib import ROOT,corpus_root,corpus_members,objdump,clef_disassemble,parse,classify_line
 root=corpus_root()
 if root is None or not root.exists():
@@ -11,11 +12,9 @@ manifest=ROOT/'notes/as03/corpus.json'
 out=ROOT/'target/evidence';out.mkdir(parents=True,exist_ok=True)
 only=set(a for a in sys.argv[1:] if not a.startswith('--'))
 jobs=int(next((a[7:] for a in sys.argv[1:] if a.startswith('--jobs=')),len(os.sched_getaffinity(0)) if hasattr(os,'sched_getaffinity') else 2))
-report={'objdump':'objdump -d --no-show-raw-insn --wide','normalization':'symbolic <decoration> removed; blank runs collapsed','binaries':[]}
-red=0
-for b,path in corpus_members(manifest,root):
+def one(b,path):
+    """One binary: objdump's lines against clef's at every address, differences named."""
     name=b['paths'][0].split('/')[-1]
-    if only and name not in only and b['paths'][0] not in only:continue
     t=time.monotonic()
     expected=objdump(path)
     status,stdout,stderr=clef_disassemble(path)
@@ -25,7 +24,7 @@ for b,path in corpus_members(manifest,root):
     for section,lines in expected.items():
         mine=ours.get(section,[])
         agree=0;diff=collections.Counter()
-        theirs={a:t for a,t in lines};me={a:t for a,t in mine}
+        me={a:t for a,t in mine}
         for a,t in lines:
             m=me.get(a)
             if m is None:k='length'
@@ -37,9 +36,16 @@ for b,path in corpus_members(manifest,root):
         row['sections'][section]={'lines':len(lines),'agree':agree,'differences':dict(diff)}
     row['differences']=dict(names);row['examples']=examples;row['secs']=round(time.monotonic()-t,1)
     row['agree']=status==0 and not any(k for k in names if not k.startswith('out_of_scope:'))
-    if not row['agree']:red+=1;print(f'FAIL disasm-corpus:{name} status={status} {dict(names.most_common(4))} {row["stderr"]}',flush=True)
-    else:print(f'  disasm-corpus:{name} agree {dict(names)}',flush=True)
-    report['binaries'].append(row)
+    return row
+members=[(b,path) for b,path in corpus_members(manifest,root) if not only or b['paths'][0].split('/')[-1] in only or b['paths'][0] in only]
+report={'objdump':'objdump -d --no-show-raw-insn --wide','normalization':'symbolic <decoration> removed; blank runs collapsed','jobs':jobs,'binaries':[]}
+red=0
+with concurrent.futures.ProcessPoolExecutor(max_workers=max(1,jobs)) as pool:
+    for row in pool.map(one,*zip(*members)) if members else []:
+        names=row['differences']
+        if not row['agree']:red+=1;print(f'FAIL disasm-corpus:{row["name"]} status={row["clef_status"]} {dict(collections.Counter(names).most_common(4))} {row["stderr"]}',flush=True)
+        else:print(f'  disasm-corpus:{row["name"]} agree {names} {row["secs"]}s',flush=True)
+        report['binaries'].append(row)
 totals=collections.Counter()
 for r in report['binaries']:totals.update(r['differences'])
 report['total_differences']=dict(totals)
