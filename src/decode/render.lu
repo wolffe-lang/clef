@@ -486,7 +486,7 @@ pub fn roundtrip(idx: Index, bytes: List[byte], d: Decoded, mode: int) -> str {
         }
     }
     if verify(idx, line, mode, bytes, d) { return line }
-    byte_line(bytes, d, "unforced: {d.mnemonic}")
+    byte_line(bytes, d, "unforced: {d.mnemonic} {f.role}")
 }
 
 /// The REX word for bits the row does not use, so the encoder reproduces the byte.

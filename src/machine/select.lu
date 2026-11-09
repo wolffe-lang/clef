@@ -444,6 +444,14 @@ pub fn choose(
         ops[1].kind == "register" {
         role = "reg_rm"
     }
+    // A family with only the r, r/m direction (CMOVcc, BSF, LAR, …) reads `op %src,%dst` as
+    // rm_reg when no reg_rm row exists for it.
+    if role == "reg_rm" && ops.len == 2 && ops[0].kind == "register" {
+        let has_reg_rm = x86table.lookup_in(forms, family, "reg_rm", bits, mode) else {
+            x86table.lookup_in(forms, family, "rm_reg", bits, mode)?
+        }
+        role = has_reg_rm.role
+    }
     let form = x86table.lookup_in(forms, family, role, bits, mode)?
     validate(form, node, values, known)?
     form
