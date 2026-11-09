@@ -86,7 +86,7 @@ fn fields(d: Decoded) -> Fields {
     let x = if d.rex != 0 then d.rex / 2 % 2 else 0
     let b = if d.rex != 0 then d.rex % 2 else 0
     var f = Fields {
-        mod: 3,
+        modbits: 3,
         reg: 0,
         rm: 0,
         scale: 1,
@@ -181,15 +181,7 @@ fn pattern_width(pattern: str, prefix: str) -> int {
 }
 
 /// Fill mnemonic, operands and target from the selected row; objdump's AT&T spelling.
-fn render(
-    idx: Index,
-    f: x86table.Form,
-    mut d: Decoded,
-    mode: int,
-    address: int,
-    seg: str,
-    used_seg: str,
-) {
+fn render(idx: Index, f: x86table.Form, mut d: Decoded, mode: int, address: int, used_seg: str) {
     let fl = fields(d)
     let rex_present = d.rex != 0
     let abits = address_bits(d, mode)
