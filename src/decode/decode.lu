@@ -395,7 +395,7 @@ pub fn decode(idx: Index, bytes: List[byte], offset: int, mode: int, address: in
                     "the stream ends inside the displacement",
                 )
             }
-            d.disp = signed_little(bytes, at, d.disp_width)
+            if d.disp_width > 0 { d.disp = signed_little(bytes, at, d.disp_width) }
             at += d.disp_width
         }
     }
