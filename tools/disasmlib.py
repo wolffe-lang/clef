@@ -7,7 +7,7 @@ ROOT=pathlib.Path(__file__).resolve().parents[1]
 CLEF=ROOT/'target/clef'
 LINE=re.compile(r'^\s*([0-9a-f]+):\t(.*)$')
 SECTION=re.compile(r'^Disassembly of section (\S+):$')
-CHUNK=50000
+CHUNK=2000  # lines per reassembled chunk: clef holds about 0.85 MB per line, so 2,000 fits a 2.5 GiB cap
 
 def sha256(path):
     h=hashlib.sha256()
