@@ -325,8 +325,11 @@ SDM reason and spelled `.byte` in round-trip source. Reserved cells are
 this change does not decode are named apart: `out_of_scope:x87` (D8–DF, consumed
 to their ModRM form's length so the stream stays in step), `out_of_scope:sse`
 (the SSE cells of Table A-3 and the `0F 38`/`0F 3A` maps, with their ModRM and
-`ib` lengths), `out_of_scope:vex` (C4/C5) and `out_of_scope:evex` (62), each one
-byte in 64-bit mode.
+`ib` lengths), `out_of_scope:vex` (C4/C5, the payload bytes by §2.3.5, the
+map's ModRM and its `ib`) and `out_of_scope:evex` (62, the three payload bytes
+of §2.7, ModRM, displacement and `ib`). Each is consumed at the length the SDM
+gives the instruction, so the stream stays in step with objdump's and the law
+preserves the bytes as `.byte`.
 
 ### objdump's spelling
 
@@ -360,7 +363,9 @@ use, and the prefix words above for every unconsumed prefix byte. Branch targets
 are `.+N` from the instruction's own address, so no label is needed. The
 renderer then assembles its own line through `machine.choose` and
 `machine.emit`; a line that does not reproduce the bytes is printed as `.byte`
-with the reason (`unforced: <mnemonic>`), so the source is byte-exact by
+with the reason (`accumulator-form` where the compiler encoded `81 /n id` on the
+accumulator and GNU as has no device that refuses its shorter `05` form;
+`unforced: <mnemonic>` otherwise), so the source is byte-exact by
 construction and every such escape is counted by name in the law's report rather
 than hidden. The assembler accepts the same devices: the dialect takes the pseudo
 prefixes and prefix words on the instruction's line, segment overrides on memory

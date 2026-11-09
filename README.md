@@ -107,12 +107,21 @@ See [EXPAND](docs/EXPAND.md) for the expansion contract and
   `invalid_lock_prefix` refusal on other supported forms.
 * Symbol/string tables need structural equality, not identical serialization.
   [MAP](docs/MAP.md) records the measured raw-table distances.
-* The retained objdump round-trip instrument measured 79 binaries and
-  32,725,357 decoded lines. It is not a clef disassembler: none of those complete
-  inputs reassembled unchanged. [ROUNDTRIP](docs/ROUNDTRIP.md) explains the result.
+* `clef --disassemble` reads x86-64 ELF objects and raw byte streams back
+  from the same encoding rows, in the pinned objdump 2.42's AT&T spelling, with
+  `--expand` for the encoding fields and their SDM provenance and `--roundtrip`
+  for GNU as source that clef assembles back to the same bytes. Every table
+  row's witness reads back (886 rows in both modes), and the round-trip law
+  `assemble(disassemble(bytes)) == bytes` holds over every x86-64 binary the
+  org builds; the legacy SSE, x87, VEX and EVEX classes are named `(bad)`
+  refusals of their full length and round-trip as `.byte`, measured per class in
+  [FORMATS](docs/FORMATS.md#the-decoder). The earlier retained instrument's
+  result is in [ROUNDTRIP](docs/ROUNDTRIP.md).
 
-There is no disassembler, Intel-syntax dialect, C preprocessor, sealed-dialect
-policy, AArch64 encoder or compiler inline-assembly protocol yet. The ELF writer
+The disassembler decodes the general-purpose and system instructions; the
+vector classes are decoded by later changes. There is no Intel-syntax dialect,
+C preprocessor, sealed-dialect policy, AArch64 encoder or compiler
+inline-assembly protocol yet. The ELF writer
 rejects unsupported section/relocation features such as COMDAT and TLS.
 
 ## Source layout
