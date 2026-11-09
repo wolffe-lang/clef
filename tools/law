@@ -9,6 +9,7 @@ root=corpus_root()
 if root is None or not root.exists():
     print('SKIP law reason=corpus not staged (CLEF_CORPUS unset or missing); runs on the lane host',flush=True);raise SystemExit(0)
 args=[a for a in sys.argv[1:] if not a.startswith('--')];twice='--twice' in sys.argv
+jobs=int(next((a[7:] for a in sys.argv[1:] if a.startswith('--jobs=')),len(os.sched_getaffinity(0)) if hasattr(os,'sched_getaffinity') else 2))
 manifest=ROOT/'notes/as03/corpus.json'
 out=ROOT/'target/evidence';work=out/'law';work.mkdir(parents=True,exist_ok=True)
 only=set(args)

@@ -134,7 +134,7 @@ fn memory_text(d: Decoded, mode: int, seg: str, address: int, mut comment: str) 
                 comment = "        # " + hex(target)
                 return prefix + hex_signed(d.disp) + "(%rip)"
             }
-            return prefix + hex(mask(bits_of(d.disp), 32))
+            return prefix + hex(mask(bits_of(d.disp), abits))
         }
         let base = gpr(f.rm + 8 * f.rex_b, abits, true)
         let disp = if f.modbits == 0 then "" else hex_signed(d.disp)
@@ -156,7 +156,7 @@ fn memory_text(d: Decoded, mode: int, seg: str, address: int, mut comment: str) 
     var disp = ""
     if !has_base {
         disp = hex_signed(d.disp)
-        if !has_index { return prefix + hex(mask(bits_of(d.disp), 32)) }
+        if !has_index { return prefix + hex(mask(bits_of(d.disp), abits)) }
     } else if f.modbits != 0 {
         disp = hex_signed(d.disp)
     }

@@ -327,6 +327,9 @@ pub fn decode(idx: Index, bytes: List[byte], offset: int, mode: int, address: in
         if f.rex_w {
             if rex == 0 || rex / 8 % 2 == 0 { continue }
             score += 1
+        } else if rex != 0 && rex / 8 % 2 == 1 && f.bits == 16 {
+            // SDM vol.2A 2.2.1.2: with REX.W set the 66H operand-size prefix is ignored.
+            continue
         }
         // A row whose only operand is the fixed accumulator pair beats a +r row with r=0 (90: NOP).
         if score > best_score || score == best_score && long && !best_long {
@@ -644,25 +647,49 @@ fn classify_refusal(
         )
     }
     if mode == 64 && (b0 == 196 || b0 == 197) {
+        // VEX (SDM vol.2A 2.3): C5 carries one payload byte, C4 two; the map (mmmmm) of C4
+        // decides the immediate (map 3 is 0F 3A, always ib; map 1 keeps 0F's ib cells); then the
+        // opcode byte and the ModRM form. The length keeps the stream in step with objdump's.
+        let payload = if b0 == 197 then 1 else 2
+        let reason = "SDM vol.2A 2.3 VEX prefix C4/C5; decoded by a later change"
+        if at + payload >= bytes.len {
+            return refuse(offset, at - offset, prefixes, rex, opcode, "out_of_scope:vex", reason)
+        }
+        let map = if b0 == 197 then 1 else bytes[at] as int % 32
+        let op = bytes[at + payload] as int
+        var n = address_length(bytes, at + payload + 1)
+        if n < 0 { n = 0 }
+        let imm = if map == 3 then 1 else if map == 1 then sse_imm([15, op]) else 0
         return refuse(
             offset,
-            one,
+            at - offset + payload + 1 + n + imm,
             prefixes,
             rex,
             opcode,
             "out_of_scope:vex",
-            "SDM vol.2A 2.3 VEX prefix C4/C5; decoded by a later change",
+            reason,
         )
     }
     if mode == 64 && b0 == 98 {
+        // EVEX (SDM vol.2A 2.7): three payload bytes, the map in P0's low bits, then the opcode
+        // and the ModRM form; disp8*N keeps a one-byte displacement.
+        let reason = "SDM vol.2A 2.7 EVEX prefix 62; decoded by a later change"
+        if at + 3 >= bytes.len {
+            return refuse(offset, at - offset, prefixes, rex, opcode, "out_of_scope:evex", reason)
+        }
+        let map = bytes[at] as int % 8
+        let op = bytes[at + 3] as int
+        var n = address_length(bytes, at + 4)
+        if n < 0 { n = 0 }
+        let imm = if map == 3 then 1 else if map == 1 then sse_imm([15, op]) else 0
         return refuse(
             offset,
-            one,
+            at - offset + 4 + n + imm,
             prefixes,
             rex,
             opcode,
             "out_of_scope:evex",
-            "SDM vol.2A 2.7 EVEX prefix 62; decoded by a later change",
+            reason,
         )
     }
     if b0 == 15 && opcode.len >= 2 {

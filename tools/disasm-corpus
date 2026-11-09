@@ -9,7 +9,8 @@ if root is None or not root.exists():
     print('SKIP disasm-corpus reason=corpus not staged (CLEF_CORPUS unset or missing); runs on the lane host',flush=True);raise SystemExit(0)
 manifest=ROOT/'notes/as03/corpus.json'
 out=ROOT/'target/evidence';out.mkdir(parents=True,exist_ok=True)
-only=set(sys.argv[1:])
+only=set(a for a in sys.argv[1:] if not a.startswith('--'))
+jobs=int(next((a[7:] for a in sys.argv[1:] if a.startswith('--jobs=')),len(os.sched_getaffinity(0)) if hasattr(os,'sched_getaffinity') else 2))
 report={'objdump':'objdump -d --no-show-raw-insn --wide','normalization':'symbolic <decoration> removed; blank runs collapsed','binaries':[]}
 red=0
 for b,path in corpus_members(manifest,root):
