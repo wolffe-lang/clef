@@ -47,10 +47,26 @@ def classify_line(text):
     if m:return m[1]
     return 'decoded'
 
+def sections(path):
+    """ELF64-LE section headers (ELF gABI ch.4) without the comparator's table checks: an
+    executable's dynamic tables may point anywhere; only names, flags, addresses and bytes matter here."""
+    import struct
+    data=pathlib.Path(path).read_bytes()
+    if data[:7]!=b'\x7fELF\x02\x01\x01' or struct.unpack_from('<H',data,18)[0]!=62:raise ValueError('not an ELF64 x86-64 file')
+    shoff,shentsize,shnum,shstrndx=struct.unpack_from('<Q',data,40)[0],*struct.unpack_from('<HHH',data,58)
+    if shentsize!=64 or not shnum or shstrndx>=shnum:raise ValueError('invalid section table')
+    raw=[struct.unpack_from('<IIQQQQIIQQ',data,shoff+i*64) for i in range(shnum)]
+    names=raw[shstrndx];table=data[names[4]:names[4]+names[5]]
+    out=[]
+    for s in raw:
+        end=table.find(b'\0',s[0]);name=table[s[0]:end].decode('utf-8','surrogateescape') if end>=0 else ''
+        out.append((name,s))
+    return data,out
+
 def executable_sections(path):
-    e=ELF(path)
-    for name,s in e.sections:
-        if s[2]&4 and s[1]!=8 and s[5]>0:yield name,s[3],e.contents(s)
+    data,secs=sections(path)
+    for name,s in secs:
+        if s[2]&4 and s[1]!=8 and s[5]>0:yield name,s[3],data[s[4]:s[4]+s[5]]
 
 def corpus_members(manifest,root):
     """Digest-checked members of the staged corpus; a mismatch is a hard failure, never a skip."""
