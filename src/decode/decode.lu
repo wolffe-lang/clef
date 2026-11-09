@@ -274,7 +274,8 @@ pub fn decode(idx: Index, bytes: List[byte], offset: int, mode: int, address: in
     // the +r group of the last byte.
     var candidates = List[int]()
     for k in [key_of(opcode, false), key_of(opcode, true)] {
-        for id in copy idx.by_key[k] else List[int]() { (mut candidates).push(id) }
+        let ids = idx.by_key[k] else List[int]()
+        for id in ids { (mut candidates).push(id) }
     }
     if modrm >= 0 && opcode.len < 3 {
         var longer = copy opcode
