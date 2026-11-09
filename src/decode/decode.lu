@@ -1,0 +1,795 @@
+// The decoder: the same encoding table, read in the other direction.
+//
+// One instruction is decoded from the bytes by SDM vol.2A ch.2 (prefixes §2.1.1, REX §2.2.1,
+// ModRM/SIB Tables 2-2, 2-3 and 2-5, displacement and immediate §2.1.5) and selected from the
+// rows of src/x86table by opcode, ModRM extension, mandatory prefix, REX.W and the register or
+// memory form of its r/m operand. A byte that selects no row is one refusal of one byte, named
+// (SDM Appendix A: a blank map cell is reserved) or classed as out of scope (x87 D8-DF, the
+// SSE cells of Table A-3, VEX C4/C5, EVEX 62), never a guess. The renderer spells objdump's
+// AT&T text (docs/FORMATS.md, "The decoder"), and the round-trip renderer spells the GNU as
+// source that clef assembles back to the same bytes, every encoding choice forced by a GNU as
+// pseudo prefix or prefix word and checked against the bytes before it is printed.
+use dialect
+use eval
+use lex
+use machine
+use x86table
+
+/// Decoding refusals are rows in the output, not errors: the stream always advances.
+pub struct Decoded {
+    offset: int,
+    length: int,
+    prefixes: List[int],
+    rex: int,
+    opcode: List[int],
+    modrm: int,
+    sib: int,
+    disp: int,
+    disp_width: int,
+    imm: u64,
+    imm_width: int,
+    imm2: int,
+    row: int,
+    refusal: str,
+    reason: str,
+    words: List[str],
+    rex_word: str,
+    mnemonic: str,
+    operands: List[str],
+    target: int,
+    comment: str,
+}
+
+/// The rows indexed by opcode bytes; built once per run.
+pub struct Index {
+    forms: List[x86table.Form],
+    by_key: Map[str, List[int]],
+    widths: Map[str, int],
+}
+
+fn key_of(opcode: List[int], opreg: bool) -> str {
+    var k = if opreg then "r:" else ""
+    for i in 0..opcode.len {
+        let b = if i == opcode.len - 1 && opreg then opcode[i] - opcode[i] % 8 else opcode[i]
+        k += if i == 0 then "{b}" else ",{b}"
+    }
+    k
+}
+
+/// Index every row by its opcode bytes (the last one masked to its group of eight for +r rows),
+/// and count each family's distinct operand widths for the suffix rule.
+pub fn index(forms: List[x86table.Form]) -> Index {
+    var by = Map[str, List[int]]()
+    var widths = Map[str, int]()
+    var seen = Map[str, bool]()
+    for i in 0..forms.len {
+        let f = forms[i]
+        let k = key_of(f.opcode, f.opcode_operand >= 0)
+        var ids = by[k] else List[int]()
+        (mut ids).push(i)
+        by[k] = ids
+        if f.bits > 0 {
+            let wk = "{f.family}/{f.bits}"
+            if !(seen[wk] else false) {
+                seen[wk] = true
+                widths[f.family] = (widths[f.family] else 0) + 1
+            }
+        }
+    }
+    Index { forms: forms, by_key: by, widths: widths }
+}
+
+fn legacy_prefix(b: int) -> bool {
+    b == 240 ||
+        b == 242 ||
+        b == 243 ||
+        b == 46 ||
+        b == 54 ||
+        b == 62 ||
+        b == 38 ||
+        b == 100 ||
+        b == 101 ||
+        b == 102 ||
+        b == 103
+}
+
+fn refuse(
+    offset: int,
+    length: int,
+    prefixes: List[int],
+    rex: int,
+    opcode: List[int],
+    name: str,
+    reason: str,
+) -> Decoded {
+    Decoded {
+        offset: offset,
+        length: length,
+        prefixes: prefixes,
+        rex: rex,
+        opcode: opcode,
+        modrm: -1,
+        sib: -1,
+        disp: 0,
+        disp_width: 0,
+        imm: 0,
+        imm_width: 0,
+        imm2: 0,
+        row: -1,
+        refusal: name,
+        reason: reason,
+        words: [],
+        rex_word: "",
+        mnemonic: "(bad)",
+        operands: [],
+        target: -1,
+        comment: "",
+    }
+}
+
+/// Whether the two-byte map cell is an SSE/MMX cell (SDM vol.2D Table A-3), out of this
+/// change's scope rather than reserved. Cells: 10-17, 28-2F, 50-7F except 71-73 groups'
+/// reserved forms, C2-C6, D0-FE. The GP/system cells among them are rows and win first.
+fn sse_cell(b: int) -> bool {
+    b >= 16 && b <= 23 ||
+        b >= 40 && b <= 47 ||
+        b >= 80 && b <= 127 ||
+        b >= 194 && b <= 198 ||
+        b >= 208 && b <= 254
+}
+
+/// The immediate an SSE cell carries (Table A-3: 70-73, C2, C4-C6 take ib; 0F 3A always ib).
+fn sse_imm(opcode: List[int]) -> int {
+    if opcode.len == 3 && opcode[1] == 58 { return 1 }
+    if opcode.len == 2 {
+        let b = opcode[1]
+        if b >= 112 && b <= 115 || b == 194 || b == 196 || b == 197 || b == 198 { return 1 }
+    }
+    0
+}
+
+struct ModRM {
+    modbits: int,
+    reg: int,
+    rm: int,
+}
+
+fn modrm_of(b: int) -> ModRM {
+    ModRM { modbits: b / 64, reg: b / 8 % 8, rm: b % 8 }
+}
+
+/// Byte count of ModRM, SIB and displacement after a ModRM byte, or -1 if the stream ends.
+fn address_length(bytes: List[byte], at: int, mode: int, address32: bool) -> int {
+    if at >= bytes.len { return -1 }
+    let m = modrm_of(bytes[at] as int)
+    var n = 1
+    if m.modbits == 3 { return n }
+    var base5 = m.rm == 5
+    if m.rm == 4 {
+        if at + 1 >= bytes.len { return -1 }
+        n += 1
+        base5 = bytes[at + 1] as int % 8 == 5
+    }
+    if m.modbits == 1 { n += 1 } else if m.modbits == 2 || m.modbits == 0 && base5 { n += 4 }
+    n
+}
+
+fn rm_pattern(f: x86table.Form) -> str {
+    if f.rm_operand < 0 { return "" }
+    let ops = f.operands.split(",")
+    if f.rm_operand >= ops.len { return "" }
+    ops[f.rm_operand]
+}
+
+/// Register-only, memory-only, or either, for a row's r/m operand pattern.
+fn rm_kind(pattern: str) -> str {
+    if pattern.starts_with("rm") || pattern.starts_with("indirect-rm") || pattern == "xmmrm128" {
+        return "either"
+    }
+    if pattern == "mem" || pattern == "indirect-mem" || pattern.starts_with("moffs") {
+        return "memory"
+    }
+    if pattern.len > 0 { return "register" }
+    ""
+}
+
+fn has(words: List[str], w: str) -> bool {
+    for x in words { if x == w { return true } }
+    false
+}
+
+/// Decode one instruction at offset; address is the stream's load address for branch targets.
+pub fn decode(idx: Index, bytes: List[byte], offset: int, mode: int, address: int) -> Decoded {
+    var at = offset
+    var prefixes = List[int]()
+    while at < bytes.len && at - offset < 15 && legacy_prefix(bytes[at] as int) {
+        (mut prefixes).push(bytes[at] as int)
+        at += 1
+    }
+    if at >= bytes.len {
+        return refuse(
+            offset,
+            at - offset,
+            prefixes,
+            0,
+            [],
+            "truncated",
+            "the stream ends inside the prefixes",
+        )
+    }
+    var rex = 0
+    if mode == 64 && bytes[at] as int >= 64 && bytes[at] as int <= 79 {
+        rex = bytes[at] as int
+        at += 1
+        if at >= bytes.len {
+            return refuse(
+                offset,
+                at - offset,
+                prefixes,
+                rex,
+                [],
+                "truncated",
+                "the stream ends after REX",
+            )
+        }
+        if legacy_prefix(bytes[at] as int) || bytes[at] as int >= 64 && bytes[at] as int <= 79 {
+            // SDM vol.2A 2.2.1: a REX not immediately before the opcode is ignored; one byte.
+            return refuse(
+                offset,
+                1 + prefixes.len,
+                prefixes,
+                rex,
+                [],
+                "rex_misplaced",
+                "SDM vol.2A 2.2.1: REX must immediately precede the opcode",
+            )
+        }
+    }
+    var opcode = [bytes[at] as int]
+    at += 1
+    if opcode[0] == 15 {
+        if at >= bytes.len {
+            return refuse(
+                offset,
+                at - offset,
+                prefixes,
+                rex,
+                opcode,
+                "truncated",
+                "the stream ends inside the opcode",
+            )
+        }
+        (mut opcode).push(bytes[at] as int)
+        at += 1
+        if opcode[1] == 56 || opcode[1] == 58 {
+            if at >= bytes.len {
+                return refuse(
+                    offset,
+                    at - offset,
+                    prefixes,
+                    rex,
+                    opcode,
+                    "truncated",
+                    "the stream ends inside the opcode",
+                )
+            }
+            (mut opcode).push(bytes[at] as int)
+            at += 1
+        }
+    }
+    let modrm = if at < bytes.len then bytes[at] as int else -1
+    let address32 = has_byte(prefixes, 103)
+    // Candidates: the opcode as decoded, a longer fixed opcode that absorbs the next byte, and
+    // the +r group of the last byte.
+    var candidates = List[int]()
+    for k in [key_of(opcode, false), key_of(opcode, true)] {
+        for id in idx.by_key[k] else List[int]() { (mut candidates).push(id) }
+    }
+    if modrm >= 0 && opcode.len < 3 {
+        var longer = copy opcode
+        (mut longer).push(modrm)
+        for id in idx.by_key[key_of(longer, false)] else List[int]() { (mut candidates).push(id) }
+    }
+    var best = -1
+    var best_score = -1
+    var best_long = false
+    for id in candidates {
+        let f = idx.forms[id]
+        if !(f.modes == "32,64" || f.modes == "{mode}") { continue }
+        if f.preference.contains("decode-alias") { continue }
+        let long = f.opcode.len > opcode.len
+        let m = modrm_of(if long then 0 else if modrm >= 0 then modrm else 0)
+        if !long && f.extension >= 0 {
+            if modrm < 0 || m.reg != f.extension { continue }
+        }
+        if !long && (f.reg_operand >= 0 || f.rm_operand >= 0 || f.extension >= 0) && modrm < 0 {
+            continue
+        }
+        if !long && f.rm_operand >= 0 {
+            let kind = rm_kind(rm_pattern(f))
+            if kind == "register" && m.modbits != 3 { continue }
+            if kind == "memory" && m.modbits == 3 { continue }
+        }
+        if f.opcode_operand >= 0 &&
+            f.opcode[f.opcode.len - 1] - f.opcode[f.opcode.len - 1] % 8 !=
+                opcode[opcode.len - 1] - opcode[opcode.len - 1] % 8 {
+            continue
+        }
+        // Mandatory and operand-size prefixes the row consumes.
+        var score = 0
+        let p = f.prefix
+        if p == 102 || p > 255 {
+            if !has_byte(prefixes, 102) { continue }
+            score += 1
+        }
+        if p == 242 || p == 243 || p > 255 {
+            let want = if p > 255 then p % 256 else p
+            if !has_byte(prefixes, want) { continue }
+            score += 1
+        }
+        if p == 0 && f.bits == 16 { continue }
+        if f.rex_w {
+            if rex == 0 || rex / 8 % 2 == 0 { continue }
+            score += 1
+        }
+        if f.role == "fixed" || f.role.starts_with("seg_") || f.role == "string" { score += 0 }
+        // A row whose only operand is the fixed accumulator pair beats a +r row with r=0 (90: NOP).
+        if score > best_score || score == best_score && long && !best_long {
+            best = id
+            best_score = score
+            best_long = long
+        }
+    }
+    if best < 0 {
+        return classify_refusal(bytes, offset, at, prefixes, rex, opcode, modrm, mode, address32)
+    }
+    let f = idx.forms[best]
+    if f.opcode.len > opcode.len { (mut opcode).push(modrm); at += 1 }
+    var d = refuse(offset, 0, prefixes, rex, opcode, "", "")
+    d.row = best
+    // ModRM, SIB and displacement.
+    if f.opcode.len == opcode.len && (f.reg_operand >= 0 || f.rm_operand >= 0 || f.extension >= 0) {
+        if at >= bytes.len {
+            return refuse(
+                offset,
+                at - offset,
+                prefixes,
+                rex,
+                opcode,
+                "truncated",
+                "the stream ends before ModRM",
+            )
+        }
+        d.modrm = bytes[at] as int
+        at += 1
+        let m = modrm_of(d.modrm)
+        if m.modbits != 3 {
+            var base5 = m.rm == 5
+            if m.rm == 4 {
+                if at >= bytes.len {
+                    return refuse(
+                        offset,
+                        at - offset,
+                        prefixes,
+                        rex,
+                        opcode,
+                        "truncated",
+                        "the stream ends before SIB",
+                    )
+                }
+                d.sib = bytes[at] as int
+                at += 1
+                base5 = d.sib % 8 == 5
+            }
+            d.disp_width = if m.modbits == 1 {
+                1
+            } else if m.modbits == 2 || m.modbits == 0 && base5 {
+                4
+            } else {
+                0
+            }
+            if at + d.disp_width > bytes.len {
+                return refuse(
+                    offset,
+                    at - offset,
+                    prefixes,
+                    rex,
+                    opcode,
+                    "truncated",
+                    "the stream ends inside the displacement",
+                )
+            }
+            d.disp = signed_little(bytes, at, d.disp_width)
+            at += d.disp_width
+        }
+    }
+    // Immediates.
+    var imm_width = f.immediate
+    if f.immediate_kind == "address" {
+        imm_width = if mode == 64 && f.modes == "64" {
+            8
+        } else if address32 && mode == 64 {
+            4
+        } else {
+            f.immediate
+        }
+    }
+    if f.immediate_kind == "far-pointer" {
+        if at + 6 > bytes.len {
+            return refuse(
+                offset,
+                at - offset,
+                prefixes,
+                rex,
+                opcode,
+                "truncated",
+                "the stream ends inside the far pointer",
+            )
+        }
+        d.imm = unsigned_little(bytes, at, 4)
+        d.imm2 = unsigned_little(bytes, at + 4, 2) as int
+        d.imm_width = 6
+        at += 6
+    } else if f.immediate_kind == "enter" {
+        if at + 3 > bytes.len {
+            return refuse(
+                offset,
+                at - offset,
+                prefixes,
+                rex,
+                opcode,
+                "truncated",
+                "the stream ends inside ENTER's immediates",
+            )
+        }
+        d.imm = unsigned_little(bytes, at, 2)
+        d.imm2 = bytes[at + 2] as int
+        d.imm_width = 3
+        at += 3
+    } else if imm_width > 0 {
+        if at + imm_width > bytes.len {
+            return refuse(
+                offset,
+                at - offset,
+                prefixes,
+                rex,
+                opcode,
+                "truncated",
+                "the stream ends inside the immediate",
+            )
+        }
+        d.imm = unsigned_little(bytes, at, imm_width)
+        d.imm_width = imm_width
+        at += imm_width
+    }
+    d.length = at - offset
+    if d.length > 15 {
+        return refuse(
+            offset,
+            1 + prefixes.len,
+            prefixes,
+            rex,
+            opcode,
+            "length_over_15",
+            "SDM vol.2A 2.3.11: an instruction is at most 15 bytes",
+        )
+    }
+    // Unconsumed prefixes become words, in byte order; the row consumes the last of its group.
+    var consumed66 = f.prefix == 102 || f.prefix > 255
+    var consumed_rep = if f.prefix == 242 || f.prefix == 243 {
+        f.prefix
+    } else if f.prefix > 255 {
+        f.prefix % 256
+    } else {
+        0
+    }
+    var consumed67 = address32 && uses_address_size(f, d)
+    var seg = segment_of(prefixes, mode)
+    var consumed_seg = seg.len > 0 && operand_takes_segment(f)
+    var i = prefixes.len - 1
+    var words_rev = List[str]()
+    while i >= 0 {
+        let b = prefixes[i]
+        var word = ""
+        if b == 102 {
+            if consumed66 { consumed66 = false } else { word = "data16" }
+        } else if b == 243 || b == 242 {
+            if consumed_rep == b {
+                consumed_rep = 0
+            } else {
+                word = repeat_word(b, f, d)
+            }
+        } else if b == 103 {
+            if consumed67 { consumed67 = false } else { word = "addr32" }
+        } else if b == 240 {
+            word = "lock"
+        } else {
+            let name = segment_name(b)
+            if consumed_seg && name == seg {
+                consumed_seg = false
+            } else {
+                word = if b == 62 && is_branch(f) then "notrack" else name
+            }
+        }
+        if word.len > 0 { (mut words_rev).push(word) }
+        i -= 1
+    }
+    var words = List[str]()
+    var j = words_rev.len - 1
+    while j >= 0 { (mut words).push(words_rev[j]); j -= 1 }
+    d.words = words
+    render(idx, f, mut d, mode, address, seg, consumed_seg_used(f, seg))
+    d
+}
+
+fn has_byte(xs: List[int], b: int) -> bool {
+    for x in xs { if x == b { return true } }
+    false
+}
+
+fn signed_little(bytes: List[byte], at: int, width: int) -> int {
+    var v: u64 = 0
+    for i in 0..width { v = v | bytes[at + i] as int as u64 << (8 * i) as u64 }
+    if width == 8 {
+        if v >= 9223372036854775808 { return -((!v + 1) as int) }
+        return v as int
+    }
+    let sign = 1 as u64 << (width * 8 - 1) as u64
+    if v & sign != 0 { return -(((1 as u64 << (width * 8) as u64) - v) as int) }
+    v as int
+}
+
+fn unsigned_little(bytes: List[byte], at: int, width: int) -> u64 {
+    var v: u64 = 0
+    for i in 0..width { v = v | bytes[at + i] as int as u64 << (8 * i) as u64 }
+    v
+}
+
+fn segment_name(b: int) -> str {
+    match b {
+        38 => "es",
+        46 => "cs",
+        54 => "ss",
+        62 => "ds",
+        100 => "fs",
+        101 => "gs",
+        _ => "",
+    }
+}
+
+/// The last segment prefix in the stream that an operand can carry: in 64-bit mode only FS and
+/// GS have an effect (SDM vol.2A 2.1.1), so CS/DS/ES/SS stay prefix words there.
+fn segment_of(prefixes: List[int], mode: int) -> str {
+    var seg = ""
+    for b in prefixes {
+        let name = segment_name(b)
+        if name.len == 0 { continue }
+        if mode == 64 && name != "fs" && name != "gs" { continue }
+        seg = name
+    }
+    seg
+}
+
+fn operand_takes_segment(f: x86table.Form) -> bool {
+    if f.rm_operand >= 0 { return true }
+    let ops = f.operands
+    ops.contains("moffs") || ops.contains("xsi") || ops.contains("ydi") || f.family == "xlat"
+}
+
+fn consumed_seg_used(f: x86table.Form, seg: str) -> str {
+    if seg.len > 0 && operand_takes_segment(f) then seg else ""
+}
+
+fn is_branch(f: x86table.Form) -> bool {
+    (f.family == "jmp" || f.family == "call") && f.role == "indirect"
+}
+
+fn uses_address_size(f: x86table.Form, d: Decoded) -> bool {
+    if d.modrm >= 0 && d.modrm / 64 != 3 { return true }
+    let ops = f.operands
+    ops.contains("xsi") ||
+        ops.contains("ydi") ||
+        ops.contains("moffs") ||
+        f.family == "xlat" ||
+        f.family == "jrcxz" ||
+        f.family == "jecxz" ||
+        f.family.starts_with("loop")
+}
+
+/// objdump's word for an unconsumed F3/F2: rep on MOVS/STOS/LODS/INS/OUTS, repz/repnz on
+/// CMPS/SCAS, bnd (F2) on a branch, repz/repnz elsewhere.
+fn repeat_word(b: int, f: x86table.Form, d: Decoded) -> str {
+    let fam = f.family
+    let stem = if fam.len > 4 then fam[0..4] else fam
+    if b == 243 &&
+        (
+            stem == "movs" ||
+                stem == "stos" ||
+                stem == "lods" ||
+                fam == "ins" ||
+                fam == "outs" ||
+                fam.starts_with("ins") ||
+                fam.starts_with("outs")
+        ) {
+        return "rep"
+    }
+    if b == 242 &&
+        (fam == "jmp" || fam == "call" || fam == "ret" || fam.len <= 4 && fam.starts_with("j")) {
+        return "bnd"
+    }
+    if b == 243 then "repz" else "repnz"
+}
+
+/// A byte that selects no row: reserved (SDM Appendix A), or a class this change does not decode.
+fn classify_refusal(
+    bytes: List[byte],
+    offset: int,
+    at: int,
+    prefixes: List[int],
+    rex: int,
+    opcode: List[int],
+    modrm: int,
+    mode: int,
+    address32: bool,
+) -> Decoded {
+    let b0 = opcode[0]
+    let one = prefixes.len + (if rex != 0 then 1 else 0) + 1
+    if b0 >= 216 && b0 <= 223 {
+        // x87 escape: ModRM, SIB and displacement decide the length; no immediates (Table A-7..A-22).
+        let n = address_length(bytes, at, mode, address32)
+        let length = if n < 0 then at - offset else at - offset + n
+        return refuse(
+            offset,
+            length,
+            prefixes,
+            rex,
+            opcode,
+            "out_of_scope:x87",
+            "SDM vol.2D A.5 escape opcodes D8-DF; decoded by a later change",
+        )
+    }
+    if mode == 64 && (b0 == 196 || b0 == 197) {
+        return refuse(
+            offset,
+            one,
+            prefixes,
+            rex,
+            opcode,
+            "out_of_scope:vex",
+            "SDM vol.2A 2.3 VEX prefix C4/C5; decoded by a later change",
+        )
+    }
+    if mode == 64 && b0 == 98 {
+        return refuse(
+            offset,
+            one,
+            prefixes,
+            rex,
+            opcode,
+            "out_of_scope:evex",
+            "SDM vol.2A 2.7 EVEX prefix 62; decoded by a later change",
+        )
+    }
+    if b0 == 15 && opcode.len >= 2 {
+        let b1 = opcode[1]
+        if sse_cell(b1) || b1 == 56 || b1 == 58 {
+            var n = address_length(bytes, at, mode, address32)
+            if b1 == 119 { n = 0 }
+            let length = if n < 0 then at - offset else at - offset + n + sse_imm(opcode)
+            return refuse(
+                offset,
+                length,
+                prefixes,
+                rex,
+                opcode,
+                "out_of_scope:sse",
+                "SDM vol.2D Table A-3/A-4/A-5 SSE cells; decoded by a later change",
+            )
+        }
+        if b1 == 15 {
+            return refuse(
+                offset,
+                one + 1,
+                prefixes,
+                rex,
+                opcode,
+                "invalid_opcode",
+                "SDM vol.2D Table A-3: 0F 0F is not a defined cell",
+            )
+        }
+        if modrm >= 0 &&
+            (
+                b1 == 0 ||
+                    b1 == 1 ||
+                    b1 == 24 ||
+                    b1 == 174 ||
+                    b1 == 186 ||
+                    b1 == 199 ||
+                    b1 == 185 ||
+                    b1 == 255
+            ) {
+            return refuse(
+                offset,
+                one + 1,
+                prefixes,
+                rex,
+                opcode,
+                "reserved_modrm",
+                "SDM vol.2D Table A-6: this ModRM extension of the group is reserved",
+            )
+        }
+        return refuse(
+            offset,
+            one + 1,
+            prefixes,
+            rex,
+            opcode,
+            "invalid_opcode",
+            "SDM vol.2D Table A-3: reserved two-byte cell",
+        )
+    }
+    if mode == 64 &&
+        (
+            b0 == 6 ||
+                b0 == 7 ||
+                b0 == 14 ||
+                b0 == 22 ||
+                b0 == 23 ||
+                b0 == 30 ||
+                b0 == 31 ||
+                b0 == 39 ||
+                b0 == 47 ||
+                b0 == 55 ||
+                b0 == 63 ||
+                b0 == 96 ||
+                b0 == 97 ||
+                b0 == 130 ||
+                b0 == 154 ||
+                b0 == 206 ||
+                b0 == 212 ||
+                b0 == 213 ||
+                b0 == 234
+        ) {
+        return refuse(
+            offset,
+            one,
+            prefixes,
+            rex,
+            opcode,
+            "invalid_in_64bit",
+            "SDM vol.2D Table A-2: i64, invalid in 64-bit mode",
+        )
+    }
+    if modrm >= 0 &&
+        (
+            b0 >= 128 && b0 <= 131 ||
+                b0 == 143 ||
+                b0 >= 192 && b0 <= 193 ||
+                b0 >= 208 && b0 <= 211 ||
+                b0 == 246 ||
+                b0 == 247 ||
+                b0 == 254 ||
+                b0 == 255 ||
+                b0 == 198 ||
+                b0 == 199
+        ) {
+        return refuse(
+            offset,
+            one + 1,
+            prefixes,
+            rex,
+            opcode,
+            "reserved_modrm",
+            "SDM vol.2D Table A-6: this ModRM extension of the group is reserved",
+        )
+    }
+    refuse(
+        offset,
+        one,
+        prefixes,
+        rex,
+        opcode,
+        "invalid_opcode",
+        "SDM vol.2D Table A-2: reserved one-byte cell",
+    )
+}

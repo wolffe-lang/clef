@@ -1,0 +1,597 @@
+// The two renderings of a decoded instruction: objdump's AT&T text, and the GNU as source
+// that assembles back to the same bytes (the round-trip law's input), plus the field view.
+use dialect
+use eval
+use lex
+use machine
+use x86table
+
+fn hex(v: u64) -> str {
+    if v == 0 { return "0x0" }
+    let digits = "0123456789abcdef"
+    var out = ""
+    var n = v
+    while n != 0 {
+        let k = (n % 16) as int
+        out = digits[k..k + 1] + out
+        n = n / 16
+    }
+    "0x" + out
+}
+
+fn hex_signed(v: int) -> str {
+    if v < 0 { return "-" + hex(-(v + 1) as u64 + 1) }
+    hex(v as u64)
+}
+
+fn mask(v: u64, bits: int) -> u64 {
+    if bits >= 64 { return v }
+    v & (1 as u64 << bits as u64) - 1
+}
+
+/// Sign-extend the low `from` bits of v to `to` bits and mask: objdump prints an immediate at
+/// its operand width after the processor's sign extension.
+fn extend(v: u64, from: int, to: int) -> u64 {
+    if from >= to { return mask(v, to) }
+    let low = mask(v, from)
+    let sign = 1 as u64 << (from - 1) as u64
+    if low & sign != 0 { return mask(low | !((1 as u64 << from as u64) - 1), to) }
+    low
+}
+
+fn gpr(code: int, bits: int, rex_present: bool) -> str {
+    let names64 = "rax rcx rdx rbx rsp rbp rsi rdi".words()
+    let names32 = "eax ecx edx ebx esp ebp esi edi".words()
+    let names16 = "ax cx dx bx sp bp si di".words()
+    let names8 = "al cl dl bl spl bpl sil dil".words()
+    let high8 = "al cl dl bl ah ch dh bh".words()
+    if code >= 8 {
+        let suffix = match bits {
+            8 => "b",
+            16 => "w",
+            32 => "d",
+            _ => "",
+        }
+        return "%r{code}{suffix}"
+    }
+    match bits {
+        64 => "%" + names64[code],
+        32 => "%" + names32[code],
+        16 => "%" + names16[code],
+        _ => "%" + (if rex_present then names8[code] else high8[code]),
+    }
+}
+
+fn segment_register(code: int) -> str {
+    let names = "es cs ss ds fs gs ? ?".words()
+    "%" + names[code % 8]
+}
+
+struct Fields {
+    mod: int,
+    reg: int,
+    rm: int,
+    scale: int,
+    index: int,
+    base: int,
+    rex_w: bool,
+    rex_r: int,
+    rex_x: int,
+    rex_b: int,
+}
+
+fn fields(d: Decoded) -> Fields {
+    let w = d.rex != 0 && d.rex / 8 % 2 == 1
+    let r = if d.rex != 0 then d.rex / 4 % 2 else 0
+    let x = if d.rex != 0 then d.rex / 2 % 2 else 0
+    let b = if d.rex != 0 then d.rex % 2 else 0
+    var f = Fields {
+        mod: 3,
+        reg: 0,
+        rm: 0,
+        scale: 1,
+        index: 4,
+        base: 0,
+        rex_w: w,
+        rex_r: r,
+        rex_x: x,
+        rex_b: b,
+    }
+    if d.modrm >= 0 {
+        f.mod = d.modrm / 64
+        f.reg = d.modrm / 8 % 8
+        f.rm = d.modrm % 8
+    }
+    if d.sib >= 0 {
+        f.scale = 1 << d.sib / 64
+        f.index = d.sib / 8 % 8
+        f.base = d.sib % 8
+    }
+    f
+}
+
+/// The address-size in effect: 32 in 32-bit mode or with 67H in 64-bit mode (SDM 2A 2.2.1.3).
+fn address_bits(d: Decoded, mode: int) -> int {
+    var size = mode
+    for p in d.prefixes { if p == 103 { size = if mode == 64 then 32 else 32 } }
+    size
+}
+
+fn memory_text(d: Decoded, mode: int, seg: str, address: int, mut comment: str) -> str {
+    let f = fields(d)
+    let abits = address_bits(d, mode)
+    let prefix = if seg.len > 0 then "%{seg}:" else ""
+    if d.sib < 0 {
+        if f.mod == 0 && f.rm == 5 {
+            if mode == 64 {
+                let target = (address + d.offset + d.length + d.disp) as u64
+                comment = "        # " + hex(target)
+                return prefix + hex_signed(d.disp) + "(%rip)"
+            }
+            return prefix + hex(mask(d.disp as u64, 32))
+        }
+        let base = gpr(f.rm + 8 * f.rex_b, abits, true)
+        let disp = if f.mod == 0 then "" else hex_signed(d.disp)
+        return prefix + disp + "(" + base + ")"
+    }
+    let has_base = !(f.mod == 0 && f.base == 5)
+    let index_code = f.index + 8 * f.rex_x
+    let has_index = index_code != 4
+    var inner = ""
+    if has_base { inner += gpr(f.base + 8 * f.rex_b, abits, true) }
+    if has_index {
+        inner += "," + gpr(index_code, abits, true) + ",{f.scale}"
+    } else if has_base && f.base != 4 {
+        inner += "," + (if abits == 64 then "%riz" else "%eiz") + ",{f.scale}"
+    } else if !has_base {
+        inner += ","
+        inner += (if abits == 64 then "%riz" else "%eiz") + ",{f.scale}"
+    }
+    var disp = ""
+    if !has_base {
+        disp = hex_signed(d.disp)
+        if !has_index { return prefix + hex(mask(d.disp as u64, 32)) }
+    } else if f.mod != 0 {
+        disp = hex_signed(d.disp)
+    }
+    prefix + disp + "(" + inner + ")"
+}
+
+fn immediate_text(f: x86table.Form, d: Decoded, mode: int) -> str {
+    if f.immediate_kind == "unsigned" { return "$" + hex(d.imm) }
+    let bits = if f.bits > 0 then f.bits else if mode == 64 && f.family == "push" then 64 else 32
+    if f.immediate_kind == "sign-extend" || f.immediate_kind == "bits" {
+        return "$" + hex(extend(d.imm, d.imm_width * 8, bits))
+    }
+    "$" + hex(d.imm)
+}
+
+/// The accumulator a pattern names: acc8/acc16/acc32/acc64.
+fn accumulator(pattern: str) -> str {
+    match pattern {
+        "acc8" => "%al",
+        "acc16" => "%ax",
+        "acc32" => "%eax",
+        _ => "%rax",
+    }
+}
+
+fn pattern_width(pattern: str, prefix: str) -> int {
+    pattern[prefix.len..].to_int() else 0
+}
+
+/// Fill mnemonic, operands and target from the selected row; objdump's AT&T spelling.
+fn render(
+    idx: Index,
+    f: x86table.Form,
+    mut d: Decoded,
+    mode: int,
+    address: int,
+    seg: str,
+    used_seg: str,
+) {
+    let fl = fields(d)
+    let rex_present = d.rex != 0
+    let abits = address_bits(d, mode)
+    var operands = List[str]()
+    var any_register = false
+    let patterns = if f.operands == "none" then List[str]() else f.operands.split(",")
+    var comment = ""
+    for i in 0..patterns.len {
+        let p = patterns[i]
+        var text = ""
+        let is_rm = f.rm_operand == i
+        let is_reg = f.reg_operand == i
+        let is_opreg = f.opcode_operand == i
+        if p.starts_with("indirect-") {
+            let inner = p[9..]
+            if fl.mod == 3 {
+                let width = if inner == "mem" then 64 else pattern_width(inner, "rm")
+                text = "*" + gpr(fl.rm + 8 * fl.rex_b, width, rex_present)
+                any_register = true
+            } else {
+                text = "*" + memory_text(d, mode, used_seg, address, mut comment)
+            }
+        } else if p == "imm" || p == "port8" {
+            if f.immediate_kind == "far-pointer" {
+                text = ""
+            } else if f.immediate_kind == "enter" {
+                text = if i == 0 then "$" + hex(d.imm) else "$" + hex(d.imm2 as u64)
+            } else if f.immediate == 0 {
+                text = ""
+            } else {
+                text = immediate_text(f, d, mode)
+            }
+        } else if p == "selector16" {
+            text = "$" + hex(d.imm2 as u64)
+        } else if p == "offset32" {
+            text = "$" + hex(d.imm)
+        } else if p == "relative" {
+            let disp = if d.imm_width == 1 {
+                signed_of(d.imm, 8)
+            } else if d.imm_width == 2 {
+                signed_of(d.imm, 16)
+            } else {
+                signed_of(d.imm, 32)
+            }
+            let target = address + d.offset + d.length + disp
+            d.target = target
+            text = hex(mask(target as u64, if mode == 64 then 64 else 32))
+        } else if p == "cl" {
+            text = "%cl"
+            any_register = true
+        } else if p == "dx" {
+            text = "(%dx)"
+            any_register = true
+        } else if p == "control" {
+            text = "%cr{fl.reg + 8 * fl.rex_r}"
+            any_register = true
+        } else if p == "debug" {
+            text = "%db{fl.reg + 8 * fl.rex_r}"
+            any_register = true
+        } else if p == "segment" {
+            text = if f.role.starts_with("seg_") {
+                "%" + f.role[4..]
+            } else {
+                segment_register(fl.reg)
+            }
+            any_register = true
+        } else if p.starts_with("moffs") {
+            text = (if used_seg.len > 0 then "%{used_seg}:" else "") + hex(d.imm)
+        } else if p == "xsi" {
+            text = (if used_seg.len > 0 then "%{used_seg}:" else "%ds:") +
+                "(" +
+                gpr(6, abits, true) +
+                ")"
+        } else if p == "ydi" {
+            text = "%es:(" + gpr(7, abits, true) + ")"
+        } else if p == "xmm128" {
+            text = "%xmm{fl.reg + 8 * fl.rex_r}"
+            any_register = true
+        } else if p == "xmmrm128" {
+            if fl.mod == 3 {
+                text = "%xmm{fl.rm + 8 * fl.rex_b}"
+                any_register = true
+            } else {
+                text = memory_text(d, mode, used_seg, address, mut comment)
+            }
+        } else if p.starts_with("acc") {
+            text = accumulator(p)
+            any_register = true
+        } else if p == "mem" {
+            text = memory_text(d, mode, used_seg, address, mut comment)
+        } else if p.starts_with("rm") {
+            if fl.mod == 3 {
+                var width = if p == "rmw16" {
+                    (if fl.rex_w then 64 else if has_byte(d.prefixes, 102) then 16 else 32)
+                } else {
+                    pattern_width(p, "rm")
+                }
+                text = gpr(fl.rm + 8 * fl.rex_b, width, rex_present)
+                any_register = true
+            } else {
+                text = memory_text(d, mode, used_seg, address, mut comment)
+            }
+        } else if p.starts_with("r") {
+            let width = pattern_width(p, "r")
+            let code = if is_reg {
+                fl.reg + 8 * fl.rex_r
+            } else if is_opreg {
+                d.opcode[d.opcode.len - 1] % 8 + 8 * fl.rex_b
+            } else {
+                fl.rm + 8 * fl.rex_b
+            }
+            text = gpr(code, width, rex_present)
+            any_register = true
+        }
+        if text.len > 0 { (mut operands).push(text) }
+    }
+    if f.family == "xlat" {
+        (mut operands).push(
+            (if used_seg.len > 0 then "%{used_seg}:" else "%ds:") + "(" + gpr(3, abits, true) + ")",
+        )
+    }
+    d.operands = operands
+    d.comment = comment
+    d.mnemonic = mnemonic(idx, f, d, mode, any_register)
+}
+
+fn signed_of(v: u64, bits: int) -> int {
+    let sign = 1 as u64 << (bits - 1) as u64
+    let low = mask(v, bits)
+    if low & sign != 0 { return -(((1 as u64 << bits as u64) - low) as int) }
+    low as int
+}
+
+fn suffix_letter(bits: int) -> str {
+    match bits {
+        8 => "b",
+        16 => "w",
+        32 => "l",
+        64 => "q",
+        _ => "",
+    }
+}
+
+/// objdump's mnemonic: the family, plus a size suffix only where no register operand sizes the
+/// instruction and the family has more than one width; extending moves and CRC32 name their
+/// source width; stack and branch families omit the default width.
+fn mnemonic(idx: Index, f: x86table.Form, d: Decoded, mode: int, any_register: bool) -> str {
+    let fam = f.family
+    if fam == "movsx" || fam == "movzx" {
+        let src = if f.role == "rm8_reg" then "b" else "w"
+        return (if fam == "movsx" then "movs" else "movz") + src + suffix_letter(f.bits)
+    }
+    if fam == "movsxd" { return if f.bits == 64 then "movslq" else "movsxd" }
+    if fam == "crc32" {
+        let src = if f.role == "rm8_reg" {
+            "b"
+        } else if f.role == "rm16_reg" {
+            "w"
+        } else {
+            suffix_letter(f.bits)
+        }
+        return "crc32" + src
+    }
+    if fam == "movabs" && f.role != "imm_reg" { return "movabs" }
+    if fam == "lcall" || fam == "ljmp" || fam.starts_with("seg_") { return fam }
+    if f.role.starts_with("seg_") { return fam }
+    if f.bits == 0 || any_register { return fam }
+    let widths = idx.widths[fam] else 0
+    if widths < 2 { return fam }
+    let default = if mode == 64 then 64 else 32
+    if (fam == "push" || fam == "pop" || fam == "call" || fam == "jmp") && f.bits == default {
+        return fam
+    }
+    fam + suffix_letter(f.bits)
+}
+
+/// One objdump-shaped line: address, a tab, prefix words, the mnemonic padded to six columns,
+/// the operands, and the RIP-relative comment.
+pub fn text(d: Decoded, address: int) -> str {
+    var line = "{hex_bare((address + d.offset) as u64)}:\t"
+    for w in d.words { line += w + " " }
+    if d.rex_word.len > 0 { line += d.rex_word + " " }
+    if d.refusal.len > 0 {
+        return line + "(bad)  # {d.refusal}: {d.reason}"
+    }
+    line += d.mnemonic
+    if d.operands.len > 0 {
+        var pad = 7 - d.mnemonic.len
+        if pad < 1 { pad = 1 }
+        for _ in 0..pad { line += " " }
+        for i in 0..d.operands.len { line += (if i == 0 then "" else ",") + d.operands[i] }
+    }
+    line + d.comment
+}
+
+fn hex_bare(v: u64) -> str {
+    let h = hex(v)
+    h[2..]
+}
+
+/// The bytes of one decoded instruction as a `.byte` directive.
+fn byte_line(bytes: List[byte], d: Decoded, note: str) -> str {
+    var line = ".byte "
+    for i in 0..d.length {
+        line += (if i == 0 then "" else ",") + hex(bytes[d.offset + i] as int as u64)
+    }
+    line + "  # " + note
+}
+
+/// The round-trip source for one instruction: objdump's spelling with the GNU as pseudo
+/// prefixes and prefix words that force this encoding, verified against the bytes by the
+/// encoder itself; a line the assembler cannot reproduce falls back to `.byte`, named.
+pub fn roundtrip(idx: Index, bytes: List[byte], d: Decoded, mode: int) -> str {
+    if d.refusal.len > 0 { return byte_line(bytes, d, d.refusal) }
+    let f = idx.forms[d.row]
+    let fl = fields(d)
+    var words = List[str]()
+    // Encoding choices GNU as would make differently, forced by its own pseudo prefixes.
+    if d.modrm >= 0 && fl.mod == 2 && d.disp >= -128 && d.disp <= 127 {
+        (mut words).push("{{disp32}}")
+    }
+    if d.modrm >= 0 &&
+        fl.mod == 1 &&
+        d.disp == 0 &&
+        (if d.sib >= 0 then fl.base != 5 else fl.rm != 5) {
+        (mut words).push("{{disp8}}")
+    }
+    if f.role == "relative32" &&
+        d.imm_width == 4 &&
+        (
+            f.family == "jmp" ||
+                f.family.len <= 4 && f.family.starts_with("j") && f.family != "jrcxz"
+        ) {
+        let disp = signed_of(d.imm, 32)
+        if disp >= -128 + 3 && disp <= 127 + 3 { (mut words).push("{{disp32}}") }
+    }
+    if f.role == "rm_reg" &&
+        fl.mod == 3 &&
+        f.reg_operand >= 0 &&
+        (
+            f.family == "mov" ||
+                f.family == "add" ||
+                f.family == "or" ||
+                f.family == "adc" ||
+                f.family == "sbb" ||
+                f.family == "and" ||
+                f.family == "sub" ||
+                f.family == "xor" ||
+                f.family == "cmp"
+        ) {
+        (mut words).push("{{load}}")
+    }
+    if f.role == "reg_rm" && fl.mod == 3 && f.family == "xchg" { (mut words).push("{{store}}") }
+    if (f.role == "imm_rm" || f.role == "imm_acc") && d.imm_width > 1 && f.bits > 8 {
+        let v = signed_of(d.imm, d.imm_width * 8)
+        if v >= -128 && v <= 127 && f.family != "mov" && f.family != "test" {
+            (mut words).push("{{noimm8s}}")
+        }
+    }
+    for w in d.words { (mut words).push(w) }
+    if d.rex != 0 {
+        let unused = rex_unused(f, d)
+        if unused.len > 0 { (mut words).push(unused) }
+    }
+    var line = ""
+    for w in words { line += w + " " }
+    line += d.mnemonic
+    if d.operands.len > 0 {
+        line += " "
+        for i in 0..d.operands.len {
+            var op = d.operands[i]
+            let patterns = f.operands.split(",")
+            if i < patterns.len && patterns[i] == "relative" ||
+                f.family == "xbegin" && patterns.len > 0 && patterns[i] == "relative" {
+                let disp = if d.imm_width == 1 {
+                    signed_of(d.imm, 8)
+                } else if d.imm_width == 2 {
+                    signed_of(d.imm, 16)
+                } else {
+                    signed_of(d.imm, 32)
+                }
+                let n = d.length + disp
+                op = if n >= 0 then ".+{n}" else ".-{-n}"
+            }
+            line += (if i == 0 then "" else ",") + op
+        }
+    }
+    if verify(idx, line, mode, bytes, d) { return line }
+    byte_line(bytes, d, "unforced: {d.mnemonic}")
+}
+
+/// The REX word for bits the row does not use, so the encoder reproduces the byte.
+fn rex_unused(f: x86table.Form, d: Decoded) -> str {
+    let fl = fields(d)
+    var used_w = f.rex_w
+    var used_r = f.reg_operand >= 0 && fl.rex_r == 1
+    var used_x = d.sib >= 0 && fl.rex_x == 1 && fl.index != 4
+    var used_b = (f.rm_operand >= 0 || f.opcode_operand >= 0) && fl.rex_b == 1
+    var byte_register = false
+    for op in d.operands {
+        if op == "%spl" ||
+            op == "%bpl" ||
+            op == "%sil" ||
+            op == "%dil" ||
+            op.starts_with("%r") && op.ends_with("b") && op.len <= 5 {
+            byte_register = true
+        }
+    }
+    let unused_w = fl.rex_w && !used_w
+    let unused_r = fl.rex_r == 1 && !used_r
+    let unused_x = fl.rex_x == 1 && !used_x
+    let unused_b = fl.rex_b == 1 && !used_b
+    let any_used = used_w || used_r || used_x || used_b || byte_register
+    if !unused_w && !unused_r && !unused_x && !unused_b && (any_used || d.rex != 64) { return "" }
+    if d.rex == 64 && !any_used { return "rex" }
+    var word = "rex."
+    if fl.rex_w { word += "W" }
+    if fl.rex_r == 1 { word += "R" }
+    if fl.rex_x == 1 { word += "X" }
+    if fl.rex_b == 1 { word += "B" }
+    word
+}
+
+/// Assemble one rendered line through the table's other direction and compare with the bytes.
+fn verify(idx: Index, line: str, mode: int, bytes: List[byte], d: Decoded) -> bool {
+    let rows = lex.source(line, "<roundtrip>") else { return false }
+    if rows.len != 1 { return false }
+    var node = dialect.statement(rows[0]) else { return false }
+    if node.kind != "instruction" { return false }
+    var values = List[eval.Value]()
+    var known = List[bool]()
+    let here = eval.section_value(".text", "", 0)
+    for op in node.operands {
+        let value = if op.kind == "register" {
+            eval.absolute(0)
+        } else {
+            eval.evaluate(op.displacement, Map[str, eval.Value](), here) else { return false }
+        }
+        (mut values).push(value)
+        (mut known).push(true)
+    }
+    let f = idx.forms[d.row]
+    let short = f.role == "relative8"
+    let form = machine.choose(idx.forms, node, mode, values, known, short) else { return false }
+    var encoded = machine.emit(form, node, mode, values, known) else { return false }
+    for fix in encoded.fixups {
+        if !fix.pcrel || fix.value.section != "ABS" {
+            // A same-section target is relocatable, not absolute: resolve it as the layout would.
+            if !fix.pcrel { return false }
+        }
+        let target = if fix.value.section == "ABS" {
+            eval.signed(fix.value.number) else { return false }
+        } else {
+            eval.signed(fix.value.number) else { return false }
+        }
+        let delta = target - fix.offset - fix.bias
+        if !machine.signed_fits(eval.number(delta), fix.width) { return false }
+        var n = delta
+        for i in 0..fix.width { encoded.data[fix.offset + i] = (n & 255) as byte; n >>= 8 }
+    }
+    if encoded.data.len != d.length { return false }
+    for i in 0..d.length { if encoded.data[i] != bytes[d.offset + i] { return false } }
+    true
+}
+
+/// The field view (`--disassemble --expand`): every encoding field with its SDM provenance.
+pub fn expand(idx: Index, d: Decoded) -> List[str] {
+    var out = List[str]()
+    var p = "prefixes="
+    if d.prefixes.len == 0 { p += "none" }
+    for i in 0..d.prefixes.len { p += (if i == 0 then "" else ",") + hex(d.prefixes[i] as u64) }
+    p += " (2A 2.1.1 legacy prefix groups)"
+    if d.rex != 0 {
+        let fl = fields(d)
+        p += " rex={hex(d.rex as u64)} W={if fl.rex_w then 1 else 0} R={fl.rex_r} X={fl.rex_x} B={fl.rex_b} (2A 2.2.1 Table 2-4)"
+    }
+    (mut out).push("          " + p)
+    var o = "opcode="
+    for i in 0..d.opcode.len { o += (if i == 0 then "" else " ") + hex(d.opcode[i] as u64) }
+    if d.row >= 0 {
+        let f = idx.forms[d.row]
+        o += " ({f.volume} {f.section} p.{f.page}: {f.citation})"
+    } else {
+        o += " refused: {d.refusal} ({d.reason})"
+    }
+    (mut out).push("          " + o)
+    if d.modrm >= 0 {
+        let fl = fields(d)
+        var m = "modrm={hex(d.modrm as u64)} mod={fl.mod} reg={fl.reg} rm={fl.rm} (2A 2.1.5 Table 2-2)"
+        if d.sib >= 0 {
+            m += " sib={hex(d.sib as u64)} scale={fl.scale} index={fl.index} base={fl.base} (Table 2-3)"
+        }
+        if d.disp_width > 0 { m += " disp={hex_signed(d.disp)} width={d.disp_width} (2A 2.2.1.3)" }
+        (mut out).push("          " + m)
+    }
+    if d.imm_width > 0 {
+        var im = "imm={hex(d.imm)} width={d.imm_width}"
+        if d.row >= 0 { im += " kind={idx.forms[d.row].immediate_kind}" }
+        if d.imm2 != 0 || d.imm_width == 3 || d.imm_width == 6 {
+            im += " imm2={hex(d.imm2 as u64)}"
+        }
+        (mut out).push("          " + im)
+    }
+    out
+}

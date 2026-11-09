@@ -4,6 +4,34 @@ pub struct Options {
     output: str,
     expand: bool,
     provenance: bool,
+    disassemble: bool,
+    raw: bool,
+    address: int,
+    code32: bool,
+    roundtrip: bool,
+}
+
+/// `--address=N`: decimal or 0x-hexadecimal load address of a raw byte stream.
+fn parse_address(text: str) -> int ! {usage} {
+    if text.starts_with("0x") || text.starts_with("0X") {
+        var v = 0
+        if text.len == 2 || text.len > 18 { return usage }
+        for b in text[2..].bytes() {
+            let c = b as int
+            let digit = if c >= 48 && c <= 57 {
+                c - 48
+            } else if c >= 97 && c <= 102 {
+                c - 87
+            } else if c >= 65 && c <= 70 {
+                c - 55
+            } else {
+                return usage
+            }
+            v = v * 16 + digit
+        }
+        return v
+    }
+    text.to_int() else { return usage }
 }
 
 /// Accept one .S/.s source, --64, -c, -o, the freestanding target, and explicit inspection options.
@@ -16,6 +44,11 @@ pub fn parse(args: List[str]) -> Options ! {usage} {
     var target = false
     var expand = false
     var provenance = false
+    var disassemble = false
+    var raw = false
+    var address = 0
+    var code32 = false
+    var roundtrip = false
     var i = 0
     while i < args.len {
         let a = args[i]
@@ -29,6 +62,16 @@ pub fn parse(args: List[str]) -> Options ! {usage} {
             expand = true
         } else if a == "--provenance" {
             provenance = true
+        } else if a == "--disassemble" {
+            disassemble = true
+        } else if a == "--raw" {
+            raw = true
+        } else if a == "--code32" {
+            code32 = true
+        } else if a == "--roundtrip" {
+            roundtrip = true
+        } else if a.starts_with("--address=") {
+            address = parse_address(a[10..])?
         } else if a == "-c" {
             compile = true
         } else if a == "--target=x86_64-unknown-none-elf" {
@@ -40,6 +83,22 @@ pub fn parse(args: List[str]) -> Options ! {usage} {
         }
         i += 1
     }
+    if disassemble {
+        // The disassembler reads any file; nothing is written but the text.
+        if input.len == 0 || output_seen || provenance || compile || target { return usage }
+        return Options {
+            input: input,
+            output: output,
+            expand: expand,
+            provenance: false,
+            disassemble: true,
+            raw: raw,
+            address: address,
+            code32: code32,
+            roundtrip: roundtrip,
+        }
+    }
+    if raw || code32 || roundtrip || address != 0 { return usage }
     if input.len == 0 ||
         input == output ||
         !input.ends_with(".S") && !input.ends_with(".s") ||
@@ -47,5 +106,15 @@ pub fn parse(args: List[str]) -> Options ! {usage} {
         expand && (output_seen || provenance) {
         return usage
     }
-    Options { input: input, output: output, expand: expand, provenance: provenance }
+    Options {
+        input: input,
+        output: output,
+        expand: expand,
+        provenance: provenance,
+        disassemble: false,
+        raw: false,
+        address: 0,
+        code32: false,
+        roundtrip: false,
+    }
 }
