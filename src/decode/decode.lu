@@ -39,7 +39,7 @@ pub struct Decoded {
 /// The rows indexed by opcode bytes; built once per run.
 pub struct Index {
     forms: List[x86table.Form],
-    by_key: Map[str, List[int]],
+    by_key: Map[str, str],
     widths: Map[str, int],
 }
 
@@ -55,15 +55,15 @@ fn key_of(opcode: List[int], opreg: bool) -> str {
 /// Index every row by its opcode bytes (the last one masked to its group of eight for +r rows),
 /// and count each family's distinct operand widths for the suffix rule.
 pub fn index(forms: List[x86table.Form]) -> Index {
-    var by = Map[str, List[int]]()
+    var by = Map[str, str]()
     var widths = Map[str, int]()
     var seen = Map[str, bool]()
     for i in 0..forms.len {
         let f = copy forms[i]
         let k = key_of(f.opcode, f.opcode_operand >= 0)
-        var ids = by[k] else List[int]()
-        (mut ids).push(i)
-        by[k] = ids
+        // Row ids are kept as a comma-separated string: a str is Copy, a List moves on read.
+        let ids = by[k] else ""
+        by[k] = if ids.len == 0 then "{i}" else "{ids},{i}"
         if f.bits > 0 {
             let wk = "{f.family}/{f.bits}"
             if !(seen[wk] else false) {
