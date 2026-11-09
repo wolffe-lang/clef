@@ -358,8 +358,8 @@ fn relaxable(node: dialect.Node) -> bool {
 /// A branch forced wide or short by a pseudo prefix (GNU as 9.16.4.1): 4, 1, or 0 for neither.
 fn forced_width(node: dialect.Node) -> int {
     for prefix in node.prefixes {
-        if prefix == "{disp32}" { return 4 }
-        if prefix == "{disp8}" { return 1 }
+        if prefix == "{{disp32}}" { return 4 }
+        if prefix == "{{disp8}}" { return 1 }
     }
     0
 }

@@ -28,14 +28,14 @@ pub struct Operand {
 /// its pseudo prefixes (9.16.4.1): the round-trip source spells a prefix byte or an encoding
 /// choice this way, and the encoder honours each by name.
 pub fn prefix_word(s: str) -> bool {
-    if s.starts_with("{") && s.ends_with("}") {
-        return s == "{disp8}" ||
-            s == "{disp32}" ||
-            s == "{load}" ||
-            s == "{store}" ||
-            s == "{rex}" ||
-            s == "{noimm8s}" ||
-            s == "{nooptimize}"
+    if s.starts_with("{{") && s.ends_with("}}") {
+        return s == "{{disp8}}" ||
+            s == "{{disp32}}" ||
+            s == "{{load}}" ||
+            s == "{{store}}" ||
+            s == "{{rex}}" ||
+            s == "{{noimm8s}}" ||
+            s == "{{nooptimize}}"
     }
     if s.starts_with("rex") {
         if s == "rex" { return true }

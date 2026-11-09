@@ -168,9 +168,9 @@ pub fn choose(
     var store_form = false
     var no_imm8 = false
     for prefix in node.prefixes {
-        if prefix == "{load}" { load_form = true }
-        if prefix == "{store}" { store_form = true }
-        if prefix == "{noimm8s}" { no_imm8 = true }
+        if prefix == "{{load}}" { load_form = true }
+        if prefix == "{{store}}" { store_form = true }
+        if prefix == "{{noimm8s}}" { no_imm8 = true }
     }
     // A suffixed string spelling with explicit operands names the family's string row:
     // `movsl %ds:(%rsi),%es:(%rdi)` is MOVS at 32 bits (GNU as 9.16.4.1; objdump's spelling).

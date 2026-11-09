@@ -1,7 +1,5 @@
 use dialect
-
 use eval
-
 use x86table
 
 /// Instruction emission refusals; the caller adds source origin and the table citation.
@@ -219,15 +217,15 @@ pub fn emit(
             locked = true
         } else if prefix == "rep" || prefix == "repe" || prefix == "repne" {
             repeat = dialect.prefix_byte(prefix)
-        } else if prefix == "{disp8}" {
+        } else if prefix == "{{disp8}}" {
             force_disp = 1
-        } else if prefix == "{disp32}" {
+        } else if prefix == "{{disp32}}" {
             force_disp = 4
-        } else if prefix == "{rex}" {
+        } else if prefix == "{{rex}}" {
             explicit_rex = if explicit_rex == 0 then 64 else explicit_rex
         } else if prefix.starts_with("rex") {
             explicit_rex = explicit_rex | dialect.rex_word(prefix)
-        } else if prefix.starts_with("{") {} else {
+        } else if prefix.starts_with("{{") {} else {
             (mut explicit).push(dialect.prefix_byte(prefix))
         }
     }
@@ -258,7 +256,7 @@ pub fn emit(
     }
     var rex = (if form.rex_w then 8 else 0) + mem.rex_b + mem.rex_x * 2
     if form.reg_operand >= 0 && reg >= 8 { rex += 4 }
-    if explicit_rex != 0 { rex = rex | (explicit_rex - 64) }
+    if explicit_rex != 0 { rex = rex | explicit_rex - 64 }
     var force_rex = explicit_rex != 0
     var high8 = false
     for op in ops {
@@ -273,7 +271,9 @@ pub fn emit(
     var explicit_prefix = 0
     if locked {
         // Intel SDM vol.2A LOCK p.3-621; the row identifies the writable r/m field.
-        if repeat != 0 || form.allowed_prefixes != "lock-memory-destination" || form.rm_operand < 0 {
+        if repeat != 0 ||
+            form.allowed_prefixes != "lock-memory-destination" ||
+            form.rm_operand < 0 {
             return invalid_lock_prefix
         }
         if ops[form.rm_operand].kind != "memory" && ops[form.rm_operand].kind != "expression" {
