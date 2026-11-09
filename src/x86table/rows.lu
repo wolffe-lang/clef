@@ -847,6 +847,6 @@ pub fn source() -> List[str] {
         "2B|4.3 MONITOR|4-162|0F 01 C8 MONITOR; implicit EAX, ECX, EDX (objdump prints them)|monitor|operands|0|32|15,1,200|-1|0|0|0|-1|-1|-1|-1|none|unique-role|base|acc32,fixed:%ecx,fixed:%edx|none|none",
         "2B|4.3 MONITOR|4-162|0F 01 C8 MONITOR; implicit RAX, ECX, EDX (objdump prints them)|monitor|operands|0|64|15,1,200|-1|0|0|0|-1|-1|-1|-1|none|unique-role|base|acc64,fixed:%ecx,fixed:%edx|none|none",
         "2B|4.3 MWAIT|4-162|0F 01 C9 MWAIT; implicit EAX, ECX (objdump prints them)|mwait|operands|0|32,64|15,1,201|-1|0|0|0|-1|-1|-1|-1|none|unique-role|base|acc32,fixed:%ecx|none|none",
-        "2D|6.1 XLAT/XLATB|6-38|D7 XLAT m8; the table at DS:(r|e)BX|xlat|operands|0|32,64|215|-1|0|0|0|-1|-1|-1|-1|none|unique-role|base|xbx|none|none",
+        "2D|6.1 XLAT/XLATB|6-38|D7 XLAT m8; the table at DS:(r or e)BX|xlat|operands|0|32,64|215|-1|0|0|0|-1|-1|-1|-1|none|unique-role|base|xbx|none|none",
     ]
 }
