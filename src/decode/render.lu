@@ -19,6 +19,12 @@ fn hex(v: u64) -> str {
     "0x" + out
 }
 
+/// The 64-bit two's complement pattern of a signed value (a negative int never casts to u64).
+fn bits_of(v: int) -> u64 {
+    if v < 0 { return !(-(v + 1) as u64) }
+    v as u64
+}
+
 fn hex_signed(v: int) -> str {
     if v < 0 { return "-" + hex(-(v + 1) as u64 + 1) }
     hex(v as u64)
@@ -124,11 +130,11 @@ fn memory_text(d: Decoded, mode: int, seg: str, address: int, mut comment: str) 
     if d.sib < 0 {
         if f.modbits == 0 && f.rm == 5 {
             if mode == 64 {
-                let target = (address + d.offset + d.length + d.disp) as u64
+                let target = bits_of(address + d.offset + d.length + d.disp)
                 comment = "        # " + hex(target)
                 return prefix + hex_signed(d.disp) + "(%rip)"
             }
-            return prefix + hex(mask(d.disp as u64, 32))
+            return prefix + hex(mask(bits_of(d.disp), 32))
         }
         let base = gpr(f.rm + 8 * f.rex_b, abits, true)
         let disp = if f.modbits == 0 then "" else hex_signed(d.disp)
@@ -150,7 +156,7 @@ fn memory_text(d: Decoded, mode: int, seg: str, address: int, mut comment: str) 
     var disp = ""
     if !has_base {
         disp = hex_signed(d.disp)
-        if !has_index { return prefix + hex(mask(d.disp as u64, 32)) }
+        if !has_index { return prefix + hex(mask(bits_of(d.disp), 32)) }
     } else if f.modbits != 0 {
         disp = hex_signed(d.disp)
     }
@@ -228,7 +234,7 @@ fn render(idx: Index, f: x86table.Form, mut d: Decoded, mode: int, address: int,
             }
             let target = address + d.offset + d.length + disp
             d.target = target
-            text = hex(mask(target as u64, if mode == 64 then 64 else 32))
+            text = hex(mask(bits_of(target), if mode == 64 then 64 else 32))
         } else if p == "cl" {
             text = "%cl"
             any_register = true
@@ -361,7 +367,7 @@ fn mnemonic(idx: Index, f: x86table.Form, d: Decoded, mode: int, any_register: b
 /// One objdump-shaped line: address, a tab, prefix words, the mnemonic padded to six columns,
 /// the operands, and the RIP-relative comment.
 pub fn text(d: Decoded, address: int) -> str {
-    var line = "{hex_bare((address + d.offset) as u64)}:\t"
+    var line = "{hex_bare(bits_of(address + d.offset))}:\t"
     for w in d.words { line += w + " " }
     if d.rex_word.len > 0 { line += d.rex_word + " " }
     if d.refusal.len > 0 {
