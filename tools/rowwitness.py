@@ -25,7 +25,7 @@ def witnesses():
                 mnemonic+=suffix[bits]
             if role=='string' and family in ('movs','cmps','ins','outs'):mnemonic+=suffix[bits]
             if family=='crc32':mnemonic='crc32'+('b' if role=='rm8_reg' else 'w' if role=='rm16_reg' else suffix[bits])
-            if family=='movabs':mnemonic='movabsq'
+            if family=='movabs':mnemonic='movabsq' if role=='imm_reg' else 'movabs'
             if family in {'movsx','movzx'}:
                 mnemonic=('movs' if family=='movsx' else 'movz')+('b' if role=='rm8_reg' else 'w')+suffix[bits]
             if family=='movsxd':mnemonic='movslq' if bits==64 else 'movsxd'
