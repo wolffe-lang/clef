@@ -267,6 +267,10 @@ fn render(idx: Index, f: x86table.Form, mut d: Decoded, mode: int, address: int,
                 "(" +
                 gpr(3, abits, true) +
                 ")"
+        } else if p.starts_with("fixed:") {
+            // A register the row names exactly (`fixed:%ecx`): objdump prints MONITOR's and MWAIT's.
+            text = p[6..]
+            any_register = true
         } else if p == "xmm128" {
             text = "%xmm{fl.reg + 8 * fl.rex_r}"
             any_register = true
@@ -295,7 +299,14 @@ fn render(idx: Index, f: x86table.Form, mut d: Decoded, mode: int, address: int,
                 text = memory_text(d, mode, used_seg, address, mut comment)
             }
         } else if p.starts_with("r") {
-            let width = if f.role == "reg_segment" then 32 else pattern_width(p, "r")
+            // ARPL's register operand prints at the operand size, as its r/m does (`arpl %ecx,(%eax)`).
+            let width = if f.role == "reg_segment" {
+                32
+            } else if p == "rw16" {
+                (if fl.rex_w then 64 else if has_byte(d.prefixes, 102) then 16 else 32)
+            } else {
+                pattern_width(p, "r")
+            }
             let code = if is_reg {
                 fl.reg + 8 * fl.rex_r
             } else if is_opreg {
@@ -307,11 +318,6 @@ fn render(idx: Index, f: x86table.Form, mut d: Decoded, mode: int, address: int,
             any_register = true
         }
         if text.len > 0 { (mut operands).push(text) }
-    }
-    if f.family == "xlat" {
-        (mut operands).push(
-            (if used_seg.len > 0 then "%{used_seg}:" else "%ds:") + "(" + gpr(3, abits, true) + ")",
-        )
     }
     d.operands = operands
     d.comment = comment

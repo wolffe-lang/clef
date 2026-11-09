@@ -32,6 +32,7 @@ for index,f,mode,text in witnesses():
     row['verdict']='ok' if agree and law else 'red'
     if row['verdict']!='ok':
         red+=1;print(f'FAIL disasm-table:{index}:{mode} {f[3]} agree={agree} law={law} {row["stderr"]}',flush=True)
+        print(f'  source: {text}\n  objdump: {[t for a,t in expected]}\n  clef: {[t for a,t in ours]}\n  bytes: {original} reassembled: {reassembled}',flush=True)
     results.append(row)
 (out/'rows.json').write_text(json.dumps(results,indent=1)+'\n')
 total=sum(1 for r in results if r['verdict']!='gas-refused')
