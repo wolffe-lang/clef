@@ -3750,6 +3750,22 @@ pub fn aliases() -> List[Alias] {
             citation: "GNU as 9.16.4.1 Instruction Naming; objdump 2.42 spelling; Intel SDM row after normalization",
         },
         Alias {
+            spelling: "fwait",
+            family: "fwait",
+            bits: 0,
+            source_bits: 0,
+            role: "fixed",
+            citation: "GNU as 9.16.4.1 Instruction Naming; objdump 2.42 spelling; Intel SDM row after normalization",
+        },
+        Alias {
+            spelling: "wait",
+            family: "fwait",
+            bits: 0,
+            source_bits: 0,
+            role: "fixed",
+            citation: "GNU as 9.16.4.1 Instruction Naming; objdump 2.42 spelling; Intel SDM row after normalization",
+        },
+        Alias {
             spelling: "int",
             family: "int",
             bits: 0,

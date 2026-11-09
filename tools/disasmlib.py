@@ -16,7 +16,10 @@ def sha256(path):
     return h.hexdigest()
 
 def normalize(text):
-    """Only symbolic decoration and blank runs are free; everything else is compared."""
+    """Only symbolic decoration and blank runs are free; everything else is compared. A
+    symbolized address (`401000 <main+0x10>`, `# 4020 <x>`) is the number objdump prints as
+    `0x401000` where no symbol applies, so it reads as that number."""
+    text=re.sub(r'\b([0-9a-f]+) <[^>]*>',r'0x\1',text)
     text=re.sub(r'\s*<[^>]*>','',text)
     return re.sub(r'\s+',' ',text).strip()
 

@@ -27,12 +27,12 @@ fn read32(d: List[byte], at: int) -> int ! ElfErrors {
 
 fn read64(d: List[byte], at: int) -> int ! ElfErrors {
     if at + 8 > d.len { return malformed_elf }
+    // The top byte may carry the sign: a kernel's addresses live above 2^63 and are kept in
+    // two's complement, as the decoder's --address takes them.
     var v = 0
-    for i in 0..8 {
-        if i == 7 && d[at + i] as int >= 128 { return malformed_elf }
-        v += d[at + i] as int << 8 * i
-    }
-    v
+    for i in 0..7 { v += d[at + i] as int << 8 * i }
+    let top = d[at + 7] as int
+    v + (if top >= 128 then top - 256 else top) << 56
 }
 
 fn name_at(table: List[byte], at: int) -> str ! ElfErrors {
