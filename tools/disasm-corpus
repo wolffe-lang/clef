@@ -18,7 +18,7 @@ if mem:os.environ['CLEF_MEM_GB']=mem
 def one(b,path):
     """One binary: objdump's lines against clef's at every address, differences named."""
     name=b['paths'][0].split('/')[-1]
-    t=time.monotonic()
+    started=time.monotonic()
     expected=objdump(path)
     status,stdout,stderr=clef_disassemble(path)
     ours=parse(stdout) if status==0 else {}
@@ -37,7 +37,7 @@ def one(b,path):
             diff[k]+=1;names[k]+=1
             if k not in examples:examples[k]={'address':hex(a),'objdump':t,'clef':m or '<no line at this address>'}
         row['sections'][section]={'lines':len(lines),'agree':agree,'differences':dict(diff)}
-    row['differences']=dict(names);row['examples']=examples;row['secs']=round(time.monotonic()-t,1)
+    row['differences']=dict(names);row['examples']=examples;row['secs']=round(time.monotonic()-started,1)
     row['agree']=status==0 and not any(k for k in names if not k.startswith('out_of_scope:'))
     return row
 members=[(b,path) for b,path in corpus_members(manifest,root) if not only or b['paths'][0].split('/')[-1] in only or b['paths'][0] in only]
