@@ -425,14 +425,9 @@ pub fn roundtrip(idx: Index, bytes: List[byte], d: Decoded, mode: int) -> str {
         (if d.sib >= 0 then fl.base != 5 else fl.rm != 5) {
         (mut words).push("{{disp8}}")
     }
-    if f.role == "relative32" &&
-        d.imm_width == 4 &&
-        (
-            f.family == "jmp" ||
-                f.family.len <= 4 && f.family.starts_with("j") && f.family != "jrcxz"
-        ) {
-        let disp = signed_of(d.imm, 32)
-        if disp >= -128 + 3 && disp <= 127 + 3 { (mut words).push("{{disp32}}") }
+    if f.role == "relative32" && d.imm_width == 4 && relaxable_family(f.family) {
+        // GNU as and clef take the 2-byte short form when its rel8 reaches the target.
+        if short_reaches(d.length + signed_of(d.imm, 32)) { (mut words).push("{{disp32}}") }
     }
     if f.role == "rm_reg" &&
         fl.modbits == 3 &&
@@ -486,7 +481,29 @@ pub fn roundtrip(idx: Index, bytes: List[byte], d: Decoded, mode: int) -> str {
         }
     }
     if verify(idx, line, mode, bytes, d) { return line }
-    byte_line(bytes, d, "unforced: {d.mnemonic} {f.role}")
+    // The compiler's legal encoding that GNU as's dialect cannot ask for: named, byte-preserved.
+    var reason = "unforced: {d.mnemonic} {f.role}"
+    if f.role == "imm_rm" &&
+        d.operands.len == 2 &&
+        (
+            d.operands[1] == "%rax" ||
+                d.operands[1] == "%eax" ||
+                d.operands[1] == "%ax" ||
+                d.operands[1] == "%al"
+        ) {
+        reason = "accumulator-form: {d.mnemonic} encoded 81 /n on the accumulator; GNU as chooses the short 05-form"
+    }
+    byte_line(bytes, d, reason)
+}
+
+/// Jcc and JMP relax between rel8 and rel32 (clef#21); CALL, LOOP and JrCXZ do not.
+fn relaxable_family(fam: str) -> bool {
+    fam == "jmp" || fam.len <= 4 && fam.starts_with("j") && fam != "jrcxz" && fam != "jecxz"
+}
+
+/// Whether a branch to `.+n` fits the 2-byte short form: rel8 is measured from its own end.
+fn short_reaches(n: int) -> bool {
+    n - 2 >= -128 && n - 2 <= 127
 }
 
 /// The REX word for bits the row does not use, so the encoder reproduces the byte.
@@ -540,7 +557,14 @@ fn verify(idx: Index, line: str, mode: int, bytes: List[byte], d: Decoded) -> bo
         (mut known).push(true)
     }
     let f = copy idx.forms[d.row]
-    let short = f.role == "relative8"
+    // The layout's relaxation decision for this line: short when the target is in reach and
+    // no {disp32} forces the wide form (a relative8 row is short by construction).
+    var forced_wide = false
+    for p in node.prefixes { if p == "{{disp32}}" { forced_wide = true } }
+    var short = f.role == "relative8"
+    if f.role == "relative32" && relaxable_family(f.family) && !forced_wide {
+        short = short_reaches(d.length + signed_of(d.imm, 32))
+    }
     let form = machine.choose(idx.forms, node, mode, values, known, short) else { return false }
     var encoded = machine.emit(form, node, mode, values, known) else { return false }
     for fix in encoded.fixups {
