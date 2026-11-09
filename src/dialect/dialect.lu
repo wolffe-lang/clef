@@ -11,6 +11,7 @@ pub struct Register {
 }
 
 /// Parsed AT&T operand; expression text is kept until symbol/layout evaluation.
+/// segment is an explicit override on a memory or absolute operand (`%fs:0x28`), else "".
 pub struct Operand {
     kind: str,
     text: str,
@@ -20,6 +21,102 @@ pub struct Operand {
     index: Register,
     scale: int,
     displacement: str,
+    segment: str,
+}
+
+/// Prefix words GNU as accepts on the instruction's line (9.16.6 Instruction Prefixes) and
+/// its pseudo prefixes (9.16.4.1): the round-trip source spells a prefix byte or an encoding
+/// choice this way, and the encoder honours each by name.
+pub fn prefix_word(s: str) -> bool {
+    if s.starts_with("{") && s.ends_with("}") {
+        return s == "{disp8}" ||
+            s == "{disp32}" ||
+            s == "{load}" ||
+            s == "{store}" ||
+            s == "{rex}" ||
+            s == "{noimm8s}" ||
+            s == "{nooptimize}"
+    }
+    if s.starts_with("rex") {
+        if s == "rex" { return true }
+        if !s.starts_with("rex.") || s.len < 5 || s.len > 8 { return false }
+        for b in s[4..].bytes() {
+            let c = b as int
+            if c != 87 && c != 82 && c != 88 && c != 66 { return false }
+        }
+        return true
+    }
+    s == "rep" ||
+        s == "repe" ||
+        s == "repz" ||
+        s == "repne" ||
+        s == "repnz" ||
+        s == "lock" ||
+        s == "data16" ||
+        s == "data32" ||
+        s == "addr32" ||
+        s == "addr16" ||
+        s == "cs" ||
+        s == "ds" ||
+        s == "es" ||
+        s == "fs" ||
+        s == "gs" ||
+        s == "ss" ||
+        s == "notrack" ||
+        s == "bnd"
+}
+
+/// The legacy prefix byte a prefix word stands for, or 0 for a pseudo prefix and REX words.
+pub fn prefix_byte(s: str) -> int {
+    match s {
+        "rep" => 243,
+        "repe" => 243,
+        "repz" => 243,
+        "repne" => 242,
+        "repnz" => 242,
+        "bnd" => 242,
+        "lock" => 240,
+        "data16" => 102,
+        "data32" => 102,
+        "addr32" => 103,
+        "addr16" => 103,
+        "cs" => 46,
+        "ds" => 62,
+        "notrack" => 62,
+        "es" => 38,
+        "fs" => 100,
+        "gs" => 101,
+        "ss" => 54,
+        _ => 0,
+    }
+}
+
+/// The REX byte a `rex`/`rex.WRXB` word stands for (SDM vol.2A 2.2.1 Table 2-4), or 0.
+pub fn rex_word(s: str) -> int {
+    if s == "rex" { return 64 }
+    if !s.starts_with("rex.") { return 0 }
+    var value = 64
+    for b in s[4..].bytes() {
+        let c = b as int
+        if c == 87 { value += 8 }
+        if c == 82 { value += 4 }
+        if c == 88 { value += 2 }
+        if c == 66 { value += 1 }
+    }
+    value
+}
+
+/// The segment override byte for an operand's `%seg:` (SDM vol.2A 2.1.1), or 0 for none.
+pub fn segment_byte(seg: str) -> int {
+    match seg {
+        "es" => 38,
+        "cs" => 46,
+        "ss" => 54,
+        "ds" => 62,
+        "fs" => 100,
+        "gs" => 101,
+        _ => 0,
+    }
 }
 
 /// A statement with labels, unmodified mnemonic/suffix, prefixes and origin.
@@ -101,7 +198,8 @@ pub fn register(name: str) -> Register ! {bad_register} {
             }
         }
     }
-    for n in [0, 2, 3, 4, 8] {
+    // CR0-CR7 and CR8 (SDM vol.2B 4.3 MOV control registers); DR0-DR7 (MOV debug registers).
+    for n in 0..9 {
         if name == "%cr{n}" {
             return Register {
                 name: name,
@@ -112,6 +210,25 @@ pub fn register(name: str) -> Register ! {bad_register} {
                 rex8: false,
             }
         }
+    }
+    for n in 0..8 {
+        if name == "%dr{n}" || name == "%db{n}" {
+            return Register {
+                name: "%db{n}",
+                family: "debug",
+                bits: 64,
+                code: n,
+                high8: false,
+                rex8: false,
+            }
+        }
+    }
+    // GNU as's `%riz`/`%eiz`: an index of none that forces a SIB byte (9.16.7 Memory References).
+    if name == "%riz" {
+        return Register { name: name, family: "zero", bits: 64, code: 4, high8: false, rex8: false }
+    }
+    if name == "%eiz" {
+        return Register { name: name, family: "zero", bits: 32, code: 4, high8: false, rex8: false }
     }
     let segments = ["%es", "%cs", "%ss", "%ds", "%fs", "%gs"]
     for n in 0..segments.len {
@@ -138,6 +255,15 @@ pub fn operand(raw: str) -> Operand ! {bad_operands} {
     var indirect = false
     if s.starts_with("*") { indirect = true; s = s[1..].trim() }
     if s.len == 0 { return bad_operands }
+    // A segment override on a memory or absolute operand: `%fs:0x28`, `%es:(%rdi)`.
+    var segment = ""
+    if s.starts_with("%") && s.len > 4 && s[3..4] == ":" {
+        let seg = register(s[0..3]) else { return bad_operands }
+        if seg.family != "segment" { return bad_operands }
+        segment = seg.name[1..]
+        s = s[4..].trim()
+        if s.len == 0 || s.starts_with("$") || s.starts_with("%") { return bad_operands }
+    }
     var out = Operand {
         kind: "expression",
         text: s,
@@ -147,6 +273,7 @@ pub fn operand(raw: str) -> Operand ! {bad_operands} {
         index: absent(),
         scale: 1,
         displacement: s,
+        segment: segment,
     }
     if s.starts_with("$") {
         if indirect || s.len == 1 { return bad_operands }
@@ -177,9 +304,9 @@ pub fn operand(raw: str) -> Operand ! {bad_operands} {
     }
     if parts.len >= 2 && parts[1].len > 0 {
         out.index = register(parts[1]) else { return bad_operands }
-        if out.index.family != "gpr" ||
+        if out.index.family != "gpr" && out.index.family != "zero" ||
             out.index.bits != 32 && out.index.bits != 64 ||
-            out.index.code == 4 {
+            out.index.family == "gpr" && out.index.code == 4 {
             return bad_operands
         }
     }
@@ -338,7 +465,7 @@ pub fn head(row: lex.Statement) -> Node ! {Syntax(lex.Failure)} {
     let words = s.words()
     node.name = words[0]
     s = s[node.name.len..].trim()
-    while node.name == "rep" || node.name == "repe" || node.name == "repne" || node.name == "lock" {
+    while prefix_word(node.name) {
         (mut node.prefixes).push(node.name)
         let next = s.words()
         if next.len == 0 { return Syntax(fail(row.origin, "missing_instruction: SDM vol.2A §2.1")) }

@@ -1,5 +1,7 @@
 use dialect
+
 use eval
+
 use x86table
 
 /// Instruction emission refusals; the caller adds source origin and the table citation.
@@ -80,14 +82,17 @@ struct Address {
     rex_b: int,
     rex_x: int,
     address32: bool,
+    segment: int,
 }
 
+/// force: 0 = GNU as's choice, 1 = {disp8}, 4 = {disp32} (GNU as 9.16.4.1 pseudo prefixes).
 fn address(
     op: dialect.Operand,
     value: eval.Value,
     known: bool,
     reg: int,
     mode: int,
+    force: int,
 ) -> Address ! Errors {
     var out = Address {
         data: [],
@@ -96,6 +101,7 @@ fn address(
         rex_b: 0,
         rex_x: 0,
         address32: false,
+        segment: 0,
     }
     if op.kind == "register" {
         if op.reg.family != "gpr" && op.reg.family != "xmm" { return bad_operands }
@@ -105,8 +111,10 @@ fn address(
         return out
     }
     if op.kind != "memory" && op.kind != "expression" { return bad_operands }
+    out.segment = dialect.segment_byte(op.segment)
     let has_base = op.kind == "memory" && op.base.family != "none"
     let has_index = op.kind == "memory" && op.index.family != "none"
+    let zero_index = has_index && op.index.family == "zero"
     if has_base && op.base.family == "ip" {
         if mode != 64 || has_index { return bad_operands }
         (mut out.data).push((reg % 8 * 8 + 5) as byte)
@@ -121,7 +129,7 @@ fn address(
         out.rex_b = op.base.code / 8
         out.address32 = mode == 64 && op.base.bits == 32
     }
-    if has_index {
+    if has_index && !zero_index {
         if op.index.family != "gpr" ||
             op.index.code == 4 ||
             mode == 32 && (op.index.bits != 32 || op.index.code >= 8) {
@@ -130,10 +138,20 @@ fn address(
         out.rex_x = op.index.code / 8
         out.address32 = out.address32 || mode == 64 && op.index.bits == 32
     }
+    if zero_index { out.address32 = out.address32 || mode == 64 && op.index.bits == 32 }
     let sib = has_index || has_base && op.base.code % 8 == 4 || !has_base && mode == 64
     var modbits = 0
     if !has_base {
         out.displacement = 4
+    } else if force == 4 {
+        modbits = 2
+        out.displacement = 4
+    } else if force == 1 {
+        if value.section != "ABS" || !known || !signed_fits(value.number, 1) {
+            return encoding_range
+        }
+        modbits = 1
+        out.displacement = 1
     } else if value.section == "ABS" &&
         known &&
         value.number.magnitude == 0 &&
@@ -156,7 +174,7 @@ fn address(
             8 => 3,
             _ => { return bad_operands },
         }
-        let index = if has_index then op.index.code % 8 else 4
+        let index = if has_index && !zero_index then op.index.code % 8 else 4
         let base = if has_base then op.base.code % 8 else 5
         (mut out.data).push((scale * 64 + index * 8 + base) as byte)
     }
@@ -188,6 +206,30 @@ pub fn emit(
         rex_b: 0,
         rex_x: 0,
         address32: false,
+        segment: 0,
+    }
+    // Explicit prefix words and pseudo prefixes (GNU as 9.16.6 and 9.16.4.1), in source order.
+    var explicit = List[int]()
+    var explicit_rex = 0
+    var force_disp = 0
+    var locked = false
+    var repeat = 0
+    for prefix in node.prefixes {
+        if prefix == "lock" {
+            locked = true
+        } else if prefix == "rep" || prefix == "repe" || prefix == "repne" {
+            repeat = dialect.prefix_byte(prefix)
+        } else if prefix == "{disp8}" {
+            force_disp = 1
+        } else if prefix == "{disp32}" {
+            force_disp = 4
+        } else if prefix == "{rex}" {
+            explicit_rex = if explicit_rex == 0 then 64 else explicit_rex
+        } else if prefix.starts_with("rex") {
+            explicit_rex = explicit_rex | dialect.rex_word(prefix)
+        } else if prefix.starts_with("{") {} else {
+            (mut explicit).push(dialect.prefix_byte(prefix))
+        }
     }
     if form.rm_operand >= 0 {
         if form.rm_operand >= ops.len || reg < 0 { return invalid_table }
@@ -197,7 +239,14 @@ pub fn emit(
             known[form.rm_operand],
             reg,
             mode,
+            force_disp,
         )?
+    } else {
+        for op in ops {
+            if (op.kind == "memory" || op.kind == "expression") && op.segment.len > 0 {
+                mem.segment = dialect.segment_byte(op.segment)
+            }
+        }
     }
     var opcode_register = 0
     if form.opcode_operand >= 0 {
@@ -209,7 +258,8 @@ pub fn emit(
     }
     var rex = (if form.rex_w then 8 else 0) + mem.rex_b + mem.rex_x * 2
     if form.reg_operand >= 0 && reg >= 8 { rex += 4 }
-    var force_rex = false
+    if explicit_rex != 0 { rex = rex | (explicit_rex - 64) }
+    var force_rex = explicit_rex != 0
     var high8 = false
     for op in ops {
         if op.kind == "register" {
@@ -221,34 +271,35 @@ pub fn emit(
     if mode == 32 && (rex != 0 || force_rex) { return bad_operands }
     if high8 && (rex != 0 || force_rex) { return bad_operands }
     var explicit_prefix = 0
-    if node.prefixes.len > 0 {
-        var locked = false
-        for prefix in node.prefixes { locked = locked || prefix == "lock" }
-        if locked {
-            // Intel SDM vol.2A LOCK p.3-621; the row identifies the writable r/m field.
-            if node.prefixes.len != 1 ||
-                form.allowed_prefixes != "lock-memory-destination" ||
-                form.rm_operand < 0 {
-                return invalid_lock_prefix
-            }
-            if ops[form.rm_operand].kind != "memory" && ops[form.rm_operand].kind != "expression" {
-                return invalid_lock_prefix
-            }
-            explicit_prefix = 240
-        } else {
-            if node.prefixes.len != 1 || node.prefixes[0] != "rep" { return bad_operands }
-            if form.family != "movsb" &&
-                form.family != "movsq" &&
-                form.family != "stosb" &&
-                form.family != "stosq" {
-                return bad_operands
-            }
-            explicit_prefix = 243
+    if locked {
+        // Intel SDM vol.2A LOCK p.3-621; the row identifies the writable r/m field.
+        if repeat != 0 || form.allowed_prefixes != "lock-memory-destination" || form.rm_operand < 0 {
+            return invalid_lock_prefix
         }
+        if ops[form.rm_operand].kind != "memory" && ops[form.rm_operand].kind != "expression" {
+            return invalid_lock_prefix
+        }
+        explicit_prefix = 240
+    } else if repeat != 0 {
+        // REP/REPE/REPNE belong to the string rows (SDM vol.2B 4.3 REP p.4-562); the objdump
+        // spellings repz/repnz/bnd are explicit bytes on any row and arrive through `explicit`.
+        if form.allowed_prefixes != "rep" && form.allowed_prefixes != "repz" { return bad_operands }
+        if repeat == 242 && form.allowed_prefixes != "repz" { return bad_operands }
+        explicit_prefix = repeat
     }
+    // Emission order: the row's implied prefixes in GNU as's order (address size, operand size
+    // or mandatory prefix, segment), then LOCK/REP, then explicit prefix words in source order,
+    // then REX, which must immediately precede the opcode (SDM vol.2A 2.2.1).
     if mem.address32 { (mut out.data).push(103 as byte) }
-    if form.prefix != 0 { (mut out.data).push(form.prefix as byte) }
+    if form.prefix > 255 {
+        (mut out.data).push((form.prefix / 256) as byte)
+        (mut out.data).push((form.prefix % 256) as byte)
+    } else if form.prefix != 0 {
+        (mut out.data).push(form.prefix as byte)
+    }
+    if mem.segment != 0 { (mut out.data).push(mem.segment as byte) }
     if explicit_prefix != 0 { (mut out.data).push(explicit_prefix as byte) }
+    for b in explicit { (mut out.data).push(b as byte) }
     if rex != 0 || force_rex { (mut out.data).push((64 + rex) as byte) }
     for i in 0..form.opcode.len {
         var b = form.opcode[i]
@@ -266,12 +317,21 @@ pub fn emit(
             mode == 64 && !mem.address32,
         )?
     }
-    if form.family == "ljmp" {
+    if form.immediate_kind == "far-pointer" {
         if ops.len != 2 || ops[0].kind != "immediate" || ops[1].kind != "immediate" {
             return bad_operands
         }
         field(mut out, values[1], 4, false, false, false)?
         field(mut out, values[0], 2, false, false, false)?
+    } else if form.immediate_kind == "enter" {
+        if ops.len != 2 || ops[0].kind != "immediate" || ops[1].kind != "immediate" {
+            return bad_operands
+        }
+        if values[0].section != "ABS" || values[1].section != "ABS" { return bad_operands }
+        if values[0].number.negative || values[0].number.magnitude > 65535 { return encoding_range }
+        if values[1].number.negative || values[1].number.magnitude > 255 { return encoding_range }
+        field(mut out, values[0], 2, false, false, false)?
+        field(mut out, values[1], 1, false, false, false)?
     } else if form.immediate > 0 {
         if form.immediate_operand < 0 || form.immediate_operand >= ops.len { return invalid_table }
         let i = form.immediate_operand
