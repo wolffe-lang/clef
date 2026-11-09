@@ -324,7 +324,6 @@ pub fn decode(idx: Index, bytes: List[byte], offset: int, mode: int, address: in
             if !has_byte(prefixes, want) { continue }
             score += 1
         }
-        if p == 0 && f.bits == 16 { continue }
         if f.rex_w {
             if rex == 0 || rex / 8 % 2 == 0 { continue }
             score += 1

@@ -64,6 +64,20 @@ fn operand_matches(pattern: str, op: dialect.Operand) -> bool {
     // A word r/m whose register form ignores the operand-size attribute (LTR, LLDT, SLDT, STR,
     // LMSW, VERR, VERW): objdump spells the register at 32 bits, GNU as accepts any width.
     if pattern == "rmw16" { return op.kind == "register" && op.reg.family == "gpr" || memory(op) }
+    if pattern == "rw16" {
+        return op.kind == "register" && op.reg.family == "gpr" && op.reg.bits >= 16
+    }
+    // A register the row names exactly: `fixed:%ecx`.
+    if pattern.starts_with("fixed:") { return op.kind == "register" && op.reg.name == pattern[6..] }
+    // XLAT's table base DS:(r|e)BX.
+    if pattern == "xbx" {
+        return op.kind == "memory" &&
+            op.base.family == "gpr" &&
+            op.base.code == 3 &&
+            op.index.family == "none" &&
+            (op.displacement == "0" || op.displacement.len == 0) &&
+            (op.segment == "" || op.segment == "ds")
+    }
     if pattern == "segment" { return op.kind == "register" && op.reg.family == "segment" }
     if pattern == "cl" { return op.kind == "register" && op.reg.name == "%cl" }
     if pattern == "dx" { return op.kind == "register" && op.reg.name == "%dx" }

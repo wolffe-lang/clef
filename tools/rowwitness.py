@@ -20,7 +20,7 @@ def witnesses():
             acc={8:'%al',16:'%ax',32:'%eax',64:'%rax'}
             mnemonic=family
             sized={'adc','sbb','btc','btr','bts','not','cmpxchg','xadd','xchg','add','and','or','sub','xor','cmp','test','mov','lea','inc','dec','neg','mul','div','idiv','imul','shl','shr','sar','bt','push','pop','in','out','nop',
-                   'rol','ror','rcl','rcr','shld','shrd','bsf','bsr','tzcnt','lzcnt','popcnt','bswap','movbe','lar','lsl','rdseed','movnti','lss','lfs','lgs','lds','les','bound'}
+                   'rol','ror','rcl','rcr','shld','shrd','bsf','bsr','tzcnt','lzcnt','popcnt','bswap','movbe','lar','lsl','movnti'}
             if (family.startswith('cmov') or family in sized) and bits and role!='string':
                 mnemonic+=suffix[bits]
             if role=='string' and family in ('movs','cmps','ins','outs'):mnemonic+=suffix[bits]
@@ -52,6 +52,9 @@ def witnesses():
                 elif p=='debug':operands.append('%db0')
                 elif p=='indirect-mem':operands.append('*('+base+')')
                 elif p=='rmw16':operands.append('('+base+')')
+                elif p=='rw16':operands.append('%cx')
+                elif p=='xbx':operands.append('%ds:(%rbx)' if mode==64 else '%ds:(%ebx)')
+                elif p.startswith('fixed:'):operands.append(p[6:])
                 elif p in ('port8','selector16','offset32'):operands.append('$'+str({'port8':97,'selector16':8,'offset32':0x12345678}[p]))
                 elif p=='moffs32':operands.append('4096')
                 elif p=='xmm128':operands.append('%xmm1')

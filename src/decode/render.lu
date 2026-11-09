@@ -216,7 +216,8 @@ fn render(idx: Index, f: x86table.Form, mut d: Decoded, mode: int, address: int,
             } else if f.immediate_kind == "enter" {
                 text = if i == 0 then "$" + hex(d.imm) else "$" + hex(d.imm2 as u64)
             } else if f.immediate == 0 {
-                text = ""
+                // A shift or rotate by one carries no immediate byte; objdump prints the count.
+                text = if f.role == "shift1" then "$1" else ""
             } else {
                 text = immediate_text(f, d, mode)
             }
@@ -263,6 +264,11 @@ fn render(idx: Index, f: x86table.Form, mut d: Decoded, mode: int, address: int,
                 ")"
         } else if p == "ydi" {
             text = "%es:(" + gpr(7, abits, true) + ")"
+        } else if p == "xbx" {
+            text = (if used_seg.len > 0 then "%{used_seg}:" else "%ds:") +
+                "(" +
+                gpr(3, abits, true) +
+                ")"
         } else if p == "xmm128" {
             text = "%xmm{fl.reg + 8 * fl.rex_r}"
             any_register = true
@@ -352,7 +358,13 @@ fn mnemonic(idx: Index, f: x86table.Form, d: Decoded, mode: int, any_register: b
         return "crc32" + src
     }
     if fam == "movabs" && f.role != "imm_reg" { return "movabs" }
-    if fam == "lcall" || fam == "ljmp" || fam.starts_with("seg_") { return fam }
+    if fam == "lcall" || fam == "ljmp" { return fam }
+    // Spellings objdump changes by mode: the 32-bit descriptor-table loads carry `l`, and the
+    // legacy SYSEXIT/SYSRET print as `sysexitl`/`sysretl` in 64-bit mode.
+    if mode == 32 && (fam == "lgdt" || fam == "lidt" || fam == "sgdt" || fam == "sidt") {
+        return fam + "l"
+    }
+    if mode == 64 && (fam == "sysexit" || fam == "sysret") && !f.rex_w { return fam + "l" }
     if f.role.starts_with("seg_") { return fam }
     if f.bits == 0 || any_register { return fam }
     let widths = idx.widths[fam] else 0
