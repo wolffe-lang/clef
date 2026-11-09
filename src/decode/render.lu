@@ -238,10 +238,8 @@ fn render(idx: Index, f: x86table.Form, mut d: Decoded, mode: int, address: int,
             text = hex(mask(bits_of(target), if mode == 64 then 64 else 32))
         } else if p == "cl" {
             text = "%cl"
-            any_register = true
         } else if p == "dx" {
             text = "(%dx)"
-            any_register = true
         } else if p == "control" {
             text = "%cr{fl.reg + 8 * fl.rex_r}"
             any_register = true
@@ -297,7 +295,7 @@ fn render(idx: Index, f: x86table.Form, mut d: Decoded, mode: int, address: int,
                 text = memory_text(d, mode, used_seg, address, mut comment)
             }
         } else if p.starts_with("r") {
-            let width = pattern_width(p, "r")
+            let width = if f.role == "reg_segment" then 32 else pattern_width(p, "r")
             let code = if is_reg {
                 fl.reg + 8 * fl.rex_r
             } else if is_opreg {

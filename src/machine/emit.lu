@@ -240,9 +240,15 @@ pub fn emit(
             force_disp,
         )?
     } else {
-        for op in ops {
+        // A string operand's own segment (DS:(r)SI, ES:(r)DI, DS:(r)BX) is implied, not a prefix.
+        let patterns = if form.operands == "none" then List[str]() else form.operands.split(",")
+        for i in 0..ops.len {
+            let op = copy ops[i]
             if (op.kind == "memory" || op.kind == "expression") && op.segment.len > 0 {
-                mem.segment = dialect.segment_byte(op.segment)
+                let pattern = if i < patterns.len then patterns[i] else ""
+                let implied = (pattern == "xsi" || pattern == "xbx") && op.segment == "ds" ||
+                    pattern == "ydi" && op.segment == "es"
+                if !implied { mem.segment = dialect.segment_byte(op.segment) }
             }
         }
     }

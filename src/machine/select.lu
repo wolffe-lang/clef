@@ -257,6 +257,8 @@ pub fn choose(
             } else if family == "bswap" {
                 if ops.len != 1 { return bad_operands }
                 role = "reg"
+            } else if family == "nop" && ops.len == 1 {
+                role = "rm"
             } else if family == "shld" || family == "shrd" {
                 if ops.len != 3 { return bad_operands }
                 role = if ops[0].kind == "register" then "cl_reg_rm" else "imm_reg_rm"
@@ -290,7 +292,7 @@ pub fn choose(
                 family == "setb" {
                 if ops.len != 1 { return bad_operands }
                 role = if mode == 32 &&
-                    bits == 32 &&
+                    (bits == 32 || bits == 16) &&
                     ops[0].kind == "register" &&
                     (family == "inc" || family == "dec") {
                     "reg"
