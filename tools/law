@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+"""The law: assemble(disassemble(bytes)) == bytes, clef on both sides, over the
+digest-checked corpus, per binary, per executable section and per instruction class.
+Needs CLEF_CORPUS=<extracted ISO root>; without it the step SKIPs loudly.
+With --twice, every binary is disassembled twice and the texts must be identical."""
+import collections,json,os,pathlib,re,sys,time
+from disasmlib import ROOT,CLEF,corpus_root,corpus_members,clef_disassemble,executable_sections,assemble_chunks,classify_line,CHUNK
+root=corpus_root()
+if root is None or not root.exists():
+    print('SKIP law reason=corpus not staged (CLEF_CORPUS unset or missing); runs on the lane host',flush=True);raise SystemExit(0)
+args=[a for a in sys.argv[1:] if not a.startswith('--')];twice='--twice' in sys.argv
+manifest=ROOT/'notes/as03/corpus.json'
+out=ROOT/'target/evidence';work=out/'law';work.mkdir(parents=True,exist_ok=True)
+only=set(args)
+report={'law':'assemble(disassemble(bytes)) == bytes, clef both sides, chunks of %d instructions'%CHUNK,'binaries':[],'classes':{}}
+classes=collections.Counter();red=0;identical=True
+for b,path in corpus_members(manifest,root):
+    name=b['paths'][0].split('/')[-1]
+    if only and name not in only and b['paths'][0] not in only:continue
+    t=time.monotonic()
+    row={'name':name,'path':b['paths'][0],'sha256':b['sha256'],'external':b['external'],'sections':{},'classes':{}}
+    ok=True
+    for section,addr,data in executable_sections(path):
+        raw=work/f'{name}-{section.strip(".")}.bin';raw.write_bytes(data)
+        status,source,stderr=clef_disassemble(raw,'--raw','--roundtrip',f'--address={addr:#x}')
+        if twice:
+            status2,source2,_=clef_disassemble(raw,'--raw','--roundtrip',f'--address={addr:#x}')
+            if source2!=source:identical=False;print(f'FAIL law-determinism:{name}:{section}',flush=True)
+        sec={'bytes':len(data),'clef_status':status,'stderr':stderr.strip()[:200]}
+        if status!=0:
+            sec['verdict']='disassembler refused';ok=False
+        else:
+            lines=[l for l in source.splitlines() if l.strip()]
+            counts=collections.Counter(classify_line(l) for l in lines)
+            sec['instructions']=len(lines);sec['classes']=dict(counts)
+            for k,v in counts.items():row['classes'][k]=row['classes'].get(k,0)+v
+            rebuilt,diag=assemble_chunks(lines,work,f'{name}-{section.strip(".")}')
+            sec['diagnostic']=diag
+            if rebuilt is None:sec['verdict']='reassembly refused';ok=False
+            elif rebuilt!=data:
+                first=next(i for i in range(min(len(rebuilt),len(data))+1) if i>=min(len(rebuilt),len(data)) or rebuilt[i]!=data[i])
+                sec['verdict']='bytes differ';sec['first_difference']=hex(addr+first);sec['rebuilt_bytes']=len(rebuilt);ok=False
+            else:sec['verdict']='round-trips'
+        row['sections'][section]=sec
+        raw.unlink()
+    for k,v in row['classes'].items():classes[k]+=v
+    row['secs']=round(time.monotonic()-t,1);row['law']=ok
+    if not ok:red+=1;print(f'FAIL law:{name} '+' '.join(f'{s}={v["verdict"]}' for s,v in row['sections'].items())+' '+row['sections'].get('.text',{}).get('stderr',''),flush=True)
+    else:print(f'  law:{name} round-trips {row["classes"]}',flush=True)
+    report['binaries'].append(row)
+report['classes']=dict(classes)
+decoded=classes.get('decoded',0);total=sum(classes.values())
+report['decoded_share']=round(decoded/total,6) if total else None
+(out/'law.json').write_text(json.dumps(report,indent=1,sort_keys=True)+'\n')
+print(f'law: {len(report["binaries"])-red}/{len(report["binaries"])} binaries round-trip; classes {dict(classes)}; determinism {"identical" if identical else "DIFFERS"}',flush=True)
+raise SystemExit(1 if red or not identical else 0)

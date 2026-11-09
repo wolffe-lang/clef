@@ -1,0 +1,39 @@
+#!/usr/bin/env python3
+"""Every table row's witness, read back: GNU as's bytes through clef's disassembler must
+give objdump's text, and clef's round-trip source of those bytes must assemble, with
+clef, to the same bytes. One FAIL line per red row, at column 0."""
+import json,pathlib,subprocess,sys
+from disasmlib import ROOT,CLEF,objdump,clef_disassemble,parse,assemble_chunks,normalize
+from elf import ELF
+from rowwitness import witnesses
+out=ROOT/'target/evidence/disasm-table';out.mkdir(parents=True,exist_ok=True)
+results=[];red=0
+for index,f,mode,text in witnesses():
+    src=out/f'{index}-{mode}.S';obj=src.with_suffix('.o');src.write_text(f'.code{mode}\n{text}\n')
+    gas=subprocess.run(['as','--64',str(src),'-o',str(obj)],capture_output=True,text=True)
+    row={'row':index,'mode':mode,'provenance':f[:4],'source':text,'gas_status':gas.returncode}
+    if gas.returncode:
+        row['verdict']='gas-refused';results.append(row);continue
+    expected=objdump(obj,mode).get('.text',[])
+    status,stdout,stderr=clef_disassemble(obj,mode=mode)
+    ours=parse(stdout).get('.text',[]) if status==0 else []
+    row['objdump']=expected;row['clef']=ours;row['clef_status']=status;row['stderr']=stderr.strip()[:200]
+    agree=status==0 and ours==expected
+    status2,source,stderr2=clef_disassemble(obj,'--roundtrip',mode=mode)
+    original=next(s[-1] for s in ELF(obj).normalized()['sections'] if s[0]=='.text')
+    reassembled=None
+    if status2==0:
+        lines=[l for l in source.splitlines() if l.strip()]
+        data,diag=assemble_chunks(lines,out,f'rt-{index}-{mode}',mode)
+        reassembled=data.hex() if data is not None else None
+        row['law_diagnostic']=diag
+    law=reassembled==original
+    row['original']=original;row['reassembled']=reassembled;row['agree']=agree;row['law']=law
+    row['verdict']='ok' if agree and law else 'red'
+    if row['verdict']!='ok':
+        red+=1;print(f'FAIL disasm-table:{index}:{mode} {f[3]} agree={agree} law={law} {row["stderr"]}',flush=True)
+    results.append(row)
+(out/'rows.json').write_text(json.dumps(results,indent=1)+'\n')
+total=sum(1 for r in results if r['verdict']!='gas-refused')
+print(f'disasm-table: {total-red}/{total} row×mode witnesses agree with objdump and round-trip; {sum(1 for r in results if r["verdict"]=="gas-refused")} refused by GNU as',flush=True)
+raise SystemExit(1 if red else 0)

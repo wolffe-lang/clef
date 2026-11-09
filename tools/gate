@@ -32,7 +32,8 @@ commands=[('planner',['python3','ci/tiers-test.py']),('format',[str(W),'fmt','--
  ('assembler',['tools/assembler-test']),
  ('ports',['tools/ports-test']),
  ('census',['tools/census','--check']),('scanner',['tools/scanner-test']),
- ('differ',['tools/differ-test']),('proof',['tools/proof-test']),('roundtrip',['tools/roundtrip-test']),('corpus',['tools/corpus','--check'])]
+ ('differ',['tools/differ-test']),('proof',['tools/proof-test']),('roundtrip',['tools/roundtrip-test']),('corpus',['tools/corpus','--check']),
+ ('disasm-table',['tools/disasm-test']),('disasm-corpus',['tools/disasm-corpus']),('law',['tools/law','--twice'])]
 results=[]
 for name,argv in commands:
     print('GATE '+name,flush=True)
