@@ -148,7 +148,16 @@ RECORD-END worst=0 steps=5 end=2026-11-10T01:02:26Z
   loads and `bound`'s operand order, "operand size mismatch") and makes any
   other refusal, or a stale pin, a red row by name. Under lupin against the
   cached witnesses the same plant had read 2 rows red, which is how the hole
-  stayed hidden until hasu. Both plants were retaken on `11bc8fd`.
+  stayed hidden until hasu. Both plants were retaken on the final head.
+- **The law does not see a dropped prefix.** The prefix-dropped plant named
+  `law:pax` as a red row and it stayed green (`plant-e0b7bb0bee03`, head
+  `b86ae97`: `END disasm-table exit=1` with 342 rows, `END law exit=0`). The
+  renderer verifies every round-trip line through `machine.choose`/`emit` and
+  prints `.byte` where the bytes do not come back, so a decoder that drops
+  `66` yields a wrong text and a byte-exact `.byte` line: the law holds by
+  construction and only the objdump agreement sees the error. The plant's rows
+  are the `disasm-table` rows; the law is the wrong gate to name for a decode
+  error, which the prediction did not say.
 - **One lock slip.** Early in the lane one `wolf build` ran on the Mac without
   the build lock (about a second, while another lane held it). Every later
   build went through the lock.
