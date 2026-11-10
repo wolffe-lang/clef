@@ -216,6 +216,8 @@ pub fn emit(
     var repeat = 0
     for prefix in node.prefixes {
         if prefix == "lock" {
+            // One LOCK: a second word is the same refusal as LOCK on the wrong form.
+            if locked { return invalid_lock_prefix }
             locked = true
         } else if prefix == "rep" || prefix == "repe" || prefix == "repne" {
             repeat = dialect.prefix_byte(prefix)
