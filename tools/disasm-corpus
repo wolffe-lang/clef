@@ -15,6 +15,7 @@ only=set(a for a in sys.argv[1:] if not a.startswith('--'))
 jobs=int(next((a[7:] for a in sys.argv[1:] if a.startswith('--jobs=')),len(os.sched_getaffinity(0)) if hasattr(os,'sched_getaffinity') else 2))
 mem=next((a[6:] for a in sys.argv[1:] if a.startswith('--mem=')),None)
 if mem:os.environ['CLEF_MEM_GB']=mem
+import disasmlib;disasmlib.set_jobs(jobs)
 def one(b,path):
     """One binary: objdump's lines against clef's at every address, differences named."""
     name=b['paths'][0].split('/')[-1]

@@ -1,7 +1,7 @@
 """Shared pieces for the disassembler rows: objdump as the black-box oracle,
 clef's own disassembly, line normalization, the digest-checked corpus, and the
 round-trip law (clef on both sides). No disassembler source is consulted."""
-import hashlib,json,os,pathlib,re,subprocess
+import concurrent.futures,hashlib,json,os,pathlib,re,subprocess,threading
 from elf import ELF
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 CLEF=ROOT/'target/clef'
@@ -39,6 +39,18 @@ def objdump(path,mode=64):
     if p.returncode:raise RuntimeError('objdump failed: '+p.stderr[:300])
     return parse(p.stdout)
 
+JOBS=1
+GATE=threading.BoundedSemaphore(1)
+def set_jobs(n):
+    """At most n clef processes alive at once, over every binary and chunk in flight."""
+    global JOBS,GATE
+    JOBS=max(1,n);GATE=threading.BoundedSemaphore(JOBS)
+
+def run_clef(argv):
+    """One clef process under the memory cap and the process gate."""
+    with GATE:
+        return subprocess.run(argv,capture_output=True,text=True,errors='replace',preexec_fn=memory_cap())
+
 def memory_cap():
     """A hard address-space cap for every clef process, CLEF_MEM_GB gibibytes (default 4); None where unsupported."""
     try:
@@ -53,7 +65,7 @@ def memory_cap():
 
 def clef_disassemble(path,*extra,mode=64):
     flags=['--code32'] if mode==32 else []
-    p=subprocess.run([str(CLEF),'--disassemble',*flags,*extra,str(path)],capture_output=True,text=True,errors='replace',preexec_fn=memory_cap())
+    p=run_clef([str(CLEF),'--disassemble',*flags,*extra,str(path)])
     return p.returncode,p.stdout,p.stderr
 
 def classify_line(text):
@@ -94,18 +106,24 @@ def corpus_members(manifest,root):
         yield b,path
 
 def assemble_chunks(source_lines,workdir,tag,mode=64):
-    """Assemble round-trip source in CHUNK-line pieces with clef; -> (bytes or None, diagnostics)."""
-    out=bytearray();diag=[]
-    for i in range(0,len(source_lines),CHUNK):
+    """Assemble round-trip source in CHUNK-line pieces with clef, chunks in parallel under the
+    process gate, concatenated in order; -> (bytes or None, diagnostics)."""
+    starts=list(range(0,len(source_lines),CHUNK))
+    def one(i):
         src=workdir/f'{tag}-{i//CHUNK}.S';obj=src.with_suffix('.o')
         src.write_text(f'.text\n.code{mode}\n'+'\n'.join(source_lines[i:i+CHUNK])+'\n')
-        p=subprocess.run([str(CLEF),'--64',str(src),'-o',str(obj)],capture_output=True,text=True,preexec_fn=memory_cap())
-        if p.returncode or not obj.exists():
-            diag.append(p.stderr.strip()[:300]);return None,diag
+        p=run_clef([str(CLEF),'--64',str(src),'-o',str(obj)])
+        if p.returncode or not obj.exists():return None,p.stderr.strip()[:300]
         e=ELF(obj)
         text=next((e.contents(s) for name,s in e.sections if name=='.text'),b'')
-        if e.relocations:diag.append('unresolved relocations in chunk %d'%(i//CHUNK));return None,diag
-        out+=text;src.unlink();obj.unlink()
+        if e.relocations:return None,'unresolved relocations in chunk %d'%(i//CHUNK)
+        src.unlink();obj.unlink()
+        return text,None
+    out=bytearray();diag=[]
+    with concurrent.futures.ThreadPoolExecutor(max_workers=JOBS) as pool:
+        for text,why in pool.map(one,starts):
+            if text is None:diag.append(why);return None,diag
+            out+=text
     return bytes(out),diag
 
 def corpus_root():
