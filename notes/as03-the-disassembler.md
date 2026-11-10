@@ -36,13 +36,18 @@ rows red by name on hasu (`red-6ae378ced55e`: `END disasm-table exit=1`,
 - **Right: the forcing devices.** GNU as's own pseudo prefixes and prefix words
   cover every general-purpose difference the compilers produce except one
   (Departures: `accumulator-form`).
-- **Partly right: the law rows.** Predicted: the kernel, `poweroff`, `reboot`
-  and clef's own binary green with everything decoded, every user program red
-  by a named residual. Outcome: the law holds on all 139 (the named residual
-  round-trips as `.byte`, so nothing is red), and only the kernel and
-  `poweroff` decode completely; `reboot` and clef's own binary carry a few
-  SSE lines from the runtime. The predicted green rows were green; the
-  predicted red rows are green with their residual named per class.
+- **Partly right: the law rows.** Predicted: the kernel, `poweroff`/`reboot`
+  (one digest), clef's own binary and the gate's two corpus programs green with
+  everything decoded, every user program red by a named residual. Outcome: the
+  law holds on all 139 members (the named residual round-trips as `.byte`, so
+  no per-binary row is red; the class counts carry the residual instead), and
+  exactly the predicted members decode completely: `pax`, `poweroff`, and the
+  three `crt*.o`. Not taken: clef's own `target/clef` and the gate's two corpus
+  programs are not members of the ISO, the corpus of record (R-as03-3), and
+  the per-class rows `law-class:<class>` became the counts in `law.json`
+  rather than green/red rows: `decoded` is 100 % of the general-purpose and
+  system lines (no unforced escape remains), which is what those rows were
+  to show.
 - **Missed: three spellings.** The first full `disasm-table` on hasu
   (`full-98c4d2f73e58`) was red on 13 row×mode witnesses: `monitor` and
   `mwait` printed one operand (the `fixed:%ecx` pattern rendered nothing),
