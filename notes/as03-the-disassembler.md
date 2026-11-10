@@ -158,6 +158,15 @@ RECORD-END worst=0 steps=5 end=2026-11-10T01:02:26Z
   construction and only the objdump agreement sees the error. The plant's rows
   are the `disasm-table` rows; the law is the wrong gate to name for a decode
   error, which the prediction did not say.
+- **The first green gauntlet was red on `unit`.** `green-ca0482e9754f` (head
+  `ca0482e`): `test src/machine_test.lu::main ... FAILED (trap(assert))`,
+  every other gate green. The prefix-word parser that the round-trip dialect
+  needed had let `lock lock addq %rax,(%rcx)` assemble (`f0 48 01 01`), which
+  trunk refused with `invalid_lock_prefix` and the unit test asserts. A second
+  `lock` word is that refusal again. The hosted `ci` run at the same head was
+  green because a module PR runs only the planner there; the unit gate runs on
+  the lane host. The Mac checks had not run the unit tests either; they do now
+  (every `src/*_test.lu` under lupin before a record is queued).
 - **One lock slip.** Early in the lane one `wolf build` ran on the Mac without
   the build lock (about a second, while another lane held it). Every later
   build went through the lock.
