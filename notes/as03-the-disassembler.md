@@ -167,6 +167,22 @@ RECORD-END worst=0 steps=5 end=2026-11-10T01:02:26Z
   green because a module PR runs only the planner there; the unit gate runs on
   the lane host. The Mac checks had not run the unit tests either; they do now
   (every `src/*_test.lu` under lupin before a record is queued).
+- **The second green gauntlet was red on `table`.** `green-da3093fe0a89`
+  (head `da3093f`): 11 row×mode differentials, every one a row this change
+  added (trunk had none of them), so no regression of trunk's assembler; the
+  table gate had not run on hasu before the full gauntlet. Three kinds:
+  `int $3` (row CD ib) — GNU as encodes it as INT3 `CC`; the selector now does
+  the same and the witness takes vector `0x80`. `larq`/`lslq (%rax),%rcx` —
+  GNU as emits the r64 forms without REX.W; the rows now carry REX.W 0 and
+  `decode-alias`, so `lar (%rax),%rcx` is `0F 02 08` as in GNU as and
+  `0F 02 08` still reads as the r32 form. The REX.W far indirect `lcall`/`ljmp`,
+  the r64 `lss`/`lfs`/`lgs` and the two `bound` rows — GNU as either refuses
+  the spelling or never emits the bytes; they are flagged `decode-only`: no
+  witness in either differential, the decoder reads them by the SDM, and the
+  assembler's bytes for them are unmeasured against GNU as (said in FORMATS).
+  The pinned-refusal list is empty as a result; the mechanism stays. The unit
+  test asserts `int $3` and `lar`'s bytes. The whole gate's cheap steps now
+  run in a light slot before a block take.
 - **One lock slip.** Early in the lane one `wolf build` ran on the Mac without
   the build lock (about a second, while another lane held it). Every later
   build went through the lock.
