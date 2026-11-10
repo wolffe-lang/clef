@@ -138,6 +138,17 @@ RECORD-END worst=0 steps=5 end=2026-11-10T01:02:26Z
 - **FWAIT.** `9B` appeared six times in the corpus (`as`, `limine`) and was a
   reserved cell in the table; the SDM row (vol.2D 6.1 WAIT/FWAIT) was added
   with the `fwait`/`wait` spellings.
+- **The operand-order plant was green on its first take.** `plant-9e3d4874d68a`
+  (head `33eb108`) came back `END disasm-table exit=0`: swapping the IMUL
+  r32,r/m32 row's operands also swaps the witness `tools/rowwitness.py`
+  derives from the row (`imull %ecx,(%rax)`), GNU as refuses that, and
+  `disasm-test` listed refused witnesses without counting them. A table row
+  whose witness GNU as refuses is a hole in the gate, so `11bc8fd` pins the
+  five refusals the gate had (`tools/disasm-refusals.json`: the r64 far-pointer
+  loads and `bound`'s operand order, "operand size mismatch") and makes any
+  other refusal, or a stale pin, a red row by name. Under lupin against the
+  cached witnesses the same plant had read 2 rows red, which is how the hole
+  stayed hidden until hasu. Both plants were retaken on `11bc8fd`.
 - **One lock slip.** Early in the lane one `wolf build` ran on the Mac without
   the build lock (about a second, while another lane held it). Every later
   build went through the lock.
