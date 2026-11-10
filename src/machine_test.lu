@@ -68,6 +68,13 @@ fn main() -> int ! {
     assert(low8.data.len == 3 && low8.data[0] == 64 as byte)
     let control = encode(forms, "movq %cr0,%rax", 64)?
     assert(control.data.len == 3 && control.data[0] == 15 as byte && control.data[1] == 32 as byte)
+    // GNU as's byte choices the table gate measures: `int $3` is INT3, LAR/LSL r64 carry no REX.W.
+    let int3 = encode(forms, "int $3", 64)?
+    assert(int3.data.len == 1 && int3.data[0] == 204 as byte)
+    let vector = encode(forms, "int $0x80", 64)?
+    assert(vector.data.len == 2 && vector.data[0] == 205 as byte && vector.data[1] == 128 as byte)
+    let lar = encode(forms, "lar (%rax),%rcx", 64)?
+    assert(lar.data.len == 3 && lar.data[0] == 15 as byte && lar.data[1] == 2 as byte)
     let abs32 = encode(forms, "movl %eax,label", 32)?
     assert(
         abs32.data.len == 5 &&

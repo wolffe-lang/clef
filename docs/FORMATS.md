@@ -374,6 +374,13 @@ and absolute operands (`%fs:0x28`), `%riz`/`%eiz` as a SIB-forcing index, and
 and segment words are emitted as the bytes they name, after the row's own
 prefixes and before REX.
 
+Rows flagged `decode-only` (the REX.W far indirect transfers, the r64 far-pointer
+loads, BOUND) have no spelling the pinned GNU as assembles, so they carry no
+witness in either differential: the decoder reads them by the SDM, and the
+assembler's bytes for them are the SDM's, unmeasured against GNU as.
+`tools/disasm-refusals.json` lists any witness GNU as refuses; a new refusal is
+a red row.
+
 `tools/disasm-test` reads every table row's witness back (GNU as's bytes to
 objdump's text, and the round-trip source to the same bytes). `tools/disasm-corpus`
 and `tools/law` run the same two measurements over the digest-checked corpus of

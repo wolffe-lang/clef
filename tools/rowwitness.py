@@ -14,6 +14,9 @@ def witnesses():
     suffix={8:'b',16:'w',32:'l',64:'q'}
     for index,row in enumerate(rows()):
         f=row.split('|');family,role,bits=f[4],f[5],int(f[6]);pattern=f[20]
+        # decode-only: GNU as has no spelling that assembles this row (REX.W far transfers, r64
+        # far-pointer loads, BOUND); the decoder reads it, the differentials have no witness.
+        if 'decode-only' in f[18].split(';'):continue
         for mode in map(int,f[7].split(',')):
             base='%rax' if mode==64 else '%eax'
             register={8:'%cl',16:'%cx',32:'%ecx',64:'%rcx',128:'%xmm1'}
@@ -40,6 +43,7 @@ def witnesses():
                     elif role in {'imm_rm','imm_acc','imm_rm_reg','imm'} and bits>8:value=256
                     if family in {'mov','movabs'} and bits==64 and role=='imm_reg':value=0x123456789abcdef
                     if family in {'bt','btc','btr','bts'}:value=3
+                    if family=='int':value=0x80  # `int $3` is INT3 (CC) in GNU as; the CD ib row needs another vector
                     operands.append('$'+str(value))
                 elif p=='relative':operands.append('.+2' if role=='relative8' else '.+4096')
                 elif p=='cl':operands.append('%cl')

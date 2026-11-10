@@ -259,6 +259,17 @@ pub fn choose(
             bits = ops[0].reg.bits
         }
     }
+    // GNU as encodes `int $3` as INT3 (CC), the one-byte form; the CD ib row keeps every other vector.
+    if family == "int" &&
+        ops.len == 1 &&
+        ops[0].kind == "immediate" &&
+        known[0] &&
+        values[0].section == "ABS" {
+        if !values[0].number.negative && values[0].number.magnitude == 3 {
+            // The INT3 row has no operand field; the vector is the row.
+            return x86table.lookup_in(forms, "int3", "fixed", 0, mode)?
+        }
+    }
     if family == "lret" && role == "select" {
         role = if ops.len == 0 then "fixed" else "imm"
         bits = 0
