@@ -7,13 +7,20 @@ from disasmlib import ROOT,CLEF,objdump,clef_disassemble,parse,assemble_chunks,n
 from elf import ELF
 from rowwitness import witnesses
 out=ROOT/'target/evidence/disasm-table';out.mkdir(parents=True,exist_ok=True)
+# Witnesses the pinned GNU as refuses are listed by mode and source; a row whose witness GNU as
+# newly refuses is red by name (a planted operand order would otherwise vanish from the count).
+pins=json.loads((ROOT/'tools/disasm-refusals.json').read_text())['refused']
+pinned={(p['mode'],p['source']) for p in pins}
 results=[];red=0
 for index,f,mode,text in witnesses():
     src=out/f'{index}-{mode}.S';obj=src.with_suffix('.o');src.write_text(f'.code{mode}\n{text}\n')
     gas=subprocess.run(['as','--64',str(src),'-o',str(obj)],capture_output=True,text=True)
     row={'row':index,'mode':mode,'provenance':f[:4],'source':text,'gas_status':gas.returncode}
     if gas.returncode:
-        row['verdict']='gas-refused';results.append(row);continue
+        row['verdict']='gas-refused';row['gas_stderr']=gas.stderr.strip()[:300];results.append(row)
+        if (mode,text) not in pinned:
+            red+=1;print(f'FAIL disasm-table:{index}:{mode} {f[3]} gas-refused (not in tools/disasm-refusals.json): {gas.stderr.strip().splitlines()[-1][:120] if gas.stderr.strip() else ""}',flush=True)
+        continue
     expected=objdump(obj,mode).get('.text',[])
     status,stdout,stderr=clef_disassemble(obj,mode=mode)
     ours=parse(stdout).get('.text',[]) if status==0 else []
@@ -34,7 +41,10 @@ for index,f,mode,text in witnesses():
         red+=1;print(f'FAIL disasm-table:{index}:{mode} {f[3]} agree={agree} law={law} {row["stderr"]}',flush=True)
         print(f'  source: {text}\n  objdump: {[t for a,t in expected]}\n  clef: {[t for a,t in ours]}\n  bytes: {original} reassembled: {reassembled}',flush=True)
     results.append(row)
+refused={(r['mode'],r['source']) for r in results if r['verdict']=='gas-refused'}
+for mode,text in sorted(pinned-refused):
+    red+=1;print(f'FAIL disasm-table:pin:{mode}:{text} listed as refused in tools/disasm-refusals.json but GNU as assembled it (or the row is gone)',flush=True)
 (out/'rows.json').write_text(json.dumps(results,indent=1)+'\n')
 total=sum(1 for r in results if r['verdict']!='gas-refused')
-print(f'disasm-table: {total-red}/{total} row×mode witnesses agree with objdump and round-trip; {sum(1 for r in results if r["verdict"]=="gas-refused")} refused by GNU as',flush=True)
+print(f'disasm-table: {total-sum(1 for r in results if r["verdict"]=="red")}/{total} row×mode witnesses agree with objdump and round-trip; {len(refused)} refused by GNU as, {len(pinned)} pinned as refused',flush=True)
 raise SystemExit(1 if red else 0)

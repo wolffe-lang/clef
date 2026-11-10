@@ -1,0 +1,35 @@
+{
+ "about": "Table-row witnesses the pinned GNU as 2.42 refuses, by mode and source text. Every other witness must assemble; a new refusal is a red row, a stale entry too.",
+ "refused": [
+  {
+   "mode": 64,
+   "source": "lss (%rax),%rcx",
+   "provenance": "REX.W + 0F B2 /r LSS r64, m16:64",
+   "gnu_as": "operand size mismatch for `lss'"
+  },
+  {
+   "mode": 64,
+   "source": "lfs (%rax),%rcx",
+   "provenance": "REX.W + 0F B4 /r LFS r64, m16:64",
+   "gnu_as": "operand size mismatch for `lfs'"
+  },
+  {
+   "mode": 64,
+   "source": "lgs (%rax),%rcx",
+   "provenance": "REX.W + 0F B5 /r LGS r64, m16:64",
+   "gnu_as": "operand size mismatch for `lgs'"
+  },
+  {
+   "mode": 32,
+   "source": "bound (%eax),%cx",
+   "provenance": "62 /r BOUND r16, m16&16; invalid in 64-bit mode",
+   "gnu_as": "operand size mismatch for `bound'"
+  },
+  {
+   "mode": 32,
+   "source": "bound (%eax),%ecx",
+   "provenance": "62 /r BOUND r32, m32&32; invalid in 64-bit mode",
+   "gnu_as": "operand size mismatch for `bound'"
+  }
+ ]
+}
