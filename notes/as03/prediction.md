@@ -4,7 +4,7 @@ Written 2026-11-09 before any change to clef, at trunk `bc5677bc`. Everything
 below that reads as a measurement was measured with the pinned black-box
 oracle (`objdump` 2.42, package `binutils 2.42-4ubuntu2.10`, binary SHA256
 `325c4205a4c658a9d1e1ebc469ae55975a2b897a3d3c1e79d9b158612d37f745`, in the
-`clef-oracle` container) on 2026-11-09, 18:02–18:13Z, as a hasu light job on
+`clef-oracle` container) on 2026-11-09, 18:02–18:13Z, as a light job on the Linux build host, on
 block C's CPUs 16–17. Everything that reads as a claim about clef after the
 change is a prediction, and the rows below are red until the change lands.
 
@@ -116,7 +116,7 @@ missing gp lines.
 Expected size: about 330 new descriptors for the gp and system classes, taking
 the table from 517 to roughly 850, and about 260 new spellings. The two-byte
 map's SSE entries (146 corpus mnemonics, ~2.4 M lines), the x87 escapes (39
-mnemonics) and every VEX/EVEX form are **not** in this change (see R-as03-2).
+mnemonics) and every VEX/EVEX form are **not** in this change (the split decided at the prediction).
 
 ## 3. The disassembler: shape and policy
 
@@ -190,7 +190,7 @@ report lists every name with its count and one example:
   differ in text (expected zero at the end; any survivor is ruled, not hidden).
 - `length`: the two streams consume different byte counts (expected zero).
 
-Intel syntax (`objdump -M intel`) is not compared (R-as03-1).
+Intel syntax (`objdump -M intel`) is not compared (the output-syntax decision).
 
 ## 4. The law and its rows
 
@@ -235,7 +235,7 @@ the lane host, in either.
   PDF (`55b64951…1dce`, the pinned edition), objdump (the oracle lock's
   package digests; the binary's digest above). Nothing is fetched from a
   release origin during a record.
-- The corpus rows run where the ISO is staged (hasu, `~/lanes/as03/inputs`,
+- The corpus rows run where the ISO is staged (the Linux build host, under the lane's inputs directory,
   as a light job: objdump and clef are single-threaded). In CI they `SKIP`
   loudly with the reason `corpus not staged`, and the hand-back names them as
   hosted-skipped; the table-row disassembly witnesses and the unit rows run
@@ -244,7 +244,7 @@ the lane host, in either.
   `src/decode_test.lu`), `disasm-table` (every row × mode: GNU as's bytes →
   clef's text = objdump's text, and clef's text → clef's bytes = the input),
   `disasm-corpus` (objdump agreement over the corpus), `law` and
-  `disasm-determinism`. The record is one gauntlet at the final head on hasu.
+  `disasm-determinism`. The record is one gauntlet at the final head on the Linux build host.
 - Two plants, each one hunk on its own `as03-plant-*` branch, red by name
   locally: `as03-plant-operand-order` swaps `reg_operand`/`rm_operand` on the
   `0F AF IMUL r32, r/m32` row (red: `disasm-table` row 0F AF, `law:boot/pax`);
@@ -254,9 +254,9 @@ the lane host, in either.
 
 ## 6. Rulings asked (recommendation first; implemented as recommended)
 
-- **R-as03-1 output syntax.** (A) AT&T only, objdump's default spelling, Intel
+- **Output syntax.** (A) AT&T only, objdump's default spelling, Intel
   syntax a later row as R-AS-4 ruled; (B) both from the start. **(A).**
-- **R-as03-2 the split.** The contract allows one at the prediction. (A)
+- **The split.** The contract allows one at the prediction. (A)
   Three changes in order: **as03** (this one) the decoder, the gp and system
   tables completed from the SDM, objdump agreement, the law with the kernel
   and the no-vector binaries green and every residual named by class;
@@ -267,24 +267,24 @@ the lane host, in either.
   change for everything. (C) as03 plus the SSE rows now. **(A)**: the decoder
   and the law are one review; the vector maps are data over the same
   machinery and each is its own measured step.
-- **R-as03-3 the corpus of record.** (A) The newest dev ISO by digest, every
+- **The corpus of record.** (A) The newest dev ISO by digest, every
   ELF64 x86-64 file in it, the external toolchain tail measured but outside the
   100 %; the baseline ISO kept as a comparability row. (B) Only the retained
   79-binary baseline. (C) Build each repo at a pinned commit instead. **(A)**:
   it is what the org ships, it already contains den, burrow and sniff, and a
   later ISO replaces it by changing one digest.
-- **R-as03-4 the round-trip dialect.** (A) GNU as's own pseudo prefixes and
+- **The round-trip dialect.** (A) GNU as's own pseudo prefixes and
   prefix words, learned by clef's assembler, so the law's source is valid gas
   input too. (B) A clef-only encoding hint. (C) Emit `.byte` wherever the
   canonical choice differs. **(A)**.
-- **R-as03-5 `(bad)`.** (A) One byte per refusal, named, with the SDM reason,
+- **`(bad)`.** (A) One byte per refusal, named, with the SDM reason,
   out-of-scope classes named apart from invalid bytes; `.byte` in round-trip
   source. (B) Consume the whole instruction length objdump would. **(A)**: the
   two streams stay in step and the law preserves bytes it does not decode.
-- **R-as03-6 chunking.** (A) 50,000 instructions per assembled chunk, cut on
+- **Chunking.** (A) 50,000 instructions per assembled chunk, cut on
   an instruction boundary, concatenated. (B) Raise clef's statement limit.
   **(A)**: the limit is a stated boundary of the assembler, not of the law.
-- **R-as03-7 objdump text normalization.** (A) Only symbolic decoration and
+- **objdump text normalization.** (A) Only symbolic decoration and
   blank runs, as stated in §3; (B) also mnemonic suffixes. **(A)**.
 
 ## 7. What I expect to be wrong about

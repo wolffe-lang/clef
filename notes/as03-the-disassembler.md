@@ -18,7 +18,7 @@ measured, for the two changes that follow (as03b, as03c).
 
 `3c6291a` recorded the prediction before any decoder code
 (`notes/as03/prediction.md`, `notes/as03/corpus.json`), and `6ae378c` made the
-rows red by name on hasu (`red-6ae378ced55e`: `END disasm-table exit=1`,
+rows red by name on the Linux build host (`red-6ae378ced55e`: `END disasm-table exit=1`,
 `END disasm-corpus exit=1`, `END law exit=1`, 888 FAIL lines).
 
 - **Right: the corpus.** The newest dev ISO by digest holds 139 distinct ELF64
@@ -43,17 +43,17 @@ rows red by name on hasu (`red-6ae378ced55e`: `END disasm-table exit=1`,
   no per-binary row is red; the class counts carry the residual instead), and
   exactly the predicted members decode completely: `pax`, `poweroff`, and the
   three `crt*.o`. Not taken: clef's own `target/clef` and the gate's two corpus
-  programs are not members of the ISO, the corpus of record (R-as03-3), and
+  programs are not members of the ISO, the corpus of record (the corpus-of-record decision), and
   the per-class rows `law-class:<class>` became the counts in `law.json`
   rather than green/red rows: `decoded` is 100 % of the general-purpose and
   system lines (no unforced escape remains), which is what those rows were
   to show.
-- **Missed: three spellings.** The first full `disasm-table` on hasu
+- **Missed: three spellings.** The first full `disasm-table` on the Linux build host
   (`full-98c4d2f73e58`) was red on 13 row×mode witnesses: `monitor` and
   `mwait` printed one operand (the `fixed:%ecx` pattern rendered nothing),
   `xlat` printed its table twice, and `arpl`'s register printed at 8 bits where
-  objdump prints it at the operand size (`arpl %ecx,(%eax)`). The Mac-side
-  oracle cache predated those rows, so the Mac checks could not see them;
+  objdump prints it at the operand size (`arpl %ecx,(%eax)`). The macOS-side
+  oracle cache predated those rows, so the macOS checks could not see them;
   `788f9f8` fixed all three.
 
 ## What was done
@@ -86,7 +86,7 @@ rows red by name on hasu (`red-6ae378ced55e`: `END disasm-table exit=1`,
 
 ## Evidence
 
-Record `full-06c0effd2407` on hasu (head `06c0eff`, the source of the final
+Record `full-06c0effd2407` on the Linux build host (head `06c0eff`, the source of the final
 head; the later commits change only `tools/law`'s scheduling, the probe's
 removal and these notes), every END line:
 
@@ -120,18 +120,18 @@ RECORD-END worst=0 steps=5 end=2026-11-10T01:02:26Z
   on the accumulator; GNU as picks the shorter `05 id` and has no device that
   refuses it. The round-trip source prints those lines as `.byte` with the
   reason; the law holds, and the count is named (1,303 in the kernel, 0.32 %).
-- **R-as03-5, refined.** The named out-of-scope classes consume the whole
+- **`(bad)` at full length (a refinement of the prediction).** The named out-of-scope classes consume the whole
   instruction length instead of one byte, so the two streams stay in step and
-  the law preserves the bytes; invalid bytes stay one byte. Ruled A as refined.
-- **R-as03-7, refined.** objdump prints a symbolized address as bare hex before
+  the law preserves the bytes; invalid bytes stay one byte. Decided as refined.
+- **Normalization of symbolized addresses (a refinement).** objdump prints a symbolized address as bare hex before
   the symbol (`je 40103e <main+0x1e>`, `# 402000 <x>`) and the same number as
   `0x40103e` where no symbol applies. The normalization reads the symbolized
   form as that number: the `<…>` and the bare-hex spelling are one decoration
   from the symbol table, not from the bytes. Nothing else was added to it.
-- **R-as03-6, refined.** The chunk is 2,000 instructions, not 50,000: clef's
+- **The chunk size (a refinement).** The chunk is 2,000 instructions, not 50,000: clef's
   assembler holds about 0.85 MB per source line (a 50,000-line chunk peaked at
   15.6 GiB and a 10,000-line one at 7.8 GiB, measured with `time -l` on the
-  Mac), so 50,000-line chunks died under the 2.5 GiB per-process cap on hasu
+  macOS arm64 host), so 50,000-line chunks died under the 2.5 GiB per-process cap on the Linux build host
   (`full-9262708e6646`: every `.text` "reassembly refused" with "memory
   allocation failed"). The chunk size is the law's, not the assembler's; the
   memory per line is a clef finding handed off below.
@@ -148,7 +148,7 @@ RECORD-END worst=0 steps=5 end=2026-11-10T01:02:26Z
   loads and `bound`'s operand order, "operand size mismatch") and makes any
   other refusal, or a stale pin, a red row by name. Under lupin against the
   cached witnesses the same plant had read 2 rows red, which is how the hole
-  stayed hidden until hasu. Both plants were retaken on the final head.
+  stayed hidden until the Linux build host. Both plants were retaken on the final head.
 - **The law does not see a dropped prefix.** The prefix-dropped plant named
   `law:pax` as a red row and it stayed green (`plant-e0b7bb0bee03`, head
   `b86ae97`: `END disasm-table exit=1` with 342 rows, `END law exit=0`). The
@@ -165,12 +165,12 @@ RECORD-END worst=0 steps=5 end=2026-11-10T01:02:26Z
   trunk refused with `invalid_lock_prefix` and the unit test asserts. A second
   `lock` word is that refusal again. The hosted `ci` run at the same head was
   green because a module PR runs only the planner there; the unit gate runs on
-  the lane host. The Mac checks had not run the unit tests either; they do now
+  the lane host. The macOS checks had not run the unit tests either; they do now
   (every `src/*_test.lu` under lupin before a record is queued).
 - **The second green gauntlet was red on `table`.** `green-da3093fe0a89`
   (head `da3093f`): 11 row×mode differentials, every one a row this change
   added (trunk had none of them), so no regression of trunk's assembler; the
-  table gate had not run on hasu before the full gauntlet. Three kinds:
+  table gate had not run on the Linux build host before the full gauntlet. Three kinds:
   `int $3` (row CD ib) — GNU as encodes it as INT3 `CC`; the selector now does
   the same and the witness takes vector `0x80`. `larq`/`lslq (%rax),%rcx` —
   GNU as emits the r64 forms without REX.W; the rows now carry REX.W 0 and
@@ -183,13 +183,13 @@ RECORD-END worst=0 steps=5 end=2026-11-10T01:02:26Z
   The pinned-refusal list is empty as a result; the mechanism stays. The unit
   test asserts `int $3` and `lar`'s bytes. The whole gate's cheap steps now
   run in a light slot before a block take.
-- **One lock slip.** Early in the lane one `wolf build` ran on the Mac without
+- **One lock slip.** Early in the lane one `wolf build` ran on the macOS arm64 host without
   the build lock (about a second, while another lane held it). Every later
   build went through the lock.
-- **The Mac ran out of memory.** A full-corpus law run on the Mac with eight
+- **The macOS arm64 host ran out of memory.** A full-corpus law run on the macOS arm64 host with eight
   workers exhausted the compressor at 20:50Z on 11-09 and the session restarted.
   The corpus tools now cap every clef process (`--mem`, `CLEF_MEM_GB`) and the
-  full-corpus runs live on hasu; the Mac does single-binary checks at
+  full-corpus runs live on the Linux build host; the macOS arm64 host does single-binary checks at
   `--jobs=2`.
 
 ## Hand-off
