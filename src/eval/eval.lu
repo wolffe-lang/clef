@@ -226,6 +226,7 @@ fn numeric_local(s: str) -> bool {
 fn primary(
     mut cur: Cursor,
     symbols: Map[str, Value],
+    overrides: Map[str, Value],
     location: Value,
     depth: int,
 ) -> Value ! Errors {
@@ -234,13 +235,13 @@ fn primary(
     let word = cur.tokens[cur.pos]
     cur.pos += 1
     if word == "(" {
-        let v = expression(mut cur, symbols, location, 1, depth + 1)?
+        let v = expression(mut cur, symbols, overrides, location, 1, depth + 1)?
         if cur.pos >= cur.tokens.len || cur.tokens[cur.pos] != ")" { return bad_expression }
         cur.pos += 1
         return v
     }
     if word == "+" || word == "-" || word == "~" || word == "!" {
-        let v = primary(mut cur, symbols, location, depth + 1)?
+        let v = primary(mut cur, symbols, overrides, location, depth + 1)?
         if v.section != "ABS" {
             if v.section == "UND" { return unresolved_expression }
             return cross_section_algebra
@@ -256,8 +257,13 @@ fn primary(
         return absolute_number(literal(word)?, true)
     }
     if !name_char(first) { return bad_expression }
-    let found = symbols[word] else {
-        return Value { number: number(0), section: "UND", name: word, known: false }
+    // An override (a versioned .set seen from this use) shadows the symbol table; neither
+    // map is copied, so a lookup costs no allocation beyond the value it returns (clef#25).
+    let found = overrides[word] else {
+        let defined = symbols[word] else {
+            return Value { number: number(0), section: "UND", name: word, known: false }
+        }
+        return copy defined
     }
     copy found
 }
@@ -350,17 +356,18 @@ fn binary(op: str, a: Value, b: Value) -> Value ! Errors {
 fn expression(
     mut cur: Cursor,
     symbols: Map[str, Value],
+    overrides: Map[str, Value],
     location: Value,
     floor: int,
     depth: int,
 ) -> Value ! Errors {
-    var left = primary(mut cur, symbols, location, depth)?
+    var left = primary(mut cur, symbols, overrides, location, depth)?
     while cur.pos < cur.tokens.len {
         let op = cur.tokens[cur.pos]
         let rank = precedence(op)
         if rank < floor { break }
         cur.pos += 1
-        let right = expression(mut cur, symbols, location, rank + 1, depth + 1)?
+        let right = expression(mut cur, symbols, overrides, location, rank + 1, depth + 1)?
         left = binary(op, left, right)?
     }
     left
@@ -368,9 +375,21 @@ fn expression(
 
 /// Evaluate with gas precedence, including the measured comparison/unary-! rows.
 pub fn evaluate(s: str, symbols: Map[str, Value], location: Value) -> Value ! Errors {
+    evaluate_over(s, symbols, Map[str, Value](), location)?
+}
+
+/// Evaluate as `evaluate` does, with `overrides` consulted before `symbols` for each name.
+/// The result equals evaluating against a copy of `symbols` with `overrides` stored into it,
+/// without making that copy: layout evaluates every operand against the whole symbol table.
+pub fn evaluate_over(
+    s: str,
+    symbols: Map[str, Value],
+    overrides: Map[str, Value],
+    location: Value,
+) -> Value ! Errors {
     var cur = Cursor { tokens: tokens(s)?, pos: 0 }
     if cur.tokens.len == 0 { return bad_expression }
-    let value = expression(mut cur, symbols, location, 1, 0)?
+    let value = expression(mut cur, symbols, overrides, location, 1, 0)?
     if cur.pos != cur.tokens.len { return bad_expression }
     value
 }

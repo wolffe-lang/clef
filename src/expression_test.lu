@@ -105,6 +105,21 @@ fn main() -> int ! {
             !rel.known &&
             eval.signed(rel.number)? == 4,
     )
+    // Overrides shadow the table and leave it untouched; no copy of it is made (clef#25).
+    var overrides = Map[str, eval.Value]()
+    overrides["end"] = eval.section_value(".text", "end", 40)
+    let shadowed = eval.evaluate_over("end-begin", symbols, overrides, eval.absolute(0))?
+    assert(shadowed.section == "ABS" && eval.signed(shadowed.number)? == 36)
+    let through = eval.evaluate_over("data+1", symbols, overrides, eval.absolute(0))?
+    assert(
+        through.section == ".data" && through.name == "data" && eval.signed(through.number)? == 1,
+    )
+    let absent = eval.evaluate_over("absent", symbols, overrides, eval.absolute(0))?
+    assert(absent.section == "UND" && absent.name == "absent" && !absent.known)
+    let unshadowed = eval.evaluate("end-begin", symbols, eval.absolute(0))?
+    assert(eval.signed(unshadowed.number)? == 23)
+    let none = eval.evaluate_over("end-begin", symbols, Map[str, eval.Value](), eval.absolute(0))?
+    assert(eval.signed(none.number)? == 23)
     for s in ["data-begin", "begin+end", "begin*2", "-begin"] {
         var refused = false
         let _ = eval.evaluate(s, symbols, eval.absolute(0)) else {
