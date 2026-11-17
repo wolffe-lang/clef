@@ -227,6 +227,18 @@ change an earlier definition's dependency. Forward references resolve to the
 appropriate first definition. Each location counter is tied to its definition
 site, and selection-time availability is distinct from the final numeric value.
 
+Layout's memory does not multiply a table by the source. Every pass evaluates
+each operand and directive expression against the pass's symbol table in place:
+the versioned `.set` names an expression reads are resolved first into a small
+override map that shadows the table (`eval.evaluate_over`), and the table is
+never copied per expression. Encoding selection looks a spelling up in an alias
+index built once per assembly (`x86table.alias_index`, `machine.choose_in`),
+never the whole alias table per instruction. The native machine frees nothing
+an assembly allocates until it ends, so a table rebuilt per expression or per
+instruction, in every pass, made memory grow with expressions times symbols and
+with instructions times the 670 alias rows. The `memory` gate
+(`tools/memory-test`) bounds both under a 2 GiB address-space cap.
+
 Limits are explicit: 100,000 expanded statements, macro depth 32, expression
 depth 128, `.set` dependency depth 256, and 64 layout passes plus one per
 relaxable jump (growth alone ends relaxation). Serialized objects

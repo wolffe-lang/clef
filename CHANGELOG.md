@@ -4,6 +4,18 @@
 
 ### Fixed
 
+- Assembly memory no longer grows with expressions times symbols, nor by the
+  whole alias table per instruction (clef#25). Layout evaluated every operand
+  and directive expression against a fresh copy of the symbol table, and chose
+  every instruction's encoding through `x86table.alias`, which built all 670
+  alias rows to find one; nothing either made was freed before the assembly
+  ended, and both ran again in every layout pass. A compiler's 270 KB source
+  (fenrir's numeric matrix, 12,977 instructions) aborted after 6 GiB, and
+  clef#25's 3,000 labels between byte directives aborted under 2 GiB.
+  Expressions now read the versioned `.set` names they use as overrides beside
+  the table (`eval.evaluate_over`), and layout looks spellings up in an index
+  built once per assembly (`x86table.alias_index`, `machine.choose_in`). Both
+  sources now assemble well under 2 GiB, and output bytes are unchanged.
 - Layout converges when direct jumps' short and long forms depend on each other
   (clef#21). Every same-section `jmp` and `jcc` starts short and grows only
   when its rel8 displacement no longer fits; a grown jump never shrinks.
@@ -17,6 +29,11 @@
   assembles.
 
 ### Added
+
+- `tools/memory-test`, the `memory` gate: generated sources under a 2 GiB
+  address-space cap, each compared with GNU as, with a bound on the
+  assembler's own peak RSS, and a linear-growth row for each instruction
+  family.
 
 - `clef --disassemble FILE`, a disassembler over the encoder's own table
   (`src/decode/`): every `SHF_EXECINSTR` section in the pinned objdump 2.42's

@@ -36,12 +36,14 @@ CLEF_ENGINE=docker tools/in-container tools/gate
 # CLEF_ENGINE=podman is the default.
 ```
 
-The **35 gates** check formatting, warning-denied builds, six compiled native
+The **41 gates** check formatting, warning-denied builds, six compiled native
 logic programs, checked/lupin execution, all source statements, expression and
 macro differentials, the ELF writer, instruction-table rows, layout/refusals,
-mutually dependent jump relaxation, the complete assembler corpus, padding/LOCK
-differentials, word-port rows and fenrir's compiler instruction envelope. Results are written to
-`target/evidence/`; the executable is `target/clef`.
+mutually dependent jump relaxation, assembly memory under a hard cap, the
+complete assembler corpus, padding/LOCK differentials, word-port rows,
+fenrir's compiler instruction envelope and the disassembler's table, corpus and
+round-trip law. Results are written to `target/evidence/`; the executable is
+`target/clef`.
 
 ```sh
 printf 'movq $4096, %%rsp\nret\n' > example.S
@@ -92,6 +94,13 @@ See [EXPAND](docs/EXPAND.md) for the expansion contract and
   rule against GNU as's own short and long choices. The largest case, 202 jumps
   that grow one per pass, finishes in 204 passes, within its bound of 206. See
   [FORMATS](docs/FORMATS.md).
+* Assembly memory no longer grows with expressions times symbols or
+  instructions times a table. The `memory` gate assembles generated sources
+  under a 2 GiB address-space cap, compares each with GNU as and bounds the
+  assembler's own peak RSS: labels interleaved with byte directives (clef#25),
+  register-only instructions, and compiler-shaped blocks of labels, memory
+  operands and jumps. Four times the instructions may take at most eight times
+  the memory above an empty source's. See [FORMATS](docs/FORMATS.md).
 * 128 word-port encoding rows (IN/OUT word forms and GNU as's implicit port
   spellings in both modes, `xorq` in 64-bit mode) match GNU as byte for byte.
   111 refusals are named; 34 of them are spellings GNU as accepts that clef
