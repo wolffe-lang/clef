@@ -5384,6 +5384,28 @@ pub fn alias(mnemonic: str) -> Alias ! {unknown_form} {
     unknown_form
 }
 
+fn indexed(index: Map[str, Alias], spelling: str) -> bool {
+    let _ = index[spelling] else { return false }
+    true
+}
+
+/// Every alias by spelling, the first row winning as in `alias`. Build it once per assembly
+/// and look up with `alias_in`: `aliases()` builds the whole list on every call, and layout
+/// selects every instruction in every pass.
+pub fn alias_index() -> Map[str, Alias] {
+    var index = Map[str, Alias]()
+    for a in aliases() {
+        if !indexed(index, a.spelling) { index[a.spelling] = a }
+    }
+    index
+}
+
+/// `alias` against an index from `alias_index`, without rebuilding the table.
+pub fn alias_in(index: Map[str, Alias], mnemonic: str) -> Alias ! {unknown_form} {
+    let a = index[mnemonic] else { return unknown_form }
+    copy a
+}
+
 /// Normalize an explicit spelling without silently accepting an unknown suffix.
 pub fn canonical(mnemonic: str) -> (str, int) ! {unknown_form} {
     let a = alias(mnemonic)?
