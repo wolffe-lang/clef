@@ -55,11 +55,12 @@ fn symbol_value(symbols: Map[str, eval.Value], name: str) -> eval.Value {
 fn evaluate(
     text: str,
     symbols: Map[str, eval.Value],
+    overrides: Map[str, eval.Value],
     dot: eval.Value,
     origin: lex.Origin,
     final: bool,
 ) -> eval.Value ! Errors {
-    eval.evaluate(text, symbols, dot) else |e| match e {
+    eval.evaluate_over(text, symbols, overrides, dot) else |e| match e {
         unresolved_expression => {
             if final { return Assembly(failure(origin, "unresolved_expression {text}: GNU as §6")) }
             eval.Value { number: eval.number(0), section: "PENDING", name: text, known: false }
@@ -883,11 +884,14 @@ fn version_value(
             known: false,
         }
     }
-    var context = copy symbols
+    // Only the versioned .set names this expression reads are resolved here; every other name
+    // is read from `symbols` in place. Copying the table per expression made layout's memory
+    // grow with expressions times symbols (clef#25).
+    var overrides = Map[str, eval.Value]()
     for name in names_in(node.arguments[1]) {
         let version = set_version(prepared, name, index)
         if version >= 0 {
-            context[name] = version_value(
+            overrides[name] = version_value(
                 prepared,
                 version,
                 use_at,
@@ -899,7 +903,7 @@ fn version_value(
             )?
         }
     }
-    var value = evaluate(node.arguments[1], context, dot, node.origin, final)?
+    var value = evaluate(node.arguments[1], symbols, overrides, dot, node.origin, final)?
     value.known = value.known && index <= use_at
     if value.section != "UND" && value.section != "PENDING" { value.name = node.arguments[0] }
     value
@@ -913,11 +917,13 @@ fn at_value(
     old_dots: List[eval.Value],
     final: bool,
 ) -> eval.Value ! Errors {
-    var context = copy pass.symbols
+    // The versioned .set names this operand reads shadow the pass's table; the table itself is
+    // never copied (clef#25).
+    var overrides = Map[str, eval.Value]()
     for name in names_in(text) {
         let version = set_version(prepared, name, ordinal)
         if version >= 0 {
-            context[name] = version_value(
+            overrides[name] = version_value(
                 prepared,
                 version,
                 ordinal,
@@ -934,5 +940,5 @@ fn at_value(
         "",
         pass.sections[pass.current].size,
     )
-    evaluate(text, context, dot, prepared.nodes[ordinal].origin, final)?
+    evaluate(text, pass.symbols, overrides, dot, prepared.nodes[ordinal].origin, final)?
 }
