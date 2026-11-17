@@ -1,0 +1,152 @@
+#!/usr/bin/env python3
+"""Assembler memory: generated sources under a hard address-space cap (clef#25).
+
+Each row assembles a generated source with target/clef in a child limited by
+RLIMIT_AS, reads that child's own peak RSS from wait4 (never RUSAGE_CHILDREN),
+and compares sections, relocations and structural symbols with the pinned GNU
+as. A row fails by name, `FAIL <row> <reason>`, when clef exits nonzero under
+the cap, differs from GNU as, or peaks above the row's bound.
+
+The families:
+- interleaved-N: clef#25's reproducer, N labels each followed by `.byte 120`.
+  Every directive operand is an expression evaluated against the symbol table.
+- registers-N: N register-only instructions, no labels and no expressions; it
+  isolates the per-instruction cost of choosing an encoding.
+- operands-N: N blocks shaped like a compiler's output: a label, memory and
+  immediate operands, a backward branch, a RIP-relative label operand and a
+  forward jump. Both costs at once.
+
+Growth rows compare the two sizes of the instruction families, four times
+apart: the bytes above the empty source's peak may grow at most GROWTH times.
+Linear memory grows four times; memory proportional to instructions times a
+table, or expressions times symbols, grows sixteen. The interleaved family has
+no growth row: with the copy gone its memory still grows about seven times at
+four times the pairs, a residual this change does not explain; its two size
+rows bound it instead.
+
+The measuring parent's own peak is printed beside each row.
+"""
+import json
+import os
+import pathlib
+import resource
+import subprocess
+import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from elf import ELF, differences  # noqa: E402
+
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+OUT = ROOT / 'target/evidence/memory'
+CLEF = ROOT / 'target/clef'
+MIB = 1 << 20
+# The cap every row runs under: the 2 GiB every linked program's tools get in fenrir's gates.
+CAP = 2048 * MIB
+CPU_SECONDS = 120
+GROWTH = 8
+
+
+def interleaved(n):
+    return '.section .rodata\n' + ''.join(f'datum_{i}:\n.byte 120\n' for i in range(n))
+
+
+def registers(n):
+    return '.text\n' + 'addq %rcx, %rax\n' * n
+
+
+def operands(n):
+    lines = ['.text']
+    for i in range(n):
+        lines += [f'.Lb{i}:', 'movq -8(%rbp), %rax', 'cmpq $5, %rax', f'jl .Lb{i}',
+                  f'leaq .Lb{i}(%rip), %rcx', f'jmp .Lb{i + 1}']
+    lines += [f'.Lb{n}:', 'ret']
+    return '\n'.join(lines) + '\n'
+
+
+# (row, family, size, source, bound on the child's peak RSS). Each bound is about twice the peak
+# measured with the fix and far under trunk's: there the table copy per expression and the alias
+# table per instruction took 143 MB at 750 pairs, 1.2 GB at 2,000 register instructions and 1.8 GB
+# at 500 blocks, and the larger sizes aborted.
+ROWS = [
+    ('empty', 'empty', 0, '.text\nret\n', 32 * MIB),
+    ('interleaved-750', 'interleaved', 750, interleaved(750), 64 * MIB),
+    ('interleaved-3000', 'interleaved', 3000, interleaved(3000), 128 * MIB),
+    ('registers-2000', 'registers', 2000, registers(2000), 256 * MIB),
+    ('registers-8000', 'registers', 8000, registers(8000), 768 * MIB),
+    ('operands-500', 'operands', 500, operands(500), 320 * MIB),
+    ('operands-2000', 'operands', 2000, operands(2000), 1024 * MIB),
+]
+
+
+def capped():
+    resource.setrlimit(resource.RLIMIT_AS, (CAP, CAP))
+    resource.setrlimit(resource.RLIMIT_CPU, (CPU_SECONDS, CPU_SECONDS))
+    resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
+
+
+def measure(argv, stem):
+    floor = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024
+    with stem.with_suffix('.stderr').open('wb') as err:
+        child = subprocess.Popen([str(a) for a in argv], stdout=subprocess.DEVNULL, stderr=err, preexec_fn=capped)
+        _, status, usage = os.wait4(child.pid, 0)
+    return {'status': os.waitstatus_to_exitcode(status), 'peak_rss': usage.ru_maxrss * 1024,
+            'cpu_seconds': round(usage.ru_utime + usage.ru_stime, 3), 'parent_floor': floor,
+            'stderr': stem.with_suffix('.stderr').read_text(errors='replace')[:300]}
+
+
+def main():
+    OUT.mkdir(parents=True, exist_ok=True)
+    results, failed = {}, []
+    for name, family, size, source, bound in ROWS:
+        stem = OUT / name
+        src, gas_o, clef_o = stem.with_suffix('.s'), stem.with_suffix('.gas.o'), stem.with_suffix('.clef.o')
+        src.write_text(source, encoding='ascii')
+        for path in (gas_o, clef_o):
+            path.unlink(missing_ok=True)
+        gas = subprocess.run(['as', '--64', str(src), '-o', str(gas_o)], capture_output=True, text=True, timeout=120)
+        row = measure([CLEF, '--64', '-o', clef_o, src], stem)
+        row.update(name=name, family=family, size=size, bound=bound, cap=CAP, gas_status=gas.returncode,
+                   source_bytes=len(source))
+        reason = None
+        if gas.returncode != 0:
+            reason = 'oracle refused: ' + gas.stderr.strip()[:200]
+        elif row['status'] != 0:
+            reason = f"clef status {row['status']} under a {CAP // MIB} MiB address-space cap: {row['stderr'].strip()[:200]}"
+        else:
+            row['differences'] = differences(ELF(gas_o), ELF(clef_o))
+            if row['differences']:
+                reason = 'differs from GNU as: ' + json.dumps(row['differences'])[:200]
+            elif row['peak_rss'] > bound:
+                reason = f"peak RSS {row['peak_rss']} bytes above the bound {bound}"
+        row['pass'] = reason is None
+        results[name] = row
+        print(f"{'PASS' if reason is None else 'FAIL'} {name}" + (f' {reason}' if reason else '')
+              + f" peak_rss={row['peak_rss']} cpu={row['cpu_seconds']}s parent_floor={row['parent_floor']}",
+              flush=True)
+        if reason:
+            failed.append(name)
+    base = results['empty']['peak_rss'] if results['empty']['pass'] else None
+    for family in ('registers', 'operands'):
+        small, large = [results[row[0]] for row in ROWS if row[1] == family]
+        name = f'growth-{family}'
+        if base is None or not (small['pass'] and large['pass']):
+            reason = 'not measured: a size row failed'
+        else:
+            grown = (large['peak_rss'] - base) / max(small['peak_rss'] - base, MIB)
+            results[name] = {'name': name, 'small': small['size'], 'large': large['size'], 'ratio': round(grown, 2),
+                             'bytes_per_element': round((large['peak_rss'] - base) / large['size'])}
+            reason = None if grown <= GROWTH else (f'{large["size"]} grew {grown:.1f} times {small["size"]}\'s '
+                                                   f'bytes above the empty source; the bound is {GROWTH}')
+            results[name]['pass'] = reason is None
+        print(f"{'PASS' if reason is None else 'FAIL'} {name}" + (f' {reason}' if reason else '')
+              + (f" ratio={results[name]['ratio']} bytes_per_element={results[name]['bytes_per_element']}"
+                 if name in results else ''), flush=True)
+        if reason:
+            failed.append(name)
+    (OUT / 'memory.json').write_text(json.dumps(results, indent=2, sort_keys=True) + '\n')
+    print(f'memory: {len(ROWS) + 2} rows, {len(failed)} failed', flush=True)
+    return 1 if failed else 0
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())
