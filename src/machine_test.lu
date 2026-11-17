@@ -38,6 +38,11 @@ fn encode(forms: List[x86table.Form], text: str, mode: int) -> machine.Encoded !
     machine.emit(form, node, mode, values, known)?
 }
 
+fn indexed(aliases: Map[str, x86table.Alias], spelling: str) -> bool {
+    let _ = x86table.alias_in(aliases, spelling) else { return false }
+    true
+}
+
 fn main() -> int ! {
     Syntax(lex.Failure),
     bad_operands,
@@ -107,6 +112,31 @@ fn main() -> int ! {
         let bare = encode(forms, "out %al,%dx", mode)?
         assert(bare.data.len == 1 && bare.data[0] == 238 as byte)
     }
+    // One alias index per assembly: a lookup is the first row of its spelling, as the scan's.
+    let aliases = x86table.alias_index()
+    for spelling in ["addq", "jl", "movabsq", "leaq", "sysretl", "inw"] {
+        let a = x86table.alias_in(aliases, spelling)?
+        let b = x86table.alias(spelling)?
+        assert(
+            a.family == b.family &&
+                a.bits == b.bits &&
+                a.source_bits == b.source_bits &&
+                a.role == b.role &&
+                a.citation == b.citation,
+        )
+    }
+    assert(!indexed(aliases, "addz") && !indexed(aliases, ""))
+    let rows = lex.source("cmpq $5,%rax", "instruction.S")?
+    let node = dialect.statement(rows[0])?
+    let values = [eval.absolute(5), eval.absolute(0)]
+    let known = [true, true]
+    let scanned = machine.choose(forms, node, 64, values, known, false)?
+    let looked = machine.choose_in(forms, aliases, node, 64, values, known, false)?
+    assert(
+        scanned.citation == looked.citation &&
+            scanned.role == looked.role &&
+            scanned.bits == looked.bits,
+    )
     let xorq = encode(forms, "xorq %rax,%rax", 64)?
     assert(xorq.data.len == 3 && xorq.data[0] == 72 as byte && xorq.data[1] == 49 as byte)
     assert(xorq.data[2] == 192 as byte)

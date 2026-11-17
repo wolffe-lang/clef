@@ -173,6 +173,33 @@ pub fn choose(
     short_branch: bool,
 ) -> x86table.Form ! Errors {
     let alias = x86table.alias(node.name)?
+    choose_from(forms, alias, node, mode, values, known, short_branch)?
+}
+
+/// `choose` with the spelling looked up in an `x86table.alias_index`, built once by the
+/// caller: layout selects every instruction in every pass.
+pub fn choose_in(
+    forms: List[x86table.Form],
+    aliases: Map[str, x86table.Alias],
+    node: dialect.Node,
+    mode: int,
+    values: List[eval.Value],
+    known: List[bool],
+    short_branch: bool,
+) -> x86table.Form ! Errors {
+    let alias = x86table.alias_in(aliases, node.name)?
+    choose_from(forms, alias, node, mode, values, known, short_branch)?
+}
+
+fn choose_from(
+    forms: List[x86table.Form],
+    alias: x86table.Alias,
+    node: dialect.Node,
+    mode: int,
+    values: List[eval.Value],
+    known: List[bool],
+    short_branch: bool,
+) -> x86table.Form ! Errors {
     var family = alias.family
     var bits = alias.bits
     var role = alias.role
