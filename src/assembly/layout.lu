@@ -393,6 +393,7 @@ fn short_fits(
 fn run_pass(
     prepared: Prepared,
     forms: List[x86table.Form],
+    aliases: Map[str, x86table.Alias],
     old: Map[str, eval.Value],
     old_lengths: List[int],
     old_selected: List[List[bool]],
@@ -477,7 +478,15 @@ fn run_pass(
             if branch && forced_width(node) == 4 { short = false }
             if branch && forced_width(node) == 1 { short = true }
             wide = branch && !short
-            let form = machine.choose(forms, node, pass.mode, values, selected, short) else |e| {
+            let form = machine.choose_in(
+                forms,
+                aliases,
+                node,
+                pass.mode,
+                values,
+                selected,
+                short,
+            ) else |e| {
                 return Assembly(
                     failure(node.origin, "{e}: {node.name}; SDM vol.2 instruction encoding table"),
                 )
@@ -760,9 +769,11 @@ pub fn assemble_options(text: str, file: str, with_provenance: bool) -> Result !
             ),
         )
     }
+    let aliases = x86table.alias_index()
     let discovered = run_pass(
         prepared,
         forms,
+        aliases,
         Map[str, eval.Value](),
         [],
         [],
@@ -775,6 +786,7 @@ pub fn assemble_options(text: str, file: str, with_provenance: bool) -> Result !
     var previous = run_pass(
         prepared,
         forms,
+        aliases,
         discovered.symbols,
         discovered.lengths,
         discovered.selected,
@@ -793,6 +805,7 @@ pub fn assemble_options(text: str, file: str, with_provenance: bool) -> Result !
         var next = run_pass(
             prepared,
             forms,
+            aliases,
             previous.symbols,
             previous.lengths,
             previous.selected,
@@ -818,6 +831,7 @@ pub fn assemble_options(text: str, file: str, with_provenance: bool) -> Result !
     var final = run_pass(
         prepared,
         forms,
+        aliases,
         previous.symbols,
         previous.lengths,
         previous.selected,
