@@ -19,9 +19,14 @@ SHA256: `55b64951731ef661f8a7922b665e649715e3b3a7db06e4ff15158b875ccd1dce`.
   JMP p.3-563, LEA p.3-605, each instruction's opcode table.
 * Volume 2B §4.3: MOV p.4-35, POP p.4-396, PUSH p.4-520,
   RET p.4-566, SYSCALL p.4-695, each instruction's opcode table.
+* The scalar-double forms: Volume 2A §3.3 ADDSD p.3-40, CVTSI2SD p.3-302,
+  CVTTSD2SI p.3-320, DIVSD p.3-340; Volume 2B §4.3 MOVD/MOVQ p.4-62, MOVSD
+  p.4-116, MULSD p.4-156, SQRTSD p.4-663, SUBSD p.4-689, UCOMISD p.4-725;
+  Volume 2D §6.1 XORPD p.6-42; and Volume 2A §2.1.1 and §2.2.1 for mandatory
+  prefixes and their place before REX.
 
 `src/x86table/rows.lu` attaches the volume, section, page, and individual opcode
-row to all 312 encoding descriptors; the earlier worked proof remains under
+row to all 861 encoding descriptors; the earlier worked proof remains under
 `src/table/`. Decimal opcode fields in the data are byte values, not a
 second instruction database. The PDF itself is not vendored or modified.
 
