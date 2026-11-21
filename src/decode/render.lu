@@ -274,7 +274,7 @@ fn render(idx: Index, f: x86table.Form, mut d: Decoded, mode: int, address: int,
         } else if p == "xmm128" {
             text = "%xmm{fl.reg + 8 * fl.rex_r}"
             any_register = true
-        } else if p == "xmmrm128" {
+        } else if p == "xmmrm128" || p == "xmmrm64" {
             if fl.modbits == 3 {
                 text = "%xmm{fl.rm + 8 * fl.rex_b}"
                 any_register = true
@@ -370,6 +370,12 @@ fn mnemonic(idx: Index, f: x86table.Form, d: Decoded, mode: int, any_register: b
     }
     if mode == 64 && (fam == "sysexit" || fam == "sysret") && !f.rex_w { return fam + "l" }
     if f.role.starts_with("seg_") { return fam }
+    // CVTSI2SD names its integer width only for a memory source in 64-bit code (objdump 2.42): a
+    // register sizes it, the XMM destination does not, and 32-bit code has the one width.
+    if fam == "cvtsi2sd" {
+        let memory = d.modrm >= 0 && d.modrm / 64 != 3
+        return if mode == 64 && memory then fam + suffix_letter(f.bits) else fam
+    }
     if f.bits == 0 || any_register { return fam }
     let widths = idx.widths[fam] else 0
     if widths < 2 { return fam }
@@ -451,7 +457,9 @@ pub fn roundtrip(idx: Index, bytes: List[byte], d: Decoded, mode: int) -> str {
         ) {
         (mut words).push("{{load}}")
     }
-    if f.role == "reg_rm" && fl.modbits == 3 && f.family == "xchg" { (mut words).push("{{store}}") }
+    if f.role == "reg_rm" && fl.modbits == 3 && (f.family == "xchg" || f.family == "movsd") {
+        (mut words).push("{{store}}")
+    }
     if (f.role == "imm_rm" || f.role == "imm_acc" || f.role == "imm" && f.family == "push") &&
         d.imm_width > 1 &&
         f.bits > 8 {
@@ -552,6 +560,8 @@ fn verify(idx: Index, line: str, mode: int, bytes: List[byte], d: Decoded) -> bo
     if rows.len != 1 { return false }
     var node = dialect.statement(rows[0]) else { return false }
     if node.kind != "instruction" { return false }
+    // A statement the assembler refuses by name (the scalar-double rules) never round-trips.
+    if machine.refusal(node, mode).len > 0 { return false }
     var values = List[eval.Value]()
     var known = List[bool]()
     let here = eval.section_value(".text", "", 0)
