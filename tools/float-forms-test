@@ -333,6 +333,7 @@ for name, hexbytes, expect, escape, mode in [
         ('67 before F2', '67 f2 0f 10 00', 'decoded', False, 64),
         ('67 after F2', 'f2 67 0f 10 00', 'decoded', True, 64),
         ('rex.W ucomisd', '66 48 0f 2e c1', 'decoded', False, 64),
+        ('unused W beside a used B', 'f2 49 0f 58 c1', 'decoded', False, 64),
         ('cvtsi2sd r32', 'f2 0f 2a c0', 'decoded', False, 64),
         ('cvtsi2sdq m64', 'f2 48 0f 2a 00', 'decoded', False, 64),
         ('cvtsi2sdl m32', 'f2 0f 2a 00', 'decoded', False, 64),
