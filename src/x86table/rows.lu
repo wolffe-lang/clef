@@ -162,7 +162,7 @@ pub fn source() -> List[str] {
         "2B|4.3 SQRTSD|4-663|F2 0F 51/r SQRTSD xmm1,xmm2/m64|sqrtsd|rm_reg|64|32,64|15,81|-1|242|0|0|1|0|-1|-1|mandatory-prefix|unique-role|SSE2|xmmrm64,xmm128|none|none",
         "2B|4.3 UCOMISD|4-725|66 0F 2E /r UCOMISD xmm1, xmm2/m64; 66 mandatory|ucomisd|rm_reg|64|32,64|15,46|-1|102|0|0|1|0|-1|-1|mandatory-prefix|unique-role|SSE2|xmmrm64,xmm128|none|none",
         "2A|3.3 CVTSI2SD|3-302|F2 0F 2A /r CVTSI2SD xmm1, r32/m32|cvtsi2sd|rm_reg|32|32,64|15,42|-1|242|0|0|1|0|-1|-1|mandatory-prefix|unique-role|SSE2|rm32,xmm128|none|none",
-        "2A|3.3 CVTSI2SD|3-302|F2 REX.W 0F 2A /r CVTSI2SD xmm1, r/m64|cvtsi2sd|rm_reg|64|64|15,42|-1|242|1|0|1|0|-1|-1|mandatory-prefix|unique-role|SSE2|rm64,xmm128|none|none",
+        "2A|3.3 CVTSI2SD|3-302|F2 REX.W 0F 2A /r CVTSI2SD xmm1, r/m64|cvtsi2sd|rm_reg|64|64|15,42|-1|242|0|0|1|0|-1|-1|mandatory-prefix|unique-role|SSE2|rm64,xmm128|none|none",
         "2A|3.3 CVTTSD2SI|3-320|F2 0F 2C /r CVTTSD2SI r32, xmm1/m64|cvttsd2si|rm_reg|32|32,64|15,44|-1|242|0|0|1|0|-1|-1|mandatory-prefix|unique-role|SSE2|xmmrm64,r32|none|none",
         "2A|3.3 CVTTSD2SI|3-320|F2 REX.W 0F 2C /r CVTTSD2SI r64, xmm1/m64|cvttsd2si|rm_reg|64|64|15,44|-1|242|1|0|1|0|-1|-1|mandatory-prefix|unique-role|SSE2|xmmrm64,r64|none|none",
         "2D|6.1 XORPD|6-42|66 0F 57/r XORPD xmm1, xmm2/m128; 66 mandatory|xorpd|rm_reg|128|32,64|15,87|-1|102|0|0|1|0|-1|-1|mandatory-prefix|unique-role|SSE2|xmmrm128,xmm128|none|none",
