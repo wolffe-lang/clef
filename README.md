@@ -41,8 +41,8 @@ logic programs, checked/lupin execution, all source statements, expression and
 macro differentials, the ELF writer, instruction-table rows, layout/refusals,
 mutually dependent jump relaxation, assembly memory under a hard cap, the
 complete assembler corpus, padding/LOCK differentials, word-port rows,
-fenrir's compiler instruction envelope and the disassembler's table, corpus and
-round-trip law. Results are written to `target/evidence/`; the executable is
+fenrir's compiler instruction envelope and scalar-double forms, and the
+disassembler's table, corpus and round-trip law. Results are written to `target/evidence/`; the executable is
 `target/clef`.
 
 ```sh
@@ -73,9 +73,11 @@ See [EXPAND](docs/EXPAND.md) for the expansion contract and
 
 ## Measurements and boundaries
 
-* 886 generated row-by-mode byte comparisons cover all 517 SDM-provenanced
-  encoding descriptors. Some descriptors describe alternatives or widths beyond
-  the accepted census spellings; they are not a promise of full ISA support.
+* 1,448 generated row-by-mode byte comparisons cover 854 of the 861
+  SDM-provenanced encoding descriptors; the other seven are decode-only rows
+  that GNU as has no spelling for. Some descriptors describe alternatives or
+  widths beyond the accepted census spellings; they are not a promise of full
+  ISA support.
 * Fenrir's pinned 640-form integer census covers flag-condition jumps, SETcc,
   CMOVcc, multiply/divide, extending moves, shifts, TEST and accumulator sign
   extension. Its differential also checks addressing, illegal operands,
@@ -83,6 +85,16 @@ See [EXPAND](docs/EXPAND.md) for the expansion contract and
   immediate is an explicitly checked GNU-as/clef deviation: clef retains its
   named narrow-relocation refusal. No census form needs that deviation.
   See `census/fenrir-forms/` and [FORMATS](docs/FORMATS.md).
+* Fenrir's scalar-double census, 45 forms of its planned float tranche and 4
+  anticipated moves between XMM and 64-bit general registers, matches GNU as
+  in sections, relocations and structural symbols and reads back through the
+  disassembler: MOVSD, ADDSD, SUBSD, MULSD, DIVSD, SQRTSD, UCOMISD, CVTSI2SD,
+  CVTTSD2SI, XORPD and MOVQ, with register, memory and `%rip`-relative
+  operands. 275 boundary rows add addressing, 32-bit code, a linked float
+  program, refusals and decoder corners. Five kinds of input GNU as accepts
+  are refused by name, among them `cvtsi2sd` from memory with no suffix in 64-bit
+  code, where GNU as silently converts 32 bits. See
+  `census/fenrir-float-forms/` and [FORMATS](docs/FORMATS.md#compiler-scalar-double-forms).
 * All 43 original and expanded sources match pinned GNU as. Every source is
   assembled twice to check determinism. No x86 census source is waived.
 * 191 layout/boundary controls, ten named source refusals, five additional CLI
@@ -120,15 +132,16 @@ See [EXPAND](docs/EXPAND.md) for the expansion contract and
   from the same encoding rows, in the pinned objdump 2.42's AT&T spelling, with
   `--expand` for the encoding fields and their SDM provenance and `--roundtrip`
   for GNU as source that clef assembles back to the same bytes. Every table
-  row's witness reads back (886 rows in both modes), and the round-trip law
+  row's witness reads back (1,448 rows in both modes), and the round-trip law
   `assemble(disassemble(bytes)) == bytes` holds over every x86-64 binary the
-  org builds; the legacy SSE, x87, VEX and EVEX classes are named `(bad)`
+  org builds; the legacy SSE classes other than the scalar-double rows, x87,
+  VEX and EVEX are named `(bad)`
   refusals of their full length and round-trip as `.byte`, measured per class in
   [FORMATS](docs/FORMATS.md#the-decoder). The earlier retained instrument's
   result is in [ROUNDTRIP](docs/ROUNDTRIP.md).
 
-The disassembler decodes the general-purpose and system instructions; the
-vector classes are decoded by later changes. There is no Intel-syntax dialect,
+The disassembler decodes the general-purpose and system instructions and the
+SSE2 scalar-double rows; the other vector classes are decoded by later changes. There is no Intel-syntax dialect,
 C preprocessor, sealed-dialect policy, AArch64 encoder or compiler
 inline-assembly protocol yet. The ELF writer
 rejects unsupported section/relocation features such as COMDAT and TLS.
