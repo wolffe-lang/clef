@@ -322,6 +322,8 @@ fn render(idx: Index, f: x86table.Form, mut d: Decoded, mode: int, address: int,
     d.operands = operands
     d.comment = comment
     d.mnemonic = mnemonic(idx, f, d, mode, any_register)
+    // objdump names a REX byte the scalar-double rows do not use (`rex.W addsd`, `rex addsd`).
+    if f.guard.contains("mandatory-prefix") && d.rex != 0 { d.rex_word = rex_unused(f, d) }
 }
 
 fn signed_of(v: u64, bits: int) -> int {
