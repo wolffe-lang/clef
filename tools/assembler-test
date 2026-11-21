@@ -71,3 +71,4 @@ if passed != 43 or len(rows) != 43:
 subprocess.run([str(ROOT/'tools/directives-test')], check=True)
 
 subprocess.run([str(ROOT/"tools/compiler-forms-test")], check=True)
+subprocess.run([str(ROOT/"tools/float-forms-test")], check=True)
