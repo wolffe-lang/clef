@@ -1,0 +1,348 @@
+{
+ "generator_sha256": "849e06dd094f180bd60848268b3844cfad9a1e2d02db466687658f841194e814",
+ "forms": [
+  {
+   "id": "form-0000",
+   "group": "scalar-move",
+   "sample": "movsd %xmm1, %xmm0",
+   "sdm": "2B MOVSD: F2 0F 10 /r, F2 0F 11 /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0001",
+   "group": "scalar-move",
+   "sample": "movsd -16(%rbp), %xmm0",
+   "sdm": "2B MOVSD: F2 0F 10 /r, F2 0F 11 /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0002",
+   "group": "scalar-move",
+   "sample": "movsd %xmm0, -16(%rbp)",
+   "sdm": "2B MOVSD: F2 0F 10 /r, F2 0F 11 /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0003",
+   "group": "scalar-move",
+   "sample": "movsd .Ltarget(%rip), %xmm0",
+   "sdm": "2B MOVSD: F2 0F 10 /r, F2 0F 11 /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0004",
+   "group": "scalar-move",
+   "sample": "movsd %xmm0, .Ltarget(%rip)",
+   "sdm": "2B MOVSD: F2 0F 10 /r, F2 0F 11 /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0005",
+   "group": "scalar-arithmetic",
+   "sample": "addsd %xmm1, %xmm0",
+   "sdm": "2A ADDSD: F2 0F 58 /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0006",
+   "group": "scalar-arithmetic",
+   "sample": "addsd -16(%rbp), %xmm0",
+   "sdm": "2A ADDSD: F2 0F 58 /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0007",
+   "group": "scalar-arithmetic",
+   "sample": "addsd .Ltarget(%rip), %xmm0",
+   "sdm": "2A ADDSD: F2 0F 58 /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0008",
+   "group": "scalar-arithmetic",
+   "sample": "subsd %xmm1, %xmm0",
+   "sdm": "2B SUBSD: F2 0F 5C /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0009",
+   "group": "scalar-arithmetic",
+   "sample": "subsd -16(%rbp), %xmm0",
+   "sdm": "2B SUBSD: F2 0F 5C /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0010",
+   "group": "scalar-arithmetic",
+   "sample": "subsd .Ltarget(%rip), %xmm0",
+   "sdm": "2B SUBSD: F2 0F 5C /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0011",
+   "group": "scalar-arithmetic",
+   "sample": "mulsd %xmm1, %xmm0",
+   "sdm": "2B MULSD: F2 0F 59 /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0012",
+   "group": "scalar-arithmetic",
+   "sample": "mulsd -16(%rbp), %xmm0",
+   "sdm": "2B MULSD: F2 0F 59 /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0013",
+   "group": "scalar-arithmetic",
+   "sample": "mulsd .Ltarget(%rip), %xmm0",
+   "sdm": "2B MULSD: F2 0F 59 /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0014",
+   "group": "scalar-arithmetic",
+   "sample": "divsd %xmm1, %xmm0",
+   "sdm": "2A DIVSD: F2 0F 5E /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0015",
+   "group": "scalar-arithmetic",
+   "sample": "divsd -16(%rbp), %xmm0",
+   "sdm": "2A DIVSD: F2 0F 5E /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0016",
+   "group": "scalar-arithmetic",
+   "sample": "divsd .Ltarget(%rip), %xmm0",
+   "sdm": "2A DIVSD: F2 0F 5E /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0017",
+   "group": "scalar-arithmetic",
+   "sample": "sqrtsd %xmm1, %xmm0",
+   "sdm": "2B SQRTSD: F2 0F 51 /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0018",
+   "group": "scalar-arithmetic",
+   "sample": "sqrtsd -16(%rbp), %xmm0",
+   "sdm": "2B SQRTSD: F2 0F 51 /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0019",
+   "group": "scalar-arithmetic",
+   "sample": "sqrtsd .Ltarget(%rip), %xmm0",
+   "sdm": "2B SQRTSD: F2 0F 51 /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0020",
+   "group": "scalar-compare",
+   "sample": "ucomisd %xmm1, %xmm0",
+   "sdm": "2B UCOMISD: 66 0F 2E /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0021",
+   "group": "scalar-compare",
+   "sample": "ucomisd -16(%rbp), %xmm0",
+   "sdm": "2B UCOMISD: 66 0F 2E /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0022",
+   "group": "scalar-compare",
+   "sample": "ucomisd .Ltarget(%rip), %xmm0",
+   "sdm": "2B UCOMISD: 66 0F 2E /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0023",
+   "group": "sign-mask",
+   "sample": "xorpd %xmm1, %xmm0",
+   "sdm": "2D XORPD: 66 0F 57 /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0024",
+   "group": "sign-mask",
+   "sample": "xorpd -16(%rbp), %xmm0",
+   "sdm": "2D XORPD: 66 0F 57 /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0025",
+   "group": "sign-mask",
+   "sample": "xorpd .Ltarget(%rip), %xmm0",
+   "sdm": "2D XORPD: 66 0F 57 /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0026",
+   "group": "int-to-double",
+   "sample": "cvtsi2sd %rax, %xmm0",
+   "sdm": "2A CVTSI2SD: F2 0F 2A /r, F2 REX.W 0F 2A /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0027",
+   "group": "int-to-double",
+   "sample": "cvtsi2sd %eax, %xmm0",
+   "sdm": "2A CVTSI2SD: F2 0F 2A /r, F2 REX.W 0F 2A /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0028",
+   "group": "int-to-double",
+   "sample": "cvtsi2sdq %rax, %xmm0",
+   "sdm": "2A CVTSI2SD: F2 0F 2A /r, F2 REX.W 0F 2A /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0029",
+   "group": "int-to-double",
+   "sample": "cvtsi2sdl %eax, %xmm0",
+   "sdm": "2A CVTSI2SD: F2 0F 2A /r, F2 REX.W 0F 2A /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0030",
+   "group": "int-to-double",
+   "sample": "cvtsi2sdq -16(%rbp), %xmm0",
+   "sdm": "2A CVTSI2SD: F2 0F 2A /r, F2 REX.W 0F 2A /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0031",
+   "group": "int-to-double",
+   "sample": "cvtsi2sdl -16(%rbp), %xmm0",
+   "sdm": "2A CVTSI2SD: F2 0F 2A /r, F2 REX.W 0F 2A /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0032",
+   "group": "double-to-int",
+   "sample": "cvttsd2si %xmm0, %rax",
+   "sdm": "2A CVTTSD2SI: F2 0F 2C /r, F2 REX.W 0F 2C /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0033",
+   "group": "double-to-int",
+   "sample": "cvttsd2si %xmm0, %eax",
+   "sdm": "2A CVTTSD2SI: F2 0F 2C /r, F2 REX.W 0F 2C /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0034",
+   "group": "double-to-int",
+   "sample": "cvttsd2si -16(%rbp), %rax",
+   "sdm": "2A CVTTSD2SI: F2 0F 2C /r, F2 REX.W 0F 2C /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0035",
+   "group": "double-to-int",
+   "sample": "cvttsd2si -16(%rbp), %eax",
+   "sdm": "2A CVTTSD2SI: F2 0F 2C /r, F2 REX.W 0F 2C /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0036",
+   "group": "double-to-int",
+   "sample": "cvttsd2si .Ltarget(%rip), %rax",
+   "sdm": "2A CVTTSD2SI: F2 0F 2C /r, F2 REX.W 0F 2C /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0037",
+   "group": "extended-registers",
+   "sample": "addsd %xmm15, %xmm8",
+   "sdm": "2A ADDSD: F2 0F 58 /r; 2A 2.2.1 REX",
+   "anticipated": false
+  },
+  {
+   "id": "form-0038",
+   "group": "extended-registers",
+   "sample": "movsd -16(%r13), %xmm9",
+   "sdm": "2B MOVSD: F2 0F 10 /r; 2A 2.2.1 REX",
+   "anticipated": false
+  },
+  {
+   "id": "form-0039",
+   "group": "extended-registers",
+   "sample": "movsd %xmm10, (%r12)",
+   "sdm": "2B MOVSD: F2 0F 11 /r; 2A 2.2.1 REX",
+   "anticipated": false
+  },
+  {
+   "id": "form-0040",
+   "group": "extended-registers",
+   "sample": "ucomisd %xmm8, %xmm15",
+   "sdm": "2B UCOMISD: 66 0F 2E /r; 2A 2.2.1 REX",
+   "anticipated": false
+  },
+  {
+   "id": "form-0041",
+   "group": "extended-registers",
+   "sample": "cvtsi2sd %r9, %xmm12",
+   "sdm": "2A CVTSI2SD: F2 REX.W 0F 2A /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0042",
+   "group": "extended-registers",
+   "sample": "cvttsd2si %xmm14, %r10",
+   "sdm": "2A CVTTSD2SI: F2 REX.W 0F 2C /r",
+   "anticipated": false
+  },
+  {
+   "id": "form-0043",
+   "group": "extended-registers",
+   "sample": "xorpd %xmm11, %xmm11",
+   "sdm": "2D XORPD: 66 0F 57 /r; 2A 2.2.1 REX",
+   "anticipated": false
+  },
+  {
+   "id": "form-0044",
+   "group": "extended-registers",
+   "sample": "sqrtsd %xmm13, %xmm2",
+   "sdm": "2B SQRTSD: F2 0F 51 /r; 2A 2.2.1 REX",
+   "anticipated": false
+  },
+  {
+   "id": "form-0045",
+   "group": "anticipated-bits",
+   "sample": "movq %xmm0, %rax",
+   "sdm": "2B MOVD/MOVQ: 66 REX.W 0F 7E /r",
+   "anticipated": true
+  },
+  {
+   "id": "form-0046",
+   "group": "anticipated-bits",
+   "sample": "movq %rax, %xmm0",
+   "sdm": "2B MOVD/MOVQ: 66 REX.W 0F 6E /r",
+   "anticipated": true
+  },
+  {
+   "id": "form-0047",
+   "group": "anticipated-bits",
+   "sample": "movq %xmm15, %r8",
+   "sdm": "2B MOVD/MOVQ: 66 REX.W 0F 7E /r",
+   "anticipated": true
+  },
+  {
+   "id": "form-0048",
+   "group": "anticipated-bits",
+   "sample": "movq %r15, %xmm8",
+   "sdm": "2B MOVD/MOVQ: 66 REX.W 0F 6E /r",
+   "anticipated": true
+  }
+ ]
+}
