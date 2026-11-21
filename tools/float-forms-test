@@ -162,12 +162,14 @@ for gpr in ('%ecx', '%r8d', '%rcx', '%r8'):
 for text in ('cvtsi2sdl %ecx,%xmm0', 'cvtsi2sdq %rcx,%xmm0', 'cvttsd2sil %xmm0,%ecx', 'cvttsd2siq %xmm0,%rcx'):
     compare(text, text + '\n', 'registers')
 
-# B. Memory shapes: SIB with extended registers, RIP-relative and absolute relocations, 32-bit
-# addressing (67), and a forced 32-bit displacement.
+# B. Memory shapes: SIB with extended registers, %r12 as a base (SIB without an index) and as an
+# index (REX.X with SIB index 100), RIP-relative and absolute relocations, 32-bit addressing (67),
+# and a forced 32-bit displacement.
 memory_forms = ['movsd M,%xmm0', 'movsd %xmm0,M', 'addsd M,%xmm0', 'subsd M,%xmm0', 'mulsd M,%xmm0',
                 'divsd M,%xmm0', 'sqrtsd M,%xmm0', 'ucomisd M,%xmm0', 'xorpd M,%xmm0', 'cvtsi2sdl M,%xmm0',
                 'cvtsi2sdq M,%xmm0', 'cvttsd2si M,%eax', 'cvttsd2si M,%rax']
-for shape in ('8(%r12,%r13,4)', 'external(%rip)', 'external', '(%eax)', '{disp32} 8(%rbp)'):
+for shape in ('8(%r12,%r13,4)', '8(%r12)', '(%rax,%r12,8)', '8(%r13,%r12,8)', 'external(%rip)', 'external',
+              '(%eax)', '{disp32} 8(%rbp)'):
     for f in memory_forms:
         if shape.startswith('{'):
             text = shape.split()[0] + ' ' + f.replace('M', shape.split()[1])
@@ -317,7 +319,8 @@ if wanted('end-to-end'):
         print('FAIL end-to-end:float-executable link or execution', flush=True)
 
 # H. Decoder corners measured on the pinned objdump: prefixes around the mandatory one, unused REX
-# bits, the forms these rows exclude, and the integer-width spellings.
+# bits, the forms these rows exclude, the integer-width spellings, and REX.X naming index %r12
+# (three encodings read from the corpus) against REX.X with no SIB.
 for name, hexbytes, expect, escape, mode in [
         ('rex.W movsd', 'f2 48 0f 10 c1', 'decoded', False, 64),
         ('data16 addsd', '66 f2 0f 58 c1', 'decoded', True, 64),
@@ -338,7 +341,11 @@ for name, hexbytes, expect, escape, mode in [
         ('cvtsi2sdq m64', 'f2 48 0f 2a 00', 'decoded', False, 64),
         ('cvtsi2sdl m32', 'f2 0f 2a 00', 'decoded', False, 64),
         ('cvttsd2si r64 m64', 'f2 48 0f 2c 00', 'decoded', False, 64),
-        ('cvtsi2sd m32 in 32-bit code', 'f2 0f 2a 00', 'decoded', False, 32)]:
+        ('cvtsi2sd m32 in 32-bit code', 'f2 0f 2a 00', 'decoded', False, 32),
+        ('index %r12 under REX.X', 'f2 42 0f 59 04 e0', 'decoded', False, 64),
+        ('index %r12 beside base %r13', 'f2 43 0f 10 64 e5 08', 'decoded', False, 64),
+        ('index %r12 in the store form', 'f2 42 0f 11 44 20 18', 'decoded', False, 64),
+        ('REX.X without SIB', 'f2 42 0f 58 c1', 'decoded', False, 64)]:
     corner(name, hexbytes, expect, escape, mode)
 
 (OUT / 'rows.json').write_text(json.dumps(rows, indent=1) + '\n')
