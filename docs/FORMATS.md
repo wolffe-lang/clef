@@ -16,10 +16,11 @@ The output file is not opened until the entire source and object have succeeded.
 
 ## Encoding data
 
-`src/x86table/rows.lu` contains 517 declarative descriptors, each transcribed from
-an individual Intel SDM opcode row. `aliases.lu` explicitly maps 354 spellings to
-canonical families and width hints: the original census, word-port and LOCK
-spellings, plus the compiler's integer instruction envelope. `format.lu`
+`src/x86table/rows.lu` contains 861 declarative descriptors, each transcribed from
+an individual Intel SDM opcode row. `aliases.lu` explicitly maps 683 spellings (684
+rows) to canonical families and width hints: the original census, word-port and
+LOCK spellings, plus the compiler's integer instruction envelope and its
+scalar-double forms. `format.lu`
 validates rows and provides
 cached lookup by family, role, operand width and code mode.
 
@@ -46,7 +47,8 @@ No `66` or REX.W prefix is inferred merely from the logical width: LTR, segment
 moves, control-register moves and stack instructions have different rules.
 
 `tools/table-test` generates a source witness for every descriptor in every
-admitted mode: 886 row-by-mode comparisons cover the 517 descriptors. The full
+admitted mode: 1,448 row-by-mode comparisons cover 854 of the 861 descriptors;
+the other seven are `decode-only` (below). The full
 assembler gate independently measures the original 189 census forms through all
 recorded sites in 43 source comparisons. A structural candidate in
 `census-map.json` is not, by itself, a passing differential.
@@ -125,6 +127,64 @@ byte IMUL, and unsigned long-to-quad widening uses MOV long, not `movzlq`.
 SETcc accepts the REX-only byte registers and extended byte registers; the
 shared encoder enforces the high-byte/REX exclusion. Flag-condition branches
 use the existing same-section relaxation and cross-section relocation policy.
+
+## Compiler scalar-double forms
+
+`census/fenrir-float-forms/` holds fenrir's planned scalar-double forms for its
+float tranche (45) and the two moves between XMM and 64-bit general registers that
+tranche is anticipated to need (4 forms, marked `anticipated`): one source per
+form plus a combined source, with the generator pinned by SHA256.
+`tools/float-forms-test`, called by `tools/assembler-test`, checks that
+regeneration is unchanged, compares every object's sections, relocations and
+structural symbols with GNU as, repeats clef for identical bytes, and reads GNU
+as's object back through the disassembler: the text must be objdump's and the
+round-trip source must reassemble to the same bytes. Its 275 boundary rows cover
+every REX.R/REX.B register combination, SIB (with `%r12` as base and as index),
+RIP-relative, absolute and 32-bit addressing, every integer width of the converts, 32-bit code, constants in
+`.rodata`, a linked float program run for its exit status, shared refusals,
+named deviations and decoder corners measured on the pinned objdump.
+
+The rows use the legacy SSE encodings of Intel SDM 325383-086US; the mandatory
+prefix precedes REX (vol.2A 2.2.1):
+
+| Family | Volume, entry and printed page | Opcode rows |
+|---|---|---|
+| MOVSD | 2B 4.3 MOVSD, 4-116 | `F2 0F 10 /r` load, `F2 0F 11 /r` store |
+| ADDSD, DIVSD | 2A 3.3 ADDSD 3-40, DIVSD 3-340 | `F2 0F 58 /r`, `F2 0F 5E /r` |
+| SUBSD, MULSD, SQRTSD | 2B 4.3 SUBSD 4-689, MULSD 4-156, SQRTSD 4-663 | `F2 0F 5C /r`, `F2 0F 59 /r`, `F2 0F 51 /r` |
+| UCOMISD | 2B 4.3 UCOMISD, 4-725 | `66 0F 2E /r` |
+| CVTSI2SD | 2A 3.3 CVTSI2SD, 3-302 | `F2 0F 2A /r` from r/m32, `F2 REX.W 0F 2A /r` from r/m64 |
+| CVTTSD2SI | 2A 3.3 CVTTSD2SI, 3-320 | `F2 0F 2C /r` to r32, `F2 REX.W 0F 2C /r` to r64 |
+| XORPD | 2D 6.1 XORPD, 6-42 | `66 0F 57 /r` |
+| MOVQ (XMM and r64) | 2B 4.3 MOVD/MOVQ, 4-62 | `66 REX.W 0F 6E /r`, `66 REX.W 0F 7E /r`, register forms only |
+
+The `xmmrm64` operand pattern is the SDM's `xmm2/m64`: an XMM register, or memory
+read as 64 bits. The rows without REX.W are admitted in 32-bit code too.
+Selection follows the pinned GNU as: a MOVSD register pair takes the load form
+unless `{store}` is written; `movq` with one XMM and one 64-bit general register
+takes the MOVQ rows, and every other `movq` is MOV as before; `cvtsi2sd` takes its
+width from the general register or the `l`/`q` suffix, and `cvttsd2si` from its
+destination or the suffix.
+
+GNU as accepts these and clef refuses them on purpose, each by name:
+
+* `cvtsi2sd` with a memory source and no suffix in 64-bit code
+  (`implicit_operand_size`): GNU as silently takes a 32-bit source, which would
+  convert a 64-bit slot as 32 bits. In 32-bit code there is only the 32-bit row,
+  so clef assembles it as GNU as does, and objdump spells it unsuffixed.
+* Bare `movsd` and `rep movsd` (`string_move_spelling`): GNU as warns and
+  assembles the string move, whose AT&T spelling is `movsl`.
+* A segment override on these spellings (`segment_override`): GNU as places it
+  before the mandatory prefix (`64 f2 0f 10 …`), and clef's emission order puts the
+  row's own prefix first. The address-size prefix comes first in both, so `(%eax)`
+  operands are accepted.
+* `movd` with a 64-bit general register: GNU as encodes the MOVQ rows, and objdump
+  spells them `movq`, which clef accepts.
+* `movq` between XMM and memory or two XMM registers: GNU as uses `F3 0F 7E` and
+  `66 0F D6`, which this table does not carry.
+
+An explicit `data16` on these spellings is refused too (`operand_size_prefix`), as
+GNU as refuses it.
 
 ## Port operands and the word ports
 
@@ -337,11 +397,19 @@ SDM reason and spelled `.byte` in round-trip source. Reserved cells are
 this change does not decode are named apart: `out_of_scope:x87` (D8–DF, consumed
 to their ModRM form's length so the stream stays in step), `out_of_scope:sse`
 (the SSE cells of Table A-3 and the `0F 38`/`0F 3A` maps, with their ModRM and
-`ib` lengths), `out_of_scope:vex` (C4/C5, the payload bytes by §2.3.5, the
+`ib` lengths; the scalar-double rows above are decoded), `out_of_scope:vex` (C4/C5, the payload bytes by §2.3.5, the
 map's ModRM and its `ib`) and `out_of_scope:evex` (62, the three payload bytes
 of §2.7, ModRM, displacement and `ib`). Each is consumed at the length the SDM
 gives the instruction, so the stream stays in step with objdump's and the law
 preserves the bytes as `.byte`.
+
+The scalar-double rows read their mandatory prefix as the pinned objdump does: the
+last F2 or F3 selects (`f2 f3 0f 10` is MOVSS, out of scope), and an F2 or F3
+beside 66 wins over it (`f2 66 0f 2e` selects no 66 row). A spare F3 before MOVSD's
+F2 is the word `repz`, and a REX byte the row does not use is named as objdump
+names it (`rex.W addsd`, `rex addsd`, `rex.WB addsd`). REX.X counts as used
+whenever a SIB is present: with REX.X set, index 100 is `%r12`, not "no index"
+(vol.2A 2.2.1.2, Table 2-5).
 
 ### objdump's spelling
 
@@ -353,7 +421,9 @@ words for prefixes the row does not consume (`data16`, `addr32`, `cs`/`ds`/…,
 row's family; a size suffix is added only when no register operand sizes the
 instruction and the family has rows of more than one width, and never for the
 default width of `push`/`pop`/`call`/`jmp`. Extending moves and CRC32 name their
-source width (`movzbl`, `crc32b`). Immediates print at the operand width after
+source width (`movzbl`, `crc32b`); CVTSI2SD names its integer width only for a
+memory source in 64-bit code (`cvtsi2sdq 0x8(%rbp),%xmm0`, but `cvtsi2sd
+%rax,%xmm0`, and `cvtsi2sd (%eax),%xmm0` in 32-bit code). Immediates print at the operand width after
 sign extension (`$0xfffffffffffffff0`). In 64-bit mode only `%fs:`/`%gs:` reach
 an operand; the other segment prefixes have no effect there and stay words
 (`cs nopw 0x0(%rax,%rax,1)`). `--code32` decodes as `.code32` and `--raw
@@ -369,7 +439,8 @@ Every encoding choice GNU as would make differently is forced by a device of the
 GNU as manual (9.16.4.1 pseudo prefixes, 9.16.6 prefix words, 9.16.7 `%riz`):
 `{disp32}` for a 32-bit displacement that fits 8 bits and for a `rel32` jump
 whose target fits `rel8`, `{disp8}` for an explicit zero displacement, `{load}`
-for a register-register MOV/ALU form in the `8B` direction, `{noimm8s}` for a
+for a register-register MOV/ALU form in the `8B` direction, `{store}` for XCHG's
+and MOVSD's register forms in the store direction, `{noimm8s}` for a
 wide immediate that fits `imm8`, `rex.W…`/`rex` for REX bits the row does not
 use, and the prefix words above for every unconsumed prefix byte. Branch targets
 are `.+N` from the instruction's own address, so no label is needed. The
