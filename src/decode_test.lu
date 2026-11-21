@@ -127,6 +127,33 @@ fn main() -> int {
         0,
     )
     assert(rz.mnemonic == "movsd" && rz.words.len == 1 && rz.words[0] == "repz")
+    // REX.X with SIB index 100 names %r12, so the bit is used and objdump prints no rex word:
+    // f2 42 0f 59 04 e0 is mulsd (%rax,%r12,8),%xmm0; f2 43 0f 10 64 e5 08 is
+    // movsd 0x8(%r13,%r12,8),%xmm4. Without a SIB, REX.X is unused: rex.X addsd %xmm1,%xmm0.
+    let ix = decode.decode(
+        idx,
+        [242 as byte, 66 as byte, 15 as byte, 89 as byte, 4 as byte, 224 as byte],
+        0,
+        64,
+        0,
+    )
+    assert(decode.text(ix, 0) == "0:\tmulsd  (%rax,%r12,8),%xmm0")
+    let ixb = decode.decode(
+        idx,
+        [242 as byte, 67 as byte, 15 as byte, 16 as byte, 100 as byte, 229 as byte, 8 as byte],
+        0,
+        64,
+        0,
+    )
+    assert(decode.text(ixb, 0) == "0:\tmovsd  0x8(%r13,%r12,8),%xmm4")
+    let nx = decode.decode(
+        idx,
+        [242 as byte, 66 as byte, 15 as byte, 88 as byte, 193 as byte],
+        0,
+        64,
+        0,
+    )
+    assert(decode.text(nx, 0) == "0:\trex.X addsd  %xmm1,%xmm0")
     // Cells these rows leave out stay out of scope: ADDSS (F3), ADDPS (no prefix), MOVQ's r/m64
     // memory form, and F3 after F2 (objdump reads MOVSS).
     for cell in [
