@@ -529,7 +529,9 @@ fn rex_unused(f: x86table.Form, d: Decoded) -> str {
     let fl = fields(d)
     var used_w = f.rex_w
     var used_r = f.reg_operand >= 0 && fl.rex_r == 1
-    var used_x = d.sib >= 0 && fl.rex_x == 1 && fl.index != 4
+    // SDM vol.2A 2.2.1.2 Table 2-5: REX.X extends the SIB index, so with a SIB the bit is always
+    // decoded; index 100 is "no index" only when REX.X is clear, and with it set names %r12.
+    var used_x = d.sib >= 0 && fl.rex_x == 1
     var used_b = (f.rm_operand >= 0 || f.opcode_operand >= 0) && fl.rex_b == 1
     var byte_register = false
     for op in d.operands {
