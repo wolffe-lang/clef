@@ -33,6 +33,8 @@ def witnesses():
                 mnemonic=('movs' if family=='movsx' else 'movz')+('b' if role=='rm8_reg' else 'w')+suffix[bits]
             if family=='movsxd':mnemonic='movslq' if bits==64 else 'movsxd'
             if family=='setb':mnemonic='setb'
+            # CVTSI2SD's witness reads memory, which only the suffix sizes (GNU as 9.16.4.1).
+            if family=='cvtsi2sd':mnemonic+=suffix[bits]
             operands=[]
             for p in ([] if pattern=='none' else pattern.split(',')):
                 if p=='imm' and f[21]=='enter':
@@ -62,7 +64,7 @@ def witnesses():
                 elif p in ('port8','selector16','offset32'):operands.append('$'+str({'port8':97,'selector16':8,'offset32':0x12345678}[p]))
                 elif p=='moffs32':operands.append('4096')
                 elif p=='xmm128':operands.append('%xmm1')
-                elif p=='xmmrm128':operands.append('('+base+')')
+                elif p in ('xmmrm128','xmmrm64'):operands.append('('+base+')')
                 elif p.startswith('acc'):operands.append(acc[int(p[3:])])
                 elif p.startswith('indirect-rm'):operands.append('*('+base+')')
                 elif p=='mem' or p.startswith('rm'):operands.append('('+base+')')
