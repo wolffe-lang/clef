@@ -478,6 +478,8 @@ fn run_pass(
             if branch && forced_width(node) == 4 { short = false }
             if branch && forced_width(node) == 1 { short = true }
             wide = branch && !short
+            let named = machine.refusal(node, pass.mode)
+            if named.len > 0 { return Assembly(failure(node.origin, named)) }
             let form = machine.choose_in(
                 forms,
                 aliases,
