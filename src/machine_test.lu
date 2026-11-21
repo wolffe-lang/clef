@@ -99,6 +99,42 @@ fn main() -> int ! {
     assert(mov64.data.len == 7 && mov64.data[1] == 199 as byte)
     let xmm = encode(forms, "movdqu %xmm15,(%r12)", 64)?
     assert(xmm.data.len == 6 && xmm.data[0] == 243 as byte && xmm.data[1] == 69 as byte)
+    // SSE2 scalar double (SDM vol.2A 3.3 ADDSD, CVTSI2SD, CVTTSD2SI; vol.2B 4.3 MOVSD, UCOMISD,
+    // MOVD/MOVQ): the mandatory prefix precedes REX (vol.2A 2.2.1).
+    let addsd = encode(forms, "addsd %xmm9,%xmm0", 64)?
+    assert(
+        addsd.data.len == 5 &&
+            addsd.data[0] == 242 as byte &&
+            addsd.data[1] == 65 as byte &&
+            addsd.data[3] == 88 as byte,
+    )
+    let cvtq = encode(forms, "cvtsi2sdq -16(%rbp),%xmm0", 64)?
+    assert(cvtq.data.len == 6 && cvtq.data[1] == 72 as byte && cvtq.data[3] == 42 as byte)
+    let trunc = encode(forms, "cvttsd2si %xmm15,%r8d", 64)?
+    assert(trunc.data.len == 5 && trunc.data[1] == 69 as byte && trunc.data[3] == 44 as byte)
+    // GNU as takes MOVSD's load form for a register pair; {store} asks for the store form.
+    let load = encode(forms, "movsd %xmm1,%xmm0", 64)?
+    assert(load.data.len == 4 && load.data[2] == 16 as byte && load.data[3] == 193 as byte)
+    let store = encode(forms, "{{store}} movsd %xmm1,%xmm0", 64)?
+    assert(store.data.len == 4 && store.data[2] == 17 as byte && store.data[3] == 200 as byte)
+    let ripsd = encode(forms, "movsd data(%rip),%xmm0", 64)?
+    assert(ripsd.data.len == 8 && ripsd.fixups[0].offset == 4 && ripsd.fixups[0].bias == 4)
+    let ucomisd = encode(forms, "ucomisd %xmm1,%xmm0", 64)?
+    assert(ucomisd.data.len == 4 && ucomisd.data[0] == 102 as byte && ucomisd.data[2] == 46 as byte)
+    let tobits = encode(forms, "movq %xmm0,%rax", 64)?
+    assert(
+        tobits.data.len == 5 &&
+            tobits.data[0] == 102 as byte &&
+            tobits.data[1] == 72 as byte &&
+            tobits.data[3] == 126 as byte,
+    )
+    let frombits = encode(forms, "movq %r15,%xmm8", 64)?
+    assert(
+        frombits.data.len == 5 &&
+            frombits.data[1] == 77 as byte &&
+            frombits.data[3] == 110 as byte &&
+            frombits.data[4] == 199 as byte,
+    )
     // as02c: SDM vol.2A IN/vol.2B OUT 16-bit rows carry 66H (vol.2A 2.1.1); XOR's REX.W rows.
     for mode in [64, 32] {
         let inw = encode(forms, "inw %dx,%ax", mode)?
@@ -221,7 +257,12 @@ fn main() -> int ! {
         "xorq %eax,%rax",
         "xorq $0x80000000,%rax",
         "movq %eax,%rax",
-        "movq %xmm0,%rax",
+        "movq %eax,%xmm0",
+        "movq (%rax),%xmm0",
+        "addsd %xmm0,(%rax)",
+        "cvtsi2sd %ax,%xmm0",
+        "cvttsd2si %xmm0,%ax",
+        "lock addsd (%rax),%xmm0",
         "movb %ah,%r8b",
         "outb %bl,%dx",
         "inb %cx,%al",
