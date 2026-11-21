@@ -1,0 +1,349 @@
+#!/usr/bin/env python3
+"""Fenrir's scalar-double census and the boundary of the SSE2 scalar-double and XMM/GPR MOVQ rows.
+
+Only official SDM documentation supplies encodings. GNU as and objdump are binary oracles.
+Every acceptance compares sections, relocations and structural symbols with GNU as, repeats clef
+for identical bytes, and reads GNU as's object back through clef's disassembler: the text must be
+objdump's and the round-trip source must reassemble, with clef, to the same bytes. Every refusal
+preserves a sentinel output; a named deviation (GNU as accepts, clef refuses) must give its exact
+reason. The corner-byte rows check the decoder alone. One FAIL line per red row, at column 0.
+"""
+import argparse
+import hashlib
+import json
+import pathlib
+import re
+import runpy
+import subprocess
+from elf import ELF, differences
+from disasmlib import objdump, clef_disassemble, parse, assemble_chunks
+
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+CENSUS = ROOT / 'census/fenrir-float-forms'
+OUT = ROOT / 'target/evidence/float-forms'
+OUT.mkdir(parents=True, exist_ok=True)
+parser = argparse.ArgumentParser()
+parser.add_argument('--group', action='append', help='run only these groups (development)')
+args = parser.parse_args()
+manifest = json.loads((CENSUS / 'forms.json').read_text())
+generator = CENSUS / 'x86_float_forms.py'
+assert hashlib.sha256(generator.read_bytes()).hexdigest() == manifest['generator_sha256']
+census = runpy.run_path(str(generator))
+forms = census['forms']()
+assert forms == manifest['forms'] and len(forms) == 49
+assert sum(f['anticipated'] for f in forms) == 4
+rows = []
+
+
+def wanted(group):
+    return not args.group or group in args.group
+
+
+def run(argv):
+    return subprocess.run(list(map(str, argv)), capture_output=True, text=True, timeout=60)
+
+
+def text_bytes(obj):
+    return next((s[-1] for s in ELF(obj).normalized()['sections'] if s[0] == '.text'), '')
+
+
+def readback(obj, mode, tag):
+    """clef's disassembly of an object against objdump's, and its round trip back to the bytes."""
+    expected = objdump(obj, mode).get('.text', [])
+    status, stdout, stderr = clef_disassemble(obj, mode=mode)
+    ours = parse(stdout).get('.text', []) if status == 0 else []
+    status2, source, _ = clef_disassemble(obj, '--roundtrip', mode=mode)
+    lines = [l for l in source.splitlines() if l.strip()] if status2 == 0 else []
+    data, diag = assemble_chunks(lines, OUT, 'rt-' + tag, mode) if lines else (None, ['no source'])
+    original = text_bytes(obj)
+    return {'objdump': expected, 'clef': ours, 'clef_stderr': stderr.strip()[:200],
+            'agree': status == 0 and ours == expected, 'roundtrip': lines,
+            'law': data is not None and data.hex() == original, 'law_diagnostic': diag,
+            'escapes': [l for l in lines if l.startswith('.byte')]}
+
+
+def reason_of(stderr):
+    m = re.search(r', reason: (.*?) \}\)\n?\Z', stderr, re.S)
+    return m.group(1) if m else None
+
+
+def compare(name, source, group, mode=64, refusal=None, deviation=None):
+    """An acceptance (default), a shared refusal (`refusal` must appear in clef's reason) or a named
+    deviation (GNU as accepts; clef refuses with exactly `deviation`)."""
+    if not wanted(group):
+        return
+    assert not (refusal and deviation)
+    stem = OUT / str(len(rows))
+    src, gas_o, ours_o, again = [stem.with_suffix(s) for s in ('.s', '.gas.o', '.clef.o', '.again.o')]
+    src.write_text(('.code32\n' if mode == 32 else '') + source)
+    gas_o.unlink(missing_ok=True)
+    ours_o.write_bytes(b'unchanged')
+    again.unlink(missing_ok=True)
+    gas = run(['as', '--64', src, '-o', gas_o])
+    ours = run([ROOT / 'target/clef', '--64', src, '-o', ours_o])
+    row = {'name': name, 'group': group, 'mode': mode, 'source': source, 'gas_status': gas.returncode,
+           'clef_status': ours.returncode, 'gas_stderr': gas.stderr, 'clef_stderr': ours.stderr}
+    unchanged = ours_o.read_bytes() == b'unchanged'
+    if deviation:
+        row['deviation'] = deviation
+        row['actual_reason'] = reason_of(ours.stderr)
+        row['pass'] = (gas.returncode == 0 and gas_o.is_file() and ours.returncode == 1
+                       and row['actual_reason'] == deviation and unchanged)
+    elif refusal:
+        row['pass'] = (gas.returncode != 0 and ours.returncode == 1 and refusal in ours.stderr and unchanged)
+    else:
+        same = gas.returncode == ours.returncode == 0
+        row['differences'] = differences(ELF(gas_o), ELF(ours_o)) if same else ['unassembled']
+        twice = run([ROOT / 'target/clef', '--64', src, '-o', again])
+        row['deterministic'] = twice.returncode == 0 and again.read_bytes() == ours_o.read_bytes()
+        if same:
+            row['gas_text'] = text_bytes(gas_o)
+            row['readback'] = readback(gas_o, mode, str(len(rows)))
+        rb = row.get('readback', {})
+        row['pass'] = (not row['differences'] and row['deterministic'] and rb.get('agree', False)
+                       and rb.get('law', False) and not rb.get('escapes'))
+    rows.append(row)
+    if not row['pass']:
+        print('FAIL', group + ':' + name, json.dumps(row), flush=True)
+
+
+def corner(name, hexbytes, expect, escape, mode=64):
+    """Decoder only: `expect` is 'decoded' (clef's text equals objdump's) or 'out_of_scope' (clef
+    names the cell out_of_scope:sse); the round trip must give the bytes back, through `.byte`
+    exactly when `escape`."""
+    group = 'corner-bytes'
+    if not wanted(group):
+        return
+    stem = OUT / str(len(rows))
+    src, gas_o = stem.with_suffix('.s'), stem.with_suffix('.gas.o')
+    src.write_text(('.code32\n' if mode == 32 else '') + '.byte ' + ','.join('0x' + b for b in hexbytes.split()) + '\n')
+    gas_o.unlink(missing_ok=True)
+    gas = run(['as', '--64', src, '-o', gas_o])
+    row = {'name': name, 'group': group, 'mode': mode, 'bytes': hexbytes, 'expect': expect, 'escape': escape,
+           'gas_status': gas.returncode}
+    if gas.returncode == 0:
+        rb = readback(gas_o, mode, str(len(rows)))
+        row['readback'] = rb
+        if expect == 'decoded':
+            text_ok = rb['agree']
+        else:
+            text_ok = len(rb['clef']) == 1 and 'out_of_scope:sse' in rb['clef'][0][1]
+        row['pass'] = text_ok and rb['law'] and bool(rb['escapes']) == escape
+    else:
+        row['pass'] = False
+    rows.append(row)
+    if not row['pass']:
+        print('FAIL', group + ':' + name, json.dumps(row), flush=True)
+
+
+# The census: every form and the combined source.
+if wanted('census'):
+    combined = census['combined'](forms)
+    assert (CENSUS / 'fenrir-float-forms.s').read_text() == combined
+    for form in forms:
+        source = census['source'](form)
+        assert (CENSUS / (form['id'] + '.s')).read_text() == source
+        compare(form['id'], source, 'census')
+    compare('combined-49', combined, 'census')
+
+# A. Register forms: REX.R and REX.B in every combination; the converts at every width.
+for op in ('movsd', '{store} movsd', 'addsd', 'subsd', 'mulsd', 'divsd', 'sqrtsd', 'ucomisd', 'xorpd'):
+    for src in ('%xmm1', '%xmm9'):
+        for dst in ('%xmm0', '%xmm8'):
+            compare(f'{op} {src},{dst}', f'{op} {src},{dst}\n', 'registers')
+for gpr in ('%rax', '%r8'):
+    for xmm in ('%xmm0', '%xmm8'):
+        compare(f'movq {gpr},{xmm}', f'movq {gpr},{xmm}\n', 'registers')
+        compare(f'movq {xmm},{gpr}', f'movq {xmm},{gpr}\n', 'registers')
+for gpr in ('%ecx', '%r8d', '%rcx', '%r8'):
+    for xmm in ('%xmm0', '%xmm8'):
+        compare(f'cvtsi2sd {gpr},{xmm}', f'cvtsi2sd {gpr},{xmm}\n', 'registers')
+        compare(f'cvttsd2si {xmm},{gpr}', f'cvttsd2si {xmm},{gpr}\n', 'registers')
+for text in ('cvtsi2sdl %ecx,%xmm0', 'cvtsi2sdq %rcx,%xmm0', 'cvttsd2sil %xmm0,%ecx', 'cvttsd2siq %xmm0,%rcx'):
+    compare(text, text + '\n', 'registers')
+
+# B. Memory shapes: SIB with extended registers, RIP-relative and absolute relocations, 32-bit
+# addressing (67), and a forced 32-bit displacement.
+memory_forms = ['movsd M,%xmm0', 'movsd %xmm0,M', 'addsd M,%xmm0', 'subsd M,%xmm0', 'mulsd M,%xmm0',
+                'divsd M,%xmm0', 'sqrtsd M,%xmm0', 'ucomisd M,%xmm0', 'xorpd M,%xmm0', 'cvtsi2sdl M,%xmm0',
+                'cvtsi2sdq M,%xmm0', 'cvttsd2si M,%eax', 'cvttsd2si M,%rax']
+for shape in ('8(%r12,%r13,4)', 'external(%rip)', 'external', '(%eax)', '{disp32} 8(%rbp)'):
+    for f in memory_forms:
+        if shape.startswith('{'):
+            text = shape.split()[0] + ' ' + f.replace('M', shape.split()[1])
+        else:
+            text = f.replace('M', shape)
+        compare(text, text + '\n', 'memory')
+
+# C. 32-bit code: every row admitted there, register and memory.
+for text in ['movsd %xmm1,%xmm0', 'movsd (%eax),%xmm1', 'movsd %xmm1,(%eax)']:
+    compare(text, text + '\n', 'code32', mode=32)
+for op in ('addsd', 'subsd', 'mulsd', 'divsd', 'sqrtsd', 'ucomisd', 'xorpd'):
+    for src in ('%xmm1', '(%eax)'):
+        compare(f'{op} {src},%xmm0', f'{op} {src},%xmm0\n', 'code32', mode=32)
+for text in ('cvtsi2sd %eax,%xmm0', 'cvtsi2sd (%eax),%xmm0', 'cvtsi2sdl (%eax),%xmm0',
+             'cvttsd2si %xmm0,%eax', 'cvttsd2si (%eax),%eax'):
+    compare(text, text + '\n', 'code32', mode=32)
+
+# D. Constants in .rodata read from .text: section-symbol relocations.
+rodata = ('.section .rodata\n.p2align 4\n.Lmask:\n.quad 0x8000000000000000,0\n'
+          '.LC0:\n.quad 0x3ff0000000000000\n.text\n')
+for text in ('movsd .LC0(%rip),%xmm0', 'xorpd .Lmask(%rip),%xmm0', 'ucomisd .LC0(%rip),%xmm1',
+             'addsd .LC0(%rip),%xmm2', 'cvttsd2si .LC0(%rip),%rax'):
+    compare('rodata ' + text, rodata + text + '\n', 'rodata')
+
+# E. Shared refusals: GNU as refuses; clef refuses, naming its SDM or manual reason.
+for text in ['movsd %ds:(%rsi),%es:(%rdi)', 'cvtsi2sdq %eax,%xmm0', 'cvtsi2sdl %rax,%xmm0',
+             'cvtsi2sd %ax,%xmm0', 'cvtsi2sdw (%rax),%xmm0', 'cvtsi2sd %xmm1,%xmm0', 'cvtsi2sd $1,%xmm0',
+             'cvttsd2si %xmm0,%ax', 'cvttsd2si %rax,%rcx', 'cvttsd2si %xmm0,%xmm1', 'addsd %xmm0,(%rax)',
+             'addsd %rax,%xmm0', 'addsd $1,%xmm0', 'addsdq (%rax),%xmm0', 'addsd %xmm1',
+             'addsd %xmm2,%xmm1,%xmm0', 'ucomisd %xmm0,(%rax)', 'xorpd %xmm0,%rax', 'movsd (%rax),(%rbx)',
+             'addsd %ymm1,%ymm0', '{vex} addsd %xmm1,%xmm0', '{evex} addsd %xmm1,%xmm0',
+             'lock addsd (%rax),%xmm0', 'lock movsd %xmm0,(%rax)', 'repne addsd %xmm1,%xmm0',
+             'rep addsd %xmm1,%xmm0', 'data16 addsd %xmm1,%xmm0', 'mov %xmm0,%rax', 'mov %rax,%xmm0',
+             'movq %eax,%xmm0', 'movq %xmm0,%eax', 'lock movq %rax,%xmm0']:
+    compare('illegal ' + text, text + '\n', 'refusal', refusal='SDM')
+for text in ['cvtsi2sdq (%eax),%xmm0', 'cvtsi2sd %rax,%xmm0', 'cvttsd2si %xmm0,%rax', 'addsd %xmm8,%xmm0',
+             'movq %xmm0,%eax', 'movq %rax,%xmm0']:
+    compare('illegal code32 ' + text, text + '\n', 'refusal', mode=32, refusal='SDM')
+
+# F. Named deviations: GNU as accepts, clef refuses on purpose (docs/FORMATS.md).
+IMPLICIT = 'implicit_operand_size cvtsi2sd: GNU as 9.16.4.1 (no suffix, and no general register to size the memory source)'
+STRING = 'string_move_spelling movsd: SDM vol.2B 4.3 MOVS; the AT&T string move is movsl (GNU as 9.16.4.1)'
+
+
+def segment(m):
+    return (f'segment_override {m}: SDM vol.2A 2.1.1 prefix groups; GNU as places the segment override '
+            'before the mandatory prefix, which clef does not reproduce')
+
+
+compare('cvtsi2sd (%rax),%xmm0', 'cvtsi2sd (%rax),%xmm0\n', 'deviation', deviation=IMPLICIT)
+compare('movsd', 'movsd\n', 'deviation', deviation=STRING)
+compare('rep movsd', 'rep movsd\n', 'deviation', deviation=STRING)
+for text in ('movd %rax,%xmm0', 'movd %xmm0,%rax'):
+    compare(text, text + '\n', 'deviation', deviation='unknown_mnemonic movd: SDM vol.2 instruction set')
+for text in ('movq (%rax),%xmm0', 'movq %xmm0,(%rax)', 'movq %xmm1,%xmm0', 'movq external(%rip),%xmm0',
+             '{load} movq %xmm1,%xmm0', '{store} movq %xmm1,%xmm0'):
+    compare(text, text + '\n', 'deviation', deviation='bad_operands: movq; SDM vol.2 instruction encoding table')
+for text in ('movsd %fs:16,%xmm0', 'movsd %fs:(%rax),%xmm0', 'movsd %xmm0,%gs:8(%rbx)', 'ucomisd %fs:16,%xmm0',
+             'cvtsi2sdq %fs:(%rax),%xmm0', 'movsd %fs:(%eax),%xmm9'):
+    compare(text, text + '\n', 'deviation', deviation=segment(text.split()[0]))
+
+# G. End to end: compiler-shaped float code, linked without a C runtime, run for its exit status.
+EXECUTABLE = '''.text
+.globl _start
+.type _start,@function
+_start:
+movsd .Lthree(%rip),%xmm0
+movsd .Lfour(%rip),%xmm1
+mulsd %xmm0,%xmm0
+mulsd %xmm1,%xmm1
+addsd %xmm1,%xmm0
+sqrtsd %xmm0,%xmm0
+movq $10,%rax
+cvtsi2sd %rax,%xmm2
+divsd %xmm2,%xmm0
+movsd .Lhalf(%rip),%xmm3
+ucomisd %xmm3,%xmm0
+jp failed
+jne failed
+subsd %xmm3,%xmm0
+xorpd .Lsign(%rip),%xmm3
+movsd %xmm3,-8(%rsp)
+movq -8(%rsp),%rax
+movq %xmm3,%rcx
+cmpq %rax,%rcx
+jne failed
+movabsq $0xbfe0000000000000,%rdx
+cmpq %rdx,%rcx
+jne failed
+movq %rdx,%xmm4
+ucomisd %xmm3,%xmm4
+jne failed
+movsd .Lseven_and_a_half(%rip),%xmm5
+cvttsd2si %xmm5,%rax
+cmpq $7,%rax
+jne failed
+cvttsd2si %xmm5,%ecx
+cmpl $7,%ecx
+jne failed
+movsd .Lnan(%rip),%xmm6
+ucomisd %xmm6,%xmm6
+jnp failed
+movl $-3,%eax
+cvtsi2sdl %eax,%xmm7
+ucomisd .Lminus_three(%rip),%xmm7
+jne failed
+xorl %edi,%edi
+jmp done
+failed:
+movl $1,%edi
+done:
+movl $60,%eax
+syscall
+.size _start,.-_start
+.section .rodata
+.p2align 4
+.Lsign:
+.quad 0x8000000000000000,0
+.Lthree:
+.quad 0x4008000000000000
+.Lfour:
+.quad 0x4010000000000000
+.Lhalf:
+.quad 0x3fe0000000000000
+.Lseven_and_a_half:
+.quad 0x401e000000000000
+.Lnan:
+.quad 0x7ff8000000000000
+.Lminus_three:
+.quad 0xc008000000000000
+.section .note.GNU-stack,"",@progbits
+'''
+if wanted('end-to-end'):
+    compare('float-executable', EXECUTABLE, 'end-to-end')
+    stem = OUT / str(len(rows) - 1)
+    executable_ok = rows[-1]['pass']
+    for producer in ('gas', 'clef'):
+        obj = stem.with_suffix('.' + producer + '.o')
+        exe = stem.with_suffix('.' + producer + '.elf')
+        if executable_ok:
+            linked = run(['ld', '--build-id=none', '-e', '_start', obj, '-o', exe])
+            ran = run([exe]) if linked.returncode == 0 else None
+            executable_ok = (ran is not None and ran.returncode == 0 and not ran.stdout and not ran.stderr)
+    rows[-1]['executable_pass'] = executable_ok
+    rows[-1]['pass'] = rows[-1]['pass'] and executable_ok
+    if not executable_ok:
+        print('FAIL end-to-end:float-executable link or execution', flush=True)
+
+# H. Decoder corners measured on the pinned objdump: prefixes around the mandatory one, unused REX
+# bits, the forms these rows exclude, and the integer-width spellings.
+for name, hexbytes, expect, escape, mode in [
+        ('rex.W movsd', 'f2 48 0f 10 c1', 'decoded', False, 64),
+        ('data16 addsd', '66 f2 0f 58 c1', 'decoded', True, 64),
+        ('repz movsd', 'f3 f2 0f 10 c1', 'decoded', True, 64),
+        ('F3 last is movss', 'f2 f3 0f 10 c1', 'out_of_scope', True, 64),
+        ('F2 beside 66 on 0F 2E', 'f2 66 0f 2e c1', 'out_of_scope', True, 64),
+        ('fs before F2', '64 f2 0f 10 04 25 10 00 00 00', 'decoded', True, 64),
+        ('fs after F2', 'f2 64 0f 10 04 25 10 00 00 00', 'decoded', True, 64),
+        ('empty REX', 'f2 40 0f 58 c1', 'decoded', False, 64),
+        ('MOVQ memory form', '66 48 0f 7e 00', 'out_of_scope', True, 64),
+        ('MOVD r32', '66 0f 7e c0', 'out_of_scope', True, 64),
+        ('MOVSD store form registers', 'f2 0f 11 c1', 'decoded', False, 64),
+        ('67 before F2', '67 f2 0f 10 00', 'decoded', False, 64),
+        ('67 after F2', 'f2 67 0f 10 00', 'decoded', True, 64),
+        ('rex.W ucomisd', '66 48 0f 2e c1', 'decoded', False, 64),
+        ('cvtsi2sd r32', 'f2 0f 2a c0', 'decoded', False, 64),
+        ('cvtsi2sdq m64', 'f2 48 0f 2a 00', 'decoded', False, 64),
+        ('cvtsi2sdl m32', 'f2 0f 2a 00', 'decoded', False, 64),
+        ('cvttsd2si r64 m64', 'f2 48 0f 2c 00', 'decoded', False, 64),
+        ('cvtsi2sd m32 in 32-bit code', 'f2 0f 2a 00', 'decoded', False, 32)]:
+    corner(name, hexbytes, expect, escape, mode)
+
+(OUT / 'rows.json').write_text(json.dumps(rows, indent=1) + '\n')
+for group in sorted({r['group'] for r in rows}):
+    selected = [r for r in rows if r['group'] == group]
+    print(f"float-forms {group}: {sum(r['pass'] for r in selected)}/{len(selected)}", flush=True)
+print(f"float-forms: {sum(r['pass'] for r in rows)}/{len(rows)} exact deterministic comparisons read back, "
+      "shared refusals, named deviations or decoder corners", flush=True)
+raise SystemExit(0 if all(r['pass'] for r in rows) else 1)
