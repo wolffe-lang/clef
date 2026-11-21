@@ -179,7 +179,10 @@ fn rm_pattern(f: x86table.Form) -> str {
 
 /// Register-only, memory-only, or either, for a row's r/m operand pattern.
 fn rm_kind(pattern: str) -> str {
-    if pattern.starts_with("rm") || pattern.starts_with("indirect-rm") || pattern == "xmmrm128" {
+    if pattern.starts_with("rm") ||
+        pattern.starts_with("indirect-rm") ||
+        pattern == "xmmrm128" ||
+        pattern == "xmmrm64" {
         return "either"
     }
     if pattern == "mem" || pattern == "indirect-mem" || pattern.starts_with("moffs") {
@@ -323,6 +326,14 @@ pub fn decode(idx: Index, bytes: List[byte], offset: int, mode: int, address: in
             let want = if p > 255 then p % 256 else p
             if !has_byte(prefixes, want) { continue }
             score += 1
+        }
+        // The scalar-double rows read their mandatory prefix as the pinned objdump does: the last
+        // F2/F3 is the one that selects (f2 f3 0f 10 is MOVSS), and F2/F3 beside 66 wins over it
+        // (f2 66 0f 2e selects no 66 row).
+        if f.guard.contains("mandatory-prefix") {
+            let last = last_repeat(prefixes)
+            if (p == 242 || p == 243) && last != p { continue }
+            if p == 102 && last != 0 { continue }
         }
         if f.rex_w {
             if rex == 0 || rex / 8 % 2 == 0 { continue }
@@ -525,6 +536,13 @@ fn has_byte(xs: List[int], b: int) -> bool {
     false
 }
 
+/// The last F2 or F3 among the legacy prefixes, or 0.
+fn last_repeat(xs: List[int]) -> int {
+    var last = 0
+    for x in xs { if x == 242 || x == 243 { last = x } }
+    last
+}
+
 fn signed_little(bytes: List[byte], at: int, width: int) -> int {
     var v: u64 = 0
     for i in 0..width { v = v | bytes[at + i] as int as u64 << (8 * i) as u64 }
@@ -598,6 +616,8 @@ fn uses_address_size(f: x86table.Form, d: Decoded) -> bool {
 /// CMPS/SCAS, bnd (F2) on a branch, repz/repnz elsewhere.
 fn repeat_word(b: int, f: x86table.Form) -> str {
     let fam = f.family
+    // MOVSD here is the scalar-double move (F2 0F 10/11): objdump calls a spare F3 on it repz.
+    if fam == "movsd" { return if b == 243 then "repz" else "repnz" }
     let stem = if fam.len > 4 then fam[0..4] else fam
     if b == 243 &&
         (
