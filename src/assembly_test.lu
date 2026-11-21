@@ -8,6 +8,14 @@ fn equal(a: List[byte], b: List[byte]) -> bool {
     true
 }
 
+/// The refusal reason for a source, or "" when it assembles.
+fn reason(source: str) -> str {
+    let _ = assembly.assemble(source, "refusal.S") else |e| match e {
+        Assembly(f) => { return f.reason },
+    }
+    ""
+}
+
 fn main() -> int {
     let source = "start: movq $1,%rax\njmp 1f\n.byte 0\n1: ret\n.size start,.-start\n"
     let a = assembly.assemble(source, "one.S") else { return 1 }
@@ -65,6 +73,16 @@ fn main() -> int {
         }
         assert(refused)
     }
+    // The scalar-double rows' named refusals (docs/FORMATS.md): a 64-bit memory source with no
+    // suffix (32-bit code has one width and assembles it), the string move's Intel spelling, a
+    // segment override GNU as orders before the mandatory prefix, and an explicit 66H.
+    assert(reason("cvtsi2sd (%rax),%xmm0\n").starts_with("implicit_operand_size cvtsi2sd:"))
+    assert(reason(".code32\ncvtsi2sd (%eax),%xmm0\n") == "")
+    assert(reason("movsd\n").starts_with("string_move_spelling movsd:"))
+    assert(reason("rep movsd\n").starts_with("string_move_spelling movsd:"))
+    assert(reason("movsd %fs:16,%xmm0\n").starts_with("segment_override movsd:"))
+    assert(reason("data16 addsd %xmm1,%xmm0\n").starts_with("operand_size_prefix addsd:"))
+    assert(reason("movq %xmm0,%rax\nmovq %fs:(%rax),%rax\n") == "")
     print(
         "assembly: layout, mutually dependent jumps, numeric locals, set/macro values, deterministic ELF, provenance and refusals pass",
     )
