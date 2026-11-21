@@ -30,6 +30,17 @@
 
 ### Added
 
+- The SSE2 scalar-double forms a compiler's floating-point code needs, from the
+  Intel SDM: MOVSD, ADDSD, SUBSD, MULSD, DIVSD, SQRTSD, UCOMISD, CVTSI2SD,
+  CVTTSD2SI and XORPD, and MOVQ between XMM and 64-bit general registers, with
+  register, memory and `%rip`-relative operands, in both directions of the
+  table: the assembler matches GNU as and the disassembler reads them in
+  objdump's spelling. `census/fenrir-float-forms/` (fenrir's planned float
+  forms and the anticipated MOVQ forms) and `tools/float-forms-test` check them
+  against GNU as and objdump. Five kinds of input GNU as accepts are refused by
+  name; `docs/FORMATS.md` lists them, among them `cvtsi2sd` from memory with
+  no suffix in 64-bit code.
+
 - `tools/memory-test`, the `memory` gate: generated sources under a 2 GiB
   address-space cap, each compared with GNU as, with a bound on the
   assembler's own peak RSS, and a linear-growth row for each instruction
