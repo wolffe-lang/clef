@@ -86,6 +86,57 @@ fn main() -> int {
     // Determinism: the same bytes give the same text.
     let again = decode.decode(idx, [72 as byte, 137 as byte, 229 as byte], 0, 64, 4096)
     assert(decode.text(again, 4096) == decode.text(a, 4096))
+    // SSE2 scalar double (SDM vol.2A 3.3 ADDSD, CVTSI2SD; vol.2B 4.3 MOVSD, MOVD/MOVQ), in the
+    // pinned objdump's spelling: f2 0f 58 c1 is addsd %xmm1,%xmm0.
+    let sd = decode.decode(idx, [242 as byte, 15 as byte, 88 as byte, 193 as byte], 0, 64, 0)
+    assert(
+        sd.refusal.len == 0 &&
+            sd.mnemonic == "addsd" &&
+            sd.operands[0] == "%xmm1" &&
+            sd.operands[1] == "%xmm0",
+    )
+    // A memory source names its integer width in 64-bit code only: cvtsi2sdq, then cvtsi2sd.
+    let cq = decode.decode(
+        idx,
+        [242 as byte, 72 as byte, 15 as byte, 42 as byte, 69 as byte, 240 as byte],
+        0,
+        64,
+        0,
+    )
+    assert(cq.mnemonic == "cvtsi2sdq" && cq.operands[0] == "-0x10(%rbp)")
+    let l32 = decode.decode(idx, [242 as byte, 15 as byte, 42 as byte, 0 as byte], 0, 32, 0)
+    assert(l32.mnemonic == "cvtsi2sd" && l32.operands[0] == "(%eax)")
+    // MOVSD's store form between registers round-trips through {store}.
+    let st = [242 as byte, 15 as byte, 17 as byte, 193 as byte]
+    let sdst = decode.decode(idx, st, 0, 64, 0)
+    assert(
+        sdst.mnemonic == "movsd" &&
+            decode.roundtrip(idx, st, sdst, 64) == "{{store}} movsd %xmm0,%xmm1",
+    )
+    // 66 48 0f 7e c0 is movq %xmm0,%rax.
+    let mq = [102 as byte, 72 as byte, 15 as byte, 126 as byte, 192 as byte]
+    let bits = decode.decode(idx, mq, 0, 64, 0)
+    assert(bits.mnemonic == "movq" && bits.operands[0] == "%xmm0" && bits.operands[1] == "%rax")
+    assert(decode.roundtrip(idx, mq, bits, 64) == "movq %xmm0,%rax")
+    // An unconsumed F3 before MOVSD's F2 is objdump's repz.
+    let rz = decode.decode(
+        idx,
+        [243 as byte, 242 as byte, 15 as byte, 16 as byte, 193 as byte],
+        0,
+        64,
+        0,
+    )
+    assert(rz.mnemonic == "movsd" && rz.words.len == 1 && rz.words[0] == "repz")
+    // Cells these rows leave out stay out of scope: ADDSS (F3), ADDPS (no prefix), MOVQ's r/m64
+    // memory form, and F3 after F2 (objdump reads MOVSS).
+    for cell in [
+        [243 as byte, 15 as byte, 88 as byte, 193 as byte],
+        [15 as byte, 88 as byte, 193 as byte],
+        [102 as byte, 72 as byte, 15 as byte, 126 as byte, 0 as byte],
+        [242 as byte, 243 as byte, 15 as byte, 16 as byte, 193 as byte],
+    ] {
+        assert(decode.decode(idx, cell, 0, 64, 0).refusal == "out_of_scope:sse")
+    }
     assert(equal_bytes([1 as byte], [1 as byte]))
     0
 }
