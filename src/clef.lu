@@ -5,10 +5,14 @@ use decode
 use front
 use x86table
 
+/// The version the program prints; `src/wolf.pkg` names the same number and
+/// `tools/check-version` fails when they differ.
+const VERSION: str = "0.0.0"
+
 fn main() -> int {
     let args = env_args()
     if args.len == 1 && args[0] == "--version" {
-        print("clef 0.0.0 (GNU-as AT&T x86-64 census dialect)")
+        print("clef {VERSION} (GNU-as AT&T x86-64 census dialect)")
         return 0
     }
     let opts = front.parse(args) else |_| {
