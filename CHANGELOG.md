@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Changed
+
+- The version is 0.1.0. The package manifest names it, `clef --version` prints
+  it from one constant, and a row (`tools/check-version`, in the gate) fails if
+  the two differ.
+
 ### Fixed
 
 - Assembly memory no longer grows with expressions times symbols, nor by the
