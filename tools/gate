@@ -8,6 +8,8 @@ L=ROOT/'.wolf-bin/lupin/lupin-0.1.58-x86_64-unknown-linux-gnu/lupin'
 out=ROOT/'target/evidence';out.mkdir(parents=True,exist_ok=True)
 commands=[('planner',['python3','ci/tiers-test.py']),('format',[str(W),'fmt','--check','src','tests']),
  ('build',[str(W),'build','--deny-warnings','src/clef.lu','-o','target/clef']),
+ ('version-rows',['python3','-I','tools/check-version','--self-test']),
+ ('version',['python3','-I','tools/check-version','--bin','target/clef']),
  ('dialect-build',[str(W),'build','--deny-warnings','tests/dialect-cli/main.lu','-o','target/dialect-cli']),
  ('assembly-build',[str(W),'build','--deny-warnings','tests/assembly-cli/main.lu','-o','target/assembly-cli']),
  ('table-build',[str(W),'build','--deny-warnings','tests/table-cli/main.lu','-o','target/table-cli']),
