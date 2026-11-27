@@ -75,18 +75,23 @@ jobs:
     needs: plan
     if: ${{ (github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'full-matrix') || contains(github.event.pull_request.labels.*.name, 'ci') || contains(github.event.pull_request.labels.*.name, 'release-matrix')) && (contains(fromJSON(needs.plan.outputs.jobs || '[]'), 'linux')) }}
     runs-on: ubuntu-24.04
-    # 60, not 20: a toolchain pin misses the cache (its key hashes
-    # wolf-toolchain.toml), and the cold build downloads the 120 pinned
-    # packages one by one; twice that alone outlasted 20 minutes (clef#14).
+    # 60, not 20: a cold container build downloads the 120 pinned packages
+    # one by one; twice that alone outlasted 20 minutes (clef#14).
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+      # The compiler archives and the container packages are cached apart, so
+      # a toolchain pin restores the packages under the corpus job's key. Seven
+      # of the 120 are no longer served at their recorded URLs, and a cold
+      # build stops at the first of them.
       - uses: actions/cache@v4
         with:
-          path: |
-            .wolf-bin
-            target/container
-          key: clef-linux-${{ hashFiles('wolf-toolchain.toml', 'ci/oracle-lock.json') }}
+          path: .wolf-bin
+          key: clef-wolf-bin-${{ hashFiles('wolf-toolchain.toml') }}
+      - uses: actions/cache@v4
+        with:
+          path: target/container
+          key: clef-oracle-${{ hashFiles('ci/oracle-lock.json') }}
       - name: census, oracle, proof, writer, and refusal gates
         env:
           CLEF_ENGINE: docker
