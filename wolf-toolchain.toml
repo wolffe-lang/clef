@@ -1,7 +1,7 @@
 [wolf]
 version = "0.2.41"
 repo = "wolffe-lang/wolf-lang"
-sha256 = "e7ec4cde06db2f2235ae82e3dff1db06f6b8e37249c883a3a35bdee8c86b8c34"
+sha256 = "e7ec4cde06db2f2235ae82e3dff1db06f6b8e37249c883a3a35bdee8c86b8c35"
 [lupin]
 version = "0.1.63"
 repo = "wolffe-lang/wolf-interp"
